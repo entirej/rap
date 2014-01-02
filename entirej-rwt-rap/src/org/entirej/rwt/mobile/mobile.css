@@ -1,0 +1,19 @@
+Composite.drawerHeader {
+	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
+		to(#e4e4e4) );
+}
+Composite.sidebar {
+	background-color: #2e2e2e;
+}
+
+Button[PUSH].drawerAction {
+	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
+		to(#e4e4e4) );
+	animation: none;
+}
+Text.drawerTitle {
+	font:bold 16px  Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+	color: #2e2e2e;
+	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
+		to(#e4e4e4) );
+}
