@@ -98,8 +98,10 @@ public class EJRWTImageItemRendererDefinition implements EJDevItemRendererDefini
         Text text = new Text(parent, SWT.NULL);
         text.setText("IMAGE");
         text.setEditable(false);
+        EJDevItemRendererDefinitionControl definitionControl = new EJDevItemRendererDefinitionControl(itemProperties, text);
+        definitionControl.setUseFontDimensions(false);
+        return definitionControl;
 
-        return new EJDevItemRendererDefinitionControl(itemProperties, text);
     }
 
     /**
