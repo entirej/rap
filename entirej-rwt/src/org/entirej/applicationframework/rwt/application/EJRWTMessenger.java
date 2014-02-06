@@ -193,13 +193,20 @@ public class EJRWTMessenger implements EJMessenger
             // If the EJApplicationException is created with no parameters, the
             // user is using it to halt application processing, therefore there
             // is not need to handler the exception
-            if (!((EJApplicationException) exception).stopProcessing())
+            logger.error(exception.getMessage(), exception);
+            EJMessage frameworkMessage = ((EJApplicationException) exception).getFrameworkMessage();
+            if(frameworkMessage.getMessage()!=null)
             {
-                handleMessage(((EJApplicationException) exception).getFrameworkMessage());
+                handleMessage(frameworkMessage);
+            }
+            else
+            {
+                handleMessage(new EJMessage(exception.getMessage()));
             }
         }
         else if (showUserMessage)
         {
+            logger.error(exception.getMessage(), exception);
             Status status = new Status(IStatus.ERROR, "rwt.ej", exception.getMessage());
             ErrorDialog.openError(manager.getShell(), "Error", "Internal Error", status);
         }
