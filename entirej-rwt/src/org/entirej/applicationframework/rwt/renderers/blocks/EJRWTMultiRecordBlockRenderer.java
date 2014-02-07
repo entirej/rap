@@ -42,6 +42,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
@@ -83,7 +85,6 @@ import org.entirej.applicationframework.rwt.renderers.screen.EJRWTUpdateScreenRe
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractFilteredTable;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractFilteredTable.FilteredContentProvider;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
-import org.entirej.applicationframework.rwt.table.EJRWTTableAutoResizeAdapter;
 import org.entirej.applicationframework.rwt.table.EJRWTTableSortSelectionListener;
 import org.entirej.applicationframework.rwt.table.EJRWTTableViewerColumnFactory;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
@@ -1024,19 +1025,41 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 if (screenItem != null)
                 {
                     nodeTextProviders.add(screenItem);
+                    if(autoSize)
+                    {
+                        EJFrameworkExtensionProperties itemBl = mainScreenItemProperties.getBlockRendererRequiredProperties();
+
+                        autoSize = itemBl != null && itemBl.getIntProperty(EJRWTMultiRecordBlockDefinitionProperties.DISPLAY_WIDTH_PROPERTY, 0) <= 0;
+
+                    }
                 }
-                if (autoSize)
-                {
-                    EJFrameworkExtensionProperties itemBl = mainScreenItemProperties.getBlockRendererRequiredProperties();
-                    autoSize = itemBl != null && itemBl.getIntProperty(EJRWTMultiRecordBlockDefinitionProperties.DISPLAY_WIDTH_PROPERTY, 0) <= 0;
-                }
+                
+                
             }
         }
-        if (autoSize)
+      
+        if(autoSize)
         {
-            EJRWTTableAutoResizeAdapter adapter = new EJRWTTableAutoResizeAdapter(table);
-            table.addControlListener(adapter);
-            adapter.controlResized(null);
+            table.addControlListener(new ControlListener()
+            {
+                
+                @Override
+                public void controlResized(ControlEvent e)
+                {
+                    if(table.getSize().x>10)
+                    {
+                        table.getColumn(0).setWidth(table.getSize().x-10);
+                    }
+                    
+                }
+                
+                @Override
+                public void controlMoved(ControlEvent e)
+                {
+                    // TODO Auto-generated method stub
+                    
+                }
+            });
         }
 
         table.addFocusListener(new FocusListener()
