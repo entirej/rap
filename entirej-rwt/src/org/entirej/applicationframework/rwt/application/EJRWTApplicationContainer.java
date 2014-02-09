@@ -432,6 +432,15 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                 break;
         }
 
+        if(gd.grabExcessHorizontalSpace && gd.widthHint==0)
+        {
+            gd.horizontalAlignment = SWT.FILL;
+        }
+        
+        if(gd.grabExcessVerticalSpace && gd.heightHint==0)
+        {
+            gd.verticalAlignment = SWT.FILL;
+        }
         return gd;
     }
 
