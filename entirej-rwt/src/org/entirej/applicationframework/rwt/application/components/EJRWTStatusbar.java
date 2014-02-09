@@ -115,9 +115,10 @@ public class EJRWTStatusbar implements  EJRWTAppComponentRenderer
                 }
                 
             }
-            GridData gridData = new GridData(GridData.FILL_BOTH);
+            GridData gridData = new GridData();
             gridData.verticalAlignment = SWT.CENTER;
             gridData.grabExcessVerticalSpace = true;
+            gridData.horizontalAlignment = SWT.FILL;
             section.setLayoutData(gridData);
             
             boolean expand = Boolean.valueOf(entry.getProperty(EXPAND_X));
