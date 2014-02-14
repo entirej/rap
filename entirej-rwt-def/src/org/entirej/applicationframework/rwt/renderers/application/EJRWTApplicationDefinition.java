@@ -24,6 +24,7 @@ package org.entirej.applicationframework.rwt.renderers.application;
 import org.eclipse.jface.fieldassist.AutoCompleteField;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.framework.core.application.definition.interfaces.EJApplicationDefinition;
+import org.entirej.framework.core.properties.EJCoreLayoutItem.TYPE;
 import org.entirej.framework.core.properties.definitions.EJPropertyDefinitionType;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDefinition;
@@ -246,6 +247,12 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
     {
         // no impl
 
+    }
+    
+    @Override
+    public TYPE[] getSupportedLayoutTypes()
+    {
+        return TYPE.values();
     }
 
 }
