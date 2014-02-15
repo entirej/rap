@@ -67,20 +67,20 @@ public abstract class EJRWTScreenRendererDefinition implements EJRendererDefinit
         title.setMultilingual(true);
 
         EJDevPropertyDefinition width = new EJDevPropertyDefinition(EJRWTScreenRendererDefinitionProperties.WIDTH, EJPropertyDefinitionType.INTEGER);
-        width.setLabel("Width");
-        width.setDescription("The width of the screen");
+        width.setLabel("Width (pixels)");
+        width.setDescription("The width of the screen in <b>Pixels</b>");
         width.setDefaultValue("300");
         width.setMandatory(true);
 
         EJDevPropertyDefinition height = new EJDevPropertyDefinition(EJRWTScreenRendererDefinitionProperties.HEIGHT, EJPropertyDefinitionType.INTEGER);
-        height.setLabel("Height");
-        height.setDescription("The height of the screen");
+        height.setLabel("Height (pixels)");
+        height.setDescription("The height of the screen in <b>Pixels</b>");
         height.setDefaultValue("400");
         height.setMandatory(true);
 
         EJDevPropertyDefinition maximize = new EJDevPropertyDefinition(EJRWTScreenRendererDefinitionProperties.MAXIMIZE, EJPropertyDefinitionType.BOOLEAN);
         maximize.setLabel("Maximize");
-        maximize.setDescription("Maximize dialog on open");
+        maximize.setDescription("Indicates if the screen should be maximized when it is opened. This property is mainly used when creating RAP applications for mobile applications");
         maximize.setDefaultValue("false");
 
         EJDevPropertyDefinition numCols = new EJDevPropertyDefinition(EJRWTScreenRendererDefinitionProperties.NUM_COLS, EJPropertyDefinitionType.INTEGER);
