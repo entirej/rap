@@ -18,6 +18,7 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.item;
 
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -37,5 +38,16 @@ public class EJRWTTextAreaRenderer extends EJRWTTextItemRenderer
             style = style | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL;
         }
         return super.newTextField(composite, style);
+    }
+    
+    @Override
+    public void createComponent(Composite composite)
+    {
+        super.createComponent(composite);
+        if (controlState(_actionControl))
+        {
+            String[] keys = new String[] { };
+            _actionControl.getTextControl().setData(EJ_RWT.ACTIVE_KEYS, keys);
+        }
     }
 }
