@@ -211,14 +211,14 @@ public class EJRWTSingleRecordBlockDefinition implements EJDevBlockRendererDefin
 
         EJDevPropertyDefinition displayedWidth = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.DISPLAYED_WIDTH_PROPERTY,
                 EJPropertyDefinitionType.INTEGER);
-        displayedWidth.setLabel("Displayed Width");
-        displayedWidth.setDescription("Indicates width (in characters) of this item. If no value or zero has been entered, the width of the item will depend upon its contents");
+        displayedWidth.setLabel("Displayed Width (chars)");
+        displayedWidth.setDescription("Indicates width <b>(in characters)</b> of this item. If no value or zero has been entered, the width of the item will depend upon its contents");
         displayedWidth.setNotifyWhenChanged(true);
 
         EJDevPropertyDefinition displayedHeight = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.DISPLAYED_HEIGHT_PROPERTY,
                 EJPropertyDefinitionType.INTEGER);
-        displayedHeight.setLabel("Displayed Height");
-        displayedWidth.setDescription("Indicates the height (in characters) of this item. If no value or zero has been entered, the height of the item will be relevent to its contents");
+        displayedHeight.setLabel("Displayed Height (chars)");
+        displayedWidth.setDescription("Indicates the height <b>(in characters)</b> of this item. If no value or zero has been entered, the height of the item will be relevent to its contents");
         displayedHeight.setNotifyWhenChanged(true);
 
         EJDevPropertyDefinitionGroup mainScreenGroup = new EJDevPropertyDefinitionGroup(

@@ -251,9 +251,9 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
 
         EJDevPropertyDefinition displayedWidth = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.DISPLAY_WIDTH_PROPERTY,
                 EJPropertyDefinitionType.INTEGER);
-        displayedWidth.setLabel("Displayed Width");
+        displayedWidth.setLabel("Displayed Width (chars)");
         displayedWidth
-                .setDescription("The width (in characters) of this items column within the block.If zero is specified then the width of the column will be relative to the data it contains and the width of the other columns");
+                .setDescription("The width <b>(in characters)</b> of this items column within the block. If zero is specified then the width of the column will be relative to the data it contains and the width of the other columns");
 
         EJDevPropertyDefinition headerAllignment = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.COLUMN_ALIGNMENT,
                 EJPropertyDefinitionType.STRING);
