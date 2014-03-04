@@ -32,6 +32,7 @@ import org.entirej.applicationframework.rwt.renderers.form.EJRWTFormRenderer;
 import org.entirej.framework.core.EJFrameworkManager;
 import org.entirej.framework.core.EJManagedFrameworkConnection;
 import org.entirej.framework.core.EJMessage;
+import org.entirej.framework.core.EJParameterList;
 import org.entirej.framework.core.EJTranslatorHelper;
 import org.entirej.framework.core.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.core.data.controllers.EJInternalQuestion;
@@ -349,6 +350,27 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     public void askInternalQuestion(EJInternalQuestion question)
     {
         messenger.askInternalQuestion(question);
+    }
+    
+    @Override
+    public void openForm(String formName, EJParameterList parameterList, boolean blocking)
+    {
+        _frameworkManager.openForm(formName, parameterList, blocking);
+        
+    }
+
+    @Override
+    public void openForm(String formName, EJParameterList parameterList)
+    {
+        _frameworkManager.openForm(formName, parameterList);
+        
+    }
+
+    @Override
+    public void openForm(String formName)
+    {
+        _frameworkManager.openForm(formName);
+        
     }
 
 }
