@@ -379,7 +379,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
         {
             if (pictureName != null && pictureName.trim().length() > 0)
             {
-                labelField.setImage(_defaultImage = EJRWTImageRetriever.get(pictureName));
+                _defaultImage = EJRWTImageRetriever.get(pictureName);
             }
         }
 
@@ -410,6 +410,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 }
             }
         });
+        _labelField.setImage(_defaultImage = EJRWTImageRetriever.get(pictureName));
         _mandatoryDecoration.hide();
     }
 
