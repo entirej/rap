@@ -168,7 +168,7 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         EJDevPropertyDefinition isFixedInTable = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.COLUMNS_FIXED,
                 EJPropertyDefinitionType.INTEGER);
         isFixedInTable.setLabel("Fixed Columns");
-        isFixedInTable.setDescription("Indicates how many columns is fixed to the left part of this block. Fixed columns hold their position even when the user scrolls horizontally to see the hidden columns");
+        isFixedInTable.setDescription("Indicates how many columns are fixed to the left part of this block. Fixed columns hold their position even when the user scrolls horizontally to see the hidden columns");
         
 
         mainGroup.addPropertyDefinition(doubleClickActionCommand);
