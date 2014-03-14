@@ -164,6 +164,12 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         showVerticalLines.setLabel("Show Vertical Lines");
         showVerticalLines.setDescription("Indicates if the block should display vertical lines");
         showVerticalLines.setDefaultValue("true");
+        
+        EJDevPropertyDefinition isFixedInTable = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.COLUMNS_FIXED,
+                EJPropertyDefinitionType.INTEGER);
+        isFixedInTable.setLabel("Fixed Columns");
+        isFixedInTable.setDescription("Indicates how many columns is fixed to the left part of this block. Fixed columns hold their position even when the user scrolls horizontally to see the hidden columns");
+        
 
         mainGroup.addPropertyDefinition(doubleClickActionCommand);
         mainGroup.addPropertyDefinition(showTableBorder);
@@ -171,6 +177,7 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         mainGroup.addPropertyDefinition(allowRowSelection);
         mainGroup.addPropertyDefinition(filter);
         mainGroup.addPropertyDefinition(showVerticalLines);
+        mainGroup.addPropertyDefinition(isFixedInTable);
 
         EJDevPropertyDefinitionGroup sectionGroup = new EJDevPropertyDefinitionGroup("TITLE_BAR");
         sectionGroup.setLabel("Title Bar");
@@ -243,11 +250,7 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("Multi-Record Block: Required Item Properties");
 
-        EJDevPropertyDefinition isFixedInTable = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.IS_COLUMN_FIXED,
-                EJPropertyDefinitionType.BOOLEAN);
-        isFixedInTable.setLabel("Fixed Column");
-        isFixedInTable.setDescription("Indicates if this column is fixed to the left part of this block. Fixed columns hold their position even when the user scrolls horizontally to see the hidden columns");
-        isFixedInTable.setDefaultValue("false");
+        
 
         EJDevPropertyDefinition displayedWidth = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.DISPLAY_WIDTH_PROPERTY,
                 EJPropertyDefinitionType.INTEGER);
@@ -289,7 +292,6 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         visualAttribute.setDescription("The column will be displayed using the properties from the chosen visual attribute");
         visualAttribute.setMandatory(false);
 
-        mainGroup.addPropertyDefinition(isFixedInTable);
         mainGroup.addPropertyDefinition(displayedWidth);
         mainGroup.addPropertyDefinition(headerAllignment);
 
