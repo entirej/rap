@@ -25,6 +25,9 @@ import java.util.Locale;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.entirej.applicationframework.rwt.application.components.menu.EJRWTDefaultMenuBuilder;
+import org.entirej.applicationframework.rwt.application.components.menu.EJRWTDefaultMenuPropertiesBuilder;
+import org.entirej.applicationframework.rwt.application.components.menu.EJRWTMenuTreeRoot;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTApplicationStatusbar;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormContainer;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
@@ -41,6 +44,12 @@ import org.entirej.framework.core.data.controllers.EJQuestion;
 import org.entirej.framework.core.interfaces.EJApplicationManager;
 import org.entirej.framework.core.interfaces.EJMessenger;
 import org.entirej.framework.core.internal.EJInternalForm;
+import org.entirej.framework.core.properties.EJCoreCanvasProperties;
+import org.entirej.framework.core.properties.EJCoreMenuContainer;
+import org.entirej.framework.core.properties.EJCoreMenuLeafProperties;
+import org.entirej.framework.core.properties.EJCoreMenuProperties;
+import org.entirej.framework.core.properties.EJCoreProperties;
+import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 
 public class EJRWTApplicationManager implements EJApplicationManager, Serializable
 {
@@ -137,6 +146,26 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             throw new NullPointerException("The ApplicationContainer cannot bu null");
         }
         shell = mainWindow.getShell();
+        //build menu
+        EJCoreProperties instance = EJCoreProperties.getInstance();
+        EJFrameworkExtensionProperties definedProperties = instance.getApplicationDefinedProperties();
+
+        if (definedProperties != null )
+        {
+            
+            String menuConfigID = definedProperties.getStringProperty("APPLICATION_MENU");
+        
+            if(menuConfigID!=null && menuConfigID.length()>0)
+            {
+                EJRWTMenuTreeRoot root = EJRWTDefaultMenuPropertiesBuilder.buildMenuProperties(this, menuConfigID);
+                if(root!=null)
+                {
+                    EJRWTDefaultMenuBuilder.createApplicationMenu(this, shell, root);
+                }
+            }
+            
+        }
+        
         _applicationContainer = container;
         _applicationContainer.buildApplication(this, mainWindow);
     }

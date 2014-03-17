@@ -38,6 +38,7 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
 {
 
     public static final String DISPLAY_TAB_BORDER            = "DISPLAY_TAB_BORDER";
+    public static final String APPLICATION_MENU              = "APPLICATION_MENU";
 
     public static final String APP_MESSAGING                 = "APP_MESSAGING";
     public static final String APP_MSG_ERROR                 = "APP_MSG_ERROR";
@@ -67,10 +68,15 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("RWTAPP");
         mainGroup.setLabel("RWT Application");
 
+        EJDevPropertyDefinition applicationMenu = new EJDevPropertyDefinition(APPLICATION_MENU, EJPropertyDefinitionType.MENU_GROUP);
+        applicationMenu.setLabel("Application Menu");
+        applicationMenu.setDescription("The Application Menu is the standard drop down menu displayed at the top of the screen. The menu is created using the <a href=\"http://docs.entirej.com/display/EJ1/Application+Menu\">EntireJ Menu Editor</a>");
+
+        mainGroup.addPropertyDefinition(applicationMenu);
         EJDevPropertyDefinition displayTabBorder = new EJDevPropertyDefinition(DISPLAY_TAB_BORDER, EJPropertyDefinitionType.BOOLEAN);
         displayTabBorder.setLabel("Display border on tabs");
         displayTabBorder.setDescription("Indicates if borders should be used to surround tab canvases. Displaying borders on tabs can lead to many unwanted frames displayed on your application.");
-
+        
         mainGroup.addPropertyDefinition(displayTabBorder);
 
         EJDevPropertyDefinitionGroup actionGroup = new EJDevPropertyDefinitionGroup(EJRWTSingleRecordBlockDefinitionProperties.ACTION_GROUP, "Shortcuts");

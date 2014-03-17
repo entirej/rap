@@ -22,18 +22,25 @@
 package org.entirej.applicationframework.rwt.application.components.menu;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
+import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.menu.EJRWTMenuTreeElement.Type;
 import org.entirej.framework.core.EJActionProcessorException;
 import org.entirej.framework.core.EJApplicationException;
@@ -55,6 +62,115 @@ public class EJRWTDefaultMenuBuilder implements Serializable
     {
         this._applicationManager = appManager;
         this._parent = parent;
+    }
+    
+    
+    public static void createApplicationMenu(EJApplicationManager applicationManager, Shell shell,EJRWTMenuTreeRoot root)
+    {
+        EJMenuActionProcessor actionProcessor = null;
+        if (root.getActionProcessorClassName() != null && root.getActionProcessorClassName().length() > 0)
+        {
+            try
+            {
+                Class<?> processorClass = Class.forName(root.getActionProcessorClassName());
+                try
+                {
+                    Object processorObject = processorClass.newInstance();
+                    if (processorObject instanceof EJMenuActionProcessor)
+                    {
+                        actionProcessor = (EJMenuActionProcessor) processorObject;
+                    }
+                    else
+                    {
+                        throw new EJApplicationException(EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_ACTION_PROCESSOR_NAME,
+                                processorClass.getName(), "EJMenuActionProcessor"));
+                    }
+                }
+                catch (InstantiationException e)
+                {
+                    throw new EJApplicationException(EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.UNABLE_TO_CREATE_ACTION_PROCESSOR,
+                            processorClass.getName()), e);
+                }
+                catch (IllegalAccessException e)
+                {
+                    throw new EJApplicationException(EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.UNABLE_TO_CREATE_ACTION_PROCESSOR,
+                            processorClass.getName()), e);
+                }
+            }
+            catch (ClassNotFoundException e)
+            {
+                throw new EJApplicationException(EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_ACTION_PROCESSOR_FOR_MENU,
+                        root.getActionProcessorClassName()));
+            }
+        }
+        Menu appMenuBar = shell.getDisplay().getMenuBar();
+        if (appMenuBar == null) {
+                appMenuBar = new Menu(shell, SWT.BAR);
+                shell.setMenuBar(appMenuBar);
+        }
+        createMenu(applicationManager,appMenuBar,root,actionProcessor);
+        
+    }
+
+
+    public static void createMenu(final EJApplicationManager applicationManager,Menu parent,EJRWTMenuTreeElement root, final EJMenuActionProcessor menuActionProcessor)
+    {
+        List<EJRWTMenuTreeElement> treeElements = root.getTreeElements();
+        for (final EJRWTMenuTreeElement treeElement : treeElements)
+        {
+            switch(treeElement.getType())
+            {
+                case ACTION: 
+                {
+                    MenuItem action = new MenuItem(parent, SWT.PUSH);
+                    action.setText(treeElement.getText());
+                    action.setImage(treeElement.getImage());
+                    action.addSelectionListener(new SelectionAdapter() {
+                            @Override
+                            public void widgetSelected(SelectionEvent evnt) {
+                                try
+                                {
+                                    menuActionProcessor.executeActionCommand(treeElement.getActionCommand());
+                                }
+                                catch (EJActionProcessorException e)
+                                {
+                                    applicationManager.getApplicationMessenger().handleException(e, true);
+                                }
+                            }
+                    });
+                    break;
+                }
+                case FORM: 
+                {
+                    MenuItem form = new MenuItem(parent, SWT.PUSH);
+                    form.setText(treeElement.getText());
+                    form.setImage(treeElement.getImage());
+                    form.addSelectionListener(new SelectionAdapter() {
+                            @Override
+                            public void widgetSelected(SelectionEvent e) {
+                                applicationManager.getFrameworkManager().openForm(treeElement.getActionCommand(), null, false);
+                            }
+                    });
+                    break;
+                }
+                case SEPARATOR: 
+                {
+                    new MenuItem(parent, SWT.SEPARATOR);
+                    break;
+                }
+                case SUB: 
+                {
+                    MenuItem sub = new MenuItem(parent, SWT.CASCADE);
+                    sub.setText(treeElement.getText());
+                    sub.setImage(treeElement.getImage());
+                    Menu subMenu = new Menu(parent);
+                    sub.setMenu(subMenu);
+                    createMenu(applicationManager, subMenu, treeElement, menuActionProcessor);
+                    
+                    break;
+                }
+            }
+        }
     }
 
     private TreeViewer createMenuTree(EJRWTMenuTreeRoot root, boolean tselectionMode)
