@@ -31,11 +31,14 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
+import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTLabelItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
@@ -441,8 +444,43 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
         }
         else
         {
-            final Link linkField = new Link(composite, style);
-
+            final Link linkField ;
+            final Control control ;
+            //use workaround to make sure link also provide alignment
+            if (alignmentProperty != null && alignmentProperty.trim().length() > 0)
+            {
+                if (alignmentProperty.equals(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_ALIGNMENT_LEFT))
+                {
+                    control = linkField = new Link(composite, style);
+                }
+                else if (alignmentProperty.equals(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_ALIGNMENT_RIGHT))
+                {
+                    EJRWTEntireJGridPane sub = new EJRWTEntireJGridPane(composite, 3);
+                    control = sub;
+                    sub.cleanLayout();
+                    new Label(sub, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
+                   
+                    new Label(sub, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
+                    linkField = new Link(sub, style);
+                }
+                else if (alignmentProperty.equals(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_ALIGNMENT_CENTER))
+                {
+                    EJRWTEntireJGridPane sub = new EJRWTEntireJGridPane(composite, 3);
+                    control = sub;
+                    sub.cleanLayout();
+                    new Label(sub, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
+                    linkField = new Link(sub, style);
+                    new Label(sub, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
+                   
+                }
+                else
+                {
+                    control =linkField = new Link(composite, style);
+                }
+            }else
+            {
+                control = linkField = new Link(composite, style);
+            }
             _labelField = new SWTComponentAdapter()
             {
                 String value;
@@ -465,7 +503,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 @Override
                 public Control getControl()
                 {
-                    return linkField;
+                    return control;
                 }
 
             };
