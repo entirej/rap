@@ -53,8 +53,9 @@ import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.ToggleHyperlink;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationContainer;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
-import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.EJRWTGraphicsProvider;
+import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
+import org.entirej.applicationframework.rwt.renderers.html.EJRWTHtmlTableBlockRenderer.VACSSServiceHandler;
 import org.entirej.framework.core.EJFrameworkHelper;
 import org.entirej.framework.core.EJFrameworkInitialiser;
 import org.entirej.framework.core.interfaces.EJMessenger;
@@ -193,6 +194,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             {
                 try
                 {
+                    RWT.getServiceManager().registerServiceHandler(VACSSServiceHandler.SERVICE_HANDLER, new VACSSServiceHandler());
                     registerServiceHandlers();
                 }
                 catch (java.lang.IllegalArgumentException e)

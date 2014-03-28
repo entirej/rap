@@ -1,0 +1,1137 @@
+/*******************************************************************************
+ * Copyright 2013 Mojave Innovations GmbH
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * Contributors:
+ *     Mojave Innovations GmbH - initial API and implementation
+ ******************************************************************************/
+package org.entirej.applicationframework.rwt.renderers.html;
+
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.eclipse.rwt.EJ_RWT;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.graphics.ImageFactory;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
+import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
+import org.entirej.applicationframework.rwt.application.launcher.RWTUtils;
+import org.entirej.applicationframework.rwt.component.EJRWTHtmlView;
+import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
+import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
+import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
+import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
+import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
+import org.entirej.framework.core.data.EJDataRecord;
+import org.entirej.framework.core.data.controllers.EJEditableBlockController;
+import org.entirej.framework.core.enumerations.EJManagedBlockProperty;
+import org.entirej.framework.core.enumerations.EJManagedScreenProperty;
+import org.entirej.framework.core.enumerations.EJScreenType;
+import org.entirej.framework.core.extensions.properties.EJCoreFrameworkExtensionPropertyList;
+import org.entirej.framework.core.interfaces.EJScreenItemController;
+import org.entirej.framework.core.properties.EJCoreBlockProperties;
+import org.entirej.framework.core.properties.EJCoreMainScreenItemProperties;
+import org.entirej.framework.core.properties.EJCoreProperties;
+import org.entirej.framework.core.properties.EJCoreVisualAttributeContainer;
+import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
+import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
+import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionPropertyListEntry;
+import org.entirej.framework.core.properties.interfaces.EJBlockProperties;
+import org.entirej.framework.core.properties.interfaces.EJItemGroupProperties;
+import org.entirej.framework.core.properties.interfaces.EJMainScreenProperties;
+import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
+import org.entirej.framework.core.renderers.EJManagedItemRendererWrapper;
+import org.entirej.framework.core.renderers.interfaces.EJInsertScreenRenderer;
+import org.entirej.framework.core.renderers.interfaces.EJQueryScreenRenderer;
+import org.entirej.framework.core.renderers.interfaces.EJUpdateScreenRenderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyListener
+{
+    private Logger                               LOGGER                     = LoggerFactory.getLogger(this.getClass());
+
+    private static final String                  PROPERTY_ALIGNMENT         = "ALIGNMENT";
+    private static final String                  PROPERTY_ALIGNMENT_CHAR    = "CHAR";
+    private static final String                  PROPERTY_ALIGNMENT_CENTER  = "CENTER";
+    private static final String                  PROPERTY_ALIGNMENT_RIGHT   = "RIGHT";
+    private static final String                  PROPERTY_ALIGNMENT_LEFT    = "LEFT";
+    private static final String                  PROPERTY_ALIGNMENT_JUSTIFY = "JUSTIFY";
+    private static final String                  PROPERTY_CASE              = "CASE";
+    private static final String                  PROPERTY_CASE_CAPITALIZE   = "CAPITALIZE";
+    private static final String                  PROPERTY_CASE_UPPER        = "UPPER";
+    private static final String                  PROPERTY_CASE_LOWER        = "LOWER";
+
+    public static final String                   CELL_SPACING_PROPERTY      = "CELL_SPACING";
+    public static final String                   CELL_PADDING_PROPERTY      = "CELL_PADDING";
+
+    public static final String                   DISPLAY_WIDTH_PROPERTY     = "DISPLAY_WIDTH";
+    public static final String                   ACTIONS                    = "ACTIONS";
+    public static final String                   ACTION_ID                  = "ACTION_ID";
+    public static final String                   ACTION_KEY                 = "ACTION_KEY";
+
+    public static final String                   HEADER_VA                  = "HEADER_VA";
+    public static final String                   ROW_ODD_VA                 = "ROW_ODD_VA";
+    public static final String                   ROW_EVEN_VA                = "ROW_EVEN_VA";
+
+    private Map<String, String>                  _contextCache              = new HashMap<String, String>();
+
+    private EJEditableBlockController            _block;
+    private boolean                              _isFocused                 = false;
+    private ScrolledComposite                    scrollComposite;
+    private EJRWTHtmlView                        _browser;
+    private List<EJCoreMainScreenItemProperties> _items                     = new ArrayList<EJCoreMainScreenItemProperties>();
+    private Map<String, ColumnLabelProvider>     _itemLabelProviders        = new HashMap<String, ColumnLabelProvider>();
+    private String                               _headerTag                 = null;
+    private EJDataRecord                         currentRec;
+
+    private List<String>                         _actionkeys                = new ArrayList<String>();
+    private Map<KeyInfo, String>                 _actionInfoMap             = new HashMap<EJRWTKeysUtil.KeyInfo, String>();
+
+    @Override
+    public void askToDeleteRecord(EJDataRecord arg0, String message)
+    {
+        // no impl
+
+    }
+
+    @Override
+    public void blockCleared()
+    {
+        if (_browser != null && !_browser.isDisposed())
+        {
+            _browser.setText("");
+        }
+
+    }
+
+    public void executingQuery()
+    {
+    }
+
+    @Override
+    public void detailBlocksCleared()
+    {
+        // no impl
+
+    }
+
+    @Override
+    public void enterInsert(EJDataRecord arg0)
+    {
+        // no impl
+
+    }
+
+    @Override
+    public void enterUpdate(EJDataRecord arg0)
+    {
+        // no impl
+
+    }
+
+    @Override
+    public void gainFocus()
+    {
+        setHasFocus(true);
+
+    }
+
+    @Override
+    public EJInsertScreenRenderer getInsertScreenRenderer()
+    {
+
+        return null;
+    }
+
+    @Override
+    public EJQueryScreenRenderer getQueryScreenRenderer()
+    {
+
+        return null;
+    }
+
+    @Override
+    public EJUpdateScreenRenderer getUpdateScreenRenderer()
+    {
+        return null;
+    }
+
+    @Override
+    public boolean hasFocus()
+    {
+        return _isFocused;
+
+    }
+
+    @Override
+    public void initialiseRenderer(EJEditableBlockController block)
+    {
+        _block = block;
+
+    }
+
+    @Override
+    public boolean isCurrentRecordDirty()
+    {
+
+        return false;
+    }
+
+    @Override
+    public void queryExecuted()
+    {
+        currentRec = null;
+
+        createHTML();
+
+    }
+
+    @Override
+    public void recordDeleted(int arg0)
+    {
+
+        createHTML();
+
+    }
+
+    @Override
+    public void recordInserted(EJDataRecord arg0)
+    {
+
+        createHTML();
+
+    }
+
+    @Override
+    public void refreshBlockProperty(EJManagedBlockProperty arg0)
+    {
+        // no impl
+    }
+
+    @Override
+    public void refreshBlockRendererProperty(String arg0)
+    {
+        // no impl
+    }
+
+    @Override
+    public void setFocusToItem(EJScreenItemController arg0)
+    {
+        setHasFocus(true);
+    }
+
+    @Override
+    public void setHasFocus(boolean focus)
+    {
+        _isFocused = focus;
+
+        if (_isFocused)
+        {
+            _block.focusGained();
+            // showFocusedBorder(true);
+        }
+        else
+        {
+            _block.focusLost();
+            // showFocusedBorder(false);
+        }
+
+    }
+
+    @Override
+    public void enterQuery(EJDataRecord arg0)
+    {
+        // no impl
+    }
+
+    @Override
+    public int getDisplayedRecordNumber(EJDataRecord record)
+    {
+        return _block.getDataBlock().getRecordNumber(record);
+    }
+
+    @Override
+    public int getDisplayedRecordCount()
+    {
+        return _block.getDataBlock().getBlockRecordCount();
+    }
+
+    @Override
+    public EJDataRecord getRecordAt(int displayedRecordNumber)
+    {
+        if (displayedRecordNumber > -1 && displayedRecordNumber < getDisplayedRecordCount())
+        {
+
+            return _block.getRecord(displayedRecordNumber);
+        }
+        return null;
+    }
+
+    @Override
+    public EJDataRecord getRecordAfter(EJDataRecord record)
+    {
+        return _block.getDataBlock().getRecordAfter(record);
+    }
+
+    @Override
+    public EJDataRecord getRecordBefore(EJDataRecord record)
+    {
+        return _block.getDataBlock().getRecordBefore(record);
+    }
+
+    @Override
+    public EJDataRecord getFirstRecord()
+    {
+        return _block.getDataBlock().getRecord(0);
+    }
+
+    @Override
+    public EJDataRecord getLastRecord()
+    {
+        return _block.getDataBlock().getRecord(_block.getBlockRecordCount() - 1);
+    }
+
+    @Override
+    public void recordSelected(EJDataRecord arg0)
+    {
+        currentRec = arg0;
+
+    }
+
+    @Override
+    public EJDataRecord getFocusedRecord()
+    {
+        return currentRec != null ? currentRec : getFirstRecord();
+    }
+
+    @Override
+    public void refreshAfterChange(EJDataRecord arg0)
+    {
+        createHTML();
+
+    }
+
+    @Override
+    public void refreshItemProperty(String itemName, EJManagedScreenProperty managedItemPropertyType, EJDataRecord record)
+    {
+        if (EJManagedScreenProperty.ITEM_INSTANCE_VISUAL_ATTRIBUTE.equals(managedItemPropertyType))
+        {
+            EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemName);
+            if (item != null)
+            {
+                createHTML();
+            }
+        }
+        else if (EJManagedScreenProperty.SCREEN_ITEM_VISUAL_ATTRIBUTE.equals(managedItemPropertyType))
+        {
+            EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemName);
+            if (item != null)
+            {
+                item.getManagedItemRenderer().setVisualAttribute(item.getProperties().getVisualAttributeProperties());
+
+                createHTML();
+            }
+        }
+
+    }
+
+    @Override
+    public void refreshItemRendererProperty(String arg0, String arg1)
+    {
+        // no impl
+
+    }
+
+    @Override
+    public void synchronize()
+    {
+        // no impl
+
+    }
+
+    @Override
+    public Object getGuiComponent()
+    {
+        return scrollComposite;
+    }
+
+    @Override
+    public void buildGuiComponent(EJRWTEntireJGridPane blockCanvas)
+    {
+        if (_browser != null && !_browser.isDisposed())
+        {
+            _browser.dispose();
+        }
+
+        EJBlockProperties blockProperties = _block.getProperties();
+        EJMainScreenProperties mainScreenProperties = blockProperties.getMainScreenProperties();
+
+        EJFrameworkExtensionProperties blockRendererProperties = blockProperties.getBlockRendererProperties();
+        boolean addHeader = true;
+        if (blockRendererProperties != null)
+        {
+            addHeader = blockRendererProperties.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.SHOW_HEADING_PROPERTY, true);
+            EJCoreFrameworkExtensionPropertyList propertyList = blockRendererProperties.getPropertyList(ACTIONS);
+
+            if (propertyList != null)
+            {
+                List<EJFrameworkExtensionPropertyListEntry> allListEntries = propertyList.getAllListEntries();
+                for (EJFrameworkExtensionPropertyListEntry entry : allListEntries)
+                {
+                    String actionID = entry.getProperty(ACTION_ID);
+                    String actionkey = entry.getProperty(ACTION_KEY);
+                    if (actionID != null && actionkey != null && actionID.trim().length() > 0 && actionkey.trim().length() > 0)
+                    {
+                        addActionKeyinfo(actionkey, actionID);
+                    }
+                }
+            }
+
+        }
+
+        GridData gridData = new GridData(GridData.FILL_BOTH);
+        gridData.widthHint = mainScreenProperties.getWidth();
+        gridData.heightHint = mainScreenProperties.getHeight();
+
+        gridData.horizontalSpan = mainScreenProperties.getHorizontalSpan();
+        gridData.verticalSpan = mainScreenProperties.getVerticalSpan();
+        gridData.grabExcessHorizontalSpace = mainScreenProperties.canExpandHorizontally();
+        gridData.grabExcessVerticalSpace = mainScreenProperties.canExpandVertically();
+
+        // if (gridData.grabExcessHorizontalSpace)
+        // gridData.minimumHeight = mainScreenProperties.getHeight();
+        // if (gridData.grabExcessVerticalSpace)
+        // gridData.minimumWidth = mainScreenProperties.getHeight();
+        blockCanvas.setLayoutData(gridData);
+        scrollComposite = new ScrolledComposite(blockCanvas, SWT.V_SCROLL | SWT.H_SCROLL);
+
+        scrollComposite.setExpandHorizontal(true);
+        scrollComposite.setExpandVertical(true);
+        scrollComposite.setMinSize(mainScreenProperties.getWidth(), mainScreenProperties.getHeight());
+        if (mainScreenProperties.getDisplayFrame())
+        {
+            String frameTitle = mainScreenProperties.getFrameTitle();
+            if (frameTitle != null && frameTitle.length() > 0)
+            {
+                Group group = new Group(scrollComposite, SWT.NONE);
+                hookKeyListener(group);
+                scrollComposite.setContent(group);
+                group.setLayout(new FillLayout());
+                scrollComposite.setLayoutData(gridData);
+
+                if (frameTitle != null && frameTitle.length() > 0)
+                {
+                    group.setText(frameTitle);
+                }
+                _browser = new EJRWTHtmlView(group, SWT.NONE)
+                {
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public void action(String method, JsonObject parameters)
+                    {
+                        if ("eaction".equals(method))
+                        {
+                            final Object arg1 = parameters.get("0").asString();
+                            Object arg2 = parameters.get("1").asString();
+                            if (arg1 instanceof String)
+                            {
+                                if (arg2 instanceof String)
+                                {
+                                    currentRec = getRecordAt(Integer.valueOf((String) arg2));
+                                    if (currentRec != null)
+                                        _block.newRecordInstance(currentRec);
+                                }
+                                Display.getDefault().asyncExec(new Runnable()
+                                {
+
+                                    @Override
+                                    public void run()
+                                    {
+                                        _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                    }
+                                });
+
+                            }
+                        }
+
+                    }
+                };
+            }
+            else
+            {
+                _browser = new EJRWTHtmlView(scrollComposite, SWT.BORDER)
+                {
+
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public void action(String method, JsonObject parameters)
+                    {
+                         if ("eaction".equals(method))
+                        {
+                            final Object arg1 = parameters.get("0").asString();
+                            Object arg2 = parameters.get("1").asString();
+                            if (arg1 instanceof String)
+                            {
+                                if (arg2 instanceof String)
+                                {
+                                    currentRec = getRecordAt(Integer.valueOf((String) arg2));
+                                    if (currentRec != null)
+                                        _block.newRecordInstance(currentRec);
+                                }
+                                Display.getDefault().asyncExec(new Runnable()
+                                {
+
+                                    @Override
+                                    public void run()
+                                    {
+                                        _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                    }
+                                });
+
+                            }
+                        }
+
+                    }
+                };
+                scrollComposite.setContent(_browser);
+                scrollComposite.setLayoutData(gridData);
+            }
+
+        }
+        else
+        {
+            _browser = new EJRWTHtmlView(scrollComposite, SWT.NONE)
+            {
+                private static final long serialVersionUID = 1L;
+
+                @Override
+                public void action(String method, JsonObject parameters)
+                {
+
+                     if ("eaction".equals(method))
+                    {
+                        final Object arg1 = parameters.get("0").asString();
+                        Object arg2 = parameters.get("1").asString();
+                        if (arg1 instanceof String)
+                        {
+                            if (arg2 instanceof String)
+                            {
+                                currentRec = getRecordAt(Integer.valueOf((String) arg2));
+                                if (currentRec != null)
+                                    _block.newRecordInstance(currentRec);
+                            }
+                            Display.getDefault().asyncExec(new Runnable()
+                            {
+
+                                @Override
+                                public void run()
+                                {
+                                    _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                }
+                            });
+
+                        }
+                    }
+
+                }
+            };
+            scrollComposite.setContent(_browser);
+            scrollComposite.setLayoutData(gridData);
+            hookKeyListener(scrollComposite);
+        }
+
+        _browser.addFocusListener(new FocusListener()
+        {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void focusLost(FocusEvent arg0)
+            {
+                setHasFocus(false);
+
+            }
+
+            @Override
+            public void focusGained(FocusEvent arg0)
+            {
+                setHasFocus(true);
+
+            }
+        });
+        _browser.addMouseListener(new MouseAdapter()
+        {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            public void mouseDown(MouseEvent arg0)
+            {
+                setHasFocus(true);
+
+            }
+
+        });
+
+        if (_items.isEmpty())
+        {
+            Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN)
+                    .getAllItemGroupProperties();
+           
+            int cellSpacing = blockProperties.getBlockRendererProperties().getIntProperty(CELL_SPACING_PROPERTY, 0);
+            int cellPadding = blockProperties.getBlockRendererProperties().getIntProperty(CELL_PADDING_PROPERTY, 0);
+            String paddingStyle = null;
+            if (cellPadding > 0)
+            {
+                String str = String.valueOf(cellPadding);
+                paddingStyle = String.format("padding: %spx %spx %spx %spx; ", str, str, str, str);
+            }
+            
+            StringBuilder header = new StringBuilder();
+            for (EJItemGroupProperties groupProperties : allItemGroupProperties)
+            {
+                Collection<EJScreenItemProperties> itemProperties = groupProperties.getAllItemProperties();
+                for (EJScreenItemProperties screenItemProperties : itemProperties)
+                {
+                    EJCoreMainScreenItemProperties itemProps = (EJCoreMainScreenItemProperties) screenItemProperties;
+
+                    EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemProps.getReferencedItemName());
+                    EJManagedItemRendererWrapper renderer = item.getManagedItemRenderer();
+                    if (renderer != null)
+                    {
+                        EJRWTAppItemRenderer itemRenderer = (EJRWTAppItemRenderer) renderer.getUnmanagedRenderer();
+
+                        ColumnLabelProvider labelProvider = itemRenderer.createColumnLabelProvider(itemProps, item);
+                        _items.add(itemProps);
+                        _itemLabelProviders.put(itemProps.getReferencedItemName(), labelProvider);
+                        
+                        if(addHeader)
+                        {
+                            String styleClass = "default_all";
+                            EJFrameworkExtensionProperties rendererProperties = item.getReferencedItemProperties().getItemRendererProperties();
+                            header.append("<th ");
+                            
+                            String alignment = null;
+                            
+                                String alignmentProperty = rendererProperties.getStringProperty(PROPERTY_ALIGNMENT);
+                                if (alignmentProperty == null)
+                                {
+                                    alignmentProperty = rendererProperties.getStringProperty("ALLIGNMENT");
+                                }
+                                alignment = getComponentAlignment(alignmentProperty);
+
+                                
+                            String valueVA = blockProperties.getBlockRendererProperties().getStringProperty(HEADER_VA);
+                            if (valueVA != null && valueVA.length() > 0)
+                            {
+                                styleClass = valueVA;
+                                valueVA = rendererProperties.getStringProperty(HEADER_VA);
+                                if (valueVA != null && valueVA.length() > 0)
+                                    styleClass = valueVA;
+                            }
+                            header.append(String.format(" class=\"%s\" ", styleClass));
+                            if (alignment != null)
+                            {
+                                header.append(String.format(" align=\'%s\'", alignment));
+                            }
+                            if (paddingStyle != null)
+                            {
+                                header.append(String.format(" style=\'%s\'", paddingStyle));
+                            }
+                            header.append("> ");
+                            header.append(itemProps.getLabel());
+                            header.append("</th>");
+                        }
+                    }
+                }
+            }
+            
+            if(addHeader)
+            {
+               _headerTag = header.toString();    
+            }
+        }
+        hookKeyListener(_browser);
+        createHTML();
+
+    }
+
+    private static String getStyleDef()
+    {
+
+        StringBuilder builder = new StringBuilder();
+        // builder.append("<style type=\"text/css\">");
+        {
+            builder.append("*{");
+            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+            builder.append("}");
+
+            builder.append("u.default {");
+            builder.append("padding: 1px 2px 1px 0px;");
+            builder.append("}");
+
+            builder.append("u.default_link {");
+            builder.append("padding: 1px 2px 1px 0px;");
+            builder.append("text-shadow: none;");
+            builder.append("}");
+
+            builder.append("u.default_link:hover {");
+            builder.append("cursor: pointer; cursor: hand;");
+            builder.append("}");
+
+            builder.append("u.default_link_fg {");
+            builder.append("padding: 1px 2px 1px 0px;");
+            builder.append("color: #416693;text-shadow: none;");
+            builder.append("}");
+
+            builder.append("u.default_link_fg:hover {");
+            builder.append("cursor: pointer; cursor: hand;");
+            builder.append("}");
+
+            builder.append(".default_all {");
+            builder.append("padding: 0px 0px 0px 0px;");
+            Font font = Display.getDefault().getSystemFont();
+
+            builder.append("}");
+
+            EJCoreVisualAttributeContainer visualAttributesContainer = EJCoreProperties.getInstance().getVisualAttributesContainer();
+            for (EJCoreVisualAttributeProperties va : visualAttributesContainer.getVisualAttributes())
+            {
+                builder.append(" \n");
+                builder.append(".");
+                builder.append(va.getName());
+                builder.append("{");
+                builder.append("padding: 0px 0px 0px 0px;");
+
+                Font vaFont = EJRWTVisualAttributeUtils.INSTANCE.getFont(va, font);
+                if (vaFont != null && vaFont.getFontData().length > 0)
+                {
+                    FontData fontData = vaFont.getFontData()[0];
+                    builder.append("font:");
+                    if ((fontData.getStyle() & SWT.BOLD) != 0)
+                    {
+                        builder.append("bold ");
+                    }
+                    if ((fontData.getStyle() & SWT.ITALIC) != 0)
+                    {
+                        builder.append("italic ");
+                    }
+
+                    builder.append(fontData.getHeight());
+                    builder.append("px ");
+                    builder.append(fontData.getName());
+
+                    builder.append(";");
+
+                }
+
+                Color backgroundColor = va.getBackgroundColor();
+                if (backgroundColor != null)
+                {
+                    String hexString = toHex(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue());
+                    builder.append("background-color: ");
+                    builder.append(hexString);
+                    builder.append(";");
+                }
+                Color foregroundColor = va.getForegroundColor();
+                if (foregroundColor != null)
+                {
+                    String hexString = toHex(foregroundColor.getRed(), foregroundColor.getGreen(), foregroundColor.getBlue());
+                    builder.append("color: ");
+                    builder.append(hexString);
+                    builder.append(";");
+                }
+                builder.append("}");
+            }
+
+        }
+        // builder.append("</style>");
+
+        return builder.toString();
+
+    }
+
+    public static String toHex(int r, int g, int b)
+    {
+        return "#" + toBrowserHexValue(r) + toBrowserHexValue(g) + toBrowserHexValue(b);
+    }
+
+    private static String toBrowserHexValue(int number)
+    {
+        StringBuilder builder = new StringBuilder(Integer.toHexString(number & 0xff));
+        while (builder.length() < 2)
+        {
+            builder.append("0");
+        }
+        return builder.toString().toUpperCase();
+    }
+
+    private void createHTML()
+    {
+
+        _contextCache.clear();
+        if (_browser == null || _browser.isDisposed())
+        {
+            return;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        {
+            builder.append("<div id=\"table\" style=\"float:left;width:100%;height:100%; overflow:auto\">");
+            {
+                EJCoreBlockProperties blockProperties = _block.getProperties();
+                int cellSpacing = blockProperties.getBlockRendererProperties().getIntProperty(CELL_SPACING_PROPERTY, 0);
+                int cellPadding = blockProperties.getBlockRendererProperties().getIntProperty(CELL_PADDING_PROPERTY, 0);
+                String paddingStyle = null;
+                if (cellPadding > 0)
+                {
+                    String str = String.valueOf(cellPadding);
+                    paddingStyle = String.format("padding: %spx %spx %spx %spx; ", str, str, str, str);
+                }
+                builder.append("<table border=0 cellspacing=").append(cellSpacing).append(" width=\"100%\" >");
+                {
+                    builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+                    builder.append(createVACSSUrl());
+                    builder.append("\">");
+                    int charHeight = EJRWTImageRetriever.getGraphicsProvider().getCharHeight(Display.getDefault().getSystemFont());
+                    String trDef = String.format("<tr style=\"height: %spx\">", String.valueOf(charHeight));
+                    
+                    if(_headerTag!=null)
+                    {
+                        builder.append(_headerTag);
+                    }
+                    
+                    Collection<EJDataRecord> records = _block.getRecords();
+                    int lastRowSpan = 0;
+                    
+                    String oddVA = "default_all";
+                    String valueVA = blockProperties.getBlockRendererProperties().getStringProperty(ROW_ODD_VA);
+                    if (valueVA != null && valueVA.length() > 0)
+                    {
+                        oddVA = valueVA;
+                    }
+                    String evenVA = "default_all";
+                     valueVA = blockProperties.getBlockRendererProperties().getStringProperty(ROW_EVEN_VA);
+                    if (valueVA != null && valueVA.length() > 0)
+                    {
+                        evenVA = valueVA;
+                    }
+                    int rowid =0;
+                    for (EJDataRecord record : records)
+                    {
+                        rowid++;
+                        if (lastRowSpan > 1)
+                        {
+                            for (int i = 1; i < lastRowSpan; i++)
+                            {
+                                builder.append(trDef).append("</tr>");
+
+                            }
+                            lastRowSpan = 0;
+                        }
+                        builder.append(trDef);
+                        for (EJCoreMainScreenItemProperties item : _items)
+                        {
+                            String styleClass = (rowid%2)!=0 ? oddVA:evenVA;
+
+                           
+                          
+                            String alignment = null;
+                            float width = -1;
+
+                            
+
+                            ColumnLabelProvider columnLabelProvider = _itemLabelProviders.get(item.getReferencedItemName());
+
+                            EJScreenItemController screenItem = _block.getScreenItem(EJScreenType.MAIN, item.getReferencedItemName());
+                            EJCoreVisualAttributeProperties iva = screenItem.getManagedItemRenderer().getVisualAttributeProperties();
+                            if (iva != null)
+                            {
+                                styleClass = iva.getName();
+                            }
+
+                            EJFrameworkExtensionProperties rendererProperties = item.getReferencedItemProperties().getItemRendererProperties();
+
+                            EJCoreVisualAttributeProperties diva = record.getItem(item.getReferencedItemName()).getVisualAttribute();
+                            if (diva != null)
+                            {
+                                styleClass = diva.getName();
+                            }
+                            builder.append(String.format("<td class=\"%s\" ", styleClass));
+                            if (paddingStyle != null)
+                            {
+                                builder.append(String.format(" style=\'%s\'", paddingStyle));
+                            }
+                           
+                           
+
+                            EJFrameworkExtensionProperties extentionProperties = item.getBlockRendererRequiredProperties();
+                            if (width == -1)
+                            {
+                                width = extentionProperties.getIntProperty(DISPLAY_WIDTH_PROPERTY, 0);
+                            }
+
+                            if (width > 0)
+                            {
+                                Font font = columnLabelProvider.getFont(new Object());
+
+                                if (font == null)
+                                    font = _browser.getFont();
+                                if (font != null)
+                                {
+                                    float avgCharWidth = RWTUtils.getAvgCharWidth(font);
+                                    if (avgCharWidth > 0)
+                                    {
+                                        if (width != 1)
+                                        {
+                                            // add +1 padding
+                                            width = ((int) (((width + 1) * avgCharWidth)));
+                                        }
+                                    }
+                                }
+
+                                builder.append(String.format(" width=%s ", width));
+                            }
+                            if (alignment == null)
+                            {
+                                String alignmentProperty = rendererProperties.getStringProperty(PROPERTY_ALIGNMENT);
+                                if (alignmentProperty == null)
+                                {
+                                    alignmentProperty = rendererProperties.getStringProperty("ALLIGNMENT");
+                                }
+                                alignment = getComponentAlignment(alignmentProperty);
+
+                            }
+                            if (alignment != null)
+                            {
+                                builder.append(String.format(" align=\'%s\'", alignment));
+                            }
+                            final String caseProperty = getComponentCase(rendererProperties.getStringProperty(PROPERTY_CASE));
+
+                            builder.append(String.format(" font style=\'%s\'", caseProperty));
+
+                            builder.append(">");
+                            
+
+                            Image image = columnLabelProvider.getImage(record);
+                            if(image!=null)
+                            {
+                                builder.append("<img src=\"");
+
+                                builder.append(ImageFactory.getImagePath(image));
+
+                                builder.append("\"");
+                                builder.append(String.format(" class=\"default %s\"  >", styleClass));
+                            }
+                                // builder.append(String.format("<p class=\"default %s\">",
+                                // styleClass));
+                                String text = columnLabelProvider.getText(record);
+                                
+                                
+                                
+                                    builder.append(text);
+                                
+
+
+                            builder.append("</td>");
+                        }
+                        builder.append("</tr>");
+                    }
+                }
+                builder.append("</table>");
+            }
+            builder.append("</<div>");
+        }
+        String html = builder.toString();
+        if (_browser.getText() == null || (!html.equals(_browser.getText())))
+        {
+            _browser.setText(html);
+            LOGGER.debug(html);
+        }
+
+    }
+
+    private String getComponentAlignment(final String alignmentProperty)
+    {
+        String align = "left";
+        if (alignmentProperty != null && alignmentProperty.trim().length() > 0)
+        {
+            if (alignmentProperty.equals(PROPERTY_ALIGNMENT_JUSTIFY))
+            {
+                align = "justify";
+            }
+            else if (alignmentProperty.equals(PROPERTY_ALIGNMENT_RIGHT))
+            {
+                align = "right";
+            }
+            else if (alignmentProperty.equals(PROPERTY_ALIGNMENT_CENTER))
+            {
+                align = "center";
+            }
+            else if (alignmentProperty.equals(PROPERTY_ALIGNMENT_CHAR))
+            {
+                align = "char";
+            }
+        }
+        return align;
+    }
+
+    private String getComponentCase(final String caseProperty)
+    {
+        String caze = "text-transform: none;";
+        if (caseProperty != null && caseProperty.trim().length() > 0)
+        {
+
+            if (caseProperty.equals(PROPERTY_CASE_LOWER))
+            {
+                caze = "text-transform: lowercase;";
+            }
+            else if (caseProperty.equals(PROPERTY_CASE_UPPER))
+            {
+                caze = "text-transform: uppercase;";
+            }
+            else if (caseProperty.equals(PROPERTY_CASE_CAPITALIZE))
+            {
+                caze = "text-transform: capitalize;";
+            }
+
+        }
+
+        return caze;
+    }
+
+
+
+    private String createVACSSUrl()
+    {
+
+        return RWT.getServiceManager().getServiceHandlerUrl(VACSSServiceHandler.SERVICE_HANDLER);
+    }
+
+
+
+    public static class VACSSServiceHandler implements ServiceHandler
+    {
+        public static final String       STYLE_DEF       = getStyleDef();
+        public final static String       SERVICE_HANDLER = "TMVACSSServiceHandler";
+        final Map<String, BufferedImage> map             = new HashMap<String, BufferedImage>();
+
+        @Override
+        public void service(HttpServletRequest arg0, HttpServletResponse arg1) throws IOException, ServletException
+        {
+
+            HttpServletResponse response = arg1;
+            response.setContentType("text/css");
+            ServletOutputStream out = response.getOutputStream();
+            out.write(STYLE_DEF.getBytes(Charset.forName("UTF-8")));
+
+        }
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent arg0)
+    {
+        // ignore
+    }
+
+    @Override
+    public void keyReleased(KeyEvent arg0)
+    {
+        int keyCode = arg0.keyCode;
+        KeyInfo keyInfo = EJRWTKeysUtil
+                .toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
+
+        String actionID = _actionInfoMap.get(keyInfo);
+        if (actionID != null)
+        {
+            LOGGER.debug(actionID);
+            _block.executeActionCommand(actionID, EJScreenType.MAIN);
+        }
+    }
+
+    private void addActionKeyinfo(String actionKey, String actionId)
+    {
+        if (actionKey != null && actionKey.trim().length() > 0)
+        {
+            try
+            {
+                KeyInfo keyInfo = EJRWTKeysUtil.toKeyInfo(actionKey);
+                _actionInfoMap.put(keyInfo, actionId);
+                _actionkeys.add(actionKey);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void hookKeyListener(Control control)
+    {
+        List<String> subActions = new ArrayList<String>(_actionkeys);
+        Object data = control.getData(EJ_RWT.ACTIVE_KEYS);
+
+        if (data != null)
+        {
+            String[] current = (String[]) data;
+            for (String action : current)
+            {
+                if (subActions.contains(action))
+                {
+                    continue;
+                }
+                subActions.add(action);
+            }
+        }
+        control.setData(EJ_RWT.ACTIVE_KEYS, subActions.toArray(new String[0]));
+        control.addKeyListener(this);
+    }
+
+}
