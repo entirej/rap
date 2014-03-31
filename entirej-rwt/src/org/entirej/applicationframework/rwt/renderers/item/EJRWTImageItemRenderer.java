@@ -31,6 +31,8 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
@@ -379,7 +381,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
         {
             if (pictureName != null && pictureName.trim().length() > 0)
             {
-                labelField.setImage(_defaultImage = EJRWTImageRetriever.get(pictureName));
+                _defaultImage = EJRWTImageRetriever.get(pictureName);
             }
         }
 
@@ -410,6 +412,8 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 }
             }
         });
+       
+        _labelField.setImage(_defaultImage = EJRWTImageRetriever.get(pictureName));
         _mandatoryDecoration.hide();
     }
 

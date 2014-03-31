@@ -38,7 +38,7 @@ public interface EJRWTMultiRecordBlockDefinitionProperties
     public static final String UNDERLINE_COLUMN_HEADER     = "UNDERLINE_COLUN_HEADER";
     public static final String COLUMN_ALIGNMENT            = "COL_ALLIGN";
 
-    public static final String IS_COLUMN_FIXED             = "IS_COLUMN_FIXED";
+    public static final String COLUMNS_FIXED               = "COLUMNS_FIXED";
     public static final String DISPLAY_WIDTH_PROPERTY      = "DISPLAY_WIDTH";
     public static final String COLUMN_ALLIGN_LEFT          = "LEFT";
     public static final String COLUMN_ALLIGN_CENTER        = "CENTER";

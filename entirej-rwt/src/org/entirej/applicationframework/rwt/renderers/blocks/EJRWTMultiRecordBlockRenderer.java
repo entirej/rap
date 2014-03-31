@@ -763,6 +763,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
         {
             style = style | SWT.BORDER;
         }
+       
         if (rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ROW_SELECTION_PROPERTY, true))
         {
             style = style | SWT.FULL_SELECTION;
@@ -1001,6 +1002,12 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
         table.setLinesVisible(rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.SHOW_VERTICAL_LINES, true));
         table.setHeaderVisible(rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.SHOW_HEADING_PROPERTY, true));
+        
+        int fixedColumns = rendererProp.getIntProperty(EJRWTMultiRecordBlockDefinitionProperties.COLUMNS_FIXED, -1);
+        if (fixedColumns>0)
+        {
+            table.setData(EJ_RWT.FIXED_COLUMNS,fixedColumns);
+        }
         Control[] children = table.getChildren();
         for (Control control : children)
         {

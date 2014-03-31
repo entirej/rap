@@ -113,11 +113,7 @@ public class EJRWTStandardLovRendererDefinition implements EJDevLovRendererDefin
     public EJPropertyDefinitionGroup getItemPropertiesDefinitionGroup()
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("Lov Renderer: Required Item Properties");
-        EJDevPropertyDefinition isFixedInTable = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.IS_COLUMN_FIXED,
-                EJPropertyDefinitionType.BOOLEAN);
-        isFixedInTable.setLabel("Fixed Column");
-        isFixedInTable.setDescription("Indicates if this column is fixed to the left part of this lov. Fixed columns hold their position even when the user scrolls horizontally to see the hidden columns");
-        isFixedInTable.setDefaultValue("false");
+       
 
         EJDevPropertyDefinition displayWidth = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.DISPLAY_WIDTH_PROPERTY,
                 EJPropertyDefinitionType.INTEGER);
@@ -152,7 +148,6 @@ public class EJRWTStandardLovRendererDefinition implements EJDevLovRendererDefin
         allowColunmReorder.setDescription("If selected, the user will be able to move columns of this lov to change their displayed position. The re-positioning will not be saved and the next time the lov is displayed, columns will be displayed in their original positions");
         allowColunmReorder.setDefaultValue("true");
 
-        mainGroup.addPropertyDefinition(isFixedInTable);
         mainGroup.addPropertyDefinition(displayWidth);
         mainGroup.addPropertyDefinition(headerAlignment);
         mainGroup.addPropertyDefinition(allowColumnSorting);

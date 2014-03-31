@@ -68,7 +68,7 @@ public class EJRWTMenuTreeElement implements Serializable
      */
     public String getText()
     {
-        return _text;
+        return _text==null? "":_text;
     }
 
     public String getTooltip()
