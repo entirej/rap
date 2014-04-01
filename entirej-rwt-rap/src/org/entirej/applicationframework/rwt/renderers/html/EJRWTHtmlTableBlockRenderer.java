@@ -65,10 +65,14 @@ import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfac
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
+import org.entirej.framework.core.EJForm;
+import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.data.controllers.EJEditableBlockController;
+import org.entirej.framework.core.data.controllers.EJQuestion;
 import org.entirej.framework.core.enumerations.EJManagedBlockProperty;
 import org.entirej.framework.core.enumerations.EJManagedScreenProperty;
+import org.entirej.framework.core.enumerations.EJQuestionButton;
 import org.entirej.framework.core.enumerations.EJScreenType;
 import org.entirej.framework.core.extensions.properties.EJCoreFrameworkExtensionPropertyList;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
@@ -131,10 +135,20 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     private List<String>                         _actionkeys                = new ArrayList<String>();
     private Map<KeyInfo, String>                 _actionInfoMap             = new HashMap<EJRWTKeysUtil.KeyInfo, String>();
 
-    @Override
-    public void askToDeleteRecord(EJDataRecord arg0, String message)
+    public void askToDeleteRecord(EJDataRecord recordToDelete, String msg)
     {
-        // no impl
+        if (msg == null)
+        {
+            msg = "Are you sure you want to delete the current record?";
+        }
+        EJMessage message = new EJMessage(msg);
+        EJQuestion question = new EJQuestion(new EJForm(_block.getForm()), "DELETE_RECORD", "Delete", message, "Yes", "No", recordToDelete);
+        _block.getForm().getMessenger().askQuestion(question);
+        if (EJQuestionButton.ONE == (question.getAnswer()))
+        {
+            _block.getBlock().deleteRecord(recordToDelete);
+        }
+        _block.setRendererFocus(true);
 
     }
 
@@ -159,20 +173,44 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
     }
 
-    @Override
-    public void enterInsert(EJDataRecord arg0)
+    public void enterInsert(EJDataRecord record)
     {
-        // no impl
-
+        if (_block.getInsertScreenRenderer() == null)
+        {
+            EJMessage message = new EJMessage("Please define an Insert Screen Renderer for this form before an insert operation can be performed.");
+            _block.getForm().getMessenger().handleMessage(message);
+        }
+        else
+        {
+            _block.getInsertScreenRenderer().open(record);
+        }
     }
 
-    @Override
-    public void enterUpdate(EJDataRecord arg0)
+    public void enterQuery(EJDataRecord queryRecord)
     {
-        // no impl
-
+        if (_block.getQueryScreenRenderer() == null)
+        {
+            EJMessage message = new EJMessage("Please define a Query Screen Renderer for this form before a query operation can be performed.");
+            _block.getForm().getMessenger().handleMessage(message);
+        }
+        else
+        {
+            _block.getQueryScreenRenderer().open(queryRecord);
+        }
     }
 
+    public void enterUpdate(EJDataRecord recordToUpdate)
+    {
+        if (_block.getUpdateScreenRenderer() == null)
+        {
+            EJMessage message = new EJMessage("Please define an Update Screen Renderer for this form before an update operation can be performed.");
+            _block.getForm().getMessenger().handleMessage(message);
+        }
+        else
+        {
+            _block.getUpdateScreenRenderer().open(recordToUpdate);
+        }
+    }
     @Override
     public void gainFocus()
     {
@@ -282,11 +320,6 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
     }
 
-    @Override
-    public void enterQuery(EJDataRecord arg0)
-    {
-        // no impl
-    }
 
     @Override
     public int getDisplayedRecordNumber(EJDataRecord record)
