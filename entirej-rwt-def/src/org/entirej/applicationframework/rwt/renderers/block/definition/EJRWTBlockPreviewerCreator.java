@@ -386,12 +386,14 @@ public class EJRWTBlockPreviewerCreator
             {
                 case CENTER:
                     gridData.horizontalAlignment = SWT.CENTER;
+                    gridData.grabExcessHorizontalSpace = true;
                     break;
                 case BEGINNING:
                     gridData.horizontalAlignment = SWT.BEGINNING;
                     break;
                 case END:
                     gridData.horizontalAlignment = SWT.END;
+                    gridData.grabExcessHorizontalSpace = true;
                     break;
 
                 default:
@@ -404,12 +406,14 @@ public class EJRWTBlockPreviewerCreator
             {
                 case CENTER:
                     gridData.verticalAlignment = SWT.CENTER;
+                    gridData.grabExcessVerticalSpace = true;
                     break;
                 case BEGINNING:
                     gridData.verticalAlignment = SWT.BEGINNING;
                     break;
                 case END:
                     gridData.verticalAlignment = SWT.END;
+                    gridData.grabExcessVerticalSpace = true;
                     break;
                     
                 default:
