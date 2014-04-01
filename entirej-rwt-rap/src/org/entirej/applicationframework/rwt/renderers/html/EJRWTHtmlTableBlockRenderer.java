@@ -62,6 +62,9 @@ import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
+import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
+import org.entirej.applicationframework.rwt.renderers.screen.EJRWTUpdateScreenRenderer;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
@@ -121,8 +124,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     public static final String                   ROW_ODD_VA                 = "ROW_ODD_VA";
     public static final String                   ROW_EVEN_VA                = "ROW_EVEN_VA";
 
-    private Map<String, String>                  _contextCache              = new HashMap<String, String>();
-
+ 
     private EJEditableBlockController            _block;
     private boolean                              _isFocused                 = false;
     private ScrolledComposite                    scrollComposite;
@@ -132,6 +134,12 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     private String                               _headerTag                 = null;
     private EJDataRecord                         currentRec;
 
+    
+
+    private EJRWTQueryScreenRenderer  _queryScreenRenderer;
+    private EJRWTInsertScreenRenderer _insertScreenRenderer;
+    private EJRWTUpdateScreenRenderer _updateScreenRenderer;
+    
     private List<String>                         _actionkeys                = new ArrayList<String>();
     private Map<KeyInfo, String>                 _actionInfoMap             = new HashMap<EJRWTKeysUtil.KeyInfo, String>();
 
@@ -218,25 +226,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
     }
 
-    @Override
-    public EJInsertScreenRenderer getInsertScreenRenderer()
-    {
-
-        return null;
-    }
-
-    @Override
-    public EJQueryScreenRenderer getQueryScreenRenderer()
-    {
-
-        return null;
-    }
-
-    @Override
-    public EJUpdateScreenRenderer getUpdateScreenRenderer()
-    {
-        return null;
-    }
+    
 
     @Override
     public boolean hasFocus()
@@ -246,10 +236,30 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     }
 
     @Override
+    public EJQueryScreenRenderer getQueryScreenRenderer()
+    {
+        return _queryScreenRenderer;
+    }
+
+    @Override
+    public EJInsertScreenRenderer getInsertScreenRenderer()
+    {
+        return _insertScreenRenderer;
+    }
+
+    @Override
+    public EJUpdateScreenRenderer getUpdateScreenRenderer()
+    {
+        return _updateScreenRenderer;
+    }
+
+    @Override
     public void initialiseRenderer(EJEditableBlockController block)
     {
         _block = block;
-
+        _queryScreenRenderer = new EJRWTQueryScreenRenderer();
+        _insertScreenRenderer = new EJRWTInsertScreenRenderer();
+        _updateScreenRenderer = new EJRWTUpdateScreenRenderer();
     }
 
     @Override
@@ -848,7 +858,6 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     private void createHTML()
     {
 
-        _contextCache.clear();
         if (_browser == null || _browser.isDisposed())
         {
             return;
