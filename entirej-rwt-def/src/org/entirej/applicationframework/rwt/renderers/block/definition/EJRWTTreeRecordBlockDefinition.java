@@ -20,15 +20,20 @@ package org.entirej.applicationframework.rwt.renderers.block.definition;
 
 import java.util.Collections;
 
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
+import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTTreeBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTInsertScreenRendererDefinition;
@@ -44,6 +49,8 @@ import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionGroup;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionList;
 import org.entirej.framework.dev.properties.interfaces.EJDevBlockDisplayProperties;
+import org.entirej.framework.dev.properties.interfaces.EJDevItemGroupDisplayProperties;
+import org.entirej.framework.dev.properties.interfaces.EJDevMainScreenItemDisplayProperties;
 import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayProperties;
 import org.entirej.framework.dev.renderer.definition.EJDevBlockRendererDefinitionControl;
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
@@ -334,10 +341,52 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
             }
         }
 
-        layoutBody.setLayout(new GridLayout(mainScreenProperties.getNumCols(), false));
+        layoutBody.setLayout(new FillLayout());
 
-        Label browser = new Label(layoutBody, SWT.NONE);
-        browser.setText("TREE RENDERER");
+        EJDevItemGroupDisplayProperties displayProperties = null;
+        if (blockDisplayProperties.getMainScreenItemGroupDisplayContainer().getAllItemGroupDisplayProperties().size() > 0)
+        {
+            displayProperties = blockDisplayProperties.getMainScreenItemGroupDisplayContainer().getAllItemGroupDisplayProperties().iterator().next();
+           
+        }
+        StringBuilder builder = new StringBuilder();
+        if (displayProperties != null)
+            for (EJDevScreenItemDisplayProperties screenItem : displayProperties.getAllItemDisplayProperties())
+            {
+                if (!screenItem.isSpacerItem())
+                {
+                    EJFrameworkExtensionProperties properties = ((EJDevMainScreenItemDisplayProperties) screenItem).getBlockRendererRequiredProperties();
+                   String prefix = properties.getStringProperty(EJRWTTreeBlockDefinitionProperties.ITEM_PREFIX);
+                   if(prefix!=null)
+                   {
+                       builder.append(prefix);
+                   }
+                   builder.append(screenItem.getReferencedItemName());
+                   String sufix = properties.getStringProperty(EJRWTTreeBlockDefinitionProperties.ITEM_SUFFIX);
+                   if(sufix!=null)
+                   {
+                       builder.append(sufix);
+                   }
+                   
+                }
+            }
+        String tag = builder.toString();
+        if(tag.length()==0)
+        {
+            tag = "<empty>";
+        }
+        final Tree browser = new Tree (layoutBody, SWT.BORDER);
+        for (int i=0; i<4; i++) {
+                TreeItem iItem = new TreeItem (browser, 0);
+                
+                iItem.setText (tag+" " + (i+1));
+                for (int j=0; j<4; j++) {
+                        TreeItem jItem = new TreeItem (iItem, 0);
+                        jItem.setText (tag+" " + (j+1));
+                        
+                }
+        }
+        
         return new EJDevBlockRendererDefinitionControl(blockDisplayProperties, Collections.<EJDevItemRendererDefinitionControl> emptyList());
     }
 
