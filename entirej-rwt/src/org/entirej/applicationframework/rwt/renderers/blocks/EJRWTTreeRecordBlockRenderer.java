@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -1153,6 +1154,27 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                         }
                         list.add(record);
                     }
+                    
+                    //child node with no parent need to consider as roots
+                    for (Object key : new HashSet<Object>(cmap.keySet()))
+                    {
+                        if(indexMap.containsKey(key))
+                        {
+                            continue;
+                        }
+                        List<EJDataRecord> list = cmap.get(key);
+                        cmap.remove(key);
+                        for (EJDataRecord record : list)
+                        {
+                            Object pV = record.getValue(pid);
+                            root.add(record);
+                            if (pid != null)
+                            {
+                                indexMap.put(pV, record);
+                            }
+                        }
+                    }
+                    
                     for (EJDataRecord record : root)
                     {
                         treeBaseRecords.add(record);
