@@ -21,11 +21,14 @@ package org.entirej.applicationframework.rwt.application.form.containers;
 import java.io.Serializable;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -63,8 +66,36 @@ public abstract class EJRWTAbstractDialog extends Dialog implements Serializable
     @Override
     protected void createButtonsForButtonBar(final Composite parent)
     {
-
+   
     }
+    
+    protected Control createButtonBar(Composite parent) {
+        Composite composite = new Composite(parent, SWT.NONE);
+        // create a layout with spacing and margins appropriate for the font
+        // size.
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 0; // this is incremented by createButton
+        layout.makeColumnsEqualWidth = true;
+        layout.marginWidth = 0;
+        layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
+        layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
+        layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
+        composite.setLayout(layout);
+        GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END
+                        | GridData.VERTICAL_ALIGN_CENTER);
+        
+        composite.setLayoutData(data);
+        composite.setFont(parent.getFont());
+        
+        // Add the buttons to the button bar.
+        createButtonsForButtonBar(composite);
+        if(composite.getChildren().length==0)
+        {
+            data.heightHint = 0;
+            data.widthHint = 0;
+        }
+        return composite;
+}
 
     @Override
     protected void buttonPressed(final int buttonId)
