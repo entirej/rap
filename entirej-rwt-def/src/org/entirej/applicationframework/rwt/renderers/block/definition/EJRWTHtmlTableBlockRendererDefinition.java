@@ -575,7 +575,6 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
                         builder.append(fontData.getName());
     
                         builder.append(";");
-                        vaFont.dispose();
                     }
     
                     Color backgroundColor = va.getBackgroundColor();
