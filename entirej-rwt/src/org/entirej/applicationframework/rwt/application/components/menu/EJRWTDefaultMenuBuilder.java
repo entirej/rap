@@ -125,19 +125,22 @@ public class EJRWTDefaultMenuBuilder implements Serializable
                     MenuItem action = new MenuItem(parent, SWT.PUSH);
                     action.setText(treeElement.getText());
                     action.setImage(treeElement.getImage());
-                    action.addSelectionListener(new SelectionAdapter() {
-                            @Override
-                            public void widgetSelected(SelectionEvent evnt) {
-                                try
-                                {
-                                    menuActionProcessor.executeActionCommand(treeElement.getActionCommand());
+                    if(menuActionProcessor!=null)
+                    {
+                        action.addSelectionListener(new SelectionAdapter() {
+                                @Override
+                                public void widgetSelected(SelectionEvent evnt) {
+                                    try
+                                    {
+                                        menuActionProcessor.executeActionCommand(treeElement.getActionCommand());
+                                    }
+                                    catch (EJActionProcessorException e)
+                                    {
+                                        applicationManager.getApplicationMessenger().handleException(e, true);
+                                    }
                                 }
-                                catch (EJActionProcessorException e)
-                                {
-                                    applicationManager.getApplicationMessenger().handleException(e, true);
-                                }
-                            }
-                    });
+                        });
+                    }
                     break;
                 }
                 case FORM: 
