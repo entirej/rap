@@ -754,7 +754,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             {
                 _mainPane = new EJRWTEntireJGridPane(blockCanvas, 1);
                 _mainPane.setLayoutData(gridData);
-                _mainPane.cleanLayoutHorizontal();
+                _mainPane.cleanLayout();
             }
         }
 
