@@ -81,7 +81,7 @@ public class EJRWTCheckBoxRendererDefinition implements EJDevItemRendererDefinit
 
         EJDevPropertyDefinition uncheckedValue = new EJDevPropertyDefinition(EJRWTCheckBoxRendererDefinition.UNCHECKED_VALUE, EJPropertyDefinitionType.STRING);
         uncheckedValue.setLabel("Value when unchecked");
-        checkedValue.setDescription("The check box will be unticked if the underlying item has a value correspinding to this value. This value must be convertable to the data type of the item that this renderer has been assigned to");
+        uncheckedValue.setDescription("The check box will be unticked if the underlying item has a value correspinding to this value. This value must be convertable to the data type of the item that this renderer has been assigned to");
 
         EJDevPropertyDefinition initialValue = new EJDevPropertyDefinition(EJRWTCheckBoxRendererDefinition.DEFAULT_VALUE, EJPropertyDefinitionType.STRING);
         initialValue.setLabel("Initial Check Box state");
