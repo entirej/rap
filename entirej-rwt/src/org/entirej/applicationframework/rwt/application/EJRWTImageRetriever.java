@@ -28,7 +28,7 @@ public class EJRWTImageRetriever
     public static transient Map<String, Image> _imageBucket         = new HashMap<String, Image>();
     private static String                      ICONS                = "icons/";
     public static final String                 IMG_QUERY            = ICONS + "search.png";
-    public static final String                 IMG_FIND_LOV         = ICONS + "find_lov.gif";
+    public static final String                 IMG_FIND_LOV         = ICONS + "find_lov.png";
     public static final String                 IMG_DATE_SELECTION   = ICONS + "date_selection.png";
     public static final String                 IMG_CLOSE_FORM       = ICONS + "closeForm.png";
     public static final String                 IMG_DELETE           = ICONS + "remove.png";

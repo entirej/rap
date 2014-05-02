@@ -512,7 +512,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     if (split.length == 3)
                     {
                         calendar.setYear(Integer.parseInt(split[0]));
-                        calendar.setMonth(Integer.parseInt(split[1])-1);//month inndex from 0 
+                        calendar.setMonth(Integer.parseInt(split[1])-1);//month index from 0 
                         calendar.setDay(Integer.parseInt(split[2]));
                     }
                 }
