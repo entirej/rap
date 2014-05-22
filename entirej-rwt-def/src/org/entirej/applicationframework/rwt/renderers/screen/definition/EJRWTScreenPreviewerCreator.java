@@ -111,7 +111,6 @@ public class EJRWTScreenPreviewerCreator
             group = new Composite(parent, SWT.SHADOW_NONE);
         }
 
-        toolkit.adapt(group);
 
         GridLayout gridLayout = new GridLayout();
         gridLayout.numColumns = itemGroupProperties.getNumCols();
