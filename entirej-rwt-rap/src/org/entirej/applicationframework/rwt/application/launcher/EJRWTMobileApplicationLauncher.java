@@ -55,6 +55,8 @@ import org.entirej.applicationframework.rwt.application.EJRWTGraphicsProvider;
 import org.entirej.applicationframework.rwt.application.components.menu.EJRWTDefaultMenuBuilder;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTStackedPaneFormContainer;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormContainer;
+import org.entirej.applicationframework.rwt.file.EJRWTFileDownload;
+import org.entirej.applicationframework.rwt.renderers.html.EJRWTHtmlTableBlockRenderer.VACSSServiceHandler;
 import org.entirej.framework.core.EJFrameworkInitialiser;
 import org.entirej.framework.core.interfaces.EJMessenger;
 import org.entirej.framework.core.properties.EJCoreLayoutContainer;
@@ -118,6 +120,9 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
             {
                 try
                 {
+
+                    RWT.getServiceManager().registerServiceHandler(VACSSServiceHandler.SERVICE_HANDLER, new VACSSServiceHandler());
+                    RWT.getServiceManager().registerServiceHandler(EJRWTFileDownload.SERVICE_HANDLER, EJRWTFileDownload.newServiceHandler());
                     registerServiceHandlers();
                 }
                 catch (java.lang.IllegalArgumentException e)
