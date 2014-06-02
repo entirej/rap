@@ -109,4 +109,12 @@ public class EJRWTEntireJGridPane extends Composite
         layout.marginBottom = 0;
         layout.marginTop = 0;
     }
+    public void cleanLayoutTop()
+    {
+        GridLayout layout = getLayout();
+        layout.marginTop = 0;
+
+        layout.marginHeight = 1;
+        layout.marginBottom = 5;
+    }
 }

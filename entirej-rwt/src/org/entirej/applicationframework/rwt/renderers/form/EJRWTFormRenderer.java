@@ -456,7 +456,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         final EJRWTEntireJGridPane groupPane = new EJRWTEntireJGridPane(parent, canvasProperties.getNumCols());
         if (canvasProperties.getDisplayGroupFrame())
         {
-            groupPane.cleanLayoutVertical();
+            groupPane.cleanLayoutTop();
         }
         else
         {
