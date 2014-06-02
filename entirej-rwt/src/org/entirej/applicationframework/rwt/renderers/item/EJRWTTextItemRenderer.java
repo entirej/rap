@@ -846,14 +846,23 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             }
             _mandatoryDecoration.hide();
             _textField.addModifyListener(_modifyListener);
-            _textField.addVerifyListener(new VerifyListener()
+            //TODO: Move to client side validation on Rap 2.4 
+            if(_valueCase!=null && _valueCase!= VALUE_CASE.DEFAULT)
             {
-                @Override
-                public void verifyText(VerifyEvent event)
+
+                _textField.addVerifyListener(new VerifyListener()
                 {
-                    event.text = toCaseValue(event.text);
-                }
-            });
+                    @Override
+                    public void verifyText(VerifyEvent event)
+                    {
+                        String caseValue = toCaseValue(event.text);
+                        if(!event.text.equals(caseValue))
+                        {
+                            event.text = caseValue;
+                        }
+                    }
+                });
+            }
             setInitialValue(_baseValue);
         }
     }
