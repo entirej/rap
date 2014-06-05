@@ -20,6 +20,7 @@ package org.entirej.applicationframework.rwt.renderers.item;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -247,6 +248,19 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
             }
             else
             {
+                if (value instanceof String)
+                {
+                    try
+                    {
+                        _currentImage = ImageDescriptor.createFromURL((new URL((String)value))).createImage();
+                    }
+                    catch (MalformedURLException e)
+                    {
+                        EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM, _item.getName(),
+                                "String should follow URL Spec", (String)value);
+                        throw new IllegalArgumentException(message.getMessage());
+                    }
+                }
                 if (value instanceof URL)
                 {
                     _currentImage = ImageDescriptor.createFromURL((URL) value).createImage();
