@@ -261,7 +261,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
                         throw new IllegalArgumentException(message.getMessage());
                     }
                 }
-                if (value instanceof URL)
+                else if (value instanceof URL)
                 {
                     _currentImage = ImageDescriptor.createFromURL((URL) value).createImage();
                 }
@@ -272,7 +272,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 else
                 {
                     EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM, _item.getName(),
-                            "URL or byte[]", value.getClass().getName());
+                            "URL or byte[] ", value.getClass().getName());
                     throw new IllegalArgumentException(message.getMessage());
                 }
                 _labelField.setImage(_currentImage);
