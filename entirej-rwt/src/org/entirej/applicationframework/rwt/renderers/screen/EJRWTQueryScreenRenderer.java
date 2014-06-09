@@ -289,8 +289,6 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
             @Override
             protected void buttonPressed(int buttonId)
             {
-                ;
-                
                 try
                 {
                     switch (buttonId)
