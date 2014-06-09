@@ -301,10 +301,9 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
                             EJDataRecord record = getQueryRecord();
                             for (EJDataItem item : record.getAllItems())
                             {
-                                if (!item.isBlockServiceItem())
-                                {
-                                    continue;
-                                }
+                                
+                                boolean serviceItem = item.isBlockServiceItem();
+                                
                                 if (item.getValue() != null)
                                 {
                                     if (item.getProperties().getDataTypeClass().isAssignableFrom(String.class))
@@ -312,16 +311,17 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
                                         String value = (String) item.getValue();
                                         if (value.contains("%"))
                                         {
-                                            queryCriteria.add(EJRestrictions.like(item.getName(), item.getValue()));
+                                            
+                                            queryCriteria.add(EJRestrictions.like(item.getName(),serviceItem, item.getValue() ));
                                         }
                                         else
                                         {
-                                            queryCriteria.add(EJRestrictions.equals(item.getName(), item.getValue()));
+                                            queryCriteria.add(EJRestrictions.equals(item.getName(),serviceItem, item.getValue()));
                                         }
                                     }
                                     else
                                     {
-                                        queryCriteria.add(EJRestrictions.equals(item.getName(), item.getValue()));
+                                        queryCriteria.add(EJRestrictions.equals(item.getName(),serviceItem, item.getValue()));
                                     }
                                 }
                             }
