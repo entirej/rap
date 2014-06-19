@@ -1156,12 +1156,21 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                     }
                     
                     //child node with no parent need to consider as roots
-                    for (Object key : new HashSet<Object>(cmap.keySet()))
+                    MAIN: for (Object key : new HashSet<Object>(cmap.keySet()))
                     {
                         if(indexMap.containsKey(key))
                         {
                             continue;
                         }
+                        
+                        for (EJDataRecord rec : records)
+                        {
+                            if(key.equals(rec.getValue(pid)))
+                            {
+                                continue MAIN;
+                            }
+                        }
+                        
                         List<EJDataRecord> list = cmap.get(key);
                         cmap.remove(key);
                         for (EJDataRecord record : list)
