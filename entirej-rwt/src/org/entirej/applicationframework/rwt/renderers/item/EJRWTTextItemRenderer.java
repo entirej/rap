@@ -535,7 +535,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
     protected void setMandatoryBorder(boolean req)
     {
-        if (_displayValueAsLabel || _mandatoryDecoration == null)
+        if (_displayValueAsLabel || _mandatoryDecoration == null || _mandatoryDecoration.getControl().isDisposed())
         {
             return;
         }
