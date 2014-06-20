@@ -122,7 +122,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         if (canvasHandler instanceof PopupCanvasHandler)
         {
             PopupCanvasHandler handler = (PopupCanvasHandler) canvasHandler;
-            handler.open();
+            handler.open(true);
         }
     }
 
@@ -587,6 +587,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             this.canvasController = canvasController;
             this.canvasProperties = canvasProperties;
+            open(false);
         }
 
         @Override
@@ -595,7 +596,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             // ignore
         }
 
-        void open()
+        void open(boolean show)
         {
             final String name = canvasProperties.getName();
             final String pageTitle = canvasProperties.getPopupPageTitle();
@@ -610,101 +611,108 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             final int ID_BUTTON_1 = 1;
             final int ID_BUTTON_2 = 2;
             final int ID_BUTTON_3 = 3;
-
-            _popupDialog = new EJRWTAbstractDialog(getRWTManager().getShell())
+            
+            if(_popupDialog==null || _popupDialog.getShell().isDisposed())
             {
-                private static final long serialVersionUID = -4685316941898120169L;
 
-                @Override
-                public void createBody(Composite parent)
+                _popupDialog = new EJRWTAbstractDialog(getRWTManager().getShell())
                 {
-                    parent.setLayout(new FillLayout());
-                    final ScrolledComposite scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
-
-                    EJRWTEntireJGridPane _mainPane = new EJRWTEntireJGridPane(scrollComposite, numCols);
-                    _mainPane.cleanLayout();
-                    EJCanvasPropertiesContainer popupCanvasContainer = canvasProperties.getPopupCanvasContainer();
-                    Collection<EJCanvasProperties> allCanvasProperties = popupCanvasContainer.getAllCanvasProperties();
-                    for (EJCanvasProperties canvasProperties : allCanvasProperties)
+                    private static final long serialVersionUID = -4685316941898120169L;
+    
+                    @Override
+                    public void createBody(Composite parent)
                     {
-                        createCanvas(_mainPane, canvasProperties, canvasController);
+                        parent.setLayout(new FillLayout());
+                        final ScrolledComposite scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+    
+                        EJRWTEntireJGridPane _mainPane = new EJRWTEntireJGridPane(scrollComposite, numCols);
+                        _mainPane.cleanLayout();
+                        EJCanvasPropertiesContainer popupCanvasContainer = canvasProperties.getPopupCanvasContainer();
+                        Collection<EJCanvasProperties> allCanvasProperties = popupCanvasContainer.getAllCanvasProperties();
+                        for (EJCanvasProperties canvasProperties : allCanvasProperties)
+                        {
+                            createCanvas(_mainPane, canvasProperties, canvasController);
+                        }
+                        scrollComposite.setContent(_mainPane);
+                        scrollComposite.setExpandHorizontal(true);
+                        scrollComposite.setExpandVertical(true);
+                        scrollComposite.setMinSize(_mainPane.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
                     }
-                    scrollComposite.setContent(_mainPane);
-                    scrollComposite.setExpandHorizontal(true);
-                    scrollComposite.setExpandVertical(true);
-                    scrollComposite.setMinSize(_mainPane.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
-                }
-
-                @Override
-                public int open()
-                {
-                    return super.open();
-                }
-
-                @Override
-                protected void createButtonsForButtonBar(Composite parent)
-                {
-                    // Add the buttons in reverse order, as they will be added
-                    // from left to right
-                    addExtraButton(parent, button3Label, ID_BUTTON_3);
-                    addExtraButton(parent, button2Label, ID_BUTTON_2);
-                    addExtraButton(parent, button1Label, ID_BUTTON_1);
-                }
-
-                private void addExtraButton(Composite parent, String label, int id)
-                {
-                    if (label == null || label.length() == 0)
+    
+                    @Override
+                    public int open()
                     {
-                        return;
+                        return super.open();
                     }
-                    createButton(parent, id, label, false);
-
-                }
-
-                @Override
-                public boolean close()
-                {
-                    return super.close();
-                }
-
-                @Override
-                protected void buttonPressed(int buttonId)
-                {
-                    switch (buttonId)
+    
+                    @Override
+                    protected void createButtonsForButtonBar(Composite parent)
                     {
-
-                        case ID_BUTTON_1:
-                        {
-                            canvasController.closePopupCanvas(name, EJPopupButton.ONE);
-                            break;
-                        }
-                        case ID_BUTTON_2:
-                        {
-                            canvasController.closePopupCanvas(name, EJPopupButton.TWO);
-                            break;
-                        }
-                        case ID_BUTTON_3:
-                        {
-                            canvasController.closePopupCanvas(name, EJPopupButton.THREE);
-                            close();
-                            break;
-                        }
-
-                        default:
-                            super.buttonPressed(buttonId);
-                            break;
+                        // Add the buttons in reverse order, as they will be added
+                        // from left to right
+                        addExtraButton(parent, button3Label, ID_BUTTON_3);
+                        addExtraButton(parent, button2Label, ID_BUTTON_2);
+                        addExtraButton(parent, button1Label, ID_BUTTON_1);
                     }
+    
+                    private void addExtraButton(Composite parent, String label, int id)
+                    {
+                        if (label == null || label.length() == 0)
+                        {
+                            return;
+                        }
+                        createButton(parent, id, label, false);
+    
+                    }
+    
+                    @Override
+                    public boolean close()
+                    {
+                        return super.close();
+                    }
+    
+                    @Override
+                    protected void buttonPressed(int buttonId)
+                    {
+                        switch (buttonId)
+                        {
+    
+                            case ID_BUTTON_1:
+                            {
+                                canvasController.closePopupCanvas(name, EJPopupButton.ONE);
+                                break;
+                            }
+                            case ID_BUTTON_2:
+                            {
+                                canvasController.closePopupCanvas(name, EJPopupButton.TWO);
+                                break;
+                            }
+                            case ID_BUTTON_3:
+                            {
+                                canvasController.closePopupCanvas(name, EJPopupButton.THREE);
+                                close();
+                                break;
+                            }
+    
+                            default:
+                                super.buttonPressed(buttonId);
+                                break;
+                        }
+    
+                    }
+                };
+                _popupDialog.create();
+            }
 
-                }
-            };
-            _popupDialog.create();
-
-            _popupDialog.getShell().setData("POPUP - " + name);
-            _popupDialog.getShell().setText(pageTitle != null ? pageTitle : "");
-            // add dialog border offsets
-            _popupDialog.getShell().setSize(width + 80, height + 100);
-            _popupDialog.centreLocation();
-            _popupDialog.open();
+            if(show)
+            {
+                _popupDialog.getShell().setData("POPUP - " + name);
+                _popupDialog.getShell().setText(pageTitle != null ? pageTitle : "");
+                // add dialog border offsets
+                _popupDialog.getShell().setSize(width + 80, height + 100);
+                _popupDialog.centreLocation();
+                _popupDialog.open();
+            }
         }
 
         void close()
