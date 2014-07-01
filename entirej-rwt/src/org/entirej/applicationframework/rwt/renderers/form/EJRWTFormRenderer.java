@@ -612,7 +612,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             final int ID_BUTTON_2 = 2;
             final int ID_BUTTON_3 = 3;
             
-            if(_popupDialog==null || _popupDialog.getShell().isDisposed())
+            if(_popupDialog==null ||_popupDialog.getShell() ==null || _popupDialog.getShell().isDisposed())
             {
 
                 _popupDialog = new EJRWTAbstractDialog(getRWTManager().getShell())

@@ -502,7 +502,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
             return;
         }
-        if (_errorDecoration != null && !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null && controlState(_textField))
         {
             _errorDecoration.setDescriptionText("");
             if (error)
@@ -535,7 +535,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
     protected void setMandatoryBorder(boolean req)
     {
-        if (_displayValueAsLabel || _mandatoryDecoration == null || _mandatoryDecoration.getControl().isDisposed())
+        if (_displayValueAsLabel || _mandatoryDecoration == null || !controlState(_textField))
         {
             return;
         }
