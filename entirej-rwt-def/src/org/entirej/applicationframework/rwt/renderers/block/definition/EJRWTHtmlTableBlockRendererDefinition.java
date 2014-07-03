@@ -20,7 +20,6 @@
 package org.entirej.applicationframework.rwt.renderers.block.definition;
 
 import java.awt.Color;
-import java.lang.reflect.Method;
 import java.util.Collections;
 
 import org.eclipse.swt.SWT;
@@ -32,7 +31,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTInsertScreenRendererDefinition;
@@ -40,7 +38,6 @@ import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTQue
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTUpdateScreenRendererDefinition;
 import org.entirej.framework.core.enumerations.EJFontStyle;
 import org.entirej.framework.core.enumerations.EJFontWeight;
-import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeContainer;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
 import org.entirej.framework.core.properties.definitions.EJPropertyDefinitionType;
@@ -49,7 +46,6 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDe
 import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDefinitionGroup;
 import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDefinitionListener;
 import org.entirej.framework.core.properties.interfaces.EJEntireJProperties;
-import org.entirej.framework.core.properties.interfaces.EJFormProperties;
 import org.entirej.framework.core.properties.interfaces.EJMainScreenProperties;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionGroup;
@@ -68,15 +64,17 @@ import org.entirej.framework.dev.renderer.definition.interfaces.EJDevUpdateScree
 public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRendererDefinition
 {
 
-    public static final String  CELL_SPACING_PROPERTY  = "CELL_SPACING";
-    public static final String  CELL_PADDING_PROPERTY  = "CELL_PADDING";
-    public static final String  DISPLAY_WIDTH_PROPERTY = "DISPLAY_WIDTH";
-    public static final String  ACTIONS                = "ACTIONS";
-    public static final String  ACTION_ID              = "ACTION_ID";
-    public static final String  ACTION_KEY             = "ACTION_KEY";
-    public static final String  HEADER_VA              = "HEADER_VA";
-    public static final String  ROW_ODD_VA             = "ROW_ODD_VA";
-    public static final String  ROW_EVEN_VA            = "ROW_EVEN_VA";
+    public static final String CELL_SPACING_PROPERTY  = "CELL_SPACING";
+    public static final String CELL_PADDING_PROPERTY  = "CELL_PADDING";
+    public static final String DISPLAY_WIDTH_PROPERTY = "DISPLAY_WIDTH";
+    public static final String CELL_ACTION_COMMAND    = "ACTION_COMMAND";
+    public static final String ALLOW_ROW_SORTING      = "ALLOW_ROW_SORTING";
+    public static final String ACTIONS                = "ACTIONS";
+    public static final String ACTION_ID              = "ACTION_ID";
+    public static final String ACTION_KEY             = "ACTION_KEY";
+    public static final String HEADER_VA              = "HEADER_VA";
+    public static final String ROW_ODD_VA             = "ROW_ODD_VA";
+    public static final String ROW_EVEN_VA            = "ROW_EVEN_VA";
 
     public EJRWTHtmlTableBlockRendererDefinition()
     {
@@ -153,7 +151,23 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         displayWidth.setDescription("The width (in characters) of this items column within the blocks table");
 
         mainGroup.addPropertyDefinition(displayWidth);
+        
+        
+        EJDevPropertyDefinition allowColumnSorting = new EJDevPropertyDefinition(ALLOW_ROW_SORTING,
+                EJPropertyDefinitionType.BOOLEAN);
+        allowColumnSorting.setLabel("Allow Column Sorting");
+        allowColumnSorting.setDescription("If selected, the user will be able to re-order the data within the block by clicking on the column header. Only block contents will be sorted, no new data will be retreived from the datasource");
+        allowColumnSorting.setDefaultValue("true");
+        
+        mainGroup.addPropertyDefinition(allowColumnSorting);
+        
 
+        EJDevPropertyDefinition cellActionCommand = new EJDevPropertyDefinition(CELL_ACTION_COMMAND, EJPropertyDefinitionType.ACTION_COMMAND);
+        cellActionCommand.setLabel("Cell Action Command");
+        cellActionCommand
+                .setDescription("If entered, the value in this column will be displayed as a URL and when the user clicks on the url, the action command will be passed to the forms action processor for execution.");
+
+        mainGroup.addPropertyDefinition(cellActionCommand);
         return mainGroup;
     }
 
@@ -184,16 +198,12 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
 
     }
 
-    
-   
-    
     @Override
     public EJDevBlockRendererDefinitionControl addBlockControlToCanvas(EJMainScreenProperties mainScreenProperties,
             EJDevBlockDisplayProperties blockDisplayProperties, Composite parent, FormToolkit toolkit)
     {
         Composite layoutBody;
 
-        
         if (mainScreenProperties.getDisplayFrame())
         {
             if (mainScreenProperties.getFrameTitle() != null && mainScreenProperties.getFrameTitle().length() > 0)
@@ -545,9 +555,9 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
 
             builder.append("}");
 
-            if(properties!=null)
+            if (properties != null)
             {
-                EJCoreVisualAttributeContainer visualAttributesContainer =properties.getVisualAttributesContainer();
+                EJCoreVisualAttributeContainer visualAttributesContainer = properties.getVisualAttributesContainer();
                 for (EJCoreVisualAttributeProperties va : visualAttributesContainer.getVisualAttributes())
                 {
                     builder.append(" \n");
@@ -555,7 +565,7 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
                     builder.append(va.getName());
                     builder.append("{");
                     builder.append("padding: 0px 0px 0px 0px;");
-    
+
                     Font vaFont = getFont(va, font);
                     if (vaFont != null && vaFont.getFontData().length > 0)
                     {
@@ -569,14 +579,14 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
                         {
                             builder.append("italic ");
                         }
-    
+
                         builder.append(fontData.getHeight());
                         builder.append("px ");
                         builder.append(fontData.getName());
-    
+
                         builder.append(";");
                     }
-    
+
                     Color backgroundColor = va.getBackgroundColor();
                     if (backgroundColor != null)
                     {
@@ -595,7 +605,7 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
                     }
                     builder.append("}");
                 }
-    
+
             }
         }
         builder.append("</style>");
