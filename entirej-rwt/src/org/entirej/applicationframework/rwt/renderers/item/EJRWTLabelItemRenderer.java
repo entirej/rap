@@ -169,7 +169,8 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
         if (_labelField != null && controlState(_labelField.getControl()))
         {
 
-            _labelField.setText(_item.getForm().translateText(_screenItemProperties.getLabel()));
+            String translateText = _item.getForm().translateText(_screenItemProperties.getLabel());
+            _labelField.setText(translateText!=null ? translateText :"");
         }
     }
 
