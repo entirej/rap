@@ -28,7 +28,7 @@ public class EJRWTFileUpload
     {
     }
 
-    public static String propmptFileUpload(String title)
+    public static String promptFileUpload(String title)
     {
 
         FileDialog fileDialog = new FileDialog(Display.getDefault().getActiveShell(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | SWT.SINGLE);
@@ -37,7 +37,7 @@ public class EJRWTFileUpload
         return fileDialog.getFileName();
     }
 
-    public static String[] propmptMultipleFileUpload(String title)
+    public static String[] promptMultipleFileUpload(String title)
     {
 
         FileDialog fileDialog = new FileDialog(Display.getDefault().getActiveShell(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | SWT.MULTI);
