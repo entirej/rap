@@ -344,7 +344,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         EJFrameworkExtensionProperties rendererProp = EJCoreProperties.getInstance().getApplicationDefinedProperties();
         if (rendererProp != null)
         {
-            boolean displayBorder = rendererProp.getBooleanProperty("DISPLAY_TAB_BORDER", true);
+            boolean displayBorder = rendererProp.getBooleanProperty("DISPLAY_TAB_BORDER", false);
             if (displayBorder)
             {
                 style = SWT.FLAT | SWT.BORDER;
