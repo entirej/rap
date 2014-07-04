@@ -24,9 +24,12 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -65,6 +68,7 @@ import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfac
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTUpdateScreenRenderer;
+import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
@@ -99,49 +103,55 @@ import org.slf4j.LoggerFactory;
 
 public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyListener
 {
-    private Logger                               LOGGER                     = LoggerFactory.getLogger(this.getClass());
+    private Logger                                LOGGER                     = LoggerFactory.getLogger(this.getClass());
 
-    private static final String                  PROPERTY_ALIGNMENT         = "ALIGNMENT";
-    private static final String                  PROPERTY_ALIGNMENT_CHAR    = "CHAR";
-    private static final String                  PROPERTY_ALIGNMENT_CENTER  = "CENTER";
-    private static final String                  PROPERTY_ALIGNMENT_RIGHT   = "RIGHT";
-    private static final String                  PROPERTY_ALIGNMENT_LEFT    = "LEFT";
+    private static final String                   PROPERTY_ALIGNMENT         = "ALIGNMENT";
+    private static final String                   PROPERTY_ALIGNMENT_CHAR    = "CHAR";
+    private static final String                   PROPERTY_ALIGNMENT_CENTER  = "CENTER";
+    private static final String                   PROPERTY_ALIGNMENT_RIGHT   = "RIGHT";
+    private static final String                   PROPERTY_ALIGNMENT_LEFT    = "LEFT";
 
-    public static final String                   CELL_ACTION_COMMAND        = "ACTION_COMMAND";
-    public static final String                   ALLOW_ROW_SORTING          = "ALLOW_ROW_SORTING";
-    private static final String                  PROPERTY_ALIGNMENT_JUSTIFY = "JUSTIFY";
-    private static final String                  PROPERTY_CASE              = "CASE";
-    private static final String                  PROPERTY_CASE_CAPITALIZE   = "CAPITALIZE";
-    private static final String                  PROPERTY_CASE_UPPER        = "UPPER";
-    private static final String                  PROPERTY_CASE_LOWER        = "LOWER";
+    public static final String                    CELL_ACTION_COMMAND        = "ACTION_COMMAND";
+    public static final String                    ALLOW_ROW_SORTING          = "ALLOW_ROW_SORTING";
+    private static final String                   PROPERTY_ALIGNMENT_JUSTIFY = "JUSTIFY";
+    private static final String                   PROPERTY_CASE              = "CASE";
+    private static final String                   PROPERTY_CASE_CAPITALIZE   = "CAPITALIZE";
+    private static final String                   PROPERTY_CASE_UPPER        = "UPPER";
+    private static final String                   PROPERTY_CASE_LOWER        = "LOWER";
 
-    public static final String                   CELL_SPACING_PROPERTY      = "CELL_SPACING";
-    public static final String                   CELL_PADDING_PROPERTY      = "CELL_PADDING";
+    public static final String                    CELL_SPACING_PROPERTY      = "CELL_SPACING";
+    public static final String                    CELL_PADDING_PROPERTY      = "CELL_PADDING";
 
-    public static final String                   DISPLAY_WIDTH_PROPERTY     = "DISPLAY_WIDTH";
-    public static final String                   ACTIONS                    = "ACTIONS";
-    public static final String                   ACTION_ID                  = "ACTION_ID";
-    public static final String                   ACTION_KEY                 = "ACTION_KEY";
+    public static final String                    DISPLAY_WIDTH_PROPERTY     = "DISPLAY_WIDTH";
+    public static final String                    ACTIONS                    = "ACTIONS";
+    public static final String                    ACTION_ID                  = "ACTION_ID";
+    public static final String                    ACTION_KEY                 = "ACTION_KEY";
 
-    public static final String                   HEADER_VA                  = "HEADER_VA";
-    public static final String                   ROW_ODD_VA                 = "ROW_ODD_VA";
-    public static final String                   ROW_EVEN_VA                = "ROW_EVEN_VA";
+    public static final String                    HEADER_VA                  = "HEADER_VA";
+    public static final String                    ROW_ODD_VA                 = "ROW_ODD_VA";
+    public static final String                    ROW_EVEN_VA                = "ROW_EVEN_VA";
 
-    private EJEditableBlockController            _block;
-    private boolean                              _isFocused                 = false;
-    private ScrolledComposite                    scrollComposite;
-    private EJRWTHtmlView                        _browser;
-    private List<EJCoreMainScreenItemProperties> _items                     = new ArrayList<EJCoreMainScreenItemProperties>();
-    private Map<String, ColumnLabelProvider>     _itemLabelProviders        = new HashMap<String, ColumnLabelProvider>();
-    private String                               _headerTag                 = null;
-    private EJDataRecord                         currentRec;
+    private EJEditableBlockController             _block;
+    private boolean                               _isFocused                 = false;
+    private ScrolledComposite                     scrollComposite;
+    private EJRWTHtmlView                         _browser;
+    private List<EJCoreMainScreenItemProperties>  _items                     = new ArrayList<EJCoreMainScreenItemProperties>();
+    private Map<String, ColumnLabelProvider>      _itemLabelProviders        = new HashMap<String, ColumnLabelProvider>();
 
-    private EJRWTQueryScreenRenderer             _queryScreenRenderer;
-    private EJRWTInsertScreenRenderer            _insertScreenRenderer;
-    private EJRWTUpdateScreenRenderer            _updateScreenRenderer;
+    private Map<String, EJRWTAbstractTableSorter> _itemSortProviders         = new HashMap<String, EJRWTAbstractTableSorter>();
 
-    private List<String>                         _actionkeys                = new ArrayList<String>();
-    private Map<KeyInfo, String>                 _actionInfoMap             = new HashMap<EJRWTKeysUtil.KeyInfo, String>();
+    private Map<String, SortInfo>                 _sortContext               = new HashMap<String, SortInfo>();
+    private String                                _headerTag                 = null;
+    private EJDataRecord                          currentRec;
+
+    private EJRWTQueryScreenRenderer              _queryScreenRenderer;
+    private EJRWTInsertScreenRenderer             _insertScreenRenderer;
+    private EJRWTUpdateScreenRenderer             _updateScreenRenderer;
+
+    private List<String>                          _actionkeys                = new ArrayList<String>();
+    private Map<KeyInfo, String>                  _actionInfoMap             = new HashMap<EJRWTKeysUtil.KeyInfo, String>();
+
+    private SortInfo                                activeSortColumn;
 
     public void askToDeleteRecord(EJDataRecord recordToDelete, String msg)
     {
@@ -272,6 +282,8 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     public void queryExecuted()
     {
         currentRec = null;
+
+        activeSortColumn = null;
 
         createHTML();
 
@@ -539,6 +551,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                             }
                         }
+                        else if ("esort".equals(method))
+                        {
+                            handleSort(parameters);
+                        }
 
                     }
                 };
@@ -576,6 +592,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 });
 
                             }
+                        }
+                        else if ("esort".equals(method))
+                        {
+                            handleSort(parameters);
                         }
 
                     }
@@ -618,6 +638,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             });
 
                         }
+                    }
+                    else if ("esort".equals(method))
+                    {
+                        handleSort(parameters);
                     }
 
                 }
@@ -694,6 +718,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                         if (addHeader)
                         {
+                            
                             String styleClass = "default_all";
                             EJFrameworkExtensionProperties rendererProperties = item.getReferencedItemProperties().getItemRendererProperties();
                             header.append("<th ");
@@ -706,6 +731,27 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 alignmentProperty = rendererProperties.getStringProperty("ALLIGNMENT");
                             }
                             alignment = getComponentAlignment(alignmentProperty);
+                            
+                            
+                            
+                            SortInfo sortInfo = null;
+                            if( blockProperties.getBlockRendererProperties().getBooleanProperty(ALLOW_ROW_SORTING, true))
+                            {
+                                EJRWTAbstractTableSorter columnSorter = itemRenderer.getColumnSorter(itemProps, item);
+                                if (columnSorter != null)
+                                {
+                                    _itemSortProviders.put(itemProps.getReferencedItemName(), columnSorter);
+                                     sortInfo = new SortInfo();
+                                    sortInfo.columnName = itemProps.getReferencedItemName();
+                                    _sortContext.put(sortInfo.id, sortInfo);
+                                }
+                            }
+                            
+                            String functionDef = null;
+                            if(sortInfo!=null)
+                            {
+                                functionDef = String.format("em='esort' earg='%s' ", sortInfo.id);
+                            }
 
                             String valueVA = blockProperties.getBlockRendererProperties().getStringProperty(HEADER_VA);
                             if (valueVA != null && valueVA.length() > 0)
@@ -725,7 +771,14 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 header.append(String.format(" style=\'%s\'", paddingStyle));
                             }
                             header.append("> ");
+                            if(functionDef!=null)
+                            {
+                                header.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 130%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
+                                header.append(functionDef).append(">");
+                            }
                             header.append(itemProps.getLabel());
+                            if(sortInfo!=null)
+                                header.append(String.format("<esh %s/>",sortInfo.id));
                             header.append("</th>");
                         }
                     }
@@ -741,6 +794,79 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         createHTML();
 
     }
+    
+    
+    public void handleSort(JsonObject parameters)
+    {
+        final Object sortid = parameters.get("0").asString();
+        if(sortid!=null)
+        {
+            SortInfo sortInfo = _sortContext.get(sortid);
+            if(sortInfo!=null)
+            {
+                activeSortColumn = sortInfo;
+                switch (sortInfo.direction)
+                {
+                    case ASC:
+                        sortInfo.direction = SortInfo.DIRECTION.DESC;
+                        break;
+                    case DESC:
+                        sortInfo.direction = SortInfo.DIRECTION.NONE;
+                        break;
+                    case NONE:
+                        sortInfo.direction = SortInfo.DIRECTION.ASC;
+                        break;
+                }
+            }
+            createHTML();
+        }
+    }
+    private Collection<EJDataRecord> sortedRecords(Collection<EJDataRecord> records)
+    {
+        if (activeSortColumn==null || _sortContext.isEmpty() || !_itemSortProviders.containsKey(activeSortColumn.columnName))
+        {
+            return records;
+        }
+        final EJRWTAbstractTableSorter tableSorter = _itemSortProviders.get(activeSortColumn.columnName);
+        
+        List<EJDataRecord> sorted = new ArrayList<EJDataRecord>(records);
+
+        switch (activeSortColumn.direction)
+        {
+            case ASC:
+            {
+                Comparator<EJDataRecord> comparator = new Comparator<EJDataRecord>()
+                {
+
+                    @Override
+                    public int compare(EJDataRecord o1, EJDataRecord o2)
+                    {
+                        return tableSorter.compare(null, o1, o2);
+                    }
+                };
+                Collections.sort(sorted,comparator);
+            }
+                break;
+            case DESC:
+            {
+                Comparator<EJDataRecord> comparator = new Comparator<EJDataRecord>()
+                {
+
+                    @Override
+                    public int compare(EJDataRecord o1, EJDataRecord o2)
+                    {
+                        return -1*tableSorter.compare(null, o1, o2);
+                    }
+                };
+                Collections.sort(sorted,comparator);
+            }
+            break;
+        }
+        
+        
+        return sorted;
+    }
+    
 
     private static String getStyleDef()
     {
@@ -881,12 +1007,29 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                     int charHeight = EJRWTImageRetriever.getGraphicsProvider().getCharHeight(Display.getDefault().getSystemFont());
                     String trDef = String.format("<tr style=\"height: %spx\">", String.valueOf(charHeight));
 
+                    
                     if (_headerTag != null)
                     {
-                        builder.append(_headerTag);
+                        String sortHeader = _headerTag;
+                        if(activeSortColumn!=null)
+                        {
+                            StringBuilder header = new StringBuilder();
+                            if ( activeSortColumn.direction != SortInfo.DIRECTION.NONE)
+                            {
+                                header.append("&nbsp <img name=\"open\" ");
+                                header.append("src=\"");
+                                header.append(createImageUrl(activeSortColumn.direction == SortInfo.DIRECTION.ASC ? "resource/widget/rap/column/sort-indicator-up.png" : "resource/widget/rap/column/sort-indicator-down.png"));
+                                header.append("\"");
+                                header.append(" >");
+                            }
+                            
+                            sortHeader = _headerTag.replace(String.format("<esh %s/>",activeSortColumn.id), header.toString());
+                        }
+                        builder.append(sortHeader);
                     }
 
                     Collection<EJDataRecord> records = _block.getRecords();
+                    records = sortedRecords(records);
                     int lastRowSpan = 0;
 
                     String oddVA = "default_all";
@@ -919,8 +1062,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                         {
                             String styleClass = (rowid % 2) != 0 ? oddVA : evenVA;
 
-                            
-                            String actionDef= null;
+                            String actionDef = null;
                             String alignment = null;
                             float width = -1;
 
@@ -953,13 +1095,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             }
 
                             String action = extentionProperties.getStringProperty(CELL_ACTION_COMMAND);
-                            
-                            if(action!=null && action.length()>0)
+
+                            if (action != null && action.length() > 0)
                             {
-                                actionDef  = String.format("em='eaction' earg='%s , %s' ", action, String.valueOf(getDisplayedRecordNumber(record)));
-                                
+                                actionDef = String.format("em='eaction' earg='%s , %s' ", action, String.valueOf(getDisplayedRecordNumber(record)));
+
                             }
-                            
+
                             if (width > 0)
                             {
                                 Font font = columnLabelProvider.getFont(new Object());
@@ -1000,32 +1142,34 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             builder.append(String.format(" font style=\'%s\'", caseProperty));
 
                             builder.append(">");
-                            
-                            if(actionDef!=null)
+
+                            if (actionDef != null)
                             {
-                                builder.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 130%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
+                                builder.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 130%\"",
+                                        ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
                                 builder.append(actionDef).append(">");
                             }
 
                             Image image = columnLabelProvider.getImage(record);
                             if (image != null)
                             {
-                                if(actionDef==null)
+                                if (actionDef == null)
                                 {
                                     builder.append("<img src=\"");
-    
+
                                     builder.append(ImageFactory.getImagePath(image));
-    
+
                                     builder.append("\"");
                                     builder.append(String.format(" class=\"default %s\"  >", styleClass));
                                 }
                                 else
-                                    
+
                                 {
                                     builder.append("<ejl><img src=\"");
                                     builder.append(ImageFactory.getImagePath(image));
                                     builder.append("\"");
-                                    builder.append(String.format(" class=\"%s %s\" %s  > </ejl>", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass, actionDef));
+                                    builder.append(String.format(" class=\"%s %s\" %s  > </ejl>", ("default_all".equals(styleClass) ? "default_link_fg"
+                                            : "default_link"), styleClass, actionDef));
                                 }
                             }
                             // builder.append(String.format("<p class=\"default %s\">",
@@ -1183,6 +1327,25 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         }
         control.setData(EJ_RWT.ACTIVE_KEYS, subActions.toArray(new String[0]));
         control.addKeyListener(this);
+    }
+
+    
+    private String createImageUrl(String string)
+    {
+        return ImageFactory.getImagePath(EJRWTImageRetriever.get(string));
+    }
+    
+    private static class SortInfo
+    {
+        String id         = UUID.randomUUID().toString();
+        String columnName = null;
+
+        enum DIRECTION
+        {
+            NONE, ASC, DESC
+        }
+
+        DIRECTION direction = DIRECTION.NONE;
     }
 
 }
