@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -36,6 +37,7 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTCheckBoxRendererDefinitionProperties;
+import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJApplicationException;
@@ -525,6 +527,48 @@ public class EJRWTCheckBoxItemRenderer extends EJRWTButtonItemRenderer
         };
         return provider;
     }
+    
+    
+    
+    
+    @Override
+    public EJRWTAbstractTableSorter getColumnSorter(final EJScreenItemProperties item, EJScreenItemController controller)
+    {
+        EJItemProperties itemProperties = controller.getReferencedItemProperties();
+        EJFrameworkExtensionProperties itemRendererProperties = itemProperties.getItemRendererProperties();
+        
+        final Object checkedValue = getValueAsObject(itemProperties.getDataTypeClass(),
+                itemRendererProperties.getStringProperty(EJRWTCheckBoxRendererDefinitionProperties.CHECKED_VALUE));
+        return new EJRWTAbstractTableSorter()
+        {
+            @Override
+            public int compare(Viewer viewer, Object e1, Object e2)
+            {
+                if (e1 instanceof EJDataRecord && e2 instanceof EJDataRecord)
+                {
+                    EJDataRecord d1 = (EJDataRecord) e1;
+                    EJDataRecord d2 = (EJDataRecord) e2;
+                    if (d1 != null && d2 != null)
+                    {
+                        Object value1 = d1.getValue(item.getReferencedItemName());
+                        Object value2 = d2.getValue(item.getReferencedItemName());
+                      
+                       if(checkedValue.equals(value1)&& !checkedValue.equals(value2))
+                       {
+                           return 1;
+                       }
+                       if(!checkedValue.equals(value1) &&checkedValue.equals(value2))
+                       {
+                           return -1;
+                       }
+                    }
+                }
+                return 0;
+            }
+        };
+    }
+    
+    
 
     @Override
     public boolean isReadOnly()
