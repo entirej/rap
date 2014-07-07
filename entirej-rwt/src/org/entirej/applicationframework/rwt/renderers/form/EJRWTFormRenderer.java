@@ -35,6 +35,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
@@ -70,6 +71,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     private Map<String, EJInternalBlock>         _blocks       = new HashMap<String, EJInternalBlock>();
     private Map<String, EJTabFolder>             _tabFolders   = new HashMap<String, EJTabFolder>();
     private Map<String, EJRWTEntireJStackedPane> _stackedPanes = new HashMap<String, EJRWTEntireJStackedPane>();
+    private Map<String, Composite>               _formPanes = new HashMap<String, Composite>();
 
     @Override
     public void formCleared()
@@ -150,6 +152,41 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         }
     }
+    
+    @Override
+    public void openFormInCanvas(String canvasName, EJInternalForm form)
+    {
+        if (canvasName != null )
+        {
+            Composite composite = _formPanes.get(canvasName);
+            if(composite!=null)
+            {
+                Control[] children = composite.getChildren();
+                for (Control control : children)
+                {
+                    if(!control.isDisposed())
+                    {
+                        control.dispose();
+                    }
+                }
+                
+                EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
+                final ScrolledComposite scrollComposite = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
+                renderer.createControl(scrollComposite);
+                scrollComposite.setContent(renderer.getGuiComponent());
+                scrollComposite.setExpandHorizontal(true);
+                scrollComposite.setExpandVertical(true);
+                scrollComposite.setMinSize(form.getProperties().getFormWidth(), form.getProperties().getFormHeight());
+                composite.layout(true);
+            }
+            else
+            {
+               throw new IllegalAccessError("Call openFormInCanvas(String canvasName, EJInternalForm form) canvasName must valid EJCanvasType.FORM");
+            }
+        }
+    }
+    
+   
 
     @Override
     public void showTabPage(String canvasName, String pageName)
@@ -300,6 +337,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             case SPLIT:
                 createSplitCanvas(parent, canvasProperties, canvasController);
                 break;
+            case FORM:
+                createFormCanvas(parent, canvasProperties, canvasController);
+                break;
             case STACKED:
                 createStackedCanvas(parent, canvasProperties, canvasController);
                 break;
@@ -334,6 +374,16 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             stackedPane.showPane(canvasProperties.getInitialStackedPageName());
         }
 
+        _canvasesIds.add(name);
+    }
+    private void createFormCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
+    {
+        final String name = canvasProperties.getName();
+        Composite stackedPane = new Composite(parent,SWT.NONE);
+        stackedPane.setLayout(new FillLayout());
+        stackedPane.setLayoutData(createCanvasGridData(canvasProperties));
+        _formPanes.put(name, stackedPane);
+        
         _canvasesIds.add(name);
     }
 
@@ -508,6 +558,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     case GROUP:
                         createGroupCanvas(groupPane, containedCanvas, canvasController);
                         break;
+                    case FORM:
+                        createFormCanvas(parent, canvasProperties, canvasController);
+                        break;
                     case SPLIT:
                         createSplitCanvas(groupPane, containedCanvas, canvasController);
                         break;
@@ -552,6 +605,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     case BLOCK:
                     case GROUP:
                         createGroupCanvas(layoutBody, containedCanvas, canvasController);
+                        break;
+                    case FORM:
+                        createFormCanvas(parent, canvasProperties, canvasController);
                         break;
                     case SPLIT:
                         createSplitCanvas(layoutBody, containedCanvas, canvasController);
