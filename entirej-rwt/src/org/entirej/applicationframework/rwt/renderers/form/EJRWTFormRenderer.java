@@ -47,6 +47,7 @@ import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.common.utils.EJParameterChecker;
 import org.entirej.framework.core.data.controllers.EJCanvasController;
+import org.entirej.framework.core.data.controllers.EJEmbeddedFormController;
 import org.entirej.framework.core.enumerations.EJCanvasSplitOrientation;
 import org.entirej.framework.core.enumerations.EJCanvasType;
 import org.entirej.framework.core.enumerations.EJPopupButton;
@@ -71,7 +72,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     private Map<String, EJInternalBlock>         _blocks       = new HashMap<String, EJInternalBlock>();
     private Map<String, EJTabFolder>             _tabFolders   = new HashMap<String, EJTabFolder>();
     private Map<String, EJRWTEntireJStackedPane> _stackedPanes = new HashMap<String, EJRWTEntireJStackedPane>();
-    private Map<String, Composite>               _formPanes = new HashMap<String, Composite>();
+    private Map<String, Composite>               _formPanes    = new HashMap<String, Composite>();
 
     @Override
     public void formCleared()
@@ -152,41 +153,50 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         }
     }
-    
+
     @Override
-    public void openFormInCanvas(String canvasName, EJInternalForm form)
+    public void openEmbeddedForm(EJEmbeddedFormController formController)
     {
-        if (canvasName != null )
+        if (formController == null)
         {
-            Composite composite = _formPanes.get(canvasName);
-            if(composite!=null)
+            throw new EJApplicationException("No embedded form controller has been passed to openEmbeddedForm");
+        }
+
+        if (formController.getCanvasName() != null)
+        {
+            Composite composite = _formPanes.get(formController.getCanvasName());
+            if (composite != null)
             {
                 Control[] children = composite.getChildren();
                 for (Control control : children)
                 {
-                    if(!control.isDisposed())
+                    if (!control.isDisposed())
                     {
                         control.dispose();
                     }
                 }
-                
-                EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
+
+                EJRWTFormRenderer renderer = (EJRWTFormRenderer) formController.getEmbeddedForm().getRenderer();
                 final ScrolledComposite scrollComposite = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
                 renderer.createControl(scrollComposite);
                 scrollComposite.setContent(renderer.getGuiComponent());
                 scrollComposite.setExpandHorizontal(true);
                 scrollComposite.setExpandVertical(true);
-                scrollComposite.setMinSize(form.getProperties().getFormWidth(), form.getProperties().getFormHeight());
+                scrollComposite.setMinSize(formController.getEmbeddedForm().getProperties().getFormWidth(), formController.getEmbeddedForm().getProperties().getFormHeight());
                 composite.layout(true);
             }
             else
             {
-               throw new IllegalAccessError("Call openFormInCanvas(String canvasName, EJInternalForm form) canvasName must valid EJCanvasType.FORM");
+                throw new IllegalAccessError("An embedded form can only be opened on EJCanvasType.FORM");
             }
         }
     }
     
-   
+    @Override
+    public void closeEmbeddedForm(EJEmbeddedFormController controller)
+    {
+        // TODO implement this method
+    }
 
     @Override
     public void showTabPage(String canvasName, String pageName)
@@ -376,14 +386,15 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         _canvasesIds.add(name);
     }
+
     private void createFormCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
     {
         final String name = canvasProperties.getName();
-        Composite stackedPane = new Composite(parent,SWT.NONE);
+        Composite stackedPane = new Composite(parent, SWT.NONE);
         stackedPane.setLayout(new FillLayout());
         stackedPane.setLayoutData(createCanvasGridData(canvasProperties));
         _formPanes.put(name, stackedPane);
-        
+
         _canvasesIds.add(name);
     }
 
@@ -667,20 +678,20 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             final int ID_BUTTON_1 = 1;
             final int ID_BUTTON_2 = 2;
             final int ID_BUTTON_3 = 3;
-            
-            if(_popupDialog==null ||_popupDialog.getShell() ==null || _popupDialog.getShell().isDisposed())
+
+            if (_popupDialog == null || _popupDialog.getShell() == null || _popupDialog.getShell().isDisposed())
             {
 
                 _popupDialog = new EJRWTAbstractDialog(getRWTManager().getShell())
                 {
                     private static final long serialVersionUID = -4685316941898120169L;
-    
+
                     @Override
                     public void createBody(Composite parent)
                     {
                         parent.setLayout(new FillLayout());
                         final ScrolledComposite scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
-    
+
                         EJRWTEntireJGridPane _mainPane = new EJRWTEntireJGridPane(scrollComposite, numCols);
                         _mainPane.cleanLayout();
                         EJCanvasPropertiesContainer popupCanvasContainer = canvasProperties.getPopupCanvasContainer();
@@ -694,23 +705,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         scrollComposite.setExpandVertical(true);
                         scrollComposite.setMinSize(_mainPane.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
                     }
-    
+
                     @Override
                     public int open()
                     {
                         return super.open();
                     }
-    
+
                     @Override
                     protected void createButtonsForButtonBar(Composite parent)
                     {
-                        // Add the buttons in reverse order, as they will be added
+                        // Add the buttons in reverse order, as they will be
+                        // added
                         // from left to right
                         addExtraButton(parent, button3Label, ID_BUTTON_3);
                         addExtraButton(parent, button2Label, ID_BUTTON_2);
                         addExtraButton(parent, button1Label, ID_BUTTON_1);
                     }
-    
+
                     private void addExtraButton(Composite parent, String label, int id)
                     {
                         if (label == null || label.length() == 0)
@@ -718,21 +730,21 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             return;
                         }
                         createButton(parent, id, label, false);
-    
+
                     }
-    
+
                     @Override
                     public boolean close()
                     {
                         return super.close();
                     }
-    
+
                     @Override
                     protected void buttonPressed(int buttonId)
                     {
                         switch (buttonId)
                         {
-    
+
                             case ID_BUTTON_1:
                             {
                                 canvasController.closePopupCanvas(name, EJPopupButton.ONE);
@@ -749,18 +761,18 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 close();
                                 break;
                             }
-    
+
                             default:
                                 super.buttonPressed(buttonId);
                                 break;
                         }
-    
+
                     }
                 };
                 _popupDialog.create();
             }
 
-            if(show)
+            if (show)
             {
                 _popupDialog.getShell().setData("POPUP - " + name);
                 _popupDialog.getShell().setText(pageTitle != null ? pageTitle : "");

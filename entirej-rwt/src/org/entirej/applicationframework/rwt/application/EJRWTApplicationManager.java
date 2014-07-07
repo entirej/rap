@@ -38,16 +38,13 @@ import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.EJParameterList;
 import org.entirej.framework.core.EJTranslatorHelper;
 import org.entirej.framework.core.data.controllers.EJApplicationLevelParameter;
+import org.entirej.framework.core.data.controllers.EJEmbeddedFormController;
 import org.entirej.framework.core.data.controllers.EJInternalQuestion;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
 import org.entirej.framework.core.data.controllers.EJQuestion;
 import org.entirej.framework.core.interfaces.EJApplicationManager;
 import org.entirej.framework.core.interfaces.EJMessenger;
 import org.entirej.framework.core.internal.EJInternalForm;
-import org.entirej.framework.core.properties.EJCoreCanvasProperties;
-import org.entirej.framework.core.properties.EJCoreMenuContainer;
-import org.entirej.framework.core.properties.EJCoreMenuLeafProperties;
-import org.entirej.framework.core.properties.EJCoreMenuProperties;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 
@@ -288,6 +285,18 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         }
     }
 
+    @Override
+    public void openEmbeddedForm(EJEmbeddedFormController embeddedController)
+    {
+        embeddedController.getCallingForm().getRenderer().openEmbeddedForm(embeddedController);
+    }
+    
+    @Override
+    public void closeEmbeddedForm(EJEmbeddedFormController embeddedController)
+    {
+        embeddedController.getCallingForm().getRenderer().closeEmbeddedForm(embeddedController);
+    }
+    
     @Override
     public void popupFormClosed()
     {
