@@ -26,6 +26,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -80,6 +81,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     protected ControlDecoration               _mandatoryDecoration;
     private EJRWTItemRendererVisualContext    _visualContext;
     protected Object                          _baseValue;
+    protected String                          _defaultButtonId;
 
     @Override
     public boolean useFontDimensions()
@@ -102,36 +104,18 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     public void clearValue()
     {
         _baseValue = null;
-        try
-        {
-            removeListeners();
-
-        }
-        finally
-        {
-            addListeners();
-        }
+        setInitialValue(_baseValue);
 
     }
 
     private void addListeners()
     {
-        for (RadioButtonValue buttonValue : _radioButtons.values())
-        {
-            Button button = buttonValue.getButton();
-            button.addSelectionListener(_radioButtonSelection);
-            button.addFocusListener(this);
-        }
+        _radioButtonSelection.active.set(true);
     }
 
     private void removeListeners()
     {
-        for (RadioButtonValue buttonValue : _radioButtons.values())
-        {
-            Button button = buttonValue.getButton();
-            button.removeSelectionListener(_radioButtonSelection);
-            button.removeFocusListener(this);
-        }
+        _radioButtonSelection.active.set(false);
     }
 
     @Override
@@ -292,6 +276,22 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
                     buttonValue.getButton().setSelection(false);
                 }
             }
+            if (value == null)
+            {
+                if (_defaultButtonId != null)
+                {
+                    for (RadioButtonValue buttonValue : _radioButtons.values())
+                    {
+                        if (buttonValue.ID.equals(_defaultButtonId))
+                        {
+                            buttonValue.getButton().setSelection(true);
+                            valueChanged();
+                            break;
+                        }
+
+                    }
+                }
+            }
         }
         finally
         {
@@ -354,6 +354,22 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
                 else
                 {
                     buttonValue.getButton().setSelection(false);
+                }
+            }
+            if (value == null)
+            {
+                if (_defaultButtonId != null)
+                {
+                    for (RadioButtonValue buttonValue : _radioButtons.values())
+                    {
+                        if (buttonValue.ID.equals(_defaultButtonId))
+                        {
+                            buttonValue.getButton().setSelection(true);
+                            valueChanged();
+                            break;
+                        }
+
+                    }
                 }
             }
             setMandatoryBorder(_mandatory);
@@ -524,7 +540,8 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
             Button button = new Button(_radioGroup, SWT.RADIO);
 
             // Store the button and the button values for future reference
-            _radioButtons.put(listEntry.getProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_NAME), new RadioButtonValue(button, value));
+            String id = listEntry.getProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_NAME);
+            _radioButtons.put(id, new RadioButtonValue(id,button, value));
 
             // Set the button properties
             button.setData(listEntry.getProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_NAME));
@@ -532,10 +549,10 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
 
             // button.setActionCommand(screenItemProperties.getActionCommand());
 
-            if (_rendererProps.getStringProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_DEFAULT_BUTTON) != null)
+            _defaultButtonId = _rendererProps.getStringProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_DEFAULT_BUTTON);
+            if (_defaultButtonId != null)
             {
-                if (_rendererProps.getStringProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_DEFAULT_BUTTON).equals(
-                        listEntry.getProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_NAME)))
+                if (_defaultButtonId.equals(listEntry.getProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_NAME)))
                 {
                     button.setSelection(true);
                 }
@@ -582,13 +599,15 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
 
         private Button button;
         private Object value;
+        private Object ID;
 
         /**
          * @param button
          * @param value
          */
-        public RadioButtonValue(Button button, Object value)
+        public RadioButtonValue(Object ID, Button button, Object value)
         {
+            this.ID = ID;
             this.button = button;
             this.value = value;
         }
@@ -689,10 +708,11 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
 
     private class RadioButtonSelection extends SelectionAdapter
     {
+        AtomicBoolean active  = new AtomicBoolean(true);
         @Override
         public void widgetSelected(SelectionEvent e)
         {
-            if (e.widget instanceof Button && ((Button) e.widget).getSelection())
+            if (active.get() && e.widget instanceof Button && ((Button) e.widget).getSelection())
             {
                 valueChanged();
             }
