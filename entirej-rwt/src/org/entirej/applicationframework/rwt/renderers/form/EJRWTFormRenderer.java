@@ -193,9 +193,29 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     }
     
     @Override
-    public void closeEmbeddedForm(EJEmbeddedFormController controller)
+    public void closeEmbeddedForm(EJEmbeddedFormController formController)
     {
-        // TODO implement this method
+        if (formController == null)
+        {
+            throw new EJApplicationException("No embedded form controller has been passed to closeEmbeddedForm");
+        }
+
+        if (formController.getCanvasName() != null)
+        {
+            Composite composite = _formPanes.get(formController.getCanvasName());
+            if (composite != null)
+            {
+                Control[] children = composite.getChildren();
+                for (Control control : children)
+                {
+                    if (!control.isDisposed())
+                    {
+                        control.dispose();
+                    }
+                }
+                composite.layout(true);
+            }
+        }
     }
 
     @Override
