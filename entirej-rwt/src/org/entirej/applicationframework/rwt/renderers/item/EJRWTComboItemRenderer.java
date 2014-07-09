@@ -23,6 +23,7 @@ package org.entirej.applicationframework.rwt.renderers.item;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.text.Collator;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -37,6 +38,7 @@ import java.util.Map;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -1157,9 +1159,43 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     }
 
     @Override
-    public EJRWTAbstractTableSorter getColumnSorter(EJScreenItemProperties item, EJScreenItemController controller)
+    public EJRWTAbstractTableSorter getColumnSorter(final EJScreenItemProperties item, EJScreenItemController controller)
     {
-        return null;
+        final ColumnLabelProvider labelProvider = createColumnLabelProvider(item, controller);
+        final Collator compareCollator = Collator.getInstance();
+        return new EJRWTAbstractTableSorter()
+        {
+            @Override
+            public int compare(Viewer viewer, Object e1, Object e2)
+            {
+
+                if (e1 instanceof EJDataRecord && e2 instanceof EJDataRecord)
+                {
+                    EJDataRecord d1 = (EJDataRecord) e1;
+                    EJDataRecord d2 = (EJDataRecord) e2;
+                    if (d1 != null && d2 != null)
+                    {
+
+                        Object value1 = d1.getValue(item.getReferencedItemName());
+                        Object value2 = d2.getValue(item.getReferencedItemName());
+                        if (value1 == null && value2 == null)
+                        {
+                            return 0;
+                        }
+                        if (value1 == null && value2 != null)
+                        {
+                            return -1;
+                        }
+                        if (value1 != null && value2 == null)
+                        {
+                            return 1;
+                        }
+                        return compareCollator.compare(labelProvider.getText(value1), labelProvider.getText(value2));
+                    }
+                }
+                return 0;
+            }
+        };
     }
 
     @Override
