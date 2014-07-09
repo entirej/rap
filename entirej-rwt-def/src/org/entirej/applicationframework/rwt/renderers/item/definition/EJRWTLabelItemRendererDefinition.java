@@ -51,6 +51,8 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
     public static final String PROPERTY_DISPLAY_AS_HYPERLINK = "DISPLAY_AS_HYPERLINK";
     public static final String PROPERTY_TEXT_WRAP            = "WRAP";
 
+    public static final String PROPERTY_HTML_FORMAT          = "HTML_FORMAT";
+
     public EJRWTLabelItemRendererDefinition()
     {
     }
@@ -104,6 +106,13 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
         EJDevPropertyDefinition textWrap = new EJDevPropertyDefinition(PROPERTY_TEXT_WRAP, EJPropertyDefinitionType.BOOLEAN);
         textWrap.setLabel("Wrap Text");
         textWrap.setDescription("If this property is set, the Label Wraps the text");
+        
+        
+        EJDevPropertyDefinition htmlFormat = new EJDevPropertyDefinition(PROPERTY_HTML_FORMAT, EJPropertyDefinitionType.BOOLEAN);
+        htmlFormat.setLabel("HTML Formatting");
+        htmlFormat.setDescription("If this property is set, the Label formats certain XHTML tags ");
+        
+        
 
         EJDevPropertyDefinition pic = new EJDevPropertyDefinition(PROPERTY_PICTURE, EJPropertyDefinitionType.PROJECT_FILE);
         pic.setLabel("Picture");
@@ -113,6 +122,7 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
         mainGroup.addPropertyDefinition(textCase);
         mainGroup.addPropertyDefinition(textAlignment);
         mainGroup.addPropertyDefinition(textWrap);
+        mainGroup.addPropertyDefinition(htmlFormat);
         mainGroup.addPropertyDefinition(pic);
 
         return mainGroup;

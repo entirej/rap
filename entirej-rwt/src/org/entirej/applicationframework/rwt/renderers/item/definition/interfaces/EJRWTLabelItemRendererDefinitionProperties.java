@@ -25,6 +25,7 @@ public interface EJRWTLabelItemRendererDefinitionProperties
     public static final String PROPERTY_CASE_LOWER           = "LOWER";
     public static final String PROPERTY_CASE_MIXED           = "MIXED";
     public static final String PROPERTY_ALIGNMENT            = "ALIGNMENT";
+    public static final String PROPERTY_HTML_FORMAT          = "HTML_FORMAT";
     public static final String PROPERTY_ALIGNMENT_LEFT       = "LEFT";
     public static final String PROPERTY_ALIGNMENT_RIGHT      = "RIGHT";
     public static final String PROPERTY_ALIGNMENT_CENTER     = "CENTER";

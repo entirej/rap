@@ -23,6 +23,7 @@ import java.io.Serializable;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -408,6 +409,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
         if (!_displayAsHyperlink)
         {
             final Label labelField = new Label(composite, style);
+            labelField.setData(EJ_RWT.MARKUP_ENABLED, _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
 
             String pictureName = _rendererProps.getStringProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_PICTURE);
 
@@ -426,6 +428,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 {
                     if (controlState(labelField))
                     {
+                        
                         labelField.setText(text);
                     }
                 }
@@ -508,6 +511,8 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 }
 
             };
+
+            linkField.setData(EJ_RWT.MARKUP_ENABLED, _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
 
             linkField.addSelectionListener(new SelectionAdapter()
             {
