@@ -173,10 +173,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public void blockCleared()
     {
-        if (_browser != null && !_browser.isDisposed())
-        {
-            _browser.setText("");
-        }
+        createHTML();
 
     }
 
@@ -776,7 +773,8 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 header.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 130%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
                                 header.append(functionDef).append(">");
                             }
-                            header.append(itemProps.getLabel());
+                            if(itemProps.getLabel()!=null)
+                                header.append(itemProps.getLabel());
                             if(sortInfo!=null)
                                 header.append(String.format("<esh %s/>",sortInfo.id));
                             header.append("</th>");
