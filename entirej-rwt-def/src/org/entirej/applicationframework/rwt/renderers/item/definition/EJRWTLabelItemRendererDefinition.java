@@ -109,7 +109,7 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
         
         
         EJDevPropertyDefinition htmlFormat = new EJDevPropertyDefinition(PROPERTY_HTML_FORMAT, EJPropertyDefinitionType.BOOLEAN);
-        htmlFormat.setLabel("HTML Formatting");
+        htmlFormat.setLabel("XHTML Formatting");
         htmlFormat.setDescription("If this property is set, the Label formats certain XHTML tags ");
         
         

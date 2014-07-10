@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
@@ -374,6 +375,14 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
                 }
             }
         });
+        
+        if(_rendererProps.getBooleanProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_DEFAULT_BUTTON, false))
+        {
+            Shell shell = composite.getShell();
+            if (shell != null) {
+                    shell.setDefaultButton(_button);
+            }
+        }
 
         _visualContext = new EJRWTItemRendererVisualContext(_button.getBackground(), _button.getForeground(), _button.getFont());
     }

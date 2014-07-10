@@ -34,7 +34,6 @@ import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayPro
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendererDefinition;
 
-
 public class EJRWTButtonItemRendererDefinition implements EJDevItemRendererDefinition
 {
     private static final String PROPERTY_HIDE_BORDER      = "HIDE_BORDER";
@@ -42,6 +41,7 @@ public class EJRWTButtonItemRendererDefinition implements EJDevItemRendererDefin
     private static final String PROPERTY_ALIGNMENT_LEFT   = "LEFT";
     private static final String PROPERTY_ALIGNMENT_RIGHT  = "RIGHT";
     private static final String PROPERTY_ALIGNMENT_CENTER = "CENTER";
+    private static final String PROPERTY_DEFAULT_BUTTON   = "DEFAULT_BUTTON";
 
     public EJRWTButtonItemRendererDefinition()
     {
@@ -87,11 +87,18 @@ public class EJRWTButtonItemRendererDefinition implements EJDevItemRendererDefin
         EJDevPropertyDefinition pic = new EJDevPropertyDefinition("PICTURE", EJPropertyDefinitionType.PROJECT_FILE);
         pic.setLabel("Picture");
         pic.setDescription("Choose an image file from you project to display on the button");
+        
+        
 
+        EJDevPropertyDefinition defaultButton = new EJDevPropertyDefinition(PROPERTY_DEFAULT_BUTTON, EJPropertyDefinitionType.BOOLEAN);
+        defaultButton.setLabel("Default Button");
+        defaultButton.setDescription(" Specifies that the button should be identified as the default button. At runtime, the end user can invoke the default button by pressing [Select] if focus is within the window that contains the default button. \n\n        On some client frameworks, the default button is bordered or highlighted in a unique fashion to distinguish it from other buttons in the interface.");
+       
         mainGroup.addPropertyDefinition(textAllignment);
         mainGroup.addPropertyDefinition(hideBorder);
+       
         mainGroup.addPropertyDefinition(pic);
-
+        mainGroup.addPropertyDefinition(defaultButton);
         return mainGroup;
     }
 
