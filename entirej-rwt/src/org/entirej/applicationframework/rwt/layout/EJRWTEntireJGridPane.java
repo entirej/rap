@@ -41,12 +41,16 @@ public class EJRWTEntireJGridPane extends Composite
     {
         super(parent, style | SWT.NO_FOCUS);
         GridLayout layout = new GridLayout(cols, false);
-        layout.marginBottom = 0;
-        layout.marginHeight = 0;
-        layout.marginLeft = 0;
-        layout.marginRight = 0;
-        layout.marginTop = 0;
-        layout.marginWidth = 0;
+       
+        if((style&SWT.BORDER )!= SWT.BORDER)
+        {
+            layout.marginBottom = 0;
+            layout.marginHeight = 0;
+            layout.marginLeft = 0;
+            layout.marginRight = 0;
+            layout.marginTop = 0;
+            layout.marginWidth = 0;
+        }
 
         setLayout(layout);
     }

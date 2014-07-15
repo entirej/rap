@@ -949,6 +949,11 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         else
         {
             groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols(), groupProperties.dispayGroupFrame() ? SWT.BORDER : SWT.NONE);
+            if(groupProperties.dispayGroupFrame() )
+            {
+                groupPane.getLayout().marginRight = 5;
+                groupPane.getLayout().marginLeft = 5;
+            }
         }
 
         groupPane.getLayout().verticalSpacing = 1;
