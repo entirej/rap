@@ -1275,18 +1275,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 gainFocus();
             }
         }
-        else
-        {
-            // default actions
-            if (arg0.keyCode == SWT.ARROW_UP)
-            {
-                _block.previousRecord();
-            }
-            else if (arg0.keyCode == SWT.ARROW_DOWN)
-            {
-                _block.nextRecord();
-            }
-        }
+
     }
 
     private void hookKeyListener(Control control)
