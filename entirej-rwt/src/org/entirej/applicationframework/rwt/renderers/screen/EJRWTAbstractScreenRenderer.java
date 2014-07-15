@@ -91,8 +91,6 @@ public abstract class EJRWTAbstractScreenRenderer implements EJRenderer
             groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols(), groupProperties.dispayGroupFrame() ? SWT.BORDER : SWT.NONE);
         }
 
-        groupPane.getLayout().marginRight = 10;
-        groupPane.getLayout().marginLeft = 10;
         groupPane.getLayout().verticalSpacing = 1;
 
         groupPane.setPaneName(groupProperties.getName());

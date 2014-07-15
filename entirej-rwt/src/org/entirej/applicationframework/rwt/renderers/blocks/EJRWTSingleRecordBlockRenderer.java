@@ -861,8 +861,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     }
                 });
                 groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols());
-                groupPane.getLayout().marginRight = 5;
-                groupPane.getLayout().marginLeft = 5;
+//                groupPane.getLayout().marginRight = 5;
+//                groupPane.getLayout().marginLeft = 5;
                 section.setClient(groupPane);
 
                 final EJFrameworkExtensionPropertyList propertyList = rendererProperties
@@ -942,8 +942,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     }
                 });
                 groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols());
-                groupPane.getLayout().marginRight = 5;
-                groupPane.getLayout().marginLeft = 5;
+//                groupPane.getLayout().marginRight = 5;
+//                groupPane.getLayout().marginLeft = 5;
             }
         }
         else
@@ -951,8 +951,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols(), groupProperties.dispayGroupFrame() ? SWT.BORDER : SWT.NONE);
             if(groupProperties.dispayGroupFrame() )
             {
-                groupPane.getLayout().marginRight = 5;
-                groupPane.getLayout().marginLeft = 5;
+//                groupPane.getLayout().marginRight = 5;
+//                groupPane.getLayout().marginLeft = 5;
             }
         }
 
