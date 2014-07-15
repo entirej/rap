@@ -794,11 +794,8 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
     protected static DateFormat createDateFormat(EJScreenItemController item)
     {
         DateFormat dateFormat;
-        Locale defaultLocale = item.getForm().getFrameworkManager().getCurrentLocale();
-        if (defaultLocale == null)
-        {
-            defaultLocale = Locale.getDefault();
-        }
+        Locale defaultLocale =  Locale.getDefault();
+        
 
         EJFrameworkExtensionProperties rendererProps = item.getReferencedItemProperties().getItemRendererProperties();
         String format = rendererProps.getStringProperty(EJRWTDateTimeItemRendererDefinitionProperties.PROPERTY_DETAILS);
@@ -806,15 +803,37 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
                 .getStringProperty(EJRWTDateTimeItemRendererDefinitionProperties.PROPERTY_TYPE));
         if (EJRWTDateTimeItemRendererDefinitionProperties.PROPERTY_DETAILS_LONG.equals(format))
         {
-            dateFormat = istime ? DateFormat.getTimeInstance(DateFormat.LONG, defaultLocale) : DateFormat.getDateInstance(DateFormat.LONG, defaultLocale);
+            if(istime)
+            {
+                dateFormat =  new SimpleDateFormat("HH:mm:ss");
+            }
+            else
+            {
+                dateFormat = DateFormat.getDateInstance(DateFormat.LONG, defaultLocale);
+            }
         }
         else if (EJRWTDateTimeItemRendererDefinitionProperties.PROPERTY_DETAILS_MEDIUM.equals(format))
         {
-            dateFormat = istime ? DateFormat.getTimeInstance(DateFormat.MEDIUM, defaultLocale) : DateFormat.getDateInstance(DateFormat.MEDIUM, defaultLocale);
+           
+            if(istime)
+            {
+                dateFormat =  new SimpleDateFormat("HH:mm:ss");
+            }
+            else
+            {
+                dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, defaultLocale);
+            }
         }
         else if (EJRWTDateTimeItemRendererDefinitionProperties.PROPERTY_DETAILS_SHORT.equals(format))
         {
-            dateFormat = istime ? DateFormat.getTimeInstance(DateFormat.SHORT, defaultLocale) : DateFormat.getDateInstance(DateFormat.SHORT, defaultLocale);
+            if(istime)
+            {
+                dateFormat =  new SimpleDateFormat("HH:mm");
+            }
+            else
+            {
+                dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, defaultLocale);
+            }
         }
         else
         {
