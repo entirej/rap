@@ -739,7 +739,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     @Override
                     public void keyReleased(KeyEvent arg0)
                     {
-                        if ((arg0.stateMask & SWT.SHIFT) != 0 && arg0.keyCode == SWT.ARROW_DOWN)
+                        if ((arg0.stateMask & SWT.SHIFT) != 0 && arg0.keyCode == SWT.ARROW_DOWN && isLovActivated())
                         {
                             _item.getItemLovController().displayLov(EJLovDisplayReason.LOV);
                         }

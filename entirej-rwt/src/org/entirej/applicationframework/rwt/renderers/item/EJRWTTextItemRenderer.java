@@ -806,20 +806,23 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                         @Override
                         public void keyReleased(KeyEvent arg0)
                         {
-                            if ((arg0.stateMask & SWT.SHIFT) != 0 && arg0.keyCode == SWT.ARROW_DOWN)
-                            {
-                                _item.getItemLovController().displayLov(EJLovDisplayReason.LOV);
-                            }
-
-                            if (arg0.keyCode == 13 && (SWT.MULTI != (_textField.getStyle() & SWT.MULTI) || (arg0.stateMask & SWT.CONTROL) != 0))
-                            {
-                                if (_valueChanged)
+                            
+                           
+                                if ((arg0.stateMask & SWT.SHIFT) != 0 && arg0.keyCode == SWT.ARROW_DOWN && isLovActivated())
                                 {
-                                    _valueChanged = false;
-                                    _item.itemValueChaged();
-                                    setMandatoryBorder(_mandatory);
+                                    _item.getItemLovController().displayLov(EJLovDisplayReason.LOV);
                                 }
-                            }
+    
+                                if (arg0.keyCode == 13 && (SWT.MULTI != (_textField.getStyle() & SWT.MULTI) || (arg0.stateMask & SWT.CONTROL) != 0))
+                                {
+                                    if (_valueChanged)
+                                    {
+                                        _valueChanged = false;
+                                        _item.itemValueChaged();
+                                        setMandatoryBorder(_mandatory);
+                                    }
+                                }
+                            
                         }
 
                         @Override
