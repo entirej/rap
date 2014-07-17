@@ -67,11 +67,13 @@ import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.EJMessageFactory;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.data.controllers.EJBlockController;
+import org.entirej.framework.core.data.controllers.EJItemLovController;
 import org.entirej.framework.core.data.controllers.EJLovController;
 import org.entirej.framework.core.enumerations.EJFrameworkMessage;
 import org.entirej.framework.core.enumerations.EJLovDisplayReason;
 import org.entirej.framework.core.enumerations.EJScreenType;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
+import org.entirej.framework.core.properties.EJCoreItemProperties;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
@@ -289,7 +291,8 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
         }
         try
         {
-            lovController.executeQuery();
+            lovController.executeQuery(new EJItemLovController(_item.getBlock().getBlockController().getFormController(),
+                    _item, ((EJCoreItemProperties)_itemProperties).getLovMappingPropertiesOnUpdate()));
 
 
 
