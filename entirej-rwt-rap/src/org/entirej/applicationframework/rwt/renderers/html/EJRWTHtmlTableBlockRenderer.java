@@ -732,7 +732,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             
                             
                             SortInfo sortInfo = null;
-                            if( blockProperties.getBlockRendererProperties().getBooleanProperty(ALLOW_ROW_SORTING, true))
+                            if( rendererProperties.getBooleanProperty(ALLOW_ROW_SORTING, true))
                             {
                                 EJRWTAbstractTableSorter columnSorter = itemRenderer.getColumnSorter(itemProps, item);
                                 if (columnSorter != null)
@@ -768,15 +768,18 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 header.append(String.format(" style=\'%s\'", paddingStyle));
                             }
                             header.append("> ");
-                            if(functionDef!=null)
-                            {
-                                header.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 130%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
-                                header.append(functionDef).append(">");
-                            }
+                            
                             if(itemProps.getLabel()!=null)
+                            {
+                                if(functionDef!=null)
+                                {
+                                    header.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 130%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
+                                    header.append(functionDef).append(">");
+                                }
                                 header.append(itemProps.getLabel());
-                            if(sortInfo!=null)
-                                header.append(String.format("<esh %s/>",sortInfo.id));
+                                if(sortInfo!=null)
+                                    header.append(String.format("<esh %s/>",sortInfo.id));
+                            }
                             header.append("</th>");
                         }
                     }
