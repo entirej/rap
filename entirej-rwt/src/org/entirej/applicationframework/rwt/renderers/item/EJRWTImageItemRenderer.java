@@ -103,6 +103,15 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
+        String pictureName = _rendererProps.getStringProperty(EJRWTImageItemRendererDefinitionProperties.PROPERTY_IMAGE);
+
+        if (pictureName != null && pictureName.length() > 0)
+        {
+            if (pictureName != null && pictureName.trim().length() > 0)
+            {
+                _defaultImage = EJRWTImageRetriever.get(pictureName);
+            }
+        }
     }
 
     @Override
@@ -389,15 +398,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
         final String label = _screenItemProperties.getLabel();
         final Label labelField = new Label(composite, style);
 
-        String pictureName = _rendererProps.getStringProperty(EJRWTImageItemRendererDefinitionProperties.PROPERTY_IMAGE);
-
-        if (pictureName != null && pictureName.length() > 0)
-        {
-            if (pictureName != null && pictureName.trim().length() > 0)
-            {
-                _defaultImage = EJRWTImageRetriever.get(pictureName);
-            }
-        }
+        
 
         _labelField = labelField;
         _labelField.setText(label != null ? label : "");
@@ -427,7 +428,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
             }
         });
        
-        _labelField.setImage(_defaultImage = EJRWTImageRetriever.get(pictureName));
+        _labelField.setImage(_defaultImage );
         _mandatoryDecoration.hide();
     }
 

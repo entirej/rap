@@ -577,8 +577,27 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)
     {
+        
+        final Image image ;
+        String pictureName = _rendererProps.getStringProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_PICTURE);
+
+        if (pictureName != null && pictureName.length() > 0)
+        {
+            image = EJRWTImageRetriever.get(pictureName);
+        }
+        else
+        {
+            image = null;
+        }
         ColumnLabelProvider provider = new ColumnLabelProvider()
         {
+            
+            @Override
+            public Image getImage(Object element)
+            {
+                return image;
+            }
+            
             @Override
             public Color getBackground(Object element)
             {
