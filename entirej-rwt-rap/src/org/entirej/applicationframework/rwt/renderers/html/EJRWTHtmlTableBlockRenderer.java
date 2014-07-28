@@ -729,10 +729,11 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             }
                             alignment = getComponentAlignment(alignmentProperty);
                             
-                            
+
+                            EJFrameworkExtensionProperties extentionProperties = itemProps.getBlockRendererRequiredProperties();
                             
                             SortInfo sortInfo = null;
-                            if( rendererProperties.getBooleanProperty(ALLOW_ROW_SORTING, true))
+                            if( extentionProperties.getBooleanProperty(ALLOW_ROW_SORTING, true))
                             {
                                 EJRWTAbstractTableSorter columnSorter = itemRenderer.getColumnSorter(itemProps, item);
                                 if (columnSorter != null)
@@ -773,7 +774,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             {
                                 if(functionDef!=null)
                                 {
-                                    header.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 130%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
+                                    header.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 100%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
                                     header.append(functionDef).append(">");
                                 }
                                 header.append(itemProps.getLabel());
@@ -1146,7 +1147,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                             if (actionDef != null)
                             {
-                                builder.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 130%\"",
+                                builder.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 100%\"",
                                         ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
                                 builder.append(actionDef).append(">");
                             }
