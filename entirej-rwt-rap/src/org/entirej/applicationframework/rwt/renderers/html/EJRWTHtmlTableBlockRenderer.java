@@ -1145,10 +1145,11 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                             builder.append(">");
 
-                            if (actionDef != null)
+                            String text = columnLabelProvider.getText(record);
+
+                            if (actionDef != null && text!=null && text.length()>0)
                             {
-                                builder.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 100%\"",
-                                        ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
+                                builder.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 100%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
                                 builder.append(actionDef).append(">");
                             }
 
@@ -1170,16 +1171,15 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                     builder.append("<ejl><img src=\"");
                                     builder.append(ImageFactory.getImagePath(image));
                                     builder.append("\"");
-                                    builder.append(String.format(" class=\"%s %s\" %s  > </ejl>", ("default_all".equals(styleClass) ? "default_link_fg"
-                                            : "default_link"), styleClass, actionDef));
+                                    builder.append(String.format("style=\"cursor: hand;\" class=\"%s \" %s  > </ejl>",  styleClass, actionDef));
                                 }
                             }
                             // builder.append(String.format("<p class=\"default %s\">",
                             // styleClass));
-                            String text = columnLabelProvider.getText(record);
 
+                           
+                            
                             builder.append(text);
-
                             builder.append("</td>");
                         }
                         builder.append("</tr>");

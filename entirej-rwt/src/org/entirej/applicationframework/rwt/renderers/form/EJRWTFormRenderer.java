@@ -184,6 +184,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 scrollComposite.setExpandVertical(true);
                 scrollComposite.setMinSize(formController.getEmbeddedForm().getProperties().getFormWidth(), formController.getEmbeddedForm().getProperties().getFormHeight());
                 composite.layout(true);
+                composite.redraw();
             }
             else
             {
@@ -590,7 +591,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         createGroupCanvas(groupPane, containedCanvas, canvasController);
                         break;
                     case FORM:
-                        createFormCanvas(parent, canvasProperties, canvasController);
+                        createFormCanvas(groupPane, containedCanvas, canvasController);
                         break;
                     case SPLIT:
                         createSplitCanvas(groupPane, containedCanvas, canvasController);
@@ -638,7 +639,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         createGroupCanvas(layoutBody, containedCanvas, canvasController);
                         break;
                     case FORM:
-                        createFormCanvas(parent, canvasProperties, canvasController);
+                        createFormCanvas(layoutBody, containedCanvas, canvasController);
                         break;
                     case SPLIT:
                         createSplitCanvas(layoutBody, containedCanvas, canvasController);
