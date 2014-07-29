@@ -19,7 +19,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
   }
 
   entirej.HtmlView = function( properties ) {
-    bindAll( this, [ "layout", "onRender","ej_action" ] );
+    bindAll( this, [ "layout", "onRender","ej_action",'onShow' ] );
     this.parent = rap.getObject( properties.parent );
     this.element = document.createElement( "div" );
 
@@ -33,6 +33,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
     
     this.parent.append( this.element );
     this.parent.addListener( "Resize", this.layout );
+    this.parent.addListener( "Show", this.onShow );
     rap.on( "render", this.onRender );
   };
 
@@ -75,7 +76,12 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
     	}
     },
     
-    
+    onShow :function ()
+    {
+    	var text = this.element.innerHTML ;
+    	 this.element.innerHTML ='';
+    	 this.setText(text);
+    },
    
     setText : function( text ) {
       
