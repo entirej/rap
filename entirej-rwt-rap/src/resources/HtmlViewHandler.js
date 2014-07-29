@@ -79,8 +79,21 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
     onShow :function ()
     {
     	var text = this.element.innerHTML ;
-    	 this.element.innerHTML ='';
-    	 this.setText(text);
+    	var pElm = this.element;
+    	this.element.innerHTML = '';
+    	var func = this.ej_action;
+    	window.setTimeout(function(){
+    		pElm.innerHTML = text;
+            var elemsnts= pElm.getElementsByTagName("ejl");
+            if(elemsnts)
+        	{
+            	
+            	for(var i =0;i<elemsnts.length;i++)
+            	{
+            		elemsnts[i].onclick =  func;
+            	}
+        	}
+    	 }, 1);
     },
    
     setText : function( text ) {
