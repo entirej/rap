@@ -19,8 +19,9 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
   }
 
   entirej.HtmlView = function( properties ) {
-    bindAll( this, [ "layout", "onRender","ej_action",'onShow' ] );
+    bindAll( this, [ "layout", "onRender","ej_action" ] );
     this.parent = rap.getObject( properties.parent );
+    this.document = document;
     this.element = document.createElement( "div" );
 
     this.element.style.height = '100%';
@@ -33,7 +34,6 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
     
     this.parent.append( this.element );
     this.parent.addListener( "Resize", this.layout );
-    this.parent.addListener( "Show", this.onShow );
     rap.on( "render", this.onRender );
   };
 
@@ -76,29 +76,19 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
     	}
     },
     
-    onShow :function ()
-    {
-    	var text = this.element.innerHTML ;
-    	var pElm = this.element;
-    	this.element.innerHTML = '';
-    	var func = this.ej_action;
-    	window.setTimeout(function(){
-    		pElm.innerHTML = text;
-            var elemsnts= pElm.getElementsByTagName("ejl");
-            if(elemsnts)
-        	{
-            	
-            	for(var i =0;i<elemsnts.length;i++)
-            	{
-            		elemsnts[i].onclick =  func;
-            	}
-        	}
-    	 }, 1);
-    },
+    
    
     setText : function( text ) {
       
-    	this.element.innerHTML = text;
+    	
+    	while( this.element.childNodes[0] ) {
+    		this.element.removeChild( this.element.childNodes[0] );
+    	}
+        var elm = this.document.createElement( "div" );
+
+        this.element.appendChild( elm);
+        elm.innerHTML = text;
+    	
         var elemsnts= this.element.getElementsByTagName("ejl");
         if(elemsnts)
     	{
