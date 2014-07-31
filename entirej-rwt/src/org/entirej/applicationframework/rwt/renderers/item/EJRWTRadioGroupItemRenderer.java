@@ -285,7 +285,6 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
                         if (buttonValue.ID.equals(_defaultButtonId))
                         {
                             buttonValue.getButton().setSelection(true);
-                            valueChanged();
                             break;
                         }
 
@@ -565,6 +564,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
             // Add the listeners. These will be needed to trigger events within
             // EntireJ
             button.addFocusListener(this);
+            button.addSelectionListener(_radioButtonSelection);
 
         }
 
