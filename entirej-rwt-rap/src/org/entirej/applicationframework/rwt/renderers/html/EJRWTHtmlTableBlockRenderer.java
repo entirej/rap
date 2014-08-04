@@ -768,6 +768,29 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             {
                                 header.append(String.format(" style=\'%s\'", paddingStyle));
                             }
+                            
+                            float width = extentionProperties.getIntProperty(DISPLAY_WIDTH_PROPERTY, 0);
+                            if (width > 0)
+                            {
+                                Font font = labelProvider.getFont(new Object());
+
+                                if (font == null)
+                                    font = _browser.getFont();
+                                if (font != null)
+                                {
+                                    float avgCharWidth = RWTUtils.getAvgCharWidth(font);
+                                    if (avgCharWidth > 0)
+                                    {
+                                        if (width != 1)
+                                        {
+                                            // add +1 padding
+                                            width = ((int) (((width + 1) * avgCharWidth)));
+                                        }
+                                    }
+                                }
+
+                                header.append(String.format(" width=%s ", width));
+                            }
                             header.append("> ");
                             
                             if(itemProps.getLabel()!=null)
