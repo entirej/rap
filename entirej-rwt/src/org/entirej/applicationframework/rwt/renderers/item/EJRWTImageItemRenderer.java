@@ -524,7 +524,33 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
 
                     if (value != null)
                     {
-
+                        if (value instanceof String)
+                        {
+                            URL resource = EJRWTImageRetriever.class.getClassLoader().getResource((String) value);
+                            if(resource!=null)
+                            {
+                                return ImageDescriptor.createFromURL(resource).createImage();
+                            }
+                            else
+                            {
+                                try
+                                {
+                                   return ImageDescriptor.createFromURL((new URL((String)value))).createImage();
+                                }
+                                catch (MalformedURLException e)
+                                {
+                                    return null;
+                                }
+                            }
+                        }
+                        else if (value instanceof URL)
+                        {
+                            return ImageDescriptor.createFromURL((URL) value).createImage();
+                        }
+                        else if (value instanceof byte[])
+                        {
+                            return new Image(Display.getDefault(), new ByteArrayInputStream((byte[]) value));
+                        }
                     }
                 }
                 return _defaultImage;
