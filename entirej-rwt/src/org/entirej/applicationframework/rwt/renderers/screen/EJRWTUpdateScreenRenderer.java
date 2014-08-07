@@ -390,7 +390,7 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
                     _frameworkManager.handleException(e);
                     return;
                 }
-                super.buttonPressed(buttonId);
+              
             }
         };
         _updateDialog.create();

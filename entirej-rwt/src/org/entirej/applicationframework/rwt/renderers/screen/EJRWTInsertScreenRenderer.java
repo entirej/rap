@@ -376,7 +376,6 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
                     _frameworkManager.handleException(e);
                     return;
                 }
-                super.buttonPressed(buttonId);
             }
         };
         _insertDialog.create();

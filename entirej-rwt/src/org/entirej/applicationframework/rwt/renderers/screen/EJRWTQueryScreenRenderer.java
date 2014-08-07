@@ -356,7 +356,6 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
                     _frameworkManager.handleException(e);
                     return;
                 }
-                super.buttonPressed(buttonId);
             }
         };
         _queryDialog.create();
