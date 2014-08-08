@@ -520,14 +520,18 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
     public void valueChanged()
     {
+        Object value = getValue();
         if (!_textField.isFocusControl())
         {
+           
+           
+            if(_valueChanged ||  ((_baseValue==null && value!=null) || (_baseValue!=null && value==null) || (value!=null && !value.equals(_baseValue))  ))
+                _item.itemValueChaged();
             _valueChanged = false;
-            _item.itemValueChaged();
         }
         else
         {
-            _valueChanged = true;
+            _valueChanged = _valueChanged ||  ((_baseValue==null && value!=null) || (_baseValue!=null && value==null) || (value!=null && !value.equals(_baseValue))   );
         }
         setMandatoryBorder(_mandatory);
         fireTextChange();
@@ -938,11 +942,14 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     {
         protected boolean         enable           = true;
 
+        
         @Override
         public void modifyText(ModifyEvent event)
         {
-            if (enable)
+            
+            if (enable )
             {
+                
                 valueChanged();
             }
         }
