@@ -1031,77 +1031,188 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                     }
 
                     Collection<EJDataRecord> records = _block.getRecords();
-                    records = sortedRecords(records);
-                    int lastRowSpan = 0;
-
-                    String oddVA = "default_all";
-                    String valueVA = blockProperties.getBlockRendererProperties().getStringProperty(ROW_ODD_VA);
-                    if (valueVA != null && valueVA.length() > 0)
+                    
+                    if(records.size()>0)
                     {
-                        oddVA = valueVA;
-                    }
-                    String evenVA = "default_all";
-                    valueVA = blockProperties.getBlockRendererProperties().getStringProperty(ROW_EVEN_VA);
-                    if (valueVA != null && valueVA.length() > 0)
-                    {
-                        evenVA = valueVA;
-                    }
-                    int rowid = 0;
-                    for (EJDataRecord record : records)
-                    {
-                        rowid++;
-                        if (lastRowSpan > 1)
+                    
+                        records = sortedRecords(records);
+                        int lastRowSpan = 0;
+    
+                        String oddVA = "default_all";
+                        String valueVA = blockProperties.getBlockRendererProperties().getStringProperty(ROW_ODD_VA);
+                        if (valueVA != null && valueVA.length() > 0)
                         {
-                            for (int i = 1; i < lastRowSpan; i++)
-                            {
-                                builder.append(trDef).append("</tr>");
-
-                            }
-                            lastRowSpan = 0;
+                            oddVA = valueVA;
                         }
+                        String evenVA = "default_all";
+                        valueVA = blockProperties.getBlockRendererProperties().getStringProperty(ROW_EVEN_VA);
+                        if (valueVA != null && valueVA.length() > 0)
+                        {
+                            evenVA = valueVA;
+                        }
+                        int rowid = 0;
+                        for (EJDataRecord record : records)
+                        {
+                            rowid++;
+                            if (lastRowSpan > 1)
+                            {
+                                for (int i = 1; i < lastRowSpan; i++)
+                                {
+                                    builder.append(trDef).append("</tr>");
+    
+                                }
+                                lastRowSpan = 0;
+                            }
+                            builder.append(trDef);
+                            for (EJCoreMainScreenItemProperties item : _items)
+                            {
+                                String styleClass = (rowid % 2) != 0 ? oddVA : evenVA;
+    
+                                String actionDef = null;
+                                String alignment = null;
+                                float width = -1;
+    
+                                ColumnLabelProvider columnLabelProvider = _itemLabelProviders.get(item.getReferencedItemName());
+    
+                                EJScreenItemController screenItem = _block.getScreenItem(EJScreenType.MAIN, item.getReferencedItemName());
+                                EJCoreVisualAttributeProperties iva = screenItem.getManagedItemRenderer().getVisualAttributeProperties();
+                                if (iva != null)
+                                {
+                                    styleClass = iva.getName();
+                                }
+    
+                                EJFrameworkExtensionProperties rendererProperties = item.getReferencedItemProperties().getItemRendererProperties();
+    
+                                EJCoreVisualAttributeProperties diva = record.getItem(item.getReferencedItemName()).getVisualAttribute();
+                                if (diva != null)
+                                {
+                                    styleClass = diva.getName();
+                                }
+                                builder.append(String.format("<td class=\"%s\" ", styleClass));
+                                if (paddingStyle != null)
+                                {
+                                    builder.append(String.format(" style=\'%s\'", paddingStyle));
+                                }
+    
+                                EJFrameworkExtensionProperties extentionProperties = item.getBlockRendererRequiredProperties();
+                                if (width == -1)
+                                {
+                                    width = extentionProperties.getIntProperty(DISPLAY_WIDTH_PROPERTY, 0);
+                                }
+    
+                                String action = extentionProperties.getStringProperty(CELL_ACTION_COMMAND);
+    
+                                if (action != null && action.length() > 0)
+                                {
+                                    actionDef = String.format("em='eaction' earg='%s , %s' ", action, String.valueOf(getDisplayedRecordNumber(record)));
+    
+                                }
+    
+                                if (width > 0)
+                                {
+                                    Font font = columnLabelProvider.getFont(new Object());
+    
+                                    if (font == null)
+                                        font = _browser.getFont();
+                                    if (font != null)
+                                    {
+                                        float avgCharWidth = RWTUtils.getAvgCharWidth(font);
+                                        if (avgCharWidth > 0)
+                                        {
+                                            if (width != 1)
+                                            {
+                                                // add +1 padding
+                                                width = ((int) (((width + 1) * avgCharWidth)));
+                                            }
+                                        }
+                                    }
+    
+                                    builder.append(String.format(" width=%s ", width));
+                                }
+                                if (alignment == null)
+                                {
+                                    String alignmentProperty = rendererProperties.getStringProperty(PROPERTY_ALIGNMENT);
+                                    if (alignmentProperty == null)
+                                    {
+                                        alignmentProperty = rendererProperties.getStringProperty("ALLIGNMENT");
+                                    }
+                                    alignment = getComponentAlignment(alignmentProperty);
+    
+                                }
+                                if (alignment != null)
+                                {
+                                    builder.append(String.format(" align=\'%s\'", alignment));
+                                }
+                                final String caseProperty = getComponentCase(rendererProperties.getStringProperty(PROPERTY_CASE));
+    
+                                builder.append(String.format(" font style=\'%s\'", caseProperty));
+    
+                                builder.append(">");
+    
+                                String text = columnLabelProvider.getText(record);
+    
+                                if (actionDef != null && text!=null && text.length()>0)
+                                {
+                                    builder.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 100%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
+                                    builder.append(actionDef).append(">");
+                                }
+    
+                                Image image = columnLabelProvider.getImage(record);
+                                if (image != null)
+                                {
+                                    if (actionDef == null)
+                                    {
+                                        builder.append("<img src=\"");
+    
+                                        builder.append(ImageFactory.getImagePath(image));
+    
+                                        builder.append("\"");
+                                        builder.append(String.format(" class=\"default %s\"  >", styleClass));
+                                    }
+                                    else
+    
+                                    {
+                                        builder.append("<ejl><img src=\"");
+                                        builder.append(ImageFactory.getImagePath(image));
+                                        builder.append("\"");
+                                        builder.append(String.format("style=\"cursor: hand;\" class=\"%s \" %s  > </ejl>",  styleClass, actionDef));
+                                    }
+                                }
+                                // builder.append(String.format("<p class=\"default %s\">",
+                                // styleClass));
+    
+                               
+                                
+                                builder.append(text);
+                                builder.append("</td>");
+                            }
+                            builder.append("</tr>");
+                        }
+                        
+                    }
+                    else
+                    {
                         builder.append(trDef);
                         for (EJCoreMainScreenItemProperties item : _items)
                         {
-                            String styleClass = (rowid % 2) != 0 ? oddVA : evenVA;
-
-                            String actionDef = null;
-                            String alignment = null;
+                            String padding = paddingStyle;
                             float width = -1;
 
                             ColumnLabelProvider columnLabelProvider = _itemLabelProviders.get(item.getReferencedItemName());
 
-                            EJScreenItemController screenItem = _block.getScreenItem(EJScreenType.MAIN, item.getReferencedItemName());
-                            EJCoreVisualAttributeProperties iva = screenItem.getManagedItemRenderer().getVisualAttributeProperties();
-                            if (iva != null)
-                            {
-                                styleClass = iva.getName();
-                            }
+                            
 
-                            EJFrameworkExtensionProperties rendererProperties = item.getReferencedItemProperties().getItemRendererProperties();
-
-                            EJCoreVisualAttributeProperties diva = record.getItem(item.getReferencedItemName()).getVisualAttribute();
-                            if (diva != null)
+                            
+                            builder.append(String.format("<td class=\"%s\" ", "default_all"));
+                            if (padding != null)
                             {
-                                styleClass = diva.getName();
-                            }
-                            builder.append(String.format("<td class=\"%s\" ", styleClass));
-                            if (paddingStyle != null)
-                            {
-                                builder.append(String.format(" style=\'%s\'", paddingStyle));
+                                builder.append(String.format(" style=\'%s\'", padding));
                             }
 
                             EJFrameworkExtensionProperties extentionProperties = item.getBlockRendererRequiredProperties();
                             if (width == -1)
                             {
                                 width = extentionProperties.getIntProperty(DISPLAY_WIDTH_PROPERTY, 0);
-                            }
-
-                            String action = extentionProperties.getStringProperty(CELL_ACTION_COMMAND);
-
-                            if (action != null && action.length() > 0)
-                            {
-                                actionDef = String.format("em='eaction' earg='%s , %s' ", action, String.valueOf(getDisplayedRecordNumber(record)));
-
                             }
 
                             if (width > 0)
@@ -1122,65 +1233,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         }
                                     }
                                 }
-
                                 builder.append(String.format(" width=%s ", width));
                             }
-                            if (alignment == null)
-                            {
-                                String alignmentProperty = rendererProperties.getStringProperty(PROPERTY_ALIGNMENT);
-                                if (alignmentProperty == null)
-                                {
-                                    alignmentProperty = rendererProperties.getStringProperty("ALLIGNMENT");
-                                }
-                                alignment = getComponentAlignment(alignmentProperty);
-
-                            }
-                            if (alignment != null)
-                            {
-                                builder.append(String.format(" align=\'%s\'", alignment));
-                            }
-                            final String caseProperty = getComponentCase(rendererProperties.getStringProperty(PROPERTY_CASE));
-
-                            builder.append(String.format(" font style=\'%s\'", caseProperty));
-
-                            builder.append(">");
-
-                            String text = columnLabelProvider.getText(record);
-
-                            if (actionDef != null && text!=null && text.length()>0)
-                            {
-                                builder.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 100%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
-                                builder.append(actionDef).append(">");
-                            }
-
-                            Image image = columnLabelProvider.getImage(record);
-                            if (image != null)
-                            {
-                                if (actionDef == null)
-                                {
-                                    builder.append("<img src=\"");
-
-                                    builder.append(ImageFactory.getImagePath(image));
-
-                                    builder.append("\"");
-                                    builder.append(String.format(" class=\"default %s\"  >", styleClass));
-                                }
-                                else
-
-                                {
-                                    builder.append("<ejl><img src=\"");
-                                    builder.append(ImageFactory.getImagePath(image));
-                                    builder.append("\"");
-                                    builder.append(String.format("style=\"cursor: hand;\" class=\"%s \" %s  > </ejl>",  styleClass, actionDef));
-                                }
-                            }
-                            // builder.append(String.format("<p class=\"default %s\">",
-                            // styleClass));
-
-                           
                             
-                            builder.append(text);
+                          
+                            builder.append(">");
                             builder.append("</td>");
+
                         }
                         builder.append("</tr>");
                     }
