@@ -262,41 +262,45 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     @Override
     public void setInitialValue(Object value)
     {
-        try
+        if(controlState(_radioGroup))
         {
-            removeListeners();
-            for (RadioButtonValue buttonValue : _radioButtons.values())
+            try
             {
-                if (buttonValue.getValue().equals(value))
+                removeListeners();
+                for (RadioButtonValue buttonValue : _radioButtons.values())
                 {
-                    buttonValue.getButton().setSelection(true);
-                }
-                else
-                {
-                    buttonValue.getButton().setSelection(false);
-                }
-            }
-            if (value == null)
-            {
-                if (_defaultButtonId != null)
-                {
-                    for (RadioButtonValue buttonValue : _radioButtons.values())
+                    if (buttonValue.getValue().equals(value))
                     {
-                        if (buttonValue.ID.equals(_defaultButtonId))
+                        buttonValue.getButton().setSelection(true);
+                    }
+                    else
+                    {
+                        buttonValue.getButton().setSelection(false);
+                    }
+                }
+                if (value == null)
+                {
+                    if (_defaultButtonId != null)
+                    {
+                        for (RadioButtonValue buttonValue : _radioButtons.values())
                         {
-                            buttonValue.getButton().setSelection(true);
-                            break;
-                        }
+                            if (buttonValue.ID.equals(_defaultButtonId))
+                            {
+                                buttonValue.getButton().setSelection(true);
+                                break;
+                            }
 
+                        }
                     }
                 }
             }
+            finally
+            {
+                addListeners();
+                setMandatoryBorder(_mandatory);
+            }
         }
-        finally
-        {
-            addListeners();
-            setMandatoryBorder(_mandatory);
-        }
+        
     }
 
     @Override

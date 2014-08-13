@@ -435,6 +435,18 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 }
             }
         });
+        String actionCommand = _screenItemProperties.getActionCommand();
+        if (actionCommand != null && actionCommand.trim().length() != 0)
+        {
+            _labelField.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseUp(MouseEvent e)
+                {
+                    _item.executeActionCommand();
+                }
+            });
+        }
        
         _labelField.setImage(_defaultImage );
         _mandatoryDecoration.hide();
