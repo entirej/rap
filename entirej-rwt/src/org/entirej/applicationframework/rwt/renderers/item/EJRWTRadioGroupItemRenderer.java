@@ -310,7 +310,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
 
     protected void setMandatoryBorder(boolean req)
     {
-        if (_mandatoryDecoration == null|| _mandatoryDecoration.getControl().isDisposed())
+        if (_mandatoryDecoration == null|| _radioGroup.isDisposed())
         {
             return;
         }
