@@ -34,10 +34,10 @@ import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayPro
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendererDefinition;
 
-
 public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinition
 {
     public static final String PROPERTY_FORMAT                = "FORMAT";
+    public static final String PROPERTY_LOCALE_FORMAT         = "LOCALE_FORMAT";
     public static final String PROPERTY_ALIGNMENT             = "ALIGNMENT";
     public static final String PROPERTY_ALIGNMENT_LEFT        = "LEFT";
     public static final String PROPERTY_ALIGNMENT_RIGHT       = "RIGHT";
@@ -82,14 +82,24 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
     public EJDevPropertyDefinitionGroup getItemPropertyDefinitionGroup()
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("Date Item Renderer");
-        mainGroup.setDescription("The Date Item Renderer is used to select data values from a calendar popup or by entering the date manually. Use the Date Time Item Renderer for further date options");
-        
+        mainGroup
+                .setDescription("The Date Item Renderer is used to select data values from a calendar popup or by entering the date manually. Use the Date Time Item Renderer for further date options");
+
         EJDevPropertyDefinition textAllignment = new EJDevPropertyDefinition(PROPERTY_ALIGNMENT, EJPropertyDefinitionType.STRING);
         textAllignment.setLabel("Alignment");
         textAllignment.setDescription("The alignment of the text displayed within this item");
         textAllignment.setLoadValidValuesDynamically(true);
         textAllignment.setNotifyWhenChanged(true);
 
+        EJDevPropertyDefinition localFormat = new EJDevPropertyDefinition(PROPERTY_LOCALE_FORMAT, EJPropertyDefinitionType.STRING);
+        localFormat.setLabel("Local Format");
+        localFormat.setDefaultValue(DateFormats.DATE_MEDIUM.name());
+        localFormat.setDescription("The local format  will be used when no custom format is provided.");
+        for (DateFormats format : DateFormats.values())
+        {
+            localFormat.addValidValue(format.name(), format.name());
+        }
+        
         EJDevPropertyDefinition format = new EJDevPropertyDefinition(PROPERTY_FORMAT, EJPropertyDefinitionType.STRING);
         format.setLabel("Format");
         format.setDefaultValue("dd-MM-yyyy");
@@ -105,9 +115,10 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
         selectOnFocus.setLabel("Select on focus");
         selectOnFocus.setDescription("Indicates if this item should select text on focus");
         selectOnFocus.setDefaultValue("false");
-        
+
         mainGroup.addPropertyDefinition(textAllignment);
         mainGroup.addPropertyDefinition(format);
+        mainGroup.addPropertyDefinition(localFormat);
         mainGroup.addPropertyDefinition(selectOnFocus);
         mainGroup.addPropertyDefinition(displayValueAsLabel);
 
@@ -133,6 +144,16 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
     public boolean isReadOnly()
     {
         return false;
+    }
+
+    enum DateFormats
+    {
+        DATE_LONG, DATE_MEDIUM, DATE_SHORT, DATE_FULL,
+
+        DATE_TIME_LONG, DATE_TIME_MEDIUM, DATE_TIME_SHORT, DATE_TIME_FULL,
+
+        TIME_LONG, TIME_MEDIUM, TIME_SHORT, TIME_FULL,
+
     }
 
 }

@@ -150,8 +150,13 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     {
                         _rendererProps.getStringProperty(EJRWTDateItemRendererDefinitionProperties.PROPERTY_FORMAT);
 
+                        String format = _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_FORMAT);
+                        if(format==null || format.length()==0)
+                        {
+                            format = "eg: "+_dateFormat.format(new Date());
+                        }
                         _errorDecoration.setDescriptionText(String.format("Invalid Date format. Should be %s ",
-                                _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_FORMAT)));
+                                format));
                         _errorDecoration.show();
                     }
                 }
@@ -272,8 +277,64 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         String format = rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_FORMAT);
         if (format == null || format.length() == 0)
         {
-            format = "dd.MM.yyyy";
-            dateFormat = new MultiDateFormater(new SimpleDateFormat(format, defaultLocale));
+            
+            format = rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_LOCALE_FORMAT);
+            if (format == null || format.length() == 0)
+            {
+                format = "dd.MM.yyyy";
+                dateFormat = new MultiDateFormater(new SimpleDateFormat(format, defaultLocale));
+            }
+            else
+            {
+            
+                DateFormats formats = DateFormats.valueOf(format);
+                switch (formats)
+                {
+                    case DATE_FULL:
+                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.FULL,defaultLocale));
+                        break;
+                    case DATE_LONG:
+                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.LONG,defaultLocale));
+                        break;
+                    case DATE_MEDIUM:
+                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.MEDIUM,defaultLocale));
+                        break;
+                    case DATE_SHORT:
+                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.SHORT,defaultLocale));
+                        break;
+                    case DATE_TIME_FULL:
+                        dateFormat = new MultiDateFormater(DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.FULL,defaultLocale));
+                        break;    
+                    case DATE_TIME_LONG:
+                        dateFormat = new MultiDateFormater(DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.LONG,defaultLocale));
+                        break;    
+                    case DATE_TIME_MEDIUM:
+                        dateFormat = new MultiDateFormater(DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM,defaultLocale));
+                        break;    
+                    case DATE_TIME_SHORT:
+                        dateFormat = new MultiDateFormater(DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT,defaultLocale));
+                        break; 
+                        
+                    case TIME_FULL:
+                        dateFormat = new MultiDateFormater(DateFormat.getTimeInstance(DateFormat.FULL,defaultLocale));
+                        break;
+                    case TIME_LONG:
+                        dateFormat = new MultiDateFormater(DateFormat.getTimeInstance(DateFormat.LONG,defaultLocale));
+                        break;
+                    case TIME_MEDIUM:
+                        dateFormat = new MultiDateFormater(DateFormat.getTimeInstance(DateFormat.MEDIUM,defaultLocale));
+                        break;
+                    case TIME_SHORT:
+                        dateFormat = new MultiDateFormater(DateFormat.getTimeInstance(DateFormat.SHORT,defaultLocale));
+                        break;
+    
+                    default:
+                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance());
+                        break;
+                }
+            }
+            
+            
         }
         else
         {
@@ -614,17 +675,29 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
     private static class MultiDateFormater
     {
 
+        
+        private final DateFormat dateFormat;
         private final SimpleDateFormat[] formats;
 
         public MultiDateFormater(SimpleDateFormat... formats)
         {
             this.formats = formats;
-
+            dateFormat=null;
         }
+        public MultiDateFormater(DateFormat dateFormat)
+        {
+            this.formats = new  SimpleDateFormat[0];
+            this.dateFormat=dateFormat;
+        }
+        
 
         public Date parse(String text) throws ParseException
         {
 
+            if(dateFormat!=null)
+            {
+                return dateFormat.parse(text);
+            }
             for (SimpleDateFormat format : formats)
             {
                 try
@@ -681,12 +754,27 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
 
         public String format(Object value)
         {
+            if(dateFormat!=null)
+            {
+                return dateFormat.format(value);
+            }
+            
             for (SimpleDateFormat format : formats)
             {
                 return format.format(value);
             }
             return "";
         }
+
+    }
+    
+    enum DateFormats
+    {
+        DATE_LONG, DATE_MEDIUM, DATE_SHORT, DATE_FULL,
+
+        DATE_TIME_LONG, DATE_TIME_MEDIUM, DATE_TIME_SHORT, DATE_TIME_FULL,
+
+        TIME_LONG, TIME_MEDIUM, TIME_SHORT, TIME_FULL,
 
     }
 }
