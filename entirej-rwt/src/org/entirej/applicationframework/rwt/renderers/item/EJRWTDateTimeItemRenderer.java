@@ -34,9 +34,12 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -667,7 +670,35 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
 
             _textField.setData(_item.getReferencedItemProperties().getName());
             _textField.addFocusListener(this);
-
+            String[] keys = new String[] { "BACKSPACE" };
+            _textField.setData(EJ_RWT.ACTIVE_KEYS, keys);
+            if((_textField.getStyle() & SWT.TIME)!=0)
+                _textField.addKeyListener(new KeyListener()
+                {
+                    
+                    @Override
+                    public void keyReleased(KeyEvent e)
+                    {
+                        if (e.keyCode == SWT.BS)
+                        {
+                            Date value = getValue();
+                            if(value!=null)
+                            {
+                            
+                                _textField.setTime(0, 0, 0);
+                                valueChanged();
+                            }
+                        }
+                    }
+                    
+                    @Override
+                    public void keyPressed(KeyEvent e)
+                    {
+                        // TODO Auto-generated method stub
+                        
+                    }
+                });
+            
             _mandatoryDecoration = new ControlDecoration(_actionControl, SWT.TOP | SWT.LEFT);
             _errorDecoration = new ControlDecoration(_actionControl, SWT.TOP | SWT.LEFT);
             _errorDecoration.setImage(getDecorationImage(FieldDecorationRegistry.DEC_ERROR));
