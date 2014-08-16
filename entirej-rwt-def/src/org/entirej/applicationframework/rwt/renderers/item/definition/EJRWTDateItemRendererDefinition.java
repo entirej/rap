@@ -92,9 +92,9 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
         textAllignment.setNotifyWhenChanged(true);
 
         EJDevPropertyDefinition localFormat = new EJDevPropertyDefinition(PROPERTY_LOCALE_FORMAT, EJPropertyDefinitionType.STRING);
-        localFormat.setLabel("Local Format");
+        localFormat.setLabel("Locale Format");
         localFormat.setDefaultValue(DateFormats.DATE_MEDIUM.name());
-        localFormat.setDescription("The local format  will be used when no custom format is provided.");
+        localFormat.setDescription("The Locale format  will be used when no custom format is provided. The date format as defined by <code>java.text.DataFormat</code>");
         for (DateFormats format : DateFormats.values())
         {
             localFormat.addValidValue(format.name(), format.name());
