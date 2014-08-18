@@ -93,7 +93,7 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
 
         EJDevPropertyDefinition localeFormat = new EJDevPropertyDefinition(PROPERTY_LOCALE_FORMAT, EJPropertyDefinitionType.STRING);
         localeFormat.setLabel("Locale Format");
-        localeFormat.setDescription("The Locale format  will be used when no custom format is provided. The date format as defined by <code>java.text.DataFormat</code>");
+        localeFormat.setDescription("The Locale format  will be used when no custom format is provided. The date format as defined by <code>java.text.DataFormat</code>\n\nThe Locale format can be overridden by the manual format if required");
         for (DateFormats format : DateFormats.values())
         {
             localeFormat.addValidValue(format.name(), format.name());
@@ -101,7 +101,7 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
         
         EJDevPropertyDefinition format = new EJDevPropertyDefinition(PROPERTY_FORMAT, EJPropertyDefinitionType.STRING);
         format.setLabel("Manual Format");
-        format.setDescription("The format  specified must be a valid format for the Java SimpleDateFormat class. \nFormat strings can contain multiple formats to allow partial input of dates: \nThe multipleformats are separated by the '|' character. eg: 'dd.MM.yy|dd.MM|dd' would allow \nthe user to enter either the full dd.mm.yy format or the dd.MM format or just dd. \nMonth and year of incomplete date entries are complemented with the current month and year.");
+        format.setDescription("Overrides the Locale format\nThe format specified must be a valid format for the Java SimpleDateFormat class. \nFormat strings can contain multiple formats to allow partial input of dates: \nThe multipleformats are separated by the '|' character. eg: 'dd.MM.yy|dd.MM|dd' would allow \nthe user to enter either the full dd.mm.yy format or the dd.MM format or just dd. \nMonth and year of incomplete date entries are complemented with the current month and year.");
 
         EJDevPropertyDefinition displayValueAsLabel = new EJDevPropertyDefinition(PROPERTY_DISPLAY_VAUE_AS_LABEL, EJPropertyDefinitionType.BOOLEAN);
         displayValueAsLabel.setLabel("Display value as label");
