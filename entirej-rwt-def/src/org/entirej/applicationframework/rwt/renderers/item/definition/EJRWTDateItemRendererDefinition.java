@@ -91,18 +91,17 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
         textAllignment.setLoadValidValuesDynamically(true);
         textAllignment.setNotifyWhenChanged(true);
 
-        EJDevPropertyDefinition localFormat = new EJDevPropertyDefinition(PROPERTY_LOCALE_FORMAT, EJPropertyDefinitionType.STRING);
-        localFormat.setLabel("Locale Format");
-        localFormat.setDefaultValue(DateFormats.DATE_MEDIUM.name());
-        localFormat.setDescription("The Locale format  will be used when no custom format is provided. The date format as defined by <code>java.text.DataFormat</code>");
+        EJDevPropertyDefinition localeFormat = new EJDevPropertyDefinition(PROPERTY_LOCALE_FORMAT, EJPropertyDefinitionType.STRING);
+        localeFormat.setLabel("Locale Format");
+        localeFormat.setDefaultValue(DateFormats.DATE_MEDIUM.name());
+        localeFormat.setDescription("The Locale format  will be used when no custom format is provided. The date format as defined by <code>java.text.DataFormat</code>");
         for (DateFormats format : DateFormats.values())
         {
-            localFormat.addValidValue(format.name(), format.name());
+            localeFormat.addValidValue(format.name(), format.name());
         }
         
         EJDevPropertyDefinition format = new EJDevPropertyDefinition(PROPERTY_FORMAT, EJPropertyDefinitionType.STRING);
-        format.setLabel("Format");
-        format.setDefaultValue("dd-MM-yyyy");
+        format.setLabel("Manual Format");
         format.setDescription("The format  specified must be a valid format for the Java SimpleDateFormat class. \nFormat strings can contain multiple formats to allow partial input of dates: \nThe multipleformats are separated by the '|' character. eg: 'dd.MM.yy|dd.MM|dd' would allow \nthe user to enter either the full dd.mm.yy format or the dd.MM format or just dd. \nMonth and year of incomplete date entries are complemented with the current month and year.");
 
         EJDevPropertyDefinition displayValueAsLabel = new EJDevPropertyDefinition(PROPERTY_DISPLAY_VAUE_AS_LABEL, EJPropertyDefinitionType.BOOLEAN);
@@ -117,8 +116,9 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
         selectOnFocus.setDefaultValue("false");
 
         mainGroup.addPropertyDefinition(textAllignment);
+
+        mainGroup.addPropertyDefinition(localeFormat);
         mainGroup.addPropertyDefinition(format);
-        mainGroup.addPropertyDefinition(localFormat);
         mainGroup.addPropertyDefinition(selectOnFocus);
         mainGroup.addPropertyDefinition(displayValueAsLabel);
 

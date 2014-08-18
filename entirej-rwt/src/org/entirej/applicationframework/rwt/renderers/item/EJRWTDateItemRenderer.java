@@ -281,8 +281,8 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             format = rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_LOCALE_FORMAT);
             if (format == null || format.length() == 0)
             {
-                format = "dd.MM.yyyy";
-                dateFormat = new MultiDateFormater(new SimpleDateFormat(format, defaultLocale));
+               
+                dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.SHORT,defaultLocale));
             }
             else
             {
