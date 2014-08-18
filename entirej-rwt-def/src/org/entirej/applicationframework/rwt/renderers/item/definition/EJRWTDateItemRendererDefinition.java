@@ -93,7 +93,6 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
 
         EJDevPropertyDefinition localeFormat = new EJDevPropertyDefinition(PROPERTY_LOCALE_FORMAT, EJPropertyDefinitionType.STRING);
         localeFormat.setLabel("Locale Format");
-        localeFormat.setDefaultValue(DateFormats.DATE_MEDIUM.name());
         localeFormat.setDescription("The Locale format  will be used when no custom format is provided. The date format as defined by <code>java.text.DataFormat</code>");
         for (DateFormats format : DateFormats.values())
         {
