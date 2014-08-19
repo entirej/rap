@@ -33,11 +33,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
@@ -47,8 +52,6 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -97,6 +100,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     protected String                          _registeredItemName;
     protected EJRWTAbstractActionCombo        _actionControl;
     protected Combo                           _comboField;
+    protected ComboViewer                      _comboViewer;
     protected boolean                         _activeEvent      = true;
     protected Label                           _label;
     protected boolean                         _isValid         = true;
@@ -105,8 +109,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     private int                               _visibleItemCount;
     protected boolean                         _valueChanged;
 
-    private Map<Object, ComboBoxValue>        _comboValues     = new HashMap<Object, ComboBoxValue>();
-    private List<Object>                      _comboKays       = new ArrayList<Object>();
+    private List<ComboBoxValue>        _comboValues     = new ArrayList<ComboBoxValue>();
 
     private EJRWTItemRendererVisualContext    _visualContext;
 
@@ -140,7 +143,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
             _activeEvent = false;
             if (controlState(_comboField))
             {
-                _comboField.setText("");
+                _comboViewer.setSelection(new StructuredSelection());
             }
 
         }
@@ -193,23 +196,8 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     {
         if (controlState(_comboField))
         {
-
-            int selectionIndex = _comboField.getSelectionIndex();
-            if (selectionIndex <= -1)
-            {
-                return null;
-            }
-
-            String value = _comboField.getItem(_comboField.getSelectionIndex());
-            if (value != null && _comboValues != null && !_comboValues.isEmpty())
-            {
-                ComboBoxValue comboBoxValue = _comboValues.get(value);
-
-                if (comboBoxValue != null)
-                {
-                    return comboBoxValue;
-                }
-            }
+            IStructuredSelection selection = (IStructuredSelection) _comboViewer.getSelection();
+            return (ComboBoxValue) selection.getFirstElement();
         }
 
         return null;
@@ -219,6 +207,8 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public Object getValue()
     {
 
+        if(!controlState(_comboField))return _baseValue;
+        
         ComboBoxValue value = getComboBoxValue();
         if (value != null)
         {
@@ -256,7 +246,6 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         // Initialise both the field and the values.
         _lovInitialied = true;
         _comboValues.clear();
-        _comboKays.clear();
         String lovDefName = _rendererProps.getStringProperty(EJRWTComboBoxRendererDefinitionProperties.LOV_DEFINITION_NAME);
 
         if (lovDefName == null || lovDefName.trim().length() == 0)
@@ -302,8 +291,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
             if (!_item.getProperties().isMandatory())
             {
                 ComboBoxValue emptyValue = new ComboBoxValue(null, defItemName);
-                _comboValues.put("", emptyValue);
-                _comboKays.add("");
+                _comboValues.add(emptyValue);
             }
 
             Collection<EJDataRecord> records = lovController.getRecords();
@@ -320,8 +308,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 ComboBoxValue comboValue = new ComboBoxValue(ejDataRecord, defItemName);
                 String itemValueAsString = comboValue.getItemValueAsString();
 
-                _comboValues.put(itemValueAsString, comboValue);
-                _comboKays.add(itemValueAsString);
+                _comboValues.add(comboValue);
             }
         }
         catch (Exception e)
@@ -462,7 +449,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                     {
                         ComboBoxValue boxValue = null;
 
-                        for (ComboBoxValue val : _comboValues.values())
+                        for (ComboBoxValue val : _comboValues)
                         {
                             if (val.getItemValue() == null && value == null)
                             {
@@ -491,22 +478,14 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
 
                         if (boxValue != null)
                         {
-                            if (value.equals(boxValue.getItemValue()))
-                            {
-                                _comboField.setText(boxValue.getItemValueAsString());
-
-                            }
-                            else if (boxValue.getItemValue() == null)
-                            {
-                                _comboField.setText("");
-                            }
+                            _comboViewer.setSelection(new StructuredSelection(boxValue));
                         }
                     }
 
                 }
                 else
                 {
-                    _comboField.setText("");
+                    _comboViewer.setSelection(new StructuredSelection());
                 }
             }
             finally
@@ -664,6 +643,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 int style = SWT.READ_ONLY;
                 style = getComponentStyle(alignmentProperty, style);
                 _comboField = new Combo(parent, style);
+                _comboViewer = new ComboViewer(_comboField);
 
                 if (hint != null && hint.trim().length() > 0)
                 {
@@ -675,10 +655,27 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                     _comboField.setVisibleItemCount(_visibleItemCount);
                 }
                 _comboField.addFocusListener(EJRWTComboItemRenderer.this);
-                _comboField.addSelectionListener(new SelectionAdapter()
-                {
+                _comboViewer.setLabelProvider(new ColumnLabelProvider(){
+                    
                     @Override
-                    public void widgetSelected(SelectionEvent e)
+                    public String getText(Object element)
+                    {
+                        if(element instanceof ComboBoxValue)
+                        {
+                            ComboBoxValue value = (ComboBoxValue) element;
+                           
+                            return  value.getItemValueAsString();
+                        }
+                        return "";
+                    }
+                    
+                });
+                _comboViewer.setContentProvider(new ArrayContentProvider());
+                _comboViewer.addSelectionChangedListener(new ISelectionChangedListener()
+                {
+                    
+                    @Override
+                    public void selectionChanged(SelectionChangedEvent event)
                     {
                         if (isValid())
                         {
@@ -770,6 +767,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
             }
         };
 
+       
         _visualContext = new EJRWTItemRendererVisualContext(_comboField.getBackground(), _comboField.getForeground(), _comboField.getFont());
 
         _mandatoryDecoration = new ControlDecoration(_actionControl, SWT.TOP | SWT.LEFT);
@@ -796,12 +794,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
             try
             {
                 _activeEvent = false;
-                _comboField.removeAll();
-
-                for (Object item : _comboKays)
-                {
-                    _comboField.add(item.toString());
-                }
+              _comboViewer.setInput(_comboValues);
                 setValue(_baseValue);
             }
             finally
@@ -1037,18 +1030,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         }
     }
 
-    public void valuedChanged()
-    {
-        if (!_comboField.isFocusControl())
-        {
-            _item.itemValueChaged();
-        }
-        else
-        {
-            _valueChanged = true;
-        }
-        setMandatoryBorder(_mandatory);
-    }
+  
 
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)
@@ -1129,7 +1111,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                     {
                         ComboBoxValue boxValue = null;
 
-                        for (ComboBoxValue val : _comboValues.values())
+                        for (ComboBoxValue val : _comboValues)
                         {
                             if (val.getItemValue() == null && value == null)
                             {
