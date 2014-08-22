@@ -827,7 +827,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                     @Override
                     public void selectionChanged(SelectionChangedEvent event)
                     {
-                        if(_activeEvent)return;
+                        if(!_activeEvent)return;
                         if (isValid())
                         {
                             ComboBoxValue value = getComboBoxValue();
@@ -835,10 +835,9 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                             {
                                 value.populateReturnItems(_item.getBlock().getBlockController(), _item.getScreenType());
                             }
-                            if (_activeEvent)
-                            {
+                            
                                 _item.itemValueChaged();
-                            }
+                            
                             setMandatoryBorder(_mandatory);
                         }
                         else

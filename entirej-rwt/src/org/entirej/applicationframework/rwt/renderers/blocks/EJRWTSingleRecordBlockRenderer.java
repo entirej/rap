@@ -1108,6 +1108,12 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         gridData.verticalSpan = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_YSPAN_PROPERTY, 1);
         gridData.grabExcessHorizontalSpace = grabExcessHorizontalSpace;
         gridData.grabExcessVerticalSpace = grabExcessVerticalSpace;
+        
+        if(!grabExcessVerticalSpace)
+        {
+            gridData.verticalAlignment = SWT.CENTER;
+        }
+        
 
         int displayedWidth = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.DISPLAYED_WIDTH_PROPERTY, 0);
         int displayedHeight = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.DISPLAYED_HEIGHT_PROPERTY, 0);
@@ -1139,6 +1145,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 gridData.heightHint = displayedHeight;
             }
         }
+        
         return gridData;
     }
 
