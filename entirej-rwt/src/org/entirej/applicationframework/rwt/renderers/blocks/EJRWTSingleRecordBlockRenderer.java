@@ -61,6 +61,7 @@ import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.item.EJRWTComboItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTUpdateScreenRenderer;
@@ -454,6 +455,15 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             synchronize();
 
             _mainItemRegister.register(record);
+            Collection<EJManagedItemRendererWrapper> registeredRenderers = _mainItemRegister.getRegisteredRenderers();
+            for (EJManagedItemRendererWrapper wrapper : registeredRenderers)
+            {
+                if(wrapper.getUnmanagedRenderer() instanceof EJRWTComboItemRenderer)
+                {
+                   if( ((EJRWTComboItemRenderer)wrapper.getUnmanagedRenderer()).isLovInitialiedOnValueSet())
+                       wrapper.getUnmanagedRenderer().refreshItemRenderer();
+                }
+            }
             logger.trace("END recordSelected");
         }
         notifyStatus();

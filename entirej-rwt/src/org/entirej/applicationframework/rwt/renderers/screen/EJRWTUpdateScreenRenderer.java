@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
+import org.entirej.applicationframework.rwt.renderers.item.EJRWTComboItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTItemTextChangeNotifier;
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTItemTextChangeNotifier.ChangeListener;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.interfaces.EJRWTScreenRendererDefinitionProperties;
@@ -135,6 +136,16 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
         _itemRegister.resetRegister();
         setupUpdateScreen();
         _itemRegister.register(recordToUpdate);
+        
+        Collection<EJManagedItemRendererWrapper> registeredRenderers = _itemRegister.getRegisteredRenderers();
+        for (EJManagedItemRendererWrapper wrapper : registeredRenderers)
+        {
+            if(wrapper.getUnmanagedRenderer() instanceof EJRWTComboItemRenderer)
+            {
+               if( ((EJRWTComboItemRenderer)wrapper.getUnmanagedRenderer()).isLovInitialiedOnValueSet())
+                   wrapper.getUnmanagedRenderer().refreshItemRenderer();
+            }
+        }
         _updateDialog.centreLocation();
         if (_maximize)
         {
