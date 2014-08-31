@@ -655,6 +655,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
             if (mainScreenProperties.getDisplayFrame())
             {
                 Group group = new Group(section, SWT.NONE);
+                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 hookKeyListener(group);
@@ -664,6 +665,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                     group.setText(frameTitle);
                 }
                 _mainPane = new EJRWTEntireJGridPane(group, 1);
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 section.setClient(group);
             }
             else
@@ -671,6 +673,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 _mainPane = new EJRWTEntireJGridPane(section, 1);
                 _mainPane.setLayoutData(gridData);
                 _mainPane.cleanLayoutHorizontal();
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 section.setClient(_mainPane);
             }
 
@@ -738,6 +741,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
             if (mainScreenProperties.getDisplayFrame())
             {
                 Group group = new Group(blockCanvas, SWT.NONE);
+                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 hookKeyListener(group);
@@ -747,12 +751,14 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                     group.setText(frameTitle);
                 }
                 _mainPane = new EJRWTEntireJGridPane(group, 1);
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
             }
             else
             {
                 _mainPane = new EJRWTEntireJGridPane(blockCanvas, 1);
                 _mainPane.setLayoutData(gridData);
                 _mainPane.cleanLayout();
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
             }
         }
 

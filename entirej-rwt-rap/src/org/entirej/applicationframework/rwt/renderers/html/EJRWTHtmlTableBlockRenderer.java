@@ -520,7 +520,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         // gridData.minimumWidth = mainScreenProperties.getHeight();
         blockCanvas.setLayoutData(gridData);
         scrollComposite = new ScrolledComposite(blockCanvas, SWT.V_SCROLL | SWT.H_SCROLL);
-
+        scrollComposite.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
         scrollComposite.setExpandHorizontal(true);
         scrollComposite.setExpandVertical(true);
         scrollComposite.setMinSize(mainScreenProperties.getWidth(), mainScreenProperties.getHeight());
@@ -532,6 +532,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
             if (frameTitle != null && frameTitle.length() > 0)
             {
                 Group group = new Group(scrollComposite, SWT.NONE);
+                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 hookKeyListener(group);
                 scrollComposite.setContent(group);
                 group.setLayout(new FillLayout());

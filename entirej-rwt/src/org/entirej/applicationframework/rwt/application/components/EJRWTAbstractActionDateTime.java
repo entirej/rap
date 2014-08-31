@@ -44,7 +44,7 @@ public abstract class EJRWTAbstractActionDateTime extends Composite implements S
     public EJRWTAbstractActionDateTime(Composite parent)
     {
         super(parent, SWT.NO_FOCUS);
-
+        setData(EJ_RWT.CUSTOM_VARIANT, parent.getData(EJ_RWT.CUSTOM_VARIANT));
         int numColumns = 1;
 
         numColumns = 3;

@@ -20,6 +20,7 @@ package org.entirej.applicationframework.rwt.table;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
@@ -49,6 +50,8 @@ public abstract class EJRWTAbstractFilteredTree extends Composite
     public EJRWTAbstractFilteredTree(Composite parent, int treeStyle)
     {
         super(parent, SWT.NONE);
+        setData(EJ_RWT.CUSTOM_VARIANT, parent.getData(EJ_RWT.CUSTOM_VARIANT));
+        
         this._parent = parent;
         init(treeStyle);
     }

@@ -34,4 +34,10 @@ public class EJ_RWT
     public static final java.lang.String DEFAULT_THEME_ID   = "org.eclipse.rap.rwt.theme.Default";
 
     public static final java.lang.String CUSTOM_VARIANT     = "org.eclipse.rap.rwt.customVariant";
+    
+    
+    
+    
+    public static final java.lang.String CSS_CV_ITEM_GROUP= "itemgroup";
+    public static final java.lang.String CSS_CV_FORM=  "form";
 }

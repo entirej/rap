@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -75,7 +76,6 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
     protected EJRWTApplicationStatusbar       _statusbar;
     protected List<EJRWTSingleFormContainer>  _singleFormContainers = new ArrayList<EJRWTSingleFormContainer>();
     protected EJRWTApplicationManager         _applicationManager;
-    static final java.lang.String             CUSTOM_VARIANT        = "org.eclipse.rap.rwt.customVariant";
     protected final EJCoreLayoutContainer     _layoutContainer;
 
     public EJRWTApplicationContainer(EJCoreLayoutContainer layoutContainer)
@@ -126,7 +126,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
         _applicationManager = applicationManager;
 
         _mainPane = new Composite(mainWindow, SWT.NO_FOCUS);
-        _mainPane.setData(CUSTOM_VARIANT, "applayout");
+        _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, "applayout");
 
         mainWindow.setLayout(new FillLayout());
 
@@ -507,7 +507,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
     {
         Composite layoutBody = new Composite(parent, SWT.NO_FOCUS | (group.isBorder() ? SWT.BORDER : SWT.NONE));
         layoutBody.setLayoutData(createGridData(group));
-        layoutBody.setData(CUSTOM_VARIANT, "applayout");
+        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "applayout");
         List<EJCoreLayoutItem> items = group.getItems();
         if (items.size() > 0)
         {
@@ -607,7 +607,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
         {
             CTabItem tabItem = new CTabItem(layoutBody, SWT.NONE);
             Composite composite = new Composite(layoutBody, SWT.NO_FOCUS);
-            composite.setData(CUSTOM_VARIANT, "applayout");
+            composite.setData(EJ_RWT.CUSTOM_VARIANT, "applayout");
             composite.setData("TAB_ITEM", tabItem);
             composite.setLayout(new GridLayout());
             tabItem.setControl(composite);

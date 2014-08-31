@@ -662,6 +662,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             if (mainScreenProperties.getDisplayFrame())
             {
                 Group group = new Group(section, SWT.NONE);
+                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 String frameTitle = mainScreenProperties.getFrameTitle();
@@ -670,11 +671,13 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     group.setText(frameTitle);
                 }
                 _mainPane = new EJRWTEntireJGridPane(group, mainScreenProperties.getNumCols());
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 section.setClient(group);
             }
             else
             {
                 _mainPane = new EJRWTEntireJGridPane(section, mainScreenProperties.getNumCols());
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 _mainPane.setLayoutData(gridData);
                 section.setClient(_mainPane);
             }
@@ -742,6 +745,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             if (mainScreenProperties.getDisplayFrame())
             {
                 Group group = new Group(blockCanvas, SWT.NONE);
+                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 String frameTitle = mainScreenProperties.getFrameTitle();
@@ -754,6 +758,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             else
             {
                 _mainPane = new EJRWTEntireJGridPane(blockCanvas, mainScreenProperties.getNumCols());
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 _mainPane.setLayoutData(gridData);
             }
         }
@@ -871,6 +876,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     }
                 });
                 groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols());
+                groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
 //                groupPane.getLayout().marginRight = 5;
 //                groupPane.getLayout().marginLeft = 5;
                 section.setClient(groupPane);
@@ -938,6 +944,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             else
             {
                 Group group = new Group(parent, SWT.NONE);
+                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 group.setLayout(new FillLayout());
                 group.setLayoutData(createItemGroupGridData(groupProperties));
                 group.setText(frameTitle);
@@ -952,6 +959,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     }
                 });
                 groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols());
+                groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
 //                groupPane.getLayout().marginRight = 5;
 //                groupPane.getLayout().marginLeft = 5;
             }
@@ -959,6 +967,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         else
         {
             groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols(), groupProperties.dispayGroupFrame() ? SWT.BORDER : SWT.NONE);
+            groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
             if(groupProperties.dispayGroupFrame() )
             {
 //                groupPane.getLayout().marginRight = 5;

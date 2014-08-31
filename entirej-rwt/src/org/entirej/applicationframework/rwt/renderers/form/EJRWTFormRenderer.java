@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -350,6 +351,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             _blocks.put(canvasName, block);
         }
         _mainPane = new EJRWTEntireJGridPane(parent, formProperties.getNumCols());
+        _mainPane.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_FORM);
         for (EJCanvasProperties canvasProperties : formProperties.getCanvasContainer().getAllCanvasProperties())
         {
             createCanvas(_mainPane, canvasProperties, canvasController);
@@ -386,6 +388,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
         final String name = canvasProperties.getName();
         EJRWTEntireJStackedPane stackedPane = new EJRWTEntireJStackedPane(parent);
+        stackedPane.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_FORM);
         stackedPane.setLayoutData(createCanvasGridData(canvasProperties));
         _stackedPanes.put(name, stackedPane);
 
@@ -412,6 +415,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
         final String name = canvasProperties.getName();
         Composite stackedPane = new Composite(parent, SWT.NONE);
+        stackedPane.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_FORM);
         stackedPane.setLayout(new FillLayout());
         stackedPane.setLayoutData(createCanvasGridData(canvasProperties));
         _formPanes.put(name, stackedPane);
@@ -450,6 +454,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
         final String name = canvasProperties.getName();
         final CTabFolder folder = new CTabFolder(parent, style);
+        folder.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_FORM);
         EJTabFolder tabFolder = new EJTabFolder(folder);
         folder.addSelectionListener(new SelectionAdapter()
         {
@@ -468,8 +473,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             if (page.isVisible())
             {
                 CTabItem tabItem = new CTabItem(folder, SWT.NONE);
+                tabItem.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_FORM);
                 tabItem.setData("TAB_KEY", page.getName());
                 EJRWTEntireJGridPane pageCanvas = new EJRWTEntireJGridPane(folder, page.getNumCols());
+                pageCanvas.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_FORM);
                 tabItem.setText(page.getPageTitle() != null && page.getPageTitle().length() > 0 ? page.getPageTitle() : page.getName());
                 tabItem.setControl(pageCanvas);
                 EJCanvasPropertiesContainer containedCanvases = page.getContainedCanvases();
@@ -526,6 +533,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         if (canvasProperties.getDisplayGroupFrame())
         {
             Group group = new Group(parent, SWT.NONE);
+            group.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_FORM);
             group.setLayout(new FillLayout());
             group.setLayoutData(createCanvasGridData(canvasProperties));
             String frameTitle = canvasProperties.getGroupFrameTitle();
@@ -536,6 +544,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             parent = group;
         }
         final EJRWTEntireJGridPane groupPane = new EJRWTEntireJGridPane(parent, canvasProperties.getNumCols());
+        groupPane.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_FORM);
         if (canvasProperties.getDisplayGroupFrame())
         {
             groupPane.cleanLayoutTop();
@@ -615,6 +624,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 : SWT.VERTICAL);
         layoutBody.setLayoutData(createCanvasGridData(canvasProperties));
 
+        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_FORM);
         if (canvasProperties.getType() == EJCanvasType.SPLIT)
         {
             List<EJCanvasProperties> items = new ArrayList<EJCanvasProperties>(canvasProperties.getSplitCanvasContainer().getAllCanvasProperties());
@@ -714,6 +724,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         final ScrolledComposite scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 
                         EJRWTEntireJGridPane _mainPane = new EJRWTEntireJGridPane(scrollComposite, numCols);
+                        _mainPane.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_FORM);
                         _mainPane.cleanLayout();
                         EJCanvasPropertiesContainer popupCanvasContainer = canvasProperties.getPopupCanvasContainer();
                         Collection<EJCanvasProperties> allCanvasProperties = popupCanvasContainer.getAllCanvasProperties();
