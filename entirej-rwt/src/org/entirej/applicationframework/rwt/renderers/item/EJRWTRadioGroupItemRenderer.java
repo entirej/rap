@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -504,12 +505,13 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
             {
                 ((Group) _radioGroup).setText(_screenItemProperties.getLabel());
             }
-
+            _radioGroup.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_RADIO);
             composite = _radioGroup;
         }
         else
         {
             _radioGroup = new Composite(composite, SWT.NO_FOCUS);
+            _radioGroup.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_RADIO);
         }
         if (hint != null && hint.trim().length() > 0)
         {
@@ -541,6 +543,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
             Object value = getValueAsObject(_item.getReferencedItemProperties().getDataTypeClass(),
                     listEntry.getProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_VALUE));
             Button button = new Button(_radioGroup, SWT.RADIO);
+            button.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_RADIO);
 
             // Store the button and the button values for future reference
             String id = listEntry.getProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_NAME);

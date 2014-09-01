@@ -102,6 +102,11 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         return control != null && !control.isDisposed();
 
     }
+    
+    public String getCSSKey()
+    {
+        return EJ_RWT.CSS_CV_ITEM_TEXT;
+    }
 
     @Override
     public boolean useFontDimensions()
@@ -730,6 +735,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
             _valueLabel = newVlaueLabel(composite);
             _valueLabel.setData(_itemProperties.getName());
+            _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
             if (hint != null && hint.trim().length() > 0)
             {
                 _valueLabel.setToolTipText(hint);
@@ -752,6 +758,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                         style = style | SWT.PASSWORD;
                     }
                     _textField = newTextField(parent, getComponentStyle(alignmentProp, style));
+                    _textField.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
                     return _textField;
                 }
 
@@ -937,6 +944,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     public void createLable(Composite composite)
     {
         _label = new Label(composite, SWT.NONE);
+        _label.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
         _label.setText(_screenItemProperties.getLabel() == null ? "" : _screenItemProperties.getLabel());
     }
 

@@ -409,6 +409,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
         if (!_displayAsHyperlink)
         {
             final Label labelField = new Label(composite, style);
+            labelField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LABEL);
             labelField.setData(EJ_RWT.MARKUP_ENABLED, _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
 
             String pictureName = _rendererProps.getStringProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_PICTURE);
@@ -485,6 +486,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
             {
                 control = linkField = new Link(composite, style);
             }
+            linkField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LABEL);
             _labelField = new SWTComponentAdapter()
             {
                 String value;

@@ -71,7 +71,7 @@ public abstract class EJRWTAbstractFilteredTable extends Composite
         setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         _filterComposite = new Composite(this, SWT.NONE);
-
+        _filterComposite.setData(EJ_RWT.CUSTOM_VARIANT, parent.getData(EJ_RWT.CUSTOM_VARIANT));
         GridLayout filterLayout = new GridLayout(2, false);
         filterLayout.marginHeight = 0;
         filterLayout.marginWidth = 0;

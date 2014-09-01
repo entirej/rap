@@ -27,6 +27,7 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -295,6 +296,7 @@ public class EJRWTCheckBoxItemRenderer extends EJRWTButtonItemRenderer
         {
             _button.setToolTipText(hint);
         }
+        _button.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_CHECKBOX);
         _button.setData(_item.getReferencedItemProperties().getName());
         _button.addFocusListener(this);
         saveInitialVisualAttributePropeties();

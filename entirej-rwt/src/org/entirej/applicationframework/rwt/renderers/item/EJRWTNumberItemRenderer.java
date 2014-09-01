@@ -28,6 +28,7 @@ import java.util.Locale;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -68,6 +69,12 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         return new Label(composite, SWT.RIGHT);
     }
 
+    public String getCSSKey()
+    {
+        return EJ_RWT.CSS_CV_ITEM_NUMBER;
+
+    }
+    
     @Override
     protected void setValueLabelAlign(final String alignmentProperty)
     {

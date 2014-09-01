@@ -21,6 +21,7 @@ package org.entirej.applicationframework.rwt.renderers.item;
 import java.io.Serializable;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -362,6 +363,7 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
             _button.setImage(EJRWTImageRetriever.get(pictureName));
         }
 
+        _button.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_BUTTON);
         _button.setData(_item.getReferencedItemProperties().getName());
         _button.addFocusListener(this);
         _button.addSelectionListener(new SelectionAdapter()

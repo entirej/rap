@@ -562,6 +562,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
         if (_displayValueAsLabel)
         {
             _valueLabel = newVlaueLabel(composite);
+            _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_DATETIME);
             _valueLabel.setData(_itemProperties.getName());
             if (hint != null && hint.trim().length() > 0)
             {
@@ -613,6 +614,8 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
                     }
 
                     _textField = newTextField(parent, style);
+                    _textField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_DATETIME);
+                    
                     _textField.addSelectionListener(new SelectionAdapter()
                     {
                         @Override
@@ -725,6 +728,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
     public void createLable(Composite composite)
     {
         _label = new Label(composite, SWT.NONE);
+        _label.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_DATETIME);
         _label.setText(_screenItemProperties.getLabel() == null ? "" : _screenItemProperties.getLabel());
     }
 

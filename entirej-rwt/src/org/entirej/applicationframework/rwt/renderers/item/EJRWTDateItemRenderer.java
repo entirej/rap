@@ -81,6 +81,13 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         return new Label(composite, SWT.RIGHT);
     }
 
+    
+    public String getCSSKey()
+    {
+        return EJ_RWT.CSS_CV_ITEM_DATE;
+
+    }
+    
     @Override
     protected void setValueLabelAlign(final String alignmentProperty)
     {

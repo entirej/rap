@@ -654,6 +654,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 int style = SWT.READ_ONLY|SWT.SINGLE|SWT.BORDER;
                 style = getComponentStyle(alignmentProperty, style);
                 _listField = new org.eclipse.swt.widgets.List(parent, style);
+                _listField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LIST);
 
                 if (hint != null && hint.trim().length() > 0)
                 {
@@ -828,6 +829,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     public void createLable(Composite composite)
     {
         _label = new Label(composite, SWT.NONE);
+        _label.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LIST);
         _label.setText(_screenItemProperties.getLabel() == null ? "" : _screenItemProperties.getLabel());
     }
 

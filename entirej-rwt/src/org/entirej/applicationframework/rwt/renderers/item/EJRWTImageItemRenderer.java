@@ -27,6 +27,7 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -409,6 +410,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
         
 
         _labelField = labelField;
+        _labelField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_IMAGE);
         _labelField.setText(label != null ? label : "");
         _labelField.setToolTipText(hint != null ? hint : "");
         _labelField.setData(_item.getReferencedItemProperties().getName());

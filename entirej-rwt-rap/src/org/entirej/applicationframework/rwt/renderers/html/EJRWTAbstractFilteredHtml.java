@@ -71,6 +71,7 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
         setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         _filterComposite = new Composite(this, SWT.NONE);
+        _filterComposite.setData(EJ_RWT.CUSTOM_VARIANT, getData(EJ_RWT.CUSTOM_VARIANT));
 
         GridLayout filterLayout = new GridLayout(2, false);
         filterLayout.marginHeight = 0;
