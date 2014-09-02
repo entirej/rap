@@ -42,6 +42,7 @@ public class EJRWTNumberItemRendererDefinition implements EJDevItemRendererDefin
     public static final String PROPERTY_MINVALUE              = "MIN_VALUE";
     public static final String PROPERTY_FORMAT                = "FORMAT";
     public static final String PROPERTY_DISPLAY_VAUE_AS_LABEL = "DISPLAY_VALUE_AS_LABEL";
+    public static final String PROPERTY_CSS_KEY = "CSS_KEY";
 
     public EJRWTNumberItemRendererDefinition()
     {
@@ -94,10 +95,17 @@ public class EJRWTNumberItemRendererDefinition implements EJDevItemRendererDefin
         selectOnFocus.setDescription("Indicates if this item should select text on focus");
         selectOnFocus.setDefaultValue("true");
 
+        
+        EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(PROPERTY_CSS_KEY, EJPropertyDefinitionType.STRING);
+        customCSSKey.setLabel("Custom CSS Key");
+        customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
+
+
         mainGroup.addPropertyDefinition(format);
         mainGroup.addPropertyDefinition(textAlignment);
         mainGroup.addPropertyDefinition(selectOnFocus);
         mainGroup.addPropertyDefinition(displayValueAsLabel);
+        mainGroup.addPropertyDefinition(customCSSKey);
 
         return mainGroup;
     }

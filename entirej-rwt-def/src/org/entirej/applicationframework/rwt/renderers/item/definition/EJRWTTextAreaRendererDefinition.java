@@ -29,6 +29,7 @@ import static org.entirej.applicationframework.rwt.renderers.item.definition.EJR
 import static org.entirej.applicationframework.rwt.renderers.item.definition.EJRWTTextItemRendererDefinition.PROPERTY_DISPLAY_VAUE_AS_LABEL;
 import static org.entirej.applicationframework.rwt.renderers.item.definition.EJRWTTextItemRendererDefinition.PROPERTY_MAXLENGTH;
 import static org.entirej.applicationframework.rwt.renderers.item.definition.EJRWTTextItemRendererDefinition.PROPERTY_WRAP;
+import static org.entirej.applicationframework.rwt.renderers.item.definition.EJRWTTextItemRendererDefinition.PROPERTY_CSS_KEY;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -108,12 +109,19 @@ public class EJRWTTextAreaRendererDefinition implements EJDevItemRendererDefinit
         wrapText.setLabel("Wrap Text");
         wrapText.setDefaultValue("true");
         wrapText.setDescription("Indicates if this item text should be wraped and should should display horizontal scroll or not.");
+        
+        EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(PROPERTY_CSS_KEY, EJPropertyDefinitionType.STRING);
+        customCSSKey.setLabel("Custom CSS Key");
+        customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
+
+
 
         mainGroup.addPropertyDefinition(maxLength);
         mainGroup.addPropertyDefinition(textCase);
         mainGroup.addPropertyDefinition(textAlignment);
         mainGroup.addPropertyDefinition(displayValueAsLabel);
         mainGroup.addPropertyDefinition(wrapText);
+        mainGroup.addPropertyDefinition(customCSSKey);
 
         return mainGroup;
 

@@ -54,6 +54,7 @@ import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionDateTime;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTDateTimeItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
@@ -563,6 +564,12 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
         {
             _valueLabel = newVlaueLabel(composite);
             _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_DATETIME);
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
             _valueLabel.setData(_itemProperties.getName());
             if (hint != null && hint.trim().length() > 0)
             {
@@ -615,6 +622,12 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
 
                     _textField = newTextField(parent, style);
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_DATETIME);
+                    String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+                    if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                    {
+                        _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                    }
                     
                     _textField.addSelectionListener(new SelectionAdapter()
                     {
@@ -729,6 +742,12 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
     {
         _label = new Label(composite, SWT.NONE);
         _label.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_DATETIME);
+        String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+        if (customCSSKey != null && customCSSKey.trim().length() > 0)
+        {
+            _label.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+        }
         _label.setText(_screenItemProperties.getLabel() == null ? "" : _screenItemProperties.getLabel());
     }
 

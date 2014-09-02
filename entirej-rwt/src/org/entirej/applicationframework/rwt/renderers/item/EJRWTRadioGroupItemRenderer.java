@@ -48,6 +48,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTRadioButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
@@ -506,12 +507,24 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
                 ((Group) _radioGroup).setText(_screenItemProperties.getLabel());
             }
             _radioGroup.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_RADIO);
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _radioGroup.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
             composite = _radioGroup;
         }
         else
         {
             _radioGroup = new Composite(composite, SWT.NO_FOCUS);
             _radioGroup.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_RADIO);
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _radioGroup.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
         }
         if (hint != null && hint.trim().length() > 0)
         {
@@ -538,12 +551,19 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
         _radioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         EJFrameworkExtensionPropertyList radioButtons = _rendererProps.getPropertyList(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_RADIO_BUTTONS);
+        String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
         for (EJFrameworkExtensionPropertyListEntry listEntry : radioButtons.getAllListEntries())
         {
             Object value = getValueAsObject(_item.getReferencedItemProperties().getDataTypeClass(),
                     listEntry.getProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_VALUE));
             Button button = new Button(_radioGroup, SWT.RADIO);
             button.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_RADIO);
+          
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                button.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
 
             // Store the button and the button values for future reference
             String id = listEntry.getProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_NAME);

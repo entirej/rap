@@ -38,7 +38,6 @@ import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayPro
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendererDefinition;
 
-
 public class EJRWTComboBoxRendererDefinition implements EJDevItemRendererDefinition
 {
     public static final String LOV_DEFINITION_NAME = "LOVDEFINITION";
@@ -50,6 +49,7 @@ public class EJRWTComboBoxRendererDefinition implements EJDevItemRendererDefinit
     public static final String COLUMN_RETURN_ITEM  = "RETURN_ITEM";
     public static final String VISIBLE_ITEM_COUNT  = "VISIBLE_ITEM_COUNT";
     public static final String INITIALIES_LOV      = "INITIALIES_LOV";
+    public static final String CSS_KEY             = "CSS_KEY";
 
     public EJRWTComboBoxRendererDefinition()
     {
@@ -97,7 +97,8 @@ public class EJRWTComboBoxRendererDefinition implements EJDevItemRendererDefinit
     public EJPropertyDefinitionGroup getItemPropertyDefinitionGroup()
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("Combo Box Renderer");
-        mainGroup.setDescription("Combo Boxes contain a list of data which is retreved from an Lov Definition. To give your combo boxes static values, create a service tha returns the static data, create an Lov Definition based on this service and then assign the Lov Definition to the Combo Box");
+        mainGroup
+                .setDescription("Combo Boxes contain a list of data which is retreved from an Lov Definition. To give your combo boxes static values, create a service tha returns the static data, create an Lov Definition based on this service and then assign the Lov Definition to the Combo Box");
 
         EJDevPropertyDefinition lovDefName = new EJDevPropertyDefinition(LOV_DEFINITION_NAME, EJPropertyDefinitionType.LOV_DEFINITION_WITH_ITEMS);
         lovDefName.setLabel("Lov Definition Item Name");
@@ -120,7 +121,8 @@ public class EJRWTComboBoxRendererDefinition implements EJDevItemRendererDefinit
 
         EJDevPropertyDefinition lovItemFormat = new EJDevPropertyDefinition(COLUMN_FORMAT, EJPropertyDefinitionType.STRING);
         lovItemFormat.setLabel("Datatype Format");
-        lovItemFormat.setDescription("You can provide a default formatting option for the items value before it is displayed in the Combo Box. This is most important for Numbers and Dates. EntireJ uses the standard java.text.DecimalFormat and java.text.SimpleDataFormat options (##0.#####E0, yyyy.MM.dd");
+        lovItemFormat
+                .setDescription("You can provide a default formatting option for the items value before it is displayed in the Combo Box. This is most important for Numbers and Dates. EntireJ uses the standard java.text.DecimalFormat and java.text.SimpleDataFormat options (##0.#####E0, yyyy.MM.dd");
 
         EJDevPropertyDefinition returnItem = new EJDevPropertyDefinition(COLUMN_RETURN_ITEM, EJPropertyDefinitionType.BLOCK_ITEM);
         returnItem.setLabel("Return Item");
@@ -140,13 +142,20 @@ public class EJRWTComboBoxRendererDefinition implements EJDevItemRendererDefinit
 
         EJDevPropertyDefinition initialiseLov = new EJDevPropertyDefinition(INITIALIES_LOV, EJPropertyDefinitionType.BOOLEAN);
         initialiseLov.setLabel("Populate on creation");
-        initialiseLov.setDescription("Because Combo Boxes are based upon lov definitions, they need to make a query to be created. Thsi could take time dependin on how many combo boxes you are displaying. You can set the Populate On Creation to false to delay the population of the Combo Box until either the items gets set to a value in the action processor or you request that the item renderer be refreshed");
+        initialiseLov
+                .setDescription("Because Combo Boxes are based upon lov definitions, they need to make a query to be created. Thsi could take time dependin on how many combo boxes you are displaying. You can set the Populate On Creation to false to delay the population of the Combo Box until either the items gets set to a value in the action processor or you request that the item renderer be refreshed");
         initialiseLov.setDefaultValue("true");
+
+        EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(CSS_KEY, EJPropertyDefinitionType.STRING);
+        customCSSKey.setLabel("Custom CSS Key");
+        customCSSKey
+                .setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
 
         mainGroup.addPropertyDefinition(lovDefName);
         mainGroup.addPropertyDefinition(initialiseLov);
         mainGroup.addPropertyDefinitionList(list);
         mainGroup.addPropertyDefinition(visibleItemCount);
+        mainGroup.addPropertyDefinition(customCSSKey);
 
         return mainGroup;
     }

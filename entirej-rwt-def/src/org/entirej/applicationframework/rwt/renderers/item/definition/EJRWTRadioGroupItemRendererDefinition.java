@@ -52,6 +52,7 @@ public class EJRWTRadioGroupItemRendererDefinition implements EJDevItemRendererD
     public static final String ORIENTATION            = "ORIENTATION";
     public static final String ORIENTATION_VERTICAL   = "VERTICAL";
     public static final String ORIENTATION_HORIZONTAL = "HORIZONTAL";
+    public static final String CSS_KEY = "CSS_KEY";
 
     public static final String RADIO_BUTTONS          = "RADIO_BUTTONS";
     public static final String NAME                   = "NAME";
@@ -179,6 +180,13 @@ public class EJRWTRadioGroupItemRendererDefinition implements EJDevItemRendererD
         radioButtonValue
                 .setDescription("This is the value of the radio button. The value must be convertable to the data type defined for the item. If the value is left empty, the value will bu null");
 
+        
+        EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(CSS_KEY, EJPropertyDefinitionType.STRING);
+        customCSSKey.setLabel("Custom CSS Key");
+        customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
+
+
+        
         list.addPropertyDefinition(radioButtonName);
         list.addPropertyDefinition(radioButtonLabel);
         list.addPropertyDefinition(radioButtonValue);
@@ -187,6 +195,7 @@ public class EJRWTRadioGroupItemRendererDefinition implements EJDevItemRendererD
         mainGroup.addPropertyDefinition(orientation);
 
         mainGroup.addPropertyDefinition(defaultValue);
+        mainGroup.addPropertyDefinition(customCSSKey);
         mainGroup.addPropertyDefinitionList(list);
 
         return mainGroup;

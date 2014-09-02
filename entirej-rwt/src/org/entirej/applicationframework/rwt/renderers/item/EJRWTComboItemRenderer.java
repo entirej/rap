@@ -63,6 +63,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionCombo;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTComboBoxRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTAbstractScreenRenderer;
@@ -794,6 +795,12 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 style = getComponentStyle(alignmentProperty, style);
                 _comboField = new Combo(parent, style);
                 _comboField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_COMBOBOX);
+                String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    _comboField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
                 _comboViewer = new ComboViewer(_comboField);
 
                 if (hint != null && hint.trim().length() > 0)
@@ -986,6 +993,12 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     {
         _label = new Label(composite, SWT.NONE);
         _label.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_COMBOBOX);
+        String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+        if (customCSSKey != null && customCSSKey.trim().length() > 0)
+        {
+            _label.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+        }
         _label.setText(_screenItemProperties.getLabel() == null ? "" : _screenItemProperties.getLabel());
     }
 

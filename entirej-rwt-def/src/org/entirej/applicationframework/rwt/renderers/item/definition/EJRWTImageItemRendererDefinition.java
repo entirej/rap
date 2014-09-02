@@ -44,6 +44,7 @@ public class EJRWTImageItemRendererDefinition implements EJDevItemRendererDefini
     public static final String PROPERTY_ALIGNMENT_RIGHT  = "RIGHT";
     public static final String PROPERTY_ALIGNMENT_CENTER = "CENTER";
     public static final String PROPERTY_IMAGE            = "IMAGE";
+    public static final String PROPERTY_CSS_KEY            = "CSS_KEY";
 
     public EJRWTImageItemRendererDefinition()
     {
@@ -85,9 +86,15 @@ public class EJRWTImageItemRendererDefinition implements EJDevItemRendererDefini
         EJDevPropertyDefinition pic = new EJDevPropertyDefinition(PROPERTY_IMAGE, EJPropertyDefinitionType.PROJECT_FILE);
         pic.setLabel("Default Image");
         pic.setDescription("The default image to display when this item is displayed and no image has yet been selected from the blocks data");
+        
+        EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(PROPERTY_CSS_KEY, EJPropertyDefinitionType.STRING);
+        customCSSKey.setLabel("Custom CSS Key");
+        customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
+
 
         mainGroup.addPropertyDefinition(textAlignment);
         mainGroup.addPropertyDefinition(pic);
+        mainGroup.addPropertyDefinition(customCSSKey);
 
         return mainGroup;
     }

@@ -52,9 +52,9 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
     protected EJItemProperties                _itemProperties;
     protected EJScreenItemProperties          _screenItemProperties;
     private String                            _registeredItemName;
-    protected boolean                         _activeEvent      = true;
+    protected boolean                         _activeEvent = true;
     protected Button                          _button;
-    private boolean                           _isValid         = true;
+    private boolean                           _isValid     = true;
     protected EJRWTItemRendererVisualContext  _visualContext;
 
     private EJCoreVisualAttributeProperties   _visualAttributeProperties;
@@ -363,7 +363,14 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
             _button.setImage(EJRWTImageRetriever.get(pictureName));
         }
 
-        _button.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_BUTTON);
+        _button.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_BUTTON);
+        String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+        if (customCSSKey != null && customCSSKey.trim().length() > 0)
+        {
+            _button.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+        }
+
         _button.setData(_item.getReferencedItemProperties().getName());
         _button.addFocusListener(this);
         _button.addSelectionListener(new SelectionAdapter()
@@ -377,12 +384,13 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
                 }
             }
         });
-        
-        if(_rendererProps.getBooleanProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_DEFAULT_BUTTON, false))
+
+        if (_rendererProps.getBooleanProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_DEFAULT_BUTTON, false))
         {
             Shell shell = composite.getShell();
-            if (shell != null) {
-                    shell.setDefaultButton(_button);
+            if (shell != null)
+            {
+                shell.setDefaultButton(_button);
             }
         }
 

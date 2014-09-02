@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Link;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTLabelItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
@@ -410,6 +411,12 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
         {
             final Label labelField = new Label(composite, style);
             labelField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LABEL);
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                labelField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
             labelField.setData(EJ_RWT.MARKUP_ENABLED, _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
 
             String pictureName = _rendererProps.getStringProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_PICTURE);

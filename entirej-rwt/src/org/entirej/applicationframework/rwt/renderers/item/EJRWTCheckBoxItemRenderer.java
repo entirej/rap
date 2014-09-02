@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTCheckBoxRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
@@ -297,6 +298,12 @@ public class EJRWTCheckBoxItemRenderer extends EJRWTButtonItemRenderer
             _button.setToolTipText(hint);
         }
         _button.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_CHECKBOX);
+        String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+        if (customCSSKey != null && customCSSKey.trim().length() > 0)
+        {
+            _button.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+        }
         _button.setData(_item.getReferencedItemProperties().getName());
         _button.addFocusListener(this);
         saveInitialVisualAttributePropeties();

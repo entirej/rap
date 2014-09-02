@@ -43,6 +43,7 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
     public static final String PROPERTY_ALIGNMENT_RIGHT       = "RIGHT";
     public static final String PROPERTY_ALIGNMENT_CENTER      = "CENTER";
     public static final String PROPERTY_DISPLAY_VAUE_AS_LABEL = "DISPLAY_VALUE_AS_LABEL";
+    public static final String PROPERTY_CSS_KEY               = "CSS_KEY";
 
     public EJRWTDateItemRendererDefinition()
     {
@@ -93,12 +94,13 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
 
         EJDevPropertyDefinition localeFormat = new EJDevPropertyDefinition(PROPERTY_LOCALE_FORMAT, EJPropertyDefinitionType.STRING);
         localeFormat.setLabel("Locale Format");
-        localeFormat.setDescription("The Locale format  will be used when no custom format is provided. The date format as defined by <code>java.text.DataFormat</code>\n\nThe Locale format can be overridden by the manual format if required");
+        localeFormat
+                .setDescription("The Locale format  will be used when no custom format is provided. The date format as defined by <code>java.text.DataFormat</code>\n\nThe Locale format can be overridden by the manual format if required");
         for (DateFormats format : DateFormats.values())
         {
             localeFormat.addValidValue(format.name(), format.name());
         }
-        
+
         EJDevPropertyDefinition format = new EJDevPropertyDefinition(PROPERTY_FORMAT, EJPropertyDefinitionType.STRING);
         format.setLabel("Manual Format");
         format.setDescription("Overrides the Locale format\nThe format specified must be a valid format for the Java SimpleDateFormat class. \nFormat strings can contain multiple formats to allow partial input of dates: \nThe multipleformats are separated by the '|' character. eg: 'dd.MM.yy|dd.MM|dd' would allow \nthe user to enter either the full dd.mm.yy format or the dd.MM format or just dd. \nMonth and year of incomplete date entries are complemented with the current month and year.");
@@ -113,6 +115,12 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
         selectOnFocus.setLabel("Select on focus");
         selectOnFocus.setDescription("Indicates if this item should select text on focus");
         selectOnFocus.setDefaultValue("false");
+        
+        
+        EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(PROPERTY_CSS_KEY, EJPropertyDefinitionType.STRING);
+        customCSSKey.setLabel("Custom CSS Key");
+        customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
+
 
         mainGroup.addPropertyDefinition(textAllignment);
 
@@ -120,6 +128,7 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
         mainGroup.addPropertyDefinition(format);
         mainGroup.addPropertyDefinition(selectOnFocus);
         mainGroup.addPropertyDefinition(displayValueAsLabel);
+        mainGroup.addPropertyDefinition(customCSSKey);
 
         return mainGroup;
     }

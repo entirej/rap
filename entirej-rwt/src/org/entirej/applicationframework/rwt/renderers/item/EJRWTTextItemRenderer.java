@@ -51,6 +51,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionText;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
@@ -736,6 +737,12 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             _valueLabel = newVlaueLabel(composite);
             _valueLabel.setData(_itemProperties.getName());
             _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
             if (hint != null && hint.trim().length() > 0)
             {
                 _valueLabel.setToolTipText(hint);
@@ -759,6 +766,12 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     }
                     _textField = newTextField(parent, getComponentStyle(alignmentProp, style));
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
+                    String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+                    if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                    {
+                        _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                    }
                     return _textField;
                 }
 
@@ -945,6 +958,12 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     {
         _label = new Label(composite, SWT.NONE);
         _label.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
+        String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+        if (customCSSKey != null && customCSSKey.trim().length() > 0)
+        {
+            _label.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+        }
         _label.setText(_screenItemProperties.getLabel() == null ? "" : _screenItemProperties.getLabel());
     }
 

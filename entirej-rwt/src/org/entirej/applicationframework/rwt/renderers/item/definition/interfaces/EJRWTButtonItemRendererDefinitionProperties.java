@@ -20,15 +20,17 @@ package org.entirej.applicationframework.rwt.renderers.item.definition.interface
 
 public interface EJRWTButtonItemRendererDefinitionProperties
 {
-    public static final String  PROPERTY_WIDTH            = "WIDTH";
-    public static final String  PROPERTY_HEIGHT           = "HEIGHT";
-    public static final String  PROPERTY_ALIGNMENT        = "ALIGNMENT";
-    public static final String  PROPERTY_ALIGNMENT_LEFT   = "LEFT";
-    public static final String  PROPERTY_ALIGNMENT_RIGHT  = "RIGHT";
-    public static final String  PROPERTY_ALIGNMENT_CENTER = "CENTER";
-    public static final String  PROPERTY_HIDE_BORDER      = "HIDE_BORDER";
-    public static final String  PROPERTY_PICTURE          = "PICTURE";
+    public static final String PROPERTY_WIDTH            = "WIDTH";
+    public static final String PROPERTY_HEIGHT           = "HEIGHT";
+    public static final String PROPERTY_ALIGNMENT        = "ALIGNMENT";
+    public static final String PROPERTY_ALIGNMENT_LEFT   = "LEFT";
+    public static final String PROPERTY_ALIGNMENT_RIGHT  = "RIGHT";
+    public static final String PROPERTY_ALIGNMENT_CENTER = "CENTER";
+    public static final String PROPERTY_HIDE_BORDER      = "HIDE_BORDER";
+    public static final String PROPERTY_PICTURE          = "PICTURE";
 
     public static final String PROPERTY_DEFAULT_BUTTON   = "DEFAULT_BUTTON";
+
+    public static final String PROPERTY_CSS_KEY          = "CSS_KEY";
 
 }

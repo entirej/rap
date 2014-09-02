@@ -47,6 +47,7 @@ public class EJRWTDateTimeItemRendererDefinition implements EJDevItemRendererDef
     public static final String PROPERTY_DETAILS_MEDIUM        = "MEDIUM";
     public static final String PROPERTY_DETAILS_LONG          = "LONG";
     public static final String PROPERTY_DROP_DOWN             = "PROPERTY_DROP_DOWN";
+    public static final String PROPERTY_CSS_KEY            = "CSS_KEY";
 
     public static final String PROPERTY_DISPLAY_VAUE_AS_LABEL = "DISPLAY_VALUE_AS_LABEL";
 
@@ -118,10 +119,17 @@ public class EJRWTDateTimeItemRendererDefinition implements EJDevItemRendererDef
         displayValueAsLabel.setDefaultValue("false");
         displayValueAsLabel.setDescription("Indicates if this item should be displayed as a label. Items displayed as labels cannot be modified by the user.");
 
+        EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(PROPERTY_CSS_KEY, EJPropertyDefinitionType.STRING);
+        customCSSKey.setLabel("Custom CSS Key");
+        customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
+
+        
         mainGroup.addPropertyDefinition(type);
         mainGroup.addPropertyDefinition(details);
         mainGroup.addPropertyDefinition(dropDown);
         mainGroup.addPropertyDefinition(displayValueAsLabel);
+        mainGroup.addPropertyDefinition(customCSSKey);
+        
 
         return mainGroup;
     }

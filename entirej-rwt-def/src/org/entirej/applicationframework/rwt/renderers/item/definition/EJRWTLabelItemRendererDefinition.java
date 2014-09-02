@@ -36,7 +36,6 @@ import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayPro
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendererDefinition;
 
-
 public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefinition
 {
     public static final String PROPERTY_CASE                 = "CASE";
@@ -50,6 +49,7 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
     public static final String PROPERTY_PICTURE              = "PICTURE";
     public static final String PROPERTY_DISPLAY_AS_HYPERLINK = "DISPLAY_AS_HYPERLINK";
     public static final String PROPERTY_TEXT_WRAP            = "WRAP";
+    public static final String PROPERTY_CSS_KEY              = "CSS_KEY";
 
     public static final String PROPERTY_HTML_FORMAT          = "HTML_FORMAT";
 
@@ -80,8 +80,9 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
     public EJPropertyDefinitionGroup getItemPropertyDefinitionGroup()
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("Label Item Renderer");
-        mainGroup.setDescription("This renderer should be used if you require dynamic labels for your block items, or be able to place a label anywhere on the screen");
-        
+        mainGroup
+                .setDescription("This renderer should be used if you require dynamic labels for your block items, or be able to place a label anywhere on the screen");
+
         EJDevPropertyDefinition displayAsHyperlink = new EJDevPropertyDefinition(PROPERTY_DISPLAY_AS_HYPERLINK, EJPropertyDefinitionType.BOOLEAN);
         displayAsHyperlink.setLabel("Display as Hyperlink");
         displayAsHyperlink
@@ -106,24 +107,28 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
         EJDevPropertyDefinition textWrap = new EJDevPropertyDefinition(PROPERTY_TEXT_WRAP, EJPropertyDefinitionType.BOOLEAN);
         textWrap.setLabel("Wrap Text");
         textWrap.setDescription("If this property is set, the Label Wraps the text");
-        
-        
+
         EJDevPropertyDefinition htmlFormat = new EJDevPropertyDefinition(PROPERTY_HTML_FORMAT, EJPropertyDefinitionType.BOOLEAN);
         htmlFormat.setLabel("XHTML Formatting");
         htmlFormat.setDescription("If this property is set, the Label formats certain XHTML tags ");
-        
-        
 
         EJDevPropertyDefinition pic = new EJDevPropertyDefinition(PROPERTY_PICTURE, EJPropertyDefinitionType.PROJECT_FILE);
         pic.setLabel("Picture");
         pic.setDescription("It is possible to display an image in a label renderer. See also: Image Item Renderer");
         
+        EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(PROPERTY_CSS_KEY, EJPropertyDefinitionType.STRING);
+        customCSSKey.setLabel("Custom CSS Key");
+        customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
+
+
+
         mainGroup.addPropertyDefinition(displayAsHyperlink);
         mainGroup.addPropertyDefinition(textCase);
         mainGroup.addPropertyDefinition(textAlignment);
         mainGroup.addPropertyDefinition(textWrap);
         mainGroup.addPropertyDefinition(htmlFormat);
         mainGroup.addPropertyDefinition(pic);
+        mainGroup.addPropertyDefinition(customCSSKey);
 
         return mainGroup;
     }
@@ -135,15 +140,15 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
                                                   // itemProperties.getLabel(),
                                                   // SWT.NULL);
         text.setText(itemProperties.getLabel());
-        
+
         EJDevBlockItemDisplayProperties blockItemDisplayProperties = itemProperties.getBlockItemDisplayProperties();
-        if(blockItemDisplayProperties != null)
+        if (blockItemDisplayProperties != null)
         {
             EJFrameworkExtensionProperties itemRendererProperties = blockItemDisplayProperties.getItemRendererProperties();
-            
-            if(itemRendererProperties!=null)
+
+            if (itemRendererProperties != null)
             {
-                String labelAlignment  = itemRendererProperties.getStringProperty(PROPERTY_ALIGNMENT);
+                String labelAlignment = itemRendererProperties.getStringProperty(PROPERTY_ALIGNMENT);
                 if (PROPERTY_ALIGNMENT_LEFT.equals(labelAlignment))
                 {
                     text.setAlignment(SWT.LEFT);
@@ -158,7 +163,6 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
                 }
             }
         }
-        
 
         return new EJDevItemRendererDefinitionControl(itemProperties, text);
     }
