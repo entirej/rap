@@ -475,6 +475,12 @@ public class EJRWTSingleRecordBlockDefinition implements EJDevBlockRendererDefin
         sectionGroup.addPropertyDefinitionList(list);
 
         sectionGroup.addPropertyDefinition(showTitleBarExpanded);
+        
+        
+        EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY, EJPropertyDefinitionType.STRING);
+        customCSSKey.setLabel("Custom CSS Key");
+        customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
+        sectionGroup.addPropertyDefinition(customCSSKey);
 
         return sectionGroup;
     }

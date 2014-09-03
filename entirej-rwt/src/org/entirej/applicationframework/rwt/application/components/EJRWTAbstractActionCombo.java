@@ -41,7 +41,7 @@ public abstract class EJRWTAbstractActionCombo extends Composite implements Seri
     public EJRWTAbstractActionCombo(Composite parent)
     {
         super(parent, SWT.NO_FOCUS);
-        setData(EJ_RWT.CUSTOM_VARIANT, parent.getData(EJ_RWT.CUSTOM_VARIANT));
+        setData(EJ_RWT.CUSTOM_VARIANT, "itemgroupclear");
         int numColumns = 1;
 
         numColumns = 2;

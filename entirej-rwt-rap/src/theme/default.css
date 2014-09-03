@@ -1861,4 +1861,11 @@ Group.itemgroup {
 	
 }
 
+Composite.itemgroupclear {
+	background-color: transparent;
+}
+Link.itemlabel {
+	background-color: transparent;
+}
+
 

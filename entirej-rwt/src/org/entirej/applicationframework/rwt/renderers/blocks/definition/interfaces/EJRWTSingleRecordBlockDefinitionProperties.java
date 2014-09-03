@@ -68,4 +68,6 @@ public interface EJRWTSingleRecordBlockDefinitionProperties
     public final String ITEM_GROUP_TITLE_BAR_ACTION_TOOLTIP = "ACTION_TOOLTIP";
     public final String ITEM_GROUP_TITLE_BAR_ACTION_NAME    = "ACTION_NAME";
 
+
+    public static final String ITEM_GROUP_CSS_KEY           = "CSS_KEY";
 }

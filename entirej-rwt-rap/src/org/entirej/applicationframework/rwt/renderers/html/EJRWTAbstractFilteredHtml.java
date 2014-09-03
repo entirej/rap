@@ -50,7 +50,7 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
     public EJRWTAbstractFilteredHtml(Composite parent, int treeStyle)
     {
         super(parent, SWT.NONE);
-        setData(EJ_RWT.CUSTOM_VARIANT, parent.getData(EJ_RWT.CUSTOM_VARIANT));
+        setData(EJ_RWT.CUSTOM_VARIANT, "itemgroupclear");
         
         this._parent = parent;
         init(treeStyle);
