@@ -1389,7 +1389,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 }
 
                                 String action = extentionProperties.getStringProperty(CELL_ACTION_COMMAND);
-
+                                if (action == null || action.length() == 0)
+                                {
+                                    action = item.getActionCommand();
+                                }
                                 if (action != null && action.length() > 0)
                                 {
                                     actionDef = String.format("em='eaction' earg='%s , %s' ", action, String.valueOf(getDisplayedRecordNumber(record)));
