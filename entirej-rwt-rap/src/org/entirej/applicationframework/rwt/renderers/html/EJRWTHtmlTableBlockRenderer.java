@@ -1022,11 +1022,31 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 {
                     for (ColumnLabelProvider filterTextProvider : _itemLabelProviders.values())
                     {
+                       
                         String text = filterTextProvider.getText(rec);
                         if (text != null && text.toLowerCase().contains(filter.toLowerCase()))
                         {
                             return true;
                         }
+                    }
+                    //if no match try to match Numeric value  
+                    try
+                    {
+                        double parseDouble = Double.parseDouble(filter);
+                        for (String item : _itemLabelProviders.keySet())
+                        {
+                            Object value = rec.getValue(item);
+                            if(value instanceof Number)
+                            {
+                               if(((Number)value).doubleValue() == parseDouble)
+                               {
+                                   return true;
+                               }
+                            }
+                        }
+                    }catch(NumberFormatException e)
+                    {
+                        //ignore
                     }
                 }
                 return false;
