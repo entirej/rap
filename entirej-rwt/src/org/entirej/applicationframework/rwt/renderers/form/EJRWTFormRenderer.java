@@ -488,16 +488,18 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         int index = 0;
         for (EJTabPageProperties page : allTabPageProperties)
         {
-            if (page.isVisible())
-            {
+            
 
                 EJTabFolder.Tab tab = tabFolder.newTab(page);
-                tab.create();
+                if (page.isVisible())
+                {
+                    tab.create();
+                }
                 tab.index = index;
                 index++;
 
                 tabFolder.put(page.getName(), tab);
-            }
+            
         }
 
         _canvasesIds.add(name);
@@ -973,8 +975,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
             void create()
             {
-                if (page.isVisible())
-                {
+                
                     CTabItem tabItem = (index == -1 || folder.getItemCount() < index) ? new CTabItem(folder, SWT.NONE) : new CTabItem(folder, SWT.NONE, index);
                     tabItem.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
                     tabItem.setData("TAB_KEY", page.getName());
@@ -994,7 +995,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                     item = tabItem;
                     tabItem.getControl().setEnabled(page.isEnabled());
-                }
+                
             }
         }
 
