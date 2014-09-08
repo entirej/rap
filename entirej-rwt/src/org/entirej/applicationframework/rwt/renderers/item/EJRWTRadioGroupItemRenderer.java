@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -47,6 +48,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTRadioButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
@@ -262,41 +264,45 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     @Override
     public void setInitialValue(Object value)
     {
-        try
+        if(controlState(_radioGroup))
         {
-            removeListeners();
-            for (RadioButtonValue buttonValue : _radioButtons.values())
+            try
             {
-                if (buttonValue.getValue().equals(value))
+                removeListeners();
+                for (RadioButtonValue buttonValue : _radioButtons.values())
                 {
-                    buttonValue.getButton().setSelection(true);
-                }
-                else
-                {
-                    buttonValue.getButton().setSelection(false);
-                }
-            }
-            if (value == null)
-            {
-                if (_defaultButtonId != null)
-                {
-                    for (RadioButtonValue buttonValue : _radioButtons.values())
+                    if (buttonValue.getValue().equals(value))
                     {
-                        if (buttonValue.ID.equals(_defaultButtonId))
+                        buttonValue.getButton().setSelection(true);
+                    }
+                    else
+                    {
+                        buttonValue.getButton().setSelection(false);
+                    }
+                }
+                if (value == null)
+                {
+                    if (_defaultButtonId != null)
+                    {
+                        for (RadioButtonValue buttonValue : _radioButtons.values())
                         {
-                            buttonValue.getButton().setSelection(true);
-                            break;
-                        }
+                            if (buttonValue.ID.equals(_defaultButtonId))
+                            {
+                                buttonValue.getButton().setSelection(true);
+                                break;
+                            }
 
+                        }
                     }
                 }
             }
+            finally
+            {
+                addListeners();
+                setMandatoryBorder(_mandatory);
+            }
         }
-        finally
-        {
-            addListeners();
-            setMandatoryBorder(_mandatory);
-        }
+        
     }
 
     @Override
@@ -310,7 +316,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
 
     protected void setMandatoryBorder(boolean req)
     {
-        if (_mandatoryDecoration == null)
+        if (_mandatoryDecoration == null|| _radioGroup.isDisposed())
         {
             return;
         }
@@ -500,12 +506,25 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
             {
                 ((Group) _radioGroup).setText(_screenItemProperties.getLabel());
             }
+            _radioGroup.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_RADIO);
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _radioGroup.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
             composite = _radioGroup;
         }
         else
         {
             _radioGroup = new Composite(composite, SWT.NO_FOCUS);
+            _radioGroup.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_RADIO);
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _radioGroup.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
         }
         if (hint != null && hint.trim().length() > 0)
         {
@@ -532,11 +551,19 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
         _radioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         EJFrameworkExtensionPropertyList radioButtons = _rendererProps.getPropertyList(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_RADIO_BUTTONS);
+        String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
         for (EJFrameworkExtensionPropertyListEntry listEntry : radioButtons.getAllListEntries())
         {
             Object value = getValueAsObject(_item.getReferencedItemProperties().getDataTypeClass(),
                     listEntry.getProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_VALUE));
             Button button = new Button(_radioGroup, SWT.RADIO);
+            button.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_RADIO);
+          
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                button.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
 
             // Store the button and the button values for future reference
             String id = listEntry.getProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_NAME);

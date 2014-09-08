@@ -277,7 +277,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
             msg = "Are you sure you want to delete the current record?";
         }
         EJMessage message = new EJMessage(msg);
-        EJQuestion question = new EJQuestion(new EJForm(_block.getForm()), "DELETE_RECORD", "Delete", message, "Yes", "No", recordToDelete);
+        EJQuestion question = new EJQuestion(new EJForm(_block.getForm()), "DELETE_RECORD", "Delete", message, "Yes", "No");
         _block.getForm().getMessenger().askQuestion(question);
         if (EJQuestionButton.ONE == question.getAnswer())
         {
@@ -646,6 +646,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
             if (mainScreenProperties.getDisplayFrame())
             {
                 Group group = new Group(section, SWT.NONE);
+                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 hookKeyListener(group);
@@ -655,11 +656,13 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                     group.setText(frameTitle);
                 }
                 _mainPane = new EJRWTEntireJGridPane(group, 1);
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 section.setClient(group);
             }
             else
             {
                 _mainPane = new EJRWTEntireJGridPane(section, 1);
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 _mainPane.setLayoutData(gridData);
                 _mainPane.cleanLayoutHorizontal();
                 section.setClient(_mainPane);
@@ -729,6 +732,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
             if (mainScreenProperties.getDisplayFrame())
             {
                 Group group = new Group(blockCanvas, SWT.NONE);
+                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 hookKeyListener(group);
@@ -738,12 +742,14 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                     group.setText(frameTitle);
                 }
                 _mainPane = new EJRWTEntireJGridPane(group, 1);
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
             }
             else
             {
                 _mainPane = new EJRWTEntireJGridPane(blockCanvas, 1);
                 _mainPane.setLayoutData(gridData);
                 _mainPane.cleanLayout();
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
             }
         }
 

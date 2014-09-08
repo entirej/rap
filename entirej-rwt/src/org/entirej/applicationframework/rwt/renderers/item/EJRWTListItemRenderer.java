@@ -57,6 +57,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionList;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTListBoxRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTAbstractScreenRenderer;
@@ -654,7 +655,13 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 int style = SWT.READ_ONLY|SWT.SINGLE|SWT.BORDER;
                 style = getComponentStyle(alignmentProperty, style);
                 _listField = new org.eclipse.swt.widgets.List(parent, style);
+                _listField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LIST);
+                String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    _listField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
                 if (hint != null && hint.trim().length() > 0)
                 {
                     _listField.setToolTipText(hint);
@@ -828,6 +835,13 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     public void createLable(Composite composite)
     {
         _label = new Label(composite, SWT.NONE);
+        _label.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LIST);
+        String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+        if (customCSSKey != null && customCSSKey.trim().length() > 0)
+        {
+            _label.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+        }
         _label.setText(_screenItemProperties.getLabel() == null ? "" : _screenItemProperties.getLabel());
     }
 

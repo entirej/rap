@@ -50,4 +50,10 @@ public class EJRWTTextAreaRenderer extends EJRWTTextItemRenderer
             _actionControl.getTextControl().setData(EJ_RWT.ACTIVE_KEYS, keys);
         }
     }
+    
+    @Override
+    public String getCSSKey()
+    {
+        return EJ_RWT.CSS_CV_ITEM_TEXTAREA;
+    }
 }

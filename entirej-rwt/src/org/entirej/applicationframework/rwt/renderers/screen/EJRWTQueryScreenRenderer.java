@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
+import org.entirej.applicationframework.rwt.renderers.item.EJRWTComboItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTItemTextChangeNotifier;
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTItemTextChangeNotifier.ChangeListener;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.interfaces.EJRWTScreenRendererDefinitionProperties;
@@ -151,6 +152,15 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
         setupQueryScreen();
         _itemRegister.register(queryRecord);
         _itemRegister.initialiseRegisteredRenderers();
+        Collection<EJManagedItemRendererWrapper> registeredRenderers = _itemRegister.getRegisteredRenderers();
+        for (EJManagedItemRendererWrapper wrapper : registeredRenderers)
+        {
+            if(wrapper.getUnmanagedRenderer() instanceof EJRWTComboItemRenderer)
+            {
+               if( ((EJRWTComboItemRenderer)wrapper.getUnmanagedRenderer()).isLovInitialiedOnValueSet())
+                   wrapper.getUnmanagedRenderer().refreshItemRenderer();
+            }
+        }
         _queryDialog.centreLocation();
         if (_maximize)
         {
@@ -356,7 +366,6 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
                     _frameworkManager.handleException(e);
                     return;
                 }
-                super.buttonPressed(buttonId);
             }
         };
         _queryDialog.create();

@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
+import org.entirej.applicationframework.rwt.renderers.item.EJRWTComboItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTItemTextChangeNotifier;
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTItemTextChangeNotifier.ChangeListener;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.interfaces.EJRWTScreenRendererDefinitionProperties;
@@ -133,6 +134,15 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
         setupInsertScreen();
 
         _itemRegister.register(record);
+        Collection<EJManagedItemRendererWrapper> registeredRenderers = _itemRegister.getRegisteredRenderers();
+        for (EJManagedItemRendererWrapper wrapper : registeredRenderers)
+        {
+            if(wrapper.getUnmanagedRenderer() instanceof EJRWTComboItemRenderer)
+            {
+               if( ((EJRWTComboItemRenderer)wrapper.getUnmanagedRenderer()).isLovInitialiedOnValueSet())
+                   wrapper.getUnmanagedRenderer().refreshItemRenderer();
+            }
+        }
         _insertDialog.centreLocation();
         if (_maximize)
         {
@@ -376,7 +386,6 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
                     _frameworkManager.handleException(e);
                     return;
                 }
-                super.buttonPressed(buttonId);
             }
         };
         _insertDialog.create();

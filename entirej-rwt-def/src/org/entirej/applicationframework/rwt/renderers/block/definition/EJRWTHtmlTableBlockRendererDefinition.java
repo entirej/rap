@@ -33,6 +33,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTTreeBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTInsertScreenRendererDefinition;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTQueryScreenRendererDefinition;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTUpdateScreenRendererDefinition;
@@ -109,6 +110,12 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         showTableHeader.setLabel("Show Headings");
         showTableHeader.setDescription("If selected, the cloumn headings of the block will be displayed");
         showTableHeader.setDefaultValue("true");
+        
+        
+        EJDevPropertyDefinition filter = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.FILTER, EJPropertyDefinitionType.BOOLEAN);
+        filter.setLabel("Add Filter");
+        filter.setDescription("If selected, the renderer will display a filter field above the blocks data. This filter can then be used by users to filter the blocks displayed data");
+        filter.setDefaultValue("false");
 
         EJDevPropertyDefinition cellSpacing = new EJDevPropertyDefinition(CELL_SPACING_PROPERTY, EJPropertyDefinitionType.INTEGER);
         cellSpacing.setLabel("Cell Spacing");
@@ -131,6 +138,7 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         rowEvenVA.setDescription("Specifies visual attribute for table even row");
 
         mainGroup.addPropertyDefinitionList(list);
+        mainGroup.addPropertyDefinition(filter);
         mainGroup.addPropertyDefinition(showTableHeader);
         mainGroup.addPropertyDefinition(headerVA);
         mainGroup.addPropertyDefinition(rowOddVA);

@@ -206,6 +206,11 @@ public abstract class EJRWTAbstractScreenRenderer implements EJRenderer
         gridData.grabExcessHorizontalSpace = grabExcessHorizontalSpace;
         gridData.grabExcessVerticalSpace = grabExcessVerticalSpace;
 
+        if(!grabExcessVerticalSpace)
+        {
+            gridData.verticalAlignment = SWT.CENTER;
+        }
+        
         int displayedWidth = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.DISPLAYED_WIDTH_PROPERTY, 0);
         int displayedHeight = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.DISPLAYED_HEIGHT_PROPERTY, 0);
 
@@ -244,6 +249,7 @@ public abstract class EJRWTAbstractScreenRenderer implements EJRenderer
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.grabExcessHorizontalSpace = false;
         gridData.verticalSpan = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_YSPAN_PROPERTY, 1);
+        gridData.verticalAlignment = SWT.CENTER;
         if (gridData.verticalSpan > 1
                 || blockRequiredItemProperties.getBooleanProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_EXPAND_Y_PROPERTY, false))
         {

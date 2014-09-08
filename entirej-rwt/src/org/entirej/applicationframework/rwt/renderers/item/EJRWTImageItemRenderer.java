@@ -27,6 +27,7 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -42,6 +43,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTImageItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
@@ -259,15 +261,23 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
             {
                 if (value instanceof String)
                 {
-                    try
+                    URL resource = EJRWTImageRetriever.class.getClassLoader().getResource((String) value);
+                    if(resource!=null)
                     {
-                        _currentImage = ImageDescriptor.createFromURL((new URL((String)value))).createImage();
+                        _currentImage = ImageDescriptor.createFromURL(resource).createImage();
                     }
-                    catch (MalformedURLException e)
+                    else
                     {
-                        EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM, _item.getName(),
-                                "String should follow URL Spec", (String)value);
-                        throw new IllegalArgumentException(message.getMessage());
+                        try
+                        {
+                            _currentImage = ImageDescriptor.createFromURL((new URL((String)value))).createImage();
+                        }
+                        catch (MalformedURLException e)
+                        {
+                            EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM, _item.getName(),
+                                    "String should follow URL Spec or Need to be In Classpath", (String)value);
+                            throw new IllegalArgumentException(message.getMessage());
+                        }
                     }
                 }
                 else if (value instanceof URL)
@@ -401,6 +411,13 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
         
 
         _labelField = labelField;
+        _labelField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_IMAGE);
+        String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+        if (customCSSKey != null && customCSSKey.trim().length() > 0)
+        {
+            _labelField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+        }
         _labelField.setText(label != null ? label : "");
         _labelField.setToolTipText(hint != null ? hint : "");
         _labelField.setData(_item.getReferencedItemProperties().getName());
@@ -427,6 +444,18 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 }
             }
         });
+        String actionCommand = _screenItemProperties.getActionCommand();
+        if (actionCommand != null && actionCommand.trim().length() != 0)
+        {
+            _labelField.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseUp(MouseEvent e)
+                {
+                    _item.executeActionCommand();
+                }
+            });
+        }
        
         _labelField.setImage(_defaultImage );
         _mandatoryDecoration.hide();
@@ -516,7 +545,33 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
 
                     if (value != null)
                     {
-
+                        if (value instanceof String)
+                        {
+                            URL resource = EJRWTImageRetriever.class.getClassLoader().getResource((String) value);
+                            if(resource!=null)
+                            {
+                                return ImageDescriptor.createFromURL(resource).createImage();
+                            }
+                            else
+                            {
+                                try
+                                {
+                                   return ImageDescriptor.createFromURL((new URL((String)value))).createImage();
+                                }
+                                catch (MalformedURLException e)
+                                {
+                                    return null;
+                                }
+                            }
+                        }
+                        else if (value instanceof URL)
+                        {
+                            return ImageDescriptor.createFromURL((URL) value).createImage();
+                        }
+                        else if (value instanceof byte[])
+                        {
+                            return new Image(Display.getDefault(), new ByteArrayInputStream((byte[]) value));
+                        }
                     }
                 }
                 return _defaultImage;

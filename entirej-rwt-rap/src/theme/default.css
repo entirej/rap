@@ -8,7 +8,7 @@ Default theme for all widgets */
 }
 
 *:disabled {
-	color: #CFCFCF;
+	color: #4a4a4a;
 }
 
 Widget-ToolTip {
@@ -88,16 +88,7 @@ Composite[BORDER] {
 	border: 1px solid #bdbdbd;
 	border-radius: 2px;
 }
-Composite.applayout {
-	background-color: #F5F5F5;
-}
 
-
-Composite.notifierDialog {
-	border: 1px solid #bdbdbd;
-	border-radius: 2px;
-	background-color: #F5F5F5;
-}
 
 /* Button default theme */
 Button {
@@ -244,6 +235,9 @@ Combo,Combo[BORDER] {
 	background-image: none;
 	text-shadow: none;
 	box-shadow: inset 0 0 3px #bdbdbd;
+}
+Combo,Combo[BORDER]:disabled {
+	color: #4a4a4a;
 }
 
 Combo:focused,Combo[BORDER]:focused {
@@ -1843,3 +1837,35 @@ Shell.jface_contentProposalPopup,Shell.jface_infoPopupDialog {
 	padding: 0;
 	box-shadow: 0 0 4px #ababab;
 }
+
+/*EJ specific theming*/
+
+Composite.applayout {
+	background-color: #F5F5F5;
+}
+
+
+Composite.notifierDialog {
+	border: 1px solid #bdbdbd;
+	border-radius: 2px;
+	background-color: #F5F5F5;
+}
+
+/*EJ Item Group related theming*/
+Composite.itemgroup {
+}
+
+
+Group.itemgroup {
+	
+	
+}
+
+Composite.itemgroupclear {
+	background-color: transparent;
+}
+Link.itemlabel {
+	background-color: transparent;
+}
+
+

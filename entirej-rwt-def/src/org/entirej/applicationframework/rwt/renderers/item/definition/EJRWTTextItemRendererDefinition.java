@@ -35,7 +35,6 @@ import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayPro
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendererDefinition;
 
-
 public class EJRWTTextItemRendererDefinition implements EJDevItemRendererDefinition
 {
     public static final String PROPERTY_MAXLENGTH                 = "MAXLENGTH";
@@ -51,6 +50,7 @@ public class EJRWTTextItemRendererDefinition implements EJDevItemRendererDefinit
     public static final String PROPERTY_DISPLAY_VAUE_AS_LABEL     = "DISPLAY_VALUE_AS_LABEL";
     public static final String PROPERTY_SELECT_ON_FOCUS           = "SELECT_ON_FOCUS";
     public static final String PROPERTY_DISPLAY_VAUE_AS_PROTECTED = "PROTECTED";
+    public static final String PROPERTY_CSS_KEY                   = "CSS_KEY";
 
     public EJRWTTextItemRendererDefinition()
     {
@@ -112,6 +112,12 @@ public class EJRWTTextItemRendererDefinition implements EJDevItemRendererDefinit
         selectOnFocus.setLabel("Select on focus");
         selectOnFocus.setDescription("Indicates if this item should select text on focus");
         selectOnFocus.setDefaultValue("false");
+        
+        EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(PROPERTY_CSS_KEY, EJPropertyDefinitionType.STRING);
+        customCSSKey.setLabel("Custom CSS Key");
+        customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
+
+
 
         mainGroup.addPropertyDefinition(maxLength);
         mainGroup.addPropertyDefinition(textCase);
@@ -119,6 +125,7 @@ public class EJRWTTextItemRendererDefinition implements EJDevItemRendererDefinit
         mainGroup.addPropertyDefinition(displayValueAsLabel);
         mainGroup.addPropertyDefinition(protectedField);
         mainGroup.addPropertyDefinition(selectOnFocus);
+        mainGroup.addPropertyDefinition(customCSSKey);
 
         return mainGroup;
     }

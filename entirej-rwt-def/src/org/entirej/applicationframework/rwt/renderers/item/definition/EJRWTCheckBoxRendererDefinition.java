@@ -36,7 +36,6 @@ import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayPro
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendererDefinition;
 
-
 public class EJRWTCheckBoxRendererDefinition implements EJDevItemRendererDefinition
 {
     public static final String CHECKED_VALUE       = "CHECKED_VALUE";
@@ -46,6 +45,7 @@ public class EJRWTCheckBoxRendererDefinition implements EJDevItemRendererDefinit
     public static final String TRI_STATE           = "TRI_STATE";
     public static final String CHECKED             = "CHECKED";
     public static final String UNCHECKED           = "UNCHECKED";
+    public static final String CSS_KEY             = "CSS_KAY";
 
     public EJRWTCheckBoxRendererDefinition()
     {
@@ -77,15 +77,18 @@ public class EJRWTCheckBoxRendererDefinition implements EJDevItemRendererDefinit
 
         EJDevPropertyDefinition checkedValue = new EJDevPropertyDefinition(EJRWTCheckBoxRendererDefinition.CHECKED_VALUE, EJPropertyDefinitionType.STRING);
         checkedValue.setLabel("Value when checked");
-        checkedValue.setDescription("The check box will be ticked if the underlying item has a value correspinding to this value. This value must be convertable to the data type of the item that this renderer has been assigned to");
+        checkedValue
+                .setDescription("The check box will be ticked if the underlying item has a value correspinding to this value. This value must be convertable to the data type of the item that this renderer has been assigned to");
 
         EJDevPropertyDefinition uncheckedValue = new EJDevPropertyDefinition(EJRWTCheckBoxRendererDefinition.UNCHECKED_VALUE, EJPropertyDefinitionType.STRING);
         uncheckedValue.setLabel("Value when unchecked");
-        uncheckedValue.setDescription("The check box will be unticked if the underlying item has a value correspinding to this value. This value must be convertable to the data type of the item that this renderer has been assigned to");
+        uncheckedValue
+                .setDescription("The check box will be unticked if the underlying item has a value correspinding to this value. This value must be convertable to the data type of the item that this renderer has been assigned to");
 
         EJDevPropertyDefinition initialValue = new EJDevPropertyDefinition(EJRWTCheckBoxRendererDefinition.DEFAULT_VALUE, EJPropertyDefinitionType.STRING);
         initialValue.setLabel("Initial Check Box state");
-        initialValue.setDescription("This is the default for the check box. If the initial state is set to Checked, then the item will contain the value according to the Value When Checked property");
+        initialValue
+                .setDescription("This is the default for the check box. If the initial state is set to Checked, then the item will contain the value according to the Value When Checked property");
         initialValue.addValidValue(EJRWTCheckBoxRendererDefinition.CHECKED, "Checked");
         initialValue.addValidValue(EJRWTCheckBoxRendererDefinition.UNCHECKED, "Unchecked");
         initialValue.setDefaultValue(EJRWTCheckBoxRendererDefinition.CHECKED);
@@ -105,11 +108,17 @@ public class EJRWTCheckBoxRendererDefinition implements EJDevItemRendererDefinit
         triState.setDescription("Check boxes contain either a checked or unchecked state, i.e.  True or False. However, when searching for data, you may require values with either the checked or unchecked state. To be able to search for both Checked and Unchecked values, se this property to true. This will give you a Tri-State check box on the query screen.");
         triState.setDefaultValue("false");
 
+        EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(CSS_KEY, EJPropertyDefinitionType.STRING);
+        customCSSKey.setLabel("Custom CSS Key");
+        customCSSKey
+                .setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
+
         mainGroup.addPropertyDefinition(checkedValue);
         mainGroup.addPropertyDefinition(uncheckedValue);
         mainGroup.addPropertyDefinition(initialValue);
         mainGroup.addPropertyDefinition(otherValueMapping);
         mainGroup.addPropertyDefinition(triState);
+        mainGroup.addPropertyDefinition(customCSSKey);
 
         return mainGroup;
     }

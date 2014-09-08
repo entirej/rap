@@ -61,6 +61,8 @@ import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.item.EJRWTComboItemRenderer;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTUpdateScreenRenderer;
@@ -297,7 +299,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             msg = "Are you sure you want to delete the current record?";
         }
         EJMessage message = new EJMessage(msg);
-        EJQuestion question = new EJQuestion(new EJForm(_block.getForm()), "DELETE_RECORD", "Delete", message, "Yes", "No", recordToDelete);
+        EJQuestion question = new EJQuestion(new EJForm(_block.getForm()), "DELETE_RECORD", "Delete", message, "Yes", "No");
         _block.getForm().getMessenger().askQuestion(question);
         if (EJQuestionButton.ONE == question.getAnswer())
         {
@@ -454,6 +456,15 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             synchronize();
 
             _mainItemRegister.register(record);
+            Collection<EJManagedItemRendererWrapper> registeredRenderers = _mainItemRegister.getRegisteredRenderers();
+            for (EJManagedItemRendererWrapper wrapper : registeredRenderers)
+            {
+                if(wrapper.getUnmanagedRenderer() instanceof EJRWTComboItemRenderer)
+                {
+                   if( ((EJRWTComboItemRenderer)wrapper.getUnmanagedRenderer()).isLovInitialiedOnValueSet())
+                       wrapper.getUnmanagedRenderer().refreshItemRenderer();
+                }
+            }
             logger.trace("END recordSelected");
         }
         notifyStatus();
@@ -652,6 +663,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             if (mainScreenProperties.getDisplayFrame())
             {
                 Group group = new Group(section, SWT.NONE);
+                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+               
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 String frameTitle = mainScreenProperties.getFrameTitle();
@@ -660,11 +673,16 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     group.setText(frameTitle);
                 }
                 _mainPane = new EJRWTEntireJGridPane(group, mainScreenProperties.getNumCols());
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+               
+             
                 section.setClient(group);
             }
             else
             {
                 _mainPane = new EJRWTEntireJGridPane(section, mainScreenProperties.getNumCols());
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+               
                 _mainPane.setLayoutData(gridData);
                 section.setClient(_mainPane);
             }
@@ -732,6 +750,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             if (mainScreenProperties.getDisplayFrame())
             {
                 Group group = new Group(blockCanvas, SWT.NONE);
+                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+                
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 String frameTitle = mainScreenProperties.getFrameTitle();
@@ -740,10 +760,13 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     group.setText(frameTitle);
                 }
                 _mainPane = new EJRWTEntireJGridPane(group, mainScreenProperties.getNumCols());
+               
             }
             else
             {
                 _mainPane = new EJRWTEntireJGridPane(blockCanvas, mainScreenProperties.getNumCols());
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+                
                 _mainPane.setLayoutData(gridData);
             }
         }
@@ -821,11 +844,12 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     {
         EJRWTEntireJGridPane groupPane;
         String frameTitle = groupProperties.getFrameTitle();
+        EJFrameworkExtensionProperties rendererProperties = groupProperties.getRendererProperties();
         boolean hasGroup = groupProperties.dispayGroupFrame() && frameTitle != null && frameTitle.length() > 0;
         if (hasGroup)
         {
 
-            EJFrameworkExtensionProperties rendererProperties = groupProperties.getRendererProperties();
+           
             if (rendererProperties != null
                     && rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE) != null
                     && !EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE_GROUP.equals(rendererProperties
@@ -861,6 +885,15 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     }
                 });
                 groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols());
+                groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+               
+                    String customCSSKey = rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY);
+
+                    if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                    {
+                        groupPane.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                    }
+                
 //                groupPane.getLayout().marginRight = 5;
 //                groupPane.getLayout().marginLeft = 5;
                 section.setClient(groupPane);
@@ -928,6 +961,13 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             else
             {
                 Group group = new Group(parent, SWT.NONE);
+                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+                String customCSSKey = rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY);
+
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    group.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
                 group.setLayout(new FillLayout());
                 group.setLayoutData(createItemGroupGridData(groupProperties));
                 group.setText(frameTitle);
@@ -942,6 +982,12 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     }
                 });
                 groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols());
+                groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+              
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    groupPane.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
 //                groupPane.getLayout().marginRight = 5;
 //                groupPane.getLayout().marginLeft = 5;
             }
@@ -949,6 +995,18 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         else
         {
             groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols(), groupProperties.dispayGroupFrame() ? SWT.BORDER : SWT.NONE);
+            groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+            
+            if(rendererProperties!=null)
+            {
+                String customCSSKey = rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY);
+
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    groupPane.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
+            }
+           
             if(groupProperties.dispayGroupFrame() )
             {
 //                groupPane.getLayout().marginRight = 5;
@@ -1061,6 +1119,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.grabExcessHorizontalSpace = false;
         gridData.verticalSpan = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_YSPAN_PROPERTY, 1);
+        
+        gridData.verticalAlignment = SWT.CENTER;
         if (gridData.verticalSpan > 1
                 || blockRequiredItemProperties.getBooleanProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_EXPAND_Y_PROPERTY, false))
         {
@@ -1098,6 +1158,12 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         gridData.verticalSpan = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_YSPAN_PROPERTY, 1);
         gridData.grabExcessHorizontalSpace = grabExcessHorizontalSpace;
         gridData.grabExcessVerticalSpace = grabExcessVerticalSpace;
+        
+        if(!grabExcessVerticalSpace)
+        {
+            gridData.verticalAlignment = SWT.CENTER;
+        }
+        
 
         int displayedWidth = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.DISPLAYED_WIDTH_PROPERTY, 0);
         int displayedHeight = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.DISPLAYED_HEIGHT_PROPERTY, 0);
@@ -1129,6 +1195,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 gridData.heightHint = displayedHeight;
             }
         }
+        
         return gridData;
     }
 

@@ -16,10 +16,9 @@
  * Contributors:
  *     Mojave Innovations GmbH - initial API and implementation
  ******************************************************************************/
-package org.entirej.applicationframework.rwt.table;
+package org.entirej.applicationframework.rwt.renderers.html;
 
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
@@ -38,16 +37,17 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
+import org.entirej.applicationframework.rwt.component.EJRWTHtmlView;
 
-public abstract class EJRWTAbstractFilteredTree extends Composite
+public abstract class EJRWTAbstractFilteredHtml extends Composite
 {
-    private Text       _filterText;
-    private TreeViewer _treeViewer;
-    private Composite  _filterComposite;
-    private Composite  _parent;
-    private Composite  _treeComposite;
+    private Text        _filterText;
+    private EJRWTHtmlView _tableViewer;
+    private Composite   _filterComposite;
+    private Composite   _parent;
+    private Composite   _treeComposite;
 
-    public EJRWTAbstractFilteredTree(Composite parent, int treeStyle)
+    public EJRWTAbstractFilteredHtml(Composite parent, int treeStyle)
     {
         super(parent, SWT.NONE);
         setData(EJ_RWT.CUSTOM_VARIANT, "itemgroupclear");
@@ -59,7 +59,6 @@ public abstract class EJRWTAbstractFilteredTree extends Composite
     protected void init(int treeStyle)
     {
         createControl(_parent, treeStyle);
-        setInitialText(null);
         setFont(_parent.getFont());
     }
 
@@ -72,7 +71,8 @@ public abstract class EJRWTAbstractFilteredTree extends Composite
         setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         _filterComposite = new Composite(this, SWT.NONE);
-        _filterComposite.setData(EJ_RWT.CUSTOM_VARIANT, "itemgroupclear");
+        _filterComposite.setData(EJ_RWT.CUSTOM_VARIANT, getData(EJ_RWT.CUSTOM_VARIANT));
+
         GridLayout filterLayout = new GridLayout(2, false);
         filterLayout.marginHeight = 0;
         filterLayout.marginWidth = 0;
@@ -89,7 +89,7 @@ public abstract class EJRWTAbstractFilteredTree extends Composite
         _treeComposite.setLayout(treeCompositeLayout);
         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
         _treeComposite.setLayoutData(data);
-        createTreeControl(_treeComposite, treeStyle);
+        createHtmlViewControl(_treeComposite, treeStyle);
     }
 
     protected Composite createFilterControls(Composite parent)
@@ -98,18 +98,18 @@ public abstract class EJRWTAbstractFilteredTree extends Composite
         return parent;
     }
 
-    protected Control createTreeControl(Composite parent, int style)
+    protected Control createHtmlViewControl(Composite parent, int style)
     {
-        _treeViewer = doCreateTreeViewer(parent, style);
+        _tableViewer = doCreateTableViewer(parent, style);
         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
-        _treeViewer.getControl().setLayoutData(data);
+        _tableViewer.setLayoutData(data);
 
-        return _treeViewer.getControl();
+        return _tableViewer;
     }
 
-    protected TreeViewer doCreateTreeViewer(Composite parent, int style)
+    protected EJRWTHtmlView doCreateTableViewer(Composite parent, int style)
     {
-        return new TreeViewer(parent, style);
+        return new EJRWTHtmlView(parent, style);
     }
 
     protected void createFilterText(Composite parent)
@@ -144,15 +144,14 @@ public abstract class EJRWTAbstractFilteredTree extends Composite
 
         _filterText.addKeyListener(new KeyAdapter()
         {
-
             @Override
             public void keyPressed(KeyEvent e)
             {
                 // on a CR we want to transfer focus to the list
-                boolean hasItems = getViewer().getTree().getItemCount() > 0;
+                boolean hasItems = getViewer().getText().length() > 0;
                 if (hasItems && e.keyCode == SWT.ARROW_DOWN)
                 {
-                    _treeViewer.getTree().setFocus();
+                    _tableViewer.setFocus();
                     return;
                 }
             }
@@ -166,8 +165,7 @@ public abstract class EJRWTAbstractFilteredTree extends Composite
                 if (e.detail == SWT.TRAVERSE_RETURN)
                 {
                     e.doit = false;
-                    getViewer().getTree().setFocus();
-
+                    getViewer().setFocus();
                 }
             }
         });
@@ -197,13 +195,17 @@ public abstract class EJRWTAbstractFilteredTree extends Composite
         }
 
         GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-        // if the text widget supported cancel then it will have it's own
-        // integrated button. We can take all of the space.
-        if ((_filterText.getStyle() & SWT.ICON_CANCEL) != 0)
+        // if there is no custom control use full space
+        if (!doCreateCustomComponents(_filterComposite))
         {
             gridData.horizontalSpan = 2;
         }
         _filterText.setLayoutData(gridData);
+    }
+
+    protected boolean doCreateCustomComponents(Composite parent)
+    {
+        return false;
     }
 
     protected Text doCreateFilterText(Composite parent)
@@ -236,12 +238,11 @@ public abstract class EJRWTAbstractFilteredTree extends Composite
             _filterText.setText(string != null ? string : "");
             selectAll();
         }
-
     }
 
-    public TreeViewer getViewer()
+    public EJRWTHtmlView getViewer()
     {
-        return _treeViewer;
+        return _tableViewer;
     }
 
     public Text getFilterControl()
@@ -268,7 +269,7 @@ public abstract class EJRWTAbstractFilteredTree extends Composite
         }
     }
 
-    public static abstract class FilteredContentProvider implements ITreeContentProvider
+    public static abstract class FilteredContentProvider
     {
         protected String filter;
 
@@ -281,5 +282,7 @@ public abstract class EJRWTAbstractFilteredTree extends Composite
         {
             return filter;
         }
+        
+        
     }
 }

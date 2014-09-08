@@ -51,6 +51,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionText;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
@@ -101,6 +102,11 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     {
         return control != null && !control.isDisposed();
 
+    }
+    
+    public String getCSSKey()
+    {
+        return EJ_RWT.CSS_CV_ITEM_TEXT;
     }
 
     @Override
@@ -520,14 +526,20 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
     public void valueChanged()
     {
+        Object base = _baseValue;
+        Object value = getValue();
+     
         if (!_textField.isFocusControl())
         {
+           
+           
+            if(_valueChanged ||  ((base==null && value!=null) || (base!=null && value==null) || (value!=null && !value.equals(base))  ))
+                _item.itemValueChaged();
             _valueChanged = false;
-            _item.itemValueChaged();
         }
         else
         {
-            _valueChanged = true;
+            _valueChanged = _valueChanged ||  ((base==null && value!=null) || (base!=null && value==null) || (value!=null && !value.equals(base))   );
         }
         setMandatoryBorder(_mandatory);
         fireTextChange();
@@ -724,6 +736,13 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
             _valueLabel = newVlaueLabel(composite);
             _valueLabel.setData(_itemProperties.getName());
+            _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
             if (hint != null && hint.trim().length() > 0)
             {
                 _valueLabel.setToolTipText(hint);
@@ -746,6 +765,13 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                         style = style | SWT.PASSWORD;
                     }
                     _textField = newTextField(parent, getComponentStyle(alignmentProp, style));
+                    _textField.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
+                    String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+                    if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                    {
+                        _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                    }
                     return _textField;
                 }
 
@@ -931,6 +957,13 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     public void createLable(Composite composite)
     {
         _label = new Label(composite, SWT.NONE);
+        _label.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
+        String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+        if (customCSSKey != null && customCSSKey.trim().length() > 0)
+        {
+            _label.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+        }
         _label.setText(_screenItemProperties.getLabel() == null ? "" : _screenItemProperties.getLabel());
     }
 
@@ -938,11 +971,14 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     {
         protected boolean         enable           = true;
 
+        
         @Override
         public void modifyText(ModifyEvent event)
         {
-            if (enable)
+            
+            if (enable )
             {
+                
                 valueChanged();
             }
         }

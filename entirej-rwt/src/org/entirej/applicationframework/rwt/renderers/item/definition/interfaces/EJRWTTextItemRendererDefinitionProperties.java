@@ -38,4 +38,6 @@ public interface EJRWTTextItemRendererDefinitionProperties
     public static final String PROPERTY_MAXVALUE                  = "MAX_VALUE";
     public static final String PROPERTY_MINVALUE                  = "MIN_VALUE";
     public static final String PROPERTY_FORMAT                    = "FORMAT";
+
+    public static final String PROPERTY_LOCALE_FORMAT         = "LOCALE_FORMAT";
 }

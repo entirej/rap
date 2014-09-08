@@ -92,6 +92,7 @@ public class EJRWTStatusbar implements  EJRWTAppComponentRenderer
         for (EJFrameworkExtensionPropertyListEntry entry : allListEntries)
         {
             final Label section = new Label(panel,getComponentStyle(entry.getProperty(PROPERTY_ALIGNMENT),SWT.NONE));
+            section.setData(EJ_RWT.MARKUP_ENABLED,Boolean.TRUE);
             
             String paramName = entry.getProperty(PARAMETER);
             if(paramName!=null && paramName.length()>0)

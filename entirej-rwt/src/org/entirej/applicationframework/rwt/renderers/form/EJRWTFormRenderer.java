@@ -19,12 +19,14 @@
 package org.entirej.applicationframework.rwt.renderers.form;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -36,6 +38,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
@@ -182,7 +185,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 scrollComposite.setContent(renderer.getGuiComponent());
                 scrollComposite.setExpandHorizontal(true);
                 scrollComposite.setExpandVertical(true);
-                scrollComposite.setMinSize(formController.getEmbeddedForm().getProperties().getFormWidth(), formController.getEmbeddedForm().getProperties().getFormHeight());
+                scrollComposite.setMinSize(formController.getEmbeddedForm().getProperties().getFormWidth(), formController.getEmbeddedForm().getProperties()
+                        .getFormHeight());
                 composite.layout(true);
                 composite.redraw();
             }
@@ -192,7 +196,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         }
     }
-    
+
     @Override
     public void closeEmbeddedForm(EJEmbeddedFormController formController)
     {
@@ -230,6 +234,20 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 tabPane.showPage(pageName);
             }
         }
+    }
+
+    @Override
+    public void setTabPageVisible(String canvasName, String pageName, boolean visible)
+    {
+        if (canvasName != null && pageName != null)
+        {
+            EJTabFolder tabPane = _tabFolders.get(canvasName);
+            if (tabPane != null)
+            {
+                tabPane.setTabPageVisible(pageName, visible);
+            }
+        }
+
     }
 
     @Override
@@ -350,6 +368,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             _blocks.put(canvasName, block);
         }
         _mainPane = new EJRWTEntireJGridPane(parent, formProperties.getNumCols());
+        _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         for (EJCanvasProperties canvasProperties : formProperties.getCanvasContainer().getAllCanvasProperties())
         {
             createCanvas(_mainPane, canvasProperties, canvasController);
@@ -386,6 +405,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
         final String name = canvasProperties.getName();
         EJRWTEntireJStackedPane stackedPane = new EJRWTEntireJStackedPane(parent);
+        stackedPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         stackedPane.setLayoutData(createCanvasGridData(canvasProperties));
         _stackedPanes.put(name, stackedPane);
 
@@ -412,6 +432,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
         final String name = canvasProperties.getName();
         Composite stackedPane = new Composite(parent, SWT.NONE);
+        stackedPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         stackedPane.setLayout(new FillLayout());
         stackedPane.setLayoutData(createCanvasGridData(canvasProperties));
         _formPanes.put(name, stackedPane);
@@ -450,7 +471,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
         final String name = canvasProperties.getName();
         final CTabFolder folder = new CTabFolder(parent, style);
-        EJTabFolder tabFolder = new EJTabFolder(folder);
+        folder.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
+        EJTabFolder tabFolder = new EJTabFolder(folder, canvasController);
         folder.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -463,28 +485,21 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         folder.setLayoutData(createCanvasGridData(canvasProperties));
 
         Collection<EJTabPageProperties> allTabPageProperties = canvasProperties.getTabPageContainer().getAllTabPageProperties();
+        int index = 0;
         for (EJTabPageProperties page : allTabPageProperties)
         {
-            if (page.isVisible())
-            {
-                CTabItem tabItem = new CTabItem(folder, SWT.NONE);
-                tabItem.setData("TAB_KEY", page.getName());
-                EJRWTEntireJGridPane pageCanvas = new EJRWTEntireJGridPane(folder, page.getNumCols());
-                tabItem.setText(page.getPageTitle() != null && page.getPageTitle().length() > 0 ? page.getPageTitle() : page.getName());
-                tabItem.setControl(pageCanvas);
-                EJCanvasPropertiesContainer containedCanvases = page.getContainedCanvases();
-                for (EJCanvasProperties pageProperties : containedCanvases.getAllCanvasProperties())
-                {
-                    createCanvas(pageCanvas, pageProperties, canvasController);
-                }
-                if (folder.getSelection() == null)
-                {
-                    folder.setSelection(tabItem);
-                }
+            
 
-                tabFolder.put(page.getName(), tabItem);
-                tabItem.getControl().setEnabled(page.isEnabled());
-            }
+                EJTabFolder.Tab tab = tabFolder.newTab(page);
+                if (page.isVisible())
+                {
+                    tab.create();
+                }
+                tab.index = index;
+                index++;
+
+                tabFolder.put(page.getName(), tab);
+            
         }
 
         _canvasesIds.add(name);
@@ -526,6 +541,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         if (canvasProperties.getDisplayGroupFrame())
         {
             Group group = new Group(parent, SWT.NONE);
+            group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
             group.setLayout(new FillLayout());
             group.setLayoutData(createCanvasGridData(canvasProperties));
             String frameTitle = canvasProperties.getGroupFrameTitle();
@@ -536,6 +552,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             parent = group;
         }
         final EJRWTEntireJGridPane groupPane = new EJRWTEntireJGridPane(parent, canvasProperties.getNumCols());
+        groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         if (canvasProperties.getDisplayGroupFrame())
         {
             groupPane.cleanLayoutTop();
@@ -615,6 +632,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 : SWT.VERTICAL);
         layoutBody.setLayoutData(createCanvasGridData(canvasProperties));
 
+        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         if (canvasProperties.getType() == EJCanvasType.SPLIT)
         {
             List<EJCanvasProperties> items = new ArrayList<EJCanvasProperties>(canvasProperties.getSplitCanvasContainer().getAllCanvasProperties());
@@ -714,6 +732,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         final ScrolledComposite scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 
                         EJRWTEntireJGridPane _mainPane = new EJRWTEntireJGridPane(scrollComposite, numCols);
+                        _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
                         _mainPane.cleanLayout();
                         EJCanvasPropertiesContainer popupCanvasContainer = canvasProperties.getPopupCanvasContainer();
                         Collection<EJCanvasProperties> allCanvasProperties = popupCanvasContainer.getAllCanvasProperties();
@@ -821,23 +840,81 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
     class EJTabFolder
     {
-        final CTabFolder            folder;
-        final Map<String, CTabItem> tabPages = new HashMap<String, CTabItem>();
+        final CTabFolder         folder;
+        final EJCanvasController canvasController;
+        final Map<String, Tab>   tabPages = new HashMap<String, Tab>();
 
-        EJTabFolder(CTabFolder folder)
+        EJTabFolder(CTabFolder folder, EJCanvasController canvasController)
         {
             super();
             this.folder = folder;
+            this.canvasController = canvasController;
         }
 
         public void showPage(String pageName)
         {
-            CTabItem cTabItem = tabPages.get(pageName);
-            if (cTabItem != null)
+            Tab cTabItem = tabPages.get(pageName);
+            if (cTabItem != null && cTabItem.item != null)
             {
-                folder.setSelection(cTabItem);
+                folder.setSelection(cTabItem.item);
             }
 
+        }
+
+        public void setTabPageVisible(String pageName, boolean visible)
+        {
+            final Tab cTabItem = tabPages.get(pageName);
+            if (cTabItem != null)
+            {
+                if (visible)
+                {
+                    if (cTabItem.item == null)
+                    {
+                        Display.getDefault().asyncExec(new Runnable()
+                        {
+
+                            @Override
+                            public void run()
+                            {
+                                cTabItem.create();
+
+                            }
+                        });
+                    }
+                }
+                else
+                {
+                    if (cTabItem.item != null)
+                    {
+                        CTabItem[] items = folder.getItems();
+                        int index = 0;
+                        for (CTabItem cTabItem2 : items)
+                        {
+                            if (cTabItem2 == cTabItem.item)
+                            {
+                                cTabItem.index = index;
+                                break;
+                            }
+                            index++;
+                        }
+                        Display.getDefault().asyncExec(new Runnable()
+                        {
+
+                            @Override
+                            public void run()
+                            {
+                                cTabItem.remove();
+                            }
+                        });
+                    }
+                }
+            }
+
+        }
+
+        Tab newTab(EJTabPageProperties page)
+        {
+            return new EJTabFolder.Tab(page);
         }
 
         void clear()
@@ -852,17 +929,17 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         CTabItem get(String key)
         {
-            return tabPages.get(key);
+            return tabPages.get(key).item;
         }
 
-        CTabItem put(String key, CTabItem value)
+        void put(String key, Tab value)
         {
-            return tabPages.put(key, value);
+            tabPages.put(key, value);
         }
 
-        CTabItem remove(String key)
+        void remove(String key)
         {
-            return tabPages.remove(key);
+            tabPages.remove(key);
         }
 
         public String getActiveKey()
@@ -873,6 +950,53 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 return (String) selection.getData("TAB_KEY");
             }
             return null;
+        }
+
+        class Tab
+        {
+            CTabItem                  item;
+            int                       index = -1;
+
+            final EJTabPageProperties page;
+
+            public Tab(EJTabPageProperties page)
+            {
+                this.page = page;
+            }
+
+            void remove()
+            {
+                if (item != null && !item.isDisposed())
+                {
+                    item.dispose();
+                }
+                item = null;
+            }
+
+            void create()
+            {
+                
+                    CTabItem tabItem = (index == -1 || folder.getItemCount() < index) ? new CTabItem(folder, SWT.NONE) : new CTabItem(folder, SWT.NONE, index);
+                    tabItem.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
+                    tabItem.setData("TAB_KEY", page.getName());
+                    EJRWTEntireJGridPane pageCanvas = new EJRWTEntireJGridPane(folder, page.getNumCols());
+                    pageCanvas.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
+                    tabItem.setText(page.getPageTitle() != null && page.getPageTitle().length() > 0 ? page.getPageTitle() : page.getName());
+                    tabItem.setControl(pageCanvas);
+                    EJCanvasPropertiesContainer containedCanvases = page.getContainedCanvases();
+                    for (EJCanvasProperties pageProperties : containedCanvases.getAllCanvasProperties())
+                    {
+                        createCanvas(pageCanvas, pageProperties, canvasController);
+                    }
+                    if (folder.getSelection() == null)
+                    {
+                        folder.setSelection(tabItem);
+                    }
+
+                    item = tabItem;
+                    tabItem.getControl().setEnabled(page.isEnabled());
+                
+            }
         }
 
     }

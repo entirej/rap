@@ -34,9 +34,12 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -51,6 +54,7 @@ import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionDateTime;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTDateTimeItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
@@ -559,6 +563,13 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
         if (_displayValueAsLabel)
         {
             _valueLabel = newVlaueLabel(composite);
+            _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_DATETIME);
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
             _valueLabel.setData(_itemProperties.getName());
             if (hint != null && hint.trim().length() > 0)
             {
@@ -610,6 +621,14 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
                     }
 
                     _textField = newTextField(parent, style);
+                    _textField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_DATETIME);
+                    String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+                    if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                    {
+                        _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                    }
+                    
                     _textField.addSelectionListener(new SelectionAdapter()
                     {
                         @Override
@@ -667,7 +686,35 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
 
             _textField.setData(_item.getReferencedItemProperties().getName());
             _textField.addFocusListener(this);
-
+            String[] keys = new String[] { "BACKSPACE" };
+            _textField.setData(EJ_RWT.ACTIVE_KEYS, keys);
+            if((_textField.getStyle() & SWT.TIME)!=0)
+                _textField.addKeyListener(new KeyListener()
+                {
+                    
+                    @Override
+                    public void keyReleased(KeyEvent e)
+                    {
+                        if (e.keyCode == SWT.BS)
+                        {
+                            Date value = getValue();
+                            if(value!=null)
+                            {
+                            
+                                _textField.setTime(0, 0, 0);
+                                valueChanged();
+                            }
+                        }
+                    }
+                    
+                    @Override
+                    public void keyPressed(KeyEvent e)
+                    {
+                        // TODO Auto-generated method stub
+                        
+                    }
+                });
+            
             _mandatoryDecoration = new ControlDecoration(_actionControl, SWT.TOP | SWT.LEFT);
             _errorDecoration = new ControlDecoration(_actionControl, SWT.TOP | SWT.LEFT);
             _errorDecoration.setImage(getDecorationImage(FieldDecorationRegistry.DEC_ERROR));
@@ -694,6 +741,13 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
     public void createLable(Composite composite)
     {
         _label = new Label(composite, SWT.NONE);
+        _label.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_DATETIME);
+        String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+        if (customCSSKey != null && customCSSKey.trim().length() > 0)
+        {
+            _label.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+        }
         _label.setText(_screenItemProperties.getLabel() == null ? "" : _screenItemProperties.getLabel());
     }
 
