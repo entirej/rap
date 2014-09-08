@@ -32,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.UrlLauncher;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 
@@ -53,8 +54,10 @@ public class EJRWTFileDownload
         url.append("&output=");
         url.append(outputName);
         String encodedURL = RWT.getResponse().encodeURL(url.toString());
-        UrlLauncher urlLauncher = RWT.getClient().getService(UrlLauncher.class);
-        urlLauncher.openURL(encodedURL);
+        //UrlLauncher urlLauncher = RWT.getClient().getService(UrlLauncher.class);
+        //urlLauncher.openURL(encodedURL);
+        JavaScriptExecutor javaScriptExecutor = RWT.getClient().getService(JavaScriptExecutor.class);
+        javaScriptExecutor.execute(String.format("window.location = '%s'", encodedURL));
         
     }
 
