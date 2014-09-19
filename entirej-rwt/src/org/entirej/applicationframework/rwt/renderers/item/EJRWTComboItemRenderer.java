@@ -1067,14 +1067,12 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 }
 
                 Object val = record.getValue(entry.getProperty(EJRWTComboBoxRendererDefinitionProperties.COLUMN_NAME));
-                if (val == null)
-                {
-                    continue;
-                }
+                
 
-                _returnItemValues.put(returnItem, val);
+                if(returnItem!=null && returnItem.isEmpty())
+                    _returnItemValues.put(returnItem, val);
 
-                if (display)
+                if (display && val !=null)
                 {
                     if (multi)
                     {

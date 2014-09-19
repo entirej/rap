@@ -169,7 +169,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
         _baseValue = null;
         if (controlState(_labelField))
         {
-            _labelField.setText("");
+            _labelField.setImage(_defaultImage);
         }
     }
 
