@@ -643,11 +643,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (containedCanvas.getType() == EJCanvasType.BLOCK && containedCanvas.getBlockProperties() != null
                         && containedCanvas.getBlockProperties().getMainScreenProperties() != null)
                 {
-                    weights[items.indexOf(containedCanvas)] = containedCanvas.getBlockProperties().getMainScreenProperties().getWidth() + 1;
+                    weights[items.indexOf(containedCanvas)] = canvasProperties.getSplitOrientation()==EJCanvasSplitOrientation.HORIZONTAL ?containedCanvas.getBlockProperties().getMainScreenProperties().getWidth():containedCanvas.getBlockProperties().getMainScreenProperties().getHeight() + 1;
                 }
                 else
                 {
-                    weights[items.indexOf(containedCanvas)] = containedCanvas.getWidth() + 1;
+                    weights[items.indexOf(containedCanvas)] = canvasProperties.getSplitOrientation()==EJCanvasSplitOrientation.HORIZONTAL ?containedCanvas.getWidth():containedCanvas.getHeight() + 1;
                 }
 
                 switch (containedCanvas.getType())
