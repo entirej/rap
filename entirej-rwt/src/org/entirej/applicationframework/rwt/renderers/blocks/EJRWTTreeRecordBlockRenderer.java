@@ -760,6 +760,10 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         {
             style = style | SWT.BORDER;
         }
+        if (!rendererProp.getBooleanProperty(EJRWTTreeBlockDefinitionProperties.HIDE_SELECTION, false))
+        {
+            style = style | SWT.FULL_SELECTION;
+        }
 
         Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN)
                 .getAllItemGroupProperties();
@@ -1308,6 +1312,9 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 }
             });
         }
+        // add double click action
+        final String clickActionCommand = rendererProp.getStringProperty(EJRWTTreeBlockDefinitionProperties.CLICK_ACTION_COMMAND);
+        
         _tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
         {
             @Override
@@ -1317,6 +1324,19 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 if (focusedRecord != null)
                 {
                     _block.newRecordInstance(focusedRecord);
+                }
+                
+                
+                if (clickActionCommand != null)
+                {
+                    _block.executeActionCommand(clickActionCommand, EJScreenType.MAIN);
+                }
+                
+                if (rendererProp.getBooleanProperty(EJRWTTreeBlockDefinitionProperties.HIDE_SELECTION, false))
+                {
+                   _tableViewer.removeSelectionChangedListener(this);
+                   _tableViewer.getTree().deselectAll();
+                   _tableViewer.addSelectionChangedListener(this);
                 }
             }
         });

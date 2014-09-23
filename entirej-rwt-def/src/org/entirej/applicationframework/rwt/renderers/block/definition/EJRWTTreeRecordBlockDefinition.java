@@ -139,6 +139,15 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
                 EJPropertyDefinitionType.ACTION_COMMAND);
         doubleClickActionCommand.setLabel("Double Click Action Command");
         doubleClickActionCommand.setDescription("Add an action command that will be sent to the action processor when a user double clicks on this block");
+        EJDevPropertyDefinition clickActionCommand = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.CLICK_ACTION_COMMAND,
+                EJPropertyDefinitionType.ACTION_COMMAND);
+        clickActionCommand.setLabel("Click Action Command");
+        clickActionCommand.setDescription("Add an action command that will be sent to the action processor when a user clicks on this block");
+
+        EJDevPropertyDefinition hideSelection = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.HIDE_SELECTION, EJPropertyDefinitionType.BOOLEAN);
+        hideSelection.setLabel("Hide Tree Selection");
+        hideSelection.setDescription("If selected, the renderer will hide the tree standard selection");
+        hideSelection.setDefaultValue("false");
 
         EJDevPropertyDefinition showTableBorder = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.HIDE_TREE_BORDER,
                 EJPropertyDefinitionType.BOOLEAN);
@@ -163,8 +172,9 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
 
         EJDevPropertyDefinition imageItem = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.NODE_IMAGE_ITEM, EJPropertyDefinitionType.BLOCK_ITEM);
         imageItem.setLabel("Image Item");
-        imageItem.setDescription("It is possible to dynamically add an image to the tree node by supplying the path of a picture within your project or by supplying a byteArray within the items value");
-        
+        imageItem
+                .setDescription("It is possible to dynamically add an image to the tree node by supplying the path of a picture within your project or by supplying a byteArray within the items value");
+
         EJDevPropertyDefinition expandLevel = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.NODE_EXPAND_LEVEL,
                 EJPropertyDefinitionType.INTEGER);
         expandLevel.setLabel("Expand Level");
@@ -183,6 +193,8 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
         mainGroup.addPropertyDefinition(imageItem);
         mainGroup.addPropertyDefinition(expandLevel);
         mainGroup.addPropertyDefinition(doubleClickActionCommand);
+        mainGroup.addPropertyDefinition(clickActionCommand);
+        mainGroup.addPropertyDefinition(hideSelection);
         mainGroup.addPropertyDefinition(showTableBorder);
         mainGroup.addPropertyDefinition(filter);
 
@@ -203,7 +215,8 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
         EJDevPropertyDefinition titleBarmode = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE,
                 EJPropertyDefinitionType.STRING);
         titleBarmode.setLabel("Title Bar Mode");
-        titleBarmode.setDescription("If you are using the Title Bars for your blocks, then it is possible to expand or collapse the block to either show or hide the content. Setting this property to either Tree or Twistie will enable the expand functionality for this block");
+        titleBarmode
+                .setDescription("If you are using the Title Bars for your blocks, then it is possible to expand or collapse the block to either show or hide the content. Setting this property to either Tree or Twistie will enable the expand functionality for this block");
         titleBarmode.addValidValue(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE_GROUP, "Group");
         titleBarmode.addValidValue(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE_TWISTIE, "Twistie");
         titleBarmode.addValidValue(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE_TREE_NODE, "Tree Node");
@@ -347,7 +360,7 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
         if (blockDisplayProperties.getMainScreenItemGroupDisplayContainer().getAllItemGroupDisplayProperties().size() > 0)
         {
             displayProperties = blockDisplayProperties.getMainScreenItemGroupDisplayContainer().getAllItemGroupDisplayProperties().iterator().next();
-           
+
         }
         StringBuilder builder = new StringBuilder();
         if (displayProperties != null)
@@ -356,37 +369,39 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
                 if (!screenItem.isSpacerItem())
                 {
                     EJFrameworkExtensionProperties properties = ((EJDevMainScreenItemDisplayProperties) screenItem).getBlockRendererRequiredProperties();
-                   String prefix = properties.getStringProperty(EJRWTTreeBlockDefinitionProperties.ITEM_PREFIX);
-                   if(prefix!=null)
-                   {
-                       builder.append(prefix);
-                   }
-                   builder.append(screenItem.getReferencedItemName());
-                   String sufix = properties.getStringProperty(EJRWTTreeBlockDefinitionProperties.ITEM_SUFFIX);
-                   if(sufix!=null)
-                   {
-                       builder.append(sufix);
-                   }
-                   
+                    String prefix = properties.getStringProperty(EJRWTTreeBlockDefinitionProperties.ITEM_PREFIX);
+                    if (prefix != null)
+                    {
+                        builder.append(prefix);
+                    }
+                    builder.append(screenItem.getReferencedItemName());
+                    String sufix = properties.getStringProperty(EJRWTTreeBlockDefinitionProperties.ITEM_SUFFIX);
+                    if (sufix != null)
+                    {
+                        builder.append(sufix);
+                    }
+
                 }
             }
         String tag = builder.toString();
-        if(tag.length()==0)
+        if (tag.length() == 0)
         {
             tag = "<empty>";
         }
-        final Tree browser = new Tree (layoutBody, SWT.BORDER);
-        for (int i=0; i<4; i++) {
-                TreeItem iItem = new TreeItem (browser, 0);
-                
-                iItem.setText (tag+" " + (i+1));
-                for (int j=0; j<4; j++) {
-                        TreeItem jItem = new TreeItem (iItem, 0);
-                        jItem.setText (tag+" " + (j+1));
-                        
-                }
+        final Tree browser = new Tree(layoutBody, SWT.BORDER);
+        for (int i = 0; i < 4; i++)
+        {
+            TreeItem iItem = new TreeItem(browser, 0);
+
+            iItem.setText(tag + " " + (i + 1));
+            for (int j = 0; j < 4; j++)
+            {
+                TreeItem jItem = new TreeItem(iItem, 0);
+                jItem.setText(tag + " " + (j + 1));
+
+            }
         }
-        
+
         return new EJDevBlockRendererDefinitionControl(blockDisplayProperties, Collections.<EJDevItemRendererDefinitionControl> emptyList());
     }
 
