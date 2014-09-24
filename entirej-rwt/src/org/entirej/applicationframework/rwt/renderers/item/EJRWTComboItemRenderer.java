@@ -1119,14 +1119,14 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                         EJDataRecord record = controller.getFocusedRecord();
                         if (record == null)
                         {
-                            return;
+                            break;
                         }
 
                         if (record.containsItem(itemName))
                         {
                             record.setValue(itemName, _returnItemValues.get(itemName));
                         }
-                        return;
+                       break;
                     case INSERT:
                         abstractScreenRenderer = (EJRWTAbstractScreenRenderer) controller.getManagedInsertScreenRenderer().getUnmanagedRenderer();
                         break;
