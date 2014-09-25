@@ -18,6 +18,8 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.item.definition.interfaces;
 
+import org.eclipse.rwt.EJ_RWT;
+
 public interface EJRWTButtonItemRendererDefinitionProperties
 {
     public static final String PROPERTY_WIDTH            = "WIDTH";
@@ -31,6 +33,6 @@ public interface EJRWTButtonItemRendererDefinitionProperties
 
     public static final String PROPERTY_DEFAULT_BUTTON   = "DEFAULT_BUTTON";
 
-    public static final String PROPERTY_CSS_KEY          = "CSS_KEY";
+    public static final String PROPERTY_CSS_KEY          = EJ_RWT.PROPERTY_CSS_KEY;
 
 }
