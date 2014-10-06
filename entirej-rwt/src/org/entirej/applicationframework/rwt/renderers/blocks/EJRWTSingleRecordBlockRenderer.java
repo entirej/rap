@@ -30,6 +30,7 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusEvent;
@@ -624,6 +625,9 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             gridData.minimumHeight = mainScreenProperties.getHeight();
         }
         blockCanvas.setLayoutData(gridData);
+        
+        
+        ScrolledComposite scrollComposite = null;
 
         EJFrameworkExtensionProperties sectionProperties = null;
         if (brendererProperties != null)
@@ -662,6 +666,9 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
 
             if (mainScreenProperties.getDisplayFrame())
             {
+                
+                
+                
                 Group group = new Group(section, SWT.NONE);
                 group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                
@@ -672,19 +679,27 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 {
                     group.setText(frameTitle);
                 }
-                _mainPane = new EJRWTEntireJGridPane(group, mainScreenProperties.getNumCols());
+                
+                scrollComposite = new ScrolledComposite(group, SWT.V_SCROLL | SWT.H_SCROLL);
+                _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                
              
+                
+                
+                
                 section.setClient(group);
             }
             else
             {
-                _mainPane = new EJRWTEntireJGridPane(section, mainScreenProperties.getNumCols());
+                Composite composite = new Composite(blockCanvas, SWT.NONE);
+                composite.setLayout(new FillLayout());
+                scrollComposite = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
+                _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                
                 _mainPane.setLayoutData(gridData);
-                section.setClient(_mainPane);
+                section.setClient(composite);
             }
 
             final EJFrameworkExtensionPropertyList propertyList = sectionProperties
@@ -749,6 +764,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         {
             if (mainScreenProperties.getDisplayFrame())
             {
+                
                 Group group = new Group(blockCanvas, SWT.NONE);
                 group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 
@@ -759,15 +775,19 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 {
                     group.setText(frameTitle);
                 }
-                _mainPane = new EJRWTEntireJGridPane(group, mainScreenProperties.getNumCols());
+                scrollComposite = new ScrolledComposite(group, SWT.V_SCROLL | SWT.H_SCROLL);
+                _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
                
             }
             else
             {
-                _mainPane = new EJRWTEntireJGridPane(blockCanvas, mainScreenProperties.getNumCols());
+                Composite composite = new Composite(blockCanvas, SWT.NONE);
+                composite.setLayout(new FillLayout());
+                scrollComposite = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
+                _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 
-                _mainPane.setLayoutData(gridData);
+                composite.setLayoutData(gridData);
             }
         }
 
@@ -821,6 +841,22 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 setHasFocus(true);
             }
         });
+        
+        if(scrollComposite!=null)
+        {
+            scrollComposite.setContent(_mainPane);
+            scrollComposite.setLayout(new FillLayout());
+            
+            
+                scrollComposite.setExpandHorizontal(true);
+           
+                scrollComposite.setExpandVertical(true);
+           
+                scrollComposite.setMinSize(_mainPane.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
+            
+            
+          
+        }
     }
 
     private void addActionKeyinfo(String actionKey, String actionId)
