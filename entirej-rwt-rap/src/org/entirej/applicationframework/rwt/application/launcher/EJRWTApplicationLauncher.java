@@ -218,7 +218,12 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             {
                                 return RWTUtils.getImage(name, loader);
                             }
-
+                            @Override
+                            public void open(String output,String outputName)
+                            {
+                                EJRWTFileDownload.download(output, outputName);
+                                
+                            }
                             public float getAvgCharWidth(Font font)
                             {
                                 return RWTUtils.getAvgCharWidth(font);

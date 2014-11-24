@@ -18,6 +18,10 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.application.launcher;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
@@ -27,8 +31,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.Section;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationContainer;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
-import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.EJRWTGraphicsProvider;
+import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.framework.core.EJFrameworkInitialiser;
 import org.entirej.framework.core.interfaces.EJApplicationManager;
 import org.entirej.framework.core.interfaces.EJMessenger;
@@ -68,6 +72,20 @@ public abstract class EJRWTRCPApplication
 
             }
 
+            @Override
+            public void open(String output, String name)
+            {
+                try
+                {
+                    Desktop.getDesktop().open(new File(output));
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+                
+            }
+            
             public float getAvgCharWidth(Font font)
             {
                 GC gc = new GC(display);

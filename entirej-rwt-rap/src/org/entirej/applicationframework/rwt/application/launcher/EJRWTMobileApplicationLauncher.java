@@ -193,6 +193,13 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                                 section.addListener(SWT.Resize, listener);
 
                             }
+
+                            @Override
+                            public void open(String output,String outputName)
+                            {
+                                EJRWTFileDownload.download(output, outputName);
+                                
+                            }
                         });
                         EJRWTApplicationManager applicationManager = null;
 
