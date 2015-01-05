@@ -438,6 +438,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         _formPanes.put(name, stackedPane);
 
         _canvasesIds.add(name);
+        
+        if(canvasProperties.getReferredFormId()!=null && canvasProperties.getReferredFormId().length()>0)
+        {
+            _form.openEmbeddedForm(canvasProperties.getReferredFormId(), name, null);
+        }
     }
 
     private void createTabCanvas(Composite parent, EJCanvasProperties canvasProperties, final EJCanvasController canvasController)
