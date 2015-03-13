@@ -75,6 +75,7 @@ import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
+import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJForm;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
@@ -584,7 +585,14 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                                 @Override
                                                 public void run()
                                                 {
-                                                    _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                                    try
+                                                    {
+                                                        _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                                    }
+                                                    catch (EJApplicationException exception)
+                                                    {
+                                                        _block.getFrameworkManager().handleException(exception);
+                                                    }
                                                 }
                                             });
 
@@ -628,7 +636,14 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         @Override
                                         public void run()
                                         {
-                                            _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                            try
+                                            {
+                                                _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                            }
+                                            catch (EJApplicationException exception)
+                                            {
+                                                _block.getFrameworkManager().handleException(exception);
+                                            }
                                         }
                                     });
 
@@ -687,7 +702,14 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                                 @Override
                                                 public void run()
                                                 {
-                                                    _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                                    try
+                                                    {
+                                                        _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                                    }
+                                                    catch (EJApplicationException exception)
+                                                    {
+                                                        _block.getFrameworkManager().handleException(exception);
+                                                    }
                                                 }
                                             });
 
@@ -736,7 +758,14 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         @Override
                                         public void run()
                                         {
-                                            _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                            try
+                                            {
+                                                _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                            }
+                                            catch (EJApplicationException exception)
+                                            {
+                                                _block.getFrameworkManager().handleException(exception);
+                                            }
                                         }
                                     });
 
@@ -799,7 +828,14 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                             @Override
                                             public void run()
                                             {
-                                                _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                                try
+                                                {
+                                                    _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                                }
+                                                catch (EJApplicationException exception)
+                                                {
+                                                    _block.getFrameworkManager().handleException(exception);
+                                                }
                                             }
                                         });
 
@@ -847,7 +883,14 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                     @Override
                                     public void run()
                                     {
-                                        _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                        try
+                                        {
+                                            _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
+                                        }
+                                        catch (EJApplicationException exception)
+                                        {
+                                            _block.getFrameworkManager().handleException(exception);
+                                        }
                                     }
                                 });
 
@@ -1022,31 +1065,32 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 {
                     for (ColumnLabelProvider filterTextProvider : _itemLabelProviders.values())
                     {
-                       
+
                         String text = filterTextProvider.getText(rec);
                         if (text != null && text.toLowerCase().contains(filter.toLowerCase()))
                         {
                             return true;
                         }
                     }
-                    //if no match try to match Numeric value  
+                    // if no match try to match Numeric value
                     try
                     {
                         double parseDouble = Double.parseDouble(filter);
                         for (String item : _itemLabelProviders.keySet())
                         {
                             Object value = rec.getValue(item);
-                            if(value instanceof Number)
+                            if (value instanceof Number)
                             {
-                               if(((Number)value).doubleValue() == parseDouble)
-                               {
-                                   return true;
-                               }
+                                if (((Number) value).doubleValue() == parseDouble)
+                                {
+                                    return true;
+                                }
                             }
                         }
-                    }catch(NumberFormatException e)
+                    }
+                    catch (NumberFormatException e)
                     {
-                        //ignore
+                        // ignore
                     }
                 }
                 return false;
@@ -1055,7 +1099,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
             @Override
             public void setFilter(String filter)
             {
-                if (getFilter()!=null && getFilter().equals(filter))
+                if (getFilter() != null && getFilter().equals(filter))
                     return;
                 super.setFilter(filter);
                 _tableBaseRecords.clear();
@@ -1079,7 +1123,6 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                     }
                 }
 
-                
             }
         };
 
