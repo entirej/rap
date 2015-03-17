@@ -59,6 +59,7 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -66,9 +67,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -132,10 +137,10 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     private EJRWTInsertScreenRenderer      _insertScreenRenderer;
     private EJRWTUpdateScreenRenderer      _updateScreenRenderer;
     private EJFrameworkExtensionProperties _rendererProp;
-    List<String>                           _actionkeys       = new ArrayList<String>();
-    private Map<KeyInfo, String>           _actionInfoMap    = new HashMap<EJRWTKeysUtil.KeyInfo, String>();
+    List<String>                           _actionkeys      = new ArrayList<String>();
+    private Map<KeyInfo, String>           _actionInfoMap   = new HashMap<EJRWTKeysUtil.KeyInfo, String>();
 
-    private List<EJDataRecord>             _treeBaseRecords  = new ArrayList<EJDataRecord>();
+    private List<EJDataRecord>             _treeBaseRecords = new ArrayList<EJDataRecord>();
 
     private FilteredContentProvider        _filteredContentProvider;
 
@@ -372,7 +377,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
         {
             recordAt = getLastRecord();
         }
-        
+
         if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
         {
             refresh();
@@ -917,6 +922,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 setHasFocus(true);
             }
         });
+
         _mainPane.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -1083,12 +1089,12 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
         _tableViewer.setContentProvider(_filteredContentProvider = new FilteredContentProvider()
         {
-            private List<EJDataRecord>              root             = new ArrayList<EJDataRecord>();
-            private Map<Object, Object>             indexMap         = new HashMap<Object, Object>();
-            private Map<Object, List<EJDataRecord>> cmap             = new HashMap<Object, List<EJDataRecord>>();
+            private List<EJDataRecord>              root     = new ArrayList<EJDataRecord>();
+            private Map<Object, Object>             indexMap = new HashMap<Object, Object>();
+            private Map<Object, List<EJDataRecord>> cmap     = new HashMap<Object, List<EJDataRecord>>();
 
-            private List<EJDataRecord>              froot            = new ArrayList<EJDataRecord>();
-            private Map<Object, List<EJDataRecord>> fcmap            = new HashMap<Object, List<EJDataRecord>>();
+            private List<EJDataRecord>              froot    = new ArrayList<EJDataRecord>();
+            private Map<Object, List<EJDataRecord>> fcmap    = new HashMap<Object, List<EJDataRecord>>();
 
             boolean matchItem(EJDataRecord rec)
             {
@@ -1182,18 +1188,18 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                         }
                         list.add(record);
                     }
-                    
-                  //child node with no parent need to consider as roots
-                   MAIN: for (Object key : new HashSet<Object>(cmap.keySet()))
+
+                    // child node with no parent need to consider as roots
+                    MAIN: for (Object key : new HashSet<Object>(cmap.keySet()))
                     {
-                        if(indexMap.containsKey(key))
+                        if (indexMap.containsKey(key))
                         {
                             continue;
                         }
-                        
+
                         for (EJDataRecord rec : records)
                         {
-                            if(key.equals(rec.getValue(pid)))
+                            if (key.equals(rec.getValue(pid)))
                             {
                                 continue MAIN;
                             }
@@ -1210,17 +1216,14 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                             }
                         }
                     }
-                    
+
                     for (EJDataRecord record : root)
                     {
                         _treeBaseRecords.add(record);
                         addSubRecords(record.getValue(pid), cmap);
                     }
-                    
-                    
+
                 }
-                
-               
 
             }
 
@@ -1343,6 +1346,30 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 }
             }
         });
+        table.addListener(SWT.MouseDown, new Listener()
+        {
+            @Override
+            public void handleEvent(Event event)
+            {
+                Point pt = new Point(event.x, event.y);
+                TreeItem item = table.getItem(pt);
+                if (item == null)
+                    return;
+                for (int i = 0; i < table.getColumnCount(); i++)
+                {
+                    Rectangle rect = item.getBounds(i);
+                    if (rect.contains(pt))
+                    {
+
+                        TreeColumn column = table.getColumn(i);
+                        if (column != null && column.getData("ITEM") instanceof EJScreenItemController)
+                        {
+                            ((EJScreenItemController) column.getData("ITEM")).executeActionCommand();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private void addActionKeyinfo(String actionKey, String actionId)
@@ -1414,6 +1441,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 TreeColumn column = viewerColumn.getColumn();
                 column.setData("KEY", itemProps.getReferencedItemName());
                 column.setData("VIEWER", viewerColumn);
+                column.setData("ITEM", item);
                 column.setToolTipText(itemProps.getHint());
 
                 column.setMoveable(blockProperties.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.ALLOW_COLUMN_REORDER, true));
@@ -1460,7 +1488,8 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public void keyReleased(KeyEvent arg0)
     {
         int keyCode = arg0.keyCode;
-        KeyInfo keyInfo = EJRWTKeysUtil.toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
+        KeyInfo keyInfo = EJRWTKeysUtil
+                .toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
 
         String actionID = _actionInfoMap.get(keyInfo);
         if (actionID != null)
