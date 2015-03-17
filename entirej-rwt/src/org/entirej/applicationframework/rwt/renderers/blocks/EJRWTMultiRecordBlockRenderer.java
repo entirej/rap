@@ -1217,10 +1217,12 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
             {
                 Point pt = new Point(event.x, event.y);
                 TableItem item = table.getItem(pt);
-                if (item == null)
+                if (item == null || item.isDisposed())
                     return;
                 for (int i = 0; i < table.getColumnCount(); i++)
                 {
+                    if (item == null || item.isDisposed())
+                        return;
                     Rectangle rect = item.getBounds(i);
                     if (rect.contains(pt))
                     {
