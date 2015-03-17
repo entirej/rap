@@ -170,6 +170,10 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         isFixedInTable.setLabel("Fixed Columns");
         isFixedInTable.setDescription("Indicates how many columns are fixed to the left part of this block. Fixed columns hold their position even when the user scrolls horizontally to see the hidden columns");
         
+        EJDevPropertyDefinition rowHeight = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.DISPLAY_HEIGH_PROPERTY,
+                EJPropertyDefinitionType.INTEGER);
+        rowHeight.setLabel("Row Height");
+        
 
         mainGroup.addPropertyDefinition(doubleClickActionCommand);
         mainGroup.addPropertyDefinition(showTableBorder);
@@ -178,6 +182,7 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         mainGroup.addPropertyDefinition(filter);
         mainGroup.addPropertyDefinition(showVerticalLines);
         mainGroup.addPropertyDefinition(isFixedInTable);
+        mainGroup.addPropertyDefinition(rowHeight);
 
         EJDevPropertyDefinitionGroup sectionGroup = new EJDevPropertyDefinitionGroup("TITLE_BAR");
         sectionGroup.setLabel("Title Bar");

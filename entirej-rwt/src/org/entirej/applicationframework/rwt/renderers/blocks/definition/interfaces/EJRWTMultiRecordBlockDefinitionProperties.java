@@ -23,6 +23,7 @@ public interface EJRWTMultiRecordBlockDefinitionProperties
     public static final String DISPLAY_FOCUSED_BORDER      = "DISPLAY_FOCUS_BORDER";
     public static final String HIDE_TABLE_BORDER           = "HIDE_TABLE_BORDER";
 
+    public static final String DISPLAY_HEIGH_PROPERTY      = "DISPLAY_HEIGHT";
     public static final String SHOW_HEADING_PROPERTY       = "SHOW_HEADING";
     public static final String SHOW_VERTICAL_LINES         = "SHOW_HORIZONTAL_LINES";
     public static final String SHOW_HORIZONTAL_LINES       = "SHOW_VERTICAL_LINES";
@@ -44,5 +45,5 @@ public interface EJRWTMultiRecordBlockDefinitionProperties
     public static final String COLUMN_ALLIGN_CENTER        = "CENTER";
     public static final String COLUMN_ALLIGN_RIGHT         = "RIGHT";
     public static final String VISUAL_ATTRIBUTE_PROPERTY   = "VISUAL_ATTRIBUTE";
-    public static final String FILTER                     = "FILTER";
+    public static final String FILTER                      = "FILTER";
 }
