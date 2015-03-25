@@ -353,7 +353,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 if (block != null)
                 {
                     Collection<String> screenItemNames = block.getScreenItemNames(_item.getScreenType());
-                    if(!screenItemNames.contains(itemName))
+                    if(screenItemNames.contains(itemName))
                     {
                         EJScreenItemController screenItem = block.getScreenItem(_item.getScreenType(), itemName);
                         if(screenItem!=null)

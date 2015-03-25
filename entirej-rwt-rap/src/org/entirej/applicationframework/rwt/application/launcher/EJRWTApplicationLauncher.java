@@ -192,7 +192,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                
                 favicon = ICONS_FAVICON_ICO;
             }
 
