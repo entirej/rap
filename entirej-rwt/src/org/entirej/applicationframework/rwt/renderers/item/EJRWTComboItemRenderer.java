@@ -348,27 +348,32 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 String blockName = paramValue.substring(0, paramValue.indexOf('.'));
                 String itemName = paramValue.substring(paramValue.indexOf('.') + 1);
                 
+                
                 EJInternalEditableBlock block = form.getBlock(blockName);
                 if (block != null)
                 {
-                    
-                    EJScreenItemController screenItem = block.getScreenItem(_item.getScreenType(), itemName);
-                    if(screenItem!=null)
+                    Collection<String> screenItemNames = block.getScreenItemNames(_item.getScreenType());
+                    if(!screenItemNames.contains(itemName))
                     {
-                        _lovInitialiedOnValueSet  = true;
-                        screenItem.addItemValueChangedListener(new EJItemValueChangedListener()
+                        EJScreenItemController screenItem = block.getScreenItem(_item.getScreenType(), itemName);
+                        if(screenItem!=null)
                         {
-                            
-                            @Override
-                            public void valueChanged(EJScreenItemController item, EJItemRenderer changedRenderer)
+                            _lovInitialiedOnValueSet  = true;
+                            screenItem.addItemValueChangedListener(new EJItemValueChangedListener()
                             {
-
-                                loadComboBoxValues();
-                                refreshCombo();
                                 
-                            }
-                        });
+                                @Override
+                                public void valueChanged(EJScreenItemController item, EJItemRenderer changedRenderer)
+                                {
+
+                                    loadComboBoxValues();
+                                    refreshCombo();
+                                    
+                                }
+                            });
+                        }
                     }
+                    
                 }
             }
         }
