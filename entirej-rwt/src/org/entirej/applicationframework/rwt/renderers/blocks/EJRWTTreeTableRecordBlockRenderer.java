@@ -86,6 +86,7 @@ import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeTableBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
@@ -356,7 +357,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
         {
             _tableViewer.setInput(new Object());
         }
-        selectRow(0);
+        selectFirst();
     }
 
     public void pageRetrieved()
@@ -365,7 +366,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
         {
             _tableViewer.refresh();
         }
-        selectRow(0);
+        selectFirst();
     }
 
     @Override
@@ -566,11 +567,11 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
         return null;
     }
 
-    public void selectRow(int selectedRow)
+    public void selectFirst()
     {
-        if (_tableViewer != null && !_tableViewer.getTree().isDisposed() && _block.getDataBlock().getBlockRecordCount() > selectedRow)
+        if (_tableViewer != null && !_tableViewer.getTree().isDisposed() && _tableViewer.getTree().getTopItem()!=null)
         {
-            _tableViewer.setSelection(new StructuredSelection(_block.getDataBlock().getRecord(selectedRow)), true);
+            _tableViewer.getTree().select(_tableViewer.getTree().getTopItem());
         }
     }
 
@@ -1085,7 +1086,14 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             ((TreeViewerColumn) _tableViewer.getTree().getColumn(0).getData("VIEWER")).setLabelProvider(imgPatchedProvider);
 
         }
-        _tableViewer.setAutoExpandLevel(_rendererProp.getIntProperty(EJRWTTreeTableBlockDefinitionProperties.NODE_EXPAND_LEVEL, 1));
+        int intProperty = _rendererProp.getIntProperty(EJRWTTreeTableBlockDefinitionProperties.NODE_EXPAND_LEVEL, 1);
+        intProperty++;//workaround
+        if (intProperty<1 && intProperty < 2)
+        {
+            intProperty = 2;
+        }
+        if (intProperty>1)
+            _tableViewer.setAutoExpandLevel(intProperty);
 
         _tableViewer.setContentProvider(_filteredContentProvider = new FilteredContentProvider()
         {
@@ -1317,7 +1325,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             }
         });
         _tableViewer.setInput(new Object());
-        selectRow(0);
+        selectFirst();
 
         // add double click action
         final String doubleClickActionCommand = _rendererProp.getStringProperty(EJRWTTreeTableBlockDefinitionProperties.DOUBLE_CLICK_ACTION_COMMAND);

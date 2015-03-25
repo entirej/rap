@@ -343,7 +343,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         {
             _tableViewer.setInput(new Object());
         }
-        selectRow(0);
+        selectFirst();
     }
 
     public void pageRetrieved()
@@ -352,7 +352,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         {
             _tableViewer.refresh();
         }
-        selectRow(0);
+        selectFirst();
     }
 
     @Override
@@ -552,11 +552,11 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         return null;
     }
 
-    public void selectRow(int selectedRow)
+    public void selectFirst()
     {
-        if (_tableViewer != null && !_tableViewer.getTree().isDisposed() && _block.getDataBlock().getBlockRecordCount() > selectedRow)
+        if (_tableViewer != null && !_tableViewer.getTree().isDisposed() && _tableViewer.getTree().getTopItem()!=null)
         {
-            _tableViewer.setSelection(new StructuredSelection(_block.getDataBlock().getRecord(selectedRow)), true);
+            _tableViewer.getTree().select(_tableViewer.getTree().getTopItem());
         }
     }
 
@@ -1057,16 +1057,23 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
 
         });
 
-        _tableViewer.setAutoExpandLevel(rendererProp.getIntProperty(EJRWTTreeBlockDefinitionProperties.NODE_EXPAND_LEVEL, 1));
+        int intProperty = rendererProp.getIntProperty(EJRWTTreeBlockDefinitionProperties.NODE_EXPAND_LEVEL, 1);
+        intProperty++;//workaround
+        if (intProperty<1 && intProperty < 2)
+        {
+            intProperty = 2;
+        }
+        if (intProperty>1)
+            _tableViewer.setAutoExpandLevel(intProperty);
 
         _tableViewer.setContentProvider(filteredContentProvider = new FilteredContentProvider()
         {
-            private List<EJDataRecord>              root             = new ArrayList<EJDataRecord>();
-            private Map<Object, Object>             indexMap         = new HashMap<Object, Object>();
-            private Map<Object, List<EJDataRecord>> cmap             = new HashMap<Object, List<EJDataRecord>>();
+            private List<EJDataRecord>              root     = new ArrayList<EJDataRecord>();
+            private Map<Object, Object>             indexMap = new HashMap<Object, Object>();
+            private Map<Object, List<EJDataRecord>> cmap     = new HashMap<Object, List<EJDataRecord>>();
 
-            private List<EJDataRecord>              froot            = new ArrayList<EJDataRecord>();
-            private Map<Object, List<EJDataRecord>> fcmap            = new HashMap<Object, List<EJDataRecord>>();
+            private List<EJDataRecord>              froot    = new ArrayList<EJDataRecord>();
+            private Map<Object, List<EJDataRecord>> fcmap    = new HashMap<Object, List<EJDataRecord>>();
 
             boolean matchItem(EJDataRecord rec)
             {
@@ -1164,23 +1171,23 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                         }
                         list.add(record);
                     }
-                    
-                    //child node with no parent need to consider as roots
+
+                    // child node with no parent need to consider as roots
                     MAIN: for (Object key : new HashSet<Object>(cmap.keySet()))
                     {
-                        if(indexMap.containsKey(key))
+                        if (indexMap.containsKey(key))
                         {
                             continue;
                         }
-                        
+
                         for (EJDataRecord rec : records)
                         {
-                            if(key.equals(rec.getValue(pid)))
+                            if (key.equals(rec.getValue(pid)))
                             {
                                 continue MAIN;
                             }
                         }
-                        
+
                         List<EJDataRecord> list = cmap.get(key);
                         cmap.remove(key);
                         for (EJDataRecord record : list)
@@ -1193,7 +1200,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                             }
                         }
                     }
-                    
+
                     for (EJDataRecord record : root)
                     {
                         treeBaseRecords.add(record);
@@ -1297,7 +1304,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
             }
         });
         _tableViewer.setInput(new Object());
-        selectRow(0);
+        selectFirst();
 
         // add double click action
         final String doubleClickActionCommand = rendererProp.getStringProperty(EJRWTTreeBlockDefinitionProperties.DOUBLE_CLICK_ACTION_COMMAND);
@@ -1314,7 +1321,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         }
         // add double click action
         final String clickActionCommand = rendererProp.getStringProperty(EJRWTTreeBlockDefinitionProperties.CLICK_ACTION_COMMAND);
-        
+
         _tableViewer.addSelectionChangedListener(new ISelectionChangedListener()
         {
             @Override
@@ -1325,18 +1332,17 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 {
                     _block.newRecordInstance(focusedRecord);
                 }
-                
-                
+
                 if (clickActionCommand != null)
                 {
                     _block.executeActionCommand(clickActionCommand, EJScreenType.MAIN);
                 }
-                
+
                 if (rendererProp.getBooleanProperty(EJRWTTreeBlockDefinitionProperties.HIDE_SELECTION, false))
                 {
-                   _tableViewer.removeSelectionChangedListener(this);
-                   _tableViewer.getTree().deselectAll();
-                   _tableViewer.addSelectionChangedListener(this);
+                    _tableViewer.removeSelectionChangedListener(this);
+                    _tableViewer.getTree().deselectAll();
+                    _tableViewer.addSelectionChangedListener(this);
                 }
             }
         });
@@ -1427,7 +1433,8 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
     public void keyReleased(KeyEvent arg0)
     {
         int keyCode = arg0.keyCode;
-        KeyInfo keyInfo = EJRWTKeysUtil.toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
+        KeyInfo keyInfo = EJRWTKeysUtil
+                .toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
 
         String actionID = actionInfoMap.get(keyInfo);
         if (actionID != null)
