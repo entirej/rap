@@ -184,7 +184,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
         {
             try
             {
-                Image image = EJRWTImageRetriever.get(favicon);
+                Image image = RWTUtils.getImage(favicon, getClass().getClassLoader());
                 if (image == null)
                 {
                     favicon = ICONS_FAVICON_ICO;
