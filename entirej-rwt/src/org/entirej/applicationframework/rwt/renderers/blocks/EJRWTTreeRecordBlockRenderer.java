@@ -644,7 +644,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
             }
             EJRWTImageRetriever.getGraphicsProvider().rendererSection(section);
             String frameTitle = mainScreenProperties.getFrameTitle();
-            if (mainScreenProperties.getDisplayFrame())
+            if (mainScreenProperties.getDisplayFrame()&& frameTitle != null && frameTitle.length() > 0)
             {
                 Group group = new Group(section, SWT.NONE);
                 group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
