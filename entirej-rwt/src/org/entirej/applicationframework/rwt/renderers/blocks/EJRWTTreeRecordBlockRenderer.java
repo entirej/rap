@@ -643,6 +643,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 section.setText(title);
             }
             EJRWTImageRetriever.getGraphicsProvider().rendererSection(section);
+            String frameTitle = mainScreenProperties.getFrameTitle();
             if (mainScreenProperties.getDisplayFrame())
             {
                 Group group = new Group(section, SWT.NONE);
@@ -650,18 +651,17 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 hookKeyListener(group);
-                String frameTitle = mainScreenProperties.getFrameTitle();
-                if (frameTitle != null && frameTitle.length() > 0)
-                {
+                
+                
                     group.setText(frameTitle);
-                }
+                
                 _mainPane = new EJRWTEntireJGridPane(group, 1);
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 section.setClient(group);
             }
             else
             {
-                _mainPane = new EJRWTEntireJGridPane(section, 1);
+                _mainPane = new EJRWTEntireJGridPane(section, 1,mainScreenProperties.getDisplayFrame()?SWT.BORDER:SWT.NONE);
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 _mainPane.setLayoutData(gridData);
                 _mainPane.cleanLayoutHorizontal();
@@ -729,24 +729,24 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         }
         else
         {
-            if (mainScreenProperties.getDisplayFrame())
+            String frameTitle = mainScreenProperties.getFrameTitle();
+                
+            if (mainScreenProperties.getDisplayFrame() && frameTitle != null && frameTitle.length() > 0)
             {
                 Group group = new Group(blockCanvas, SWT.NONE);
                 group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 hookKeyListener(group);
-                String frameTitle = mainScreenProperties.getFrameTitle();
-                if (frameTitle != null && frameTitle.length() > 0)
-                {
+                
                     group.setText(frameTitle);
-                }
+               
                 _mainPane = new EJRWTEntireJGridPane(group, 1);
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
             }
             else
             {
-                _mainPane = new EJRWTEntireJGridPane(blockCanvas, 1);
+                _mainPane = new EJRWTEntireJGridPane(blockCanvas, 1, mainScreenProperties.getDisplayFrame()?SWT.BORDER:SWT.NONE);
                 _mainPane.setLayoutData(gridData);
                 _mainPane.cleanLayout();
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
@@ -774,14 +774,14 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
             if (allItemGroupProperties.size() > 0)
             {
                 EJItemGroupProperties displayProperties = allItemGroupProperties.iterator().next();
-                if (displayProperties.dispayGroupFrame())
+                
+                if (displayProperties.dispayGroupFrame() && displayProperties.getFrameTitle() != null && displayProperties.getFrameTitle().length() > 0)
                 {
                     Group group = new Group(_mainPane, SWT.NONE);
                     group.setLayout(new FillLayout());
-                    if (displayProperties.getFrameTitle() != null && displayProperties.getFrameTitle().length() > 0)
-                    {
+                  
                         group.setText(displayProperties.getFrameTitle());
-                    }
+                    
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
 
                     filterTree = new EJRWTAbstractFilteredTree(group, style)
@@ -842,20 +842,19 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
             if (allItemGroupProperties.size() > 0)
             {
                 EJItemGroupProperties displayProperties = allItemGroupProperties.iterator().next();
-                if (displayProperties.dispayGroupFrame())
+                if (displayProperties.dispayGroupFrame() && displayProperties.getFrameTitle() != null && displayProperties.getFrameTitle().length() > 0)
                 {
                     Group group = new Group(_mainPane, SWT.NONE);
                     group.setLayout(new FillLayout());
-                    if (displayProperties.getFrameTitle() != null && displayProperties.getFrameTitle().length() > 0)
-                    {
+                   
                         group.setText(displayProperties.getFrameTitle());
-                    }
+                    
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
                     table = new Tree(group, style);
                 }
                 else
                 {
-                    table = new Tree(_mainPane, style);
+                    table = new Tree(_mainPane, style|(displayProperties.dispayGroupFrame()?SWT.BORDER:SWT.NONE));
 
                     table.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
                 }

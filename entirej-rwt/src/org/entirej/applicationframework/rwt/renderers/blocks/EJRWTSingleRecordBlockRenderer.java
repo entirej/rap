@@ -18,6 +18,7 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.blocks;
 
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -460,10 +461,10 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             Collection<EJManagedItemRendererWrapper> registeredRenderers = _mainItemRegister.getRegisteredRenderers();
             for (EJManagedItemRendererWrapper wrapper : registeredRenderers)
             {
-                if(wrapper.getUnmanagedRenderer() instanceof EJRWTComboItemRenderer)
+                if (wrapper.getUnmanagedRenderer() instanceof EJRWTComboItemRenderer)
                 {
-                   if( ((EJRWTComboItemRenderer)wrapper.getUnmanagedRenderer()).isLovInitialiedOnValueSet())
-                       wrapper.getUnmanagedRenderer().refreshItemRenderer();
+                    if (((EJRWTComboItemRenderer) wrapper.getUnmanagedRenderer()).isLovInitialiedOnValueSet())
+                        wrapper.getUnmanagedRenderer().refreshItemRenderer();
                 }
             }
             logger.trace("END recordSelected");
@@ -625,8 +626,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             gridData.minimumHeight = mainScreenProperties.getHeight();
         }
         blockCanvas.setLayoutData(gridData);
-        
-        
+
         ScrolledComposite scrollComposite = null;
 
         EJFrameworkExtensionProperties sectionProperties = null;
@@ -664,40 +664,36 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
 
             EJRWTImageRetriever.getGraphicsProvider().rendererSection(section);
 
-            if (mainScreenProperties.getDisplayFrame())
+            String frameTitle = mainScreenProperties.getFrameTitle();
+            if (mainScreenProperties.getDisplayFrame() && frameTitle != null && frameTitle.length() > 0)
             {
-                
-                
-                
-                Group group = new Group(section, SWT.NONE);
-                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+
                
-                group.setLayout(new FillLayout());
-                group.setLayoutData(gridData);
-                String frameTitle = mainScreenProperties.getFrameTitle();
-                if (frameTitle != null && frameTitle.length() > 0)
-                {
+
+
+                    Group group = new Group(section, SWT.NONE);
+
+                    group.setLayout(new FillLayout());
+                    group.setLayoutData(gridData);
+
+                    scrollComposite = new ScrolledComposite(group, SWT.V_SCROLL | SWT.H_SCROLL);
+
+                    _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
+                    group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+                    _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                     group.setText(frameTitle);
-                }
-                
-                scrollComposite = new ScrolledComposite(group, SWT.V_SCROLL | SWT.H_SCROLL);
-                _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
-                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+                    section.setClient(group);
                
-             
-                
-                
-                
-                section.setClient(group);
+
             }
             else
             {
-                Composite composite = new Composite(blockCanvas, SWT.NONE);
+                Composite composite = new Composite(blockCanvas, mainScreenProperties.getDisplayFrame()?SWT.BORDER:SWT.NONE);
                 composite.setLayout(new FillLayout());
                 scrollComposite = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
                 _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
-               
+
                 _mainPane.setLayoutData(gridData);
                 section.setClient(composite);
             }
@@ -762,31 +758,31 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         }
         else
         {
-            if (mainScreenProperties.getDisplayFrame())
+            String frameTitle = mainScreenProperties.getFrameTitle();
+            if (mainScreenProperties.getDisplayFrame() && frameTitle != null && frameTitle.length() > 0)
             {
-                
+
                 Group group = new Group(blockCanvas, SWT.NONE);
                 group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
-                
+
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
-                String frameTitle = mainScreenProperties.getFrameTitle();
-                if (frameTitle != null && frameTitle.length() > 0)
-                {
+                
+               
                     group.setText(frameTitle);
-                }
+                
                 scrollComposite = new ScrolledComposite(group, SWT.V_SCROLL | SWT.H_SCROLL);
                 _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
-               
+
             }
             else
             {
-                Composite composite = new Composite(blockCanvas, SWT.NONE);
+                Composite composite = new Composite(blockCanvas, mainScreenProperties.getDisplayFrame()?SWT.BORDER:SWT.NONE);
                 composite.setLayout(new FillLayout());
                 scrollComposite = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
                 _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
-                
+
                 composite.setLayoutData(gridData);
             }
         }
@@ -822,13 +818,13 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         {
             createItemGroup(_mainPane, ejItemGroupProperties);
         }
-        
+
         _mainItemRegister.clearRegisteredValues();
-        if(registeredRecord ==null)
+        if (registeredRecord == null)
         {
             registeredRecord = getFirstRecord();
         }
-        if(registeredRecord!=null)
+        if (registeredRecord != null)
         {
 
             _mainItemRegister.register(registeredRecord);
@@ -841,21 +837,18 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 setHasFocus(true);
             }
         });
-        
-        if(scrollComposite!=null)
+
+        if (scrollComposite != null)
         {
             scrollComposite.setContent(_mainPane);
             scrollComposite.setLayout(new FillLayout());
-            
-            
-                scrollComposite.setExpandHorizontal(true);
-           
-                scrollComposite.setExpandVertical(true);
-           
-                scrollComposite.setMinSize(_mainPane.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
-            
-            
-          
+
+            scrollComposite.setExpandHorizontal(true);
+
+            scrollComposite.setExpandVertical(true);
+
+            scrollComposite.setMinSize(_mainPane.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
+
         }
     }
 
@@ -885,7 +878,6 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         if (hasGroup)
         {
 
-           
             if (rendererProperties != null
                     && rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE) != null
                     && !EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE_GROUP.equals(rendererProperties
@@ -922,16 +914,16 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 });
                 groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols());
                 groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
-               
-                    String customCSSKey = rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY);
 
-                    if (customCSSKey != null && customCSSKey.trim().length() > 0)
-                    {
-                        groupPane.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
-                    }
-                
-//                groupPane.getLayout().marginRight = 5;
-//                groupPane.getLayout().marginLeft = 5;
+                String customCSSKey = rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY);
+
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    groupPane.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
+
+                // groupPane.getLayout().marginRight = 5;
+                // groupPane.getLayout().marginLeft = 5;
                 section.setClient(groupPane);
 
                 final EJFrameworkExtensionPropertyList propertyList = rendererProperties
@@ -996,7 +988,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             }
             else
             {
-                Group group = new Group(parent, SWT.NONE);
+                Composite group = new Composite(parent,groupProperties.dispayGroupFrame()?SWT.BORDER: SWT.NONE);
                 group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 String customCSSKey = rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY);
 
@@ -1006,7 +998,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 }
                 group.setLayout(new FillLayout());
                 group.setLayoutData(createItemGroupGridData(groupProperties));
-                group.setText(frameTitle);
+               
                 parent = group;
                 hookKeyListener(group);
                 group.addMouseListener(new MouseAdapter()
@@ -1019,21 +1011,21 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 });
                 groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols());
                 groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
-              
+
                 if (customCSSKey != null && customCSSKey.trim().length() > 0)
                 {
                     groupPane.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
                 }
-//                groupPane.getLayout().marginRight = 5;
-//                groupPane.getLayout().marginLeft = 5;
+                // groupPane.getLayout().marginRight = 5;
+                // groupPane.getLayout().marginLeft = 5;
             }
         }
         else
         {
             groupPane = new EJRWTEntireJGridPane(parent, groupProperties.getNumCols(), groupProperties.dispayGroupFrame() ? SWT.BORDER : SWT.NONE);
             groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
-            
-            if(rendererProperties!=null)
+
+            if (rendererProperties != null)
             {
                 String customCSSKey = rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY);
 
@@ -1042,11 +1034,11 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     groupPane.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
                 }
             }
-           
-            if(groupProperties.dispayGroupFrame() )
+
+            if (groupProperties.dispayGroupFrame())
             {
-//                groupPane.getLayout().marginRight = 5;
-//                groupPane.getLayout().marginLeft = 5;
+                // groupPane.getLayout().marginRight = 5;
+                // groupPane.getLayout().marginLeft = 5;
             }
         }
 
@@ -1106,8 +1098,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         {
             gridData.minimumHeight = groupProperties.getHeight();
         }
-        
-        if(groupProperties.getHorizontalAlignment()!=null)
+
+        if (groupProperties.getHorizontalAlignment() != null)
         {
             switch (groupProperties.getHorizontalAlignment())
             {
@@ -1127,7 +1119,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     break;
             }
         }
-        if(groupProperties.getVerticalAlignment()!=null)
+        if (groupProperties.getVerticalAlignment() != null)
         {
             switch (groupProperties.getVerticalAlignment())
             {
@@ -1142,7 +1134,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     gridData.verticalAlignment = SWT.END;
                     gridData.grabExcessVerticalSpace = true;
                     break;
-                    
+
                 default:
                     break;
             }
@@ -1155,7 +1147,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
         gridData.grabExcessHorizontalSpace = false;
         gridData.verticalSpan = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_YSPAN_PROPERTY, 1);
-        
+
         gridData.verticalAlignment = SWT.CENTER;
         if (gridData.verticalSpan > 1
                 || blockRequiredItemProperties.getBooleanProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_EXPAND_Y_PROPERTY, false))
@@ -1194,12 +1186,11 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         gridData.verticalSpan = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_YSPAN_PROPERTY, 1);
         gridData.grabExcessHorizontalSpace = grabExcessHorizontalSpace;
         gridData.grabExcessVerticalSpace = grabExcessVerticalSpace;
-        
-        if(!grabExcessVerticalSpace)
+
+        if (!grabExcessVerticalSpace)
         {
             gridData.verticalAlignment = SWT.CENTER;
         }
-        
 
         int displayedWidth = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.DISPLAYED_WIDTH_PROPERTY, 0);
         int displayedHeight = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.DISPLAYED_HEIGHT_PROPERTY, 0);
@@ -1231,7 +1222,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 gridData.heightHint = displayedHeight;
             }
         }
-        
+
         return gridData;
     }
 
@@ -1340,7 +1331,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     public void keyReleased(KeyEvent arg0)
     {
         int keyCode = arg0.keyCode;
-        KeyInfo keyInfo = EJRWTKeysUtil.toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
+        KeyInfo keyInfo = EJRWTKeysUtil
+                .toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
 
         String actionID = _actionInfoMap.get(keyInfo);
         if (actionID != null)

@@ -543,20 +543,20 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
     private void createGroupCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
     {
-        if (canvasProperties.getDisplayGroupFrame())
+        String frameTitle = canvasProperties.getGroupFrameTitle();
+        if (canvasProperties.getDisplayGroupFrame()&& frameTitle != null && frameTitle.length() > 0)
         {
             Group group = new Group(parent, SWT.NONE);
             group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
             group.setLayout(new FillLayout());
             group.setLayoutData(createCanvasGridData(canvasProperties));
-            String frameTitle = canvasProperties.getGroupFrameTitle();
-            if (frameTitle != null && frameTitle.length() > 0)
-            {
+            
+           
                 group.setText(frameTitle);
-            }
+            
             parent = group;
         }
-        final EJRWTEntireJGridPane groupPane = new EJRWTEntireJGridPane(parent, canvasProperties.getNumCols());
+        final EJRWTEntireJGridPane groupPane = new EJRWTEntireJGridPane(parent, canvasProperties.getNumCols(),canvasProperties.getDisplayGroupFrame()?SWT.BORDER:SWT.NONE);
         groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         if (canvasProperties.getDisplayGroupFrame())
         {
