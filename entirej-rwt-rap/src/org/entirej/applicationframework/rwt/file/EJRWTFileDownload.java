@@ -128,7 +128,8 @@ public class EJRWTFileDownload
             String output = request.getParameter("output");
             // Get the file content
 
-            BufferedInputStream fileToDownload = new BufferedInputStream(new FileInputStream(keys.get(fileName)));
+            String name = keys.get(fileName);
+            BufferedInputStream fileToDownload = new BufferedInputStream(new FileInputStream(name));
 
             // Send the file in the response
             response.setContentType("application/octet-stream");
