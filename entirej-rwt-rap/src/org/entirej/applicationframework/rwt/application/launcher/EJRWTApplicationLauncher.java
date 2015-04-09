@@ -66,7 +66,9 @@ import org.entirej.framework.core.properties.EJCoreProperties;
 public abstract class EJRWTApplicationLauncher implements ApplicationConfiguration
 {
 
-    protected static final String THEME_DEFAULT = "org.entirej.applicationframework.rwt.Default";
+    private static final String   THEME_DEFAULT_CSS = "theme/default.css";
+    private static final String   ICONS_FAVICON_ICO = "icons/favicon.ico";
+    protected static final String THEME_DEFAULT     = "org.entirej.applicationframework.rwt.Default";
 
     public void configure(Application configuration)
     {
@@ -75,7 +77,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
     protected String getFavicon()
     {
-        return "icons/favicon.ico";
+        return ICONS_FAVICON_ICO;
     }
 
     protected String getLoadingImage()
@@ -90,7 +92,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
     protected String getBaseThemeCSSLocation()
     {
-        return "theme/default.css";
+        return THEME_DEFAULT_CSS;
     }
 
     protected String getThemeCSSLocation()
@@ -172,15 +174,26 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
         }
         EJCoreLayoutContainer layoutContainer = EJCoreProperties.getInstance().getLayoutContainer();
         properties.put(WebClient.PAGE_TITLE, layoutContainer.getTitle());
-        properties.put(WebClient.FAVICON, getFavicon());
+        String favicon = getFavicon();
+        if (favicon == null)
+        {
+            favicon = ICONS_FAVICON_ICO;
+        }
+        
+        properties.put(WebClient.FAVICON, favicon);
         properties.put(WebClient.BODY_HTML, getBodyHtml());
         properties.put(WebClient.THEME_ID, THEME_DEFAULT);
         addOtherResources(configuration);
-        configuration.addResource(getFavicon(), new FileResource());
+        configuration.addResource(favicon, new FileResource());
         configuration.addResource(getLoadingImage(), new FileResource());
         configuration.addStyleSheet(THEME_DEFAULT, "resource/theme/default.css");
-        configuration.addStyleSheet(THEME_DEFAULT, getBaseThemeCSSLocation());
-        configuration.addResource(getBaseThemeCSSLocation(), new FileResource());
+        String baseThemeCSSLocation = getBaseThemeCSSLocation();
+        if (baseThemeCSSLocation == null)
+        {
+            baseThemeCSSLocation = THEME_DEFAULT_CSS;
+        }
+        configuration.addStyleSheet(THEME_DEFAULT, baseThemeCSSLocation);
+        configuration.addResource(baseThemeCSSLocation, new FileResource());
         if (getThemeCSSLocation() != null)
         {
 
@@ -217,6 +230,13 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             public Image getImage(String name, ClassLoader loader)
                             {
                                 return RWTUtils.getImage(name, loader);
+                            }
+
+                            @Override
+                            public void open(String output, String outputName)
+                            {
+                                EJRWTFileDownload.download(output, outputName);
+
                             }
 
                             public float getAvgCharWidth(Font font)

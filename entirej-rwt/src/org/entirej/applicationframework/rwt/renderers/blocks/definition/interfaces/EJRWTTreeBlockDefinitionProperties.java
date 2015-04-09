@@ -29,6 +29,9 @@ public interface EJRWTTreeBlockDefinitionProperties
     public static final String NODE_EXPAND_LEVEL           = "NODE_EXPAND_LEVEL";
 
     public static final String DOUBLE_CLICK_ACTION_COMMAND = "DOUBLE_CLICK_ACTION_COMMAND";
+    
+    public static final String CLICK_ACTION_COMMAND        = "CLICK_ACTION_COMMAND";
+    public static final String HIDE_SELECTION              = "HIDE_SELECTION";
 
     public static final String ITEM_PREFIX                 = "PREFIX";
     public static final String ITEM_SUFFIX                 = "SUFFIX";

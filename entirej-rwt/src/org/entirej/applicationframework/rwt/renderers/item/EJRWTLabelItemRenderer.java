@@ -86,6 +86,28 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public void refreshItemRendererProperty(String propertyName)
     {
+        
+        if(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
+        {
+
+            
+          
+           
+            if(controlState(_labelField.getControl()) && _rendererProps!=null)
+            {
+                String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+                
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    _labelField.getControl().setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
+                else
+                {
+                    _labelField.getControl().setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_LABEL);
+                }
+            }
+            
+        }
     }
 
     @Override

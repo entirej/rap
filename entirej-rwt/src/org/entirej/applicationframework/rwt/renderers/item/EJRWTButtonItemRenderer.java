@@ -63,6 +63,26 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
     @Override
     public void refreshItemRendererProperty(String propertyName)
     {
+        
+        if(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
+        {
+
+            
+            if(controlState(_button) && _rendererProps!=null)
+            {
+                String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    _button.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
+                else
+                {
+                    _button.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_BUTTON);
+                }
+            }
+           
+        }
     }
 
     @Override

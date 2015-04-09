@@ -348,27 +348,32 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 String blockName = paramValue.substring(0, paramValue.indexOf('.'));
                 String itemName = paramValue.substring(paramValue.indexOf('.') + 1);
                 
+                
                 EJInternalEditableBlock block = form.getBlock(blockName);
                 if (block != null)
                 {
-                    
-                    EJScreenItemController screenItem = block.getScreenItem(_item.getScreenType(), itemName);
-                    if(screenItem!=null)
+                    Collection<String> screenItemNames = block.getScreenItemNames(_item.getScreenType());
+                    if(screenItemNames.contains(itemName))
                     {
-                        _lovInitialiedOnValueSet  = true;
-                        screenItem.addItemValueChangedListener(new EJItemValueChangedListener()
+                        EJScreenItemController screenItem = block.getScreenItem(_item.getScreenType(), itemName);
+                        if(screenItem!=null)
                         {
-                            
-                            @Override
-                            public void valueChanged(EJScreenItemController item, EJItemRenderer changedRenderer)
+                            _lovInitialiedOnValueSet  = true;
+                            screenItem.addItemValueChangedListener(new EJItemValueChangedListener()
                             {
-
-                                loadComboBoxValues();
-                                refreshCombo();
                                 
-                            }
-                        });
+                                @Override
+                                public void valueChanged(EJScreenItemController item, EJItemRenderer changedRenderer)
+                                {
+
+                                    loadComboBoxValues();
+                                    refreshCombo();
+                                    
+                                }
+                            });
+                        }
                     }
+                    
                 }
             }
         }
@@ -506,7 +511,39 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public void refreshItemRendererProperty(String propertyName)
     {
+        if(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
+        {
 
+            
+            if(controlState(_label) && _rendererProps!=null)
+            {
+                String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    _label.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
+                else
+                {
+                    _label.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_COMBOBOX);
+                }
+            }
+           
+            if(controlState(_comboField) && _rendererProps!=null)
+            {
+                String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+                
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    _comboField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
+                else
+                {
+                    _comboField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_COMBOBOX);
+                }
+            }
+            
+        }
     }
 
     @Override
@@ -1067,14 +1104,12 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 }
 
                 Object val = record.getValue(entry.getProperty(EJRWTComboBoxRendererDefinitionProperties.COLUMN_NAME));
-                if (val == null)
-                {
-                    continue;
-                }
+                
 
-                _returnItemValues.put(returnItem, val);
+                if(returnItem!=null && !returnItem.isEmpty())
+                    _returnItemValues.put(returnItem, val);
 
-                if (display)
+                if (display && val !=null)
                 {
                     if (multi)
                     {
@@ -1121,14 +1156,14 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                         EJDataRecord record = controller.getFocusedRecord();
                         if (record == null)
                         {
-                            return;
+                            break;
                         }
 
                         if (record.containsItem(itemName))
                         {
                             record.setValue(itemName, _returnItemValues.get(itemName));
                         }
-                        return;
+                       break;
                     case INSERT:
                         abstractScreenRenderer = (EJRWTAbstractScreenRenderer) controller.getManagedInsertScreenRenderer().getUnmanagedRenderer();
                         break;

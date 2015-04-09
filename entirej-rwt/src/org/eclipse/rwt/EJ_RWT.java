@@ -50,4 +50,6 @@ public class EJ_RWT
     public static final java.lang.String CSS_CV_ITEM_LABEL    = "itemlabel";
     public static final java.lang.String CSS_CV_ITEM_LIST     = "itemlist";
     public static final java.lang.String CSS_CV_ITEM_RADIO    = "itemradio";
+    
+    public static final java.lang.String PROPERTY_CSS_KEY          = "CSS_KEY";
 }

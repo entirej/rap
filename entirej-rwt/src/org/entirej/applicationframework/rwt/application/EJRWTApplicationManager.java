@@ -18,8 +18,11 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.application;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -39,6 +42,7 @@ import org.entirej.framework.core.EJParameterList;
 import org.entirej.framework.core.EJTranslatorHelper;
 import org.entirej.framework.core.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.core.data.controllers.EJEmbeddedFormController;
+import org.entirej.framework.core.data.controllers.EJFormParameter;
 import org.entirej.framework.core.data.controllers.EJInternalQuestion;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
 import org.entirej.framework.core.data.controllers.EJQuestion;
@@ -47,6 +51,12 @@ import org.entirej.framework.core.interfaces.EJMessenger;
 import org.entirej.framework.core.internal.EJInternalForm;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
+import org.entirej.framework.report.EJReport;
+import org.entirej.framework.report.EJReportFrameworkInitialiser;
+import org.entirej.framework.report.EJReportFrameworkManager;
+import org.entirej.framework.report.EJReportParameterList;
+import org.entirej.framework.report.data.controllers.EJReportParameter;
+import org.entirej.framework.report.interfaces.EJReportRunner;
 
 public class EJRWTApplicationManager implements EJApplicationManager, Serializable
 {
@@ -410,5 +420,50 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         _frameworkManager.openForm(formName);
         
     }
+    
+    
+    @Override
+    public void runReport(String reportName)
+    {
+        runReport(reportName, null);
+        
+    }
+    @Override
+    public void runReport(String reportName, EJParameterList parameterList)
+    {
+        if (reportManager == null)
+        {
+            reportManager = EJReportFrameworkInitialiser.initialiseFramework("report.ejprop");
+        }
+        EJReport report;
+        if(parameterList==null)
+        {
+             report = reportManager.createReport(reportName);
+        }
+        else
+        {
+            
+            
+            EJReportParameterList list = new EJReportParameterList();
+            
+            Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
+            for (EJFormParameter parameter : allParameters)
+            {
+                EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
+                reportParameter.setValue(parameter.getValue());
+                
+                list.addParameter(reportParameter);
+            }
+            report = reportManager.createReport(reportName,list);
+        }
+
+        EJReportRunner reportRunner = reportManager.createReportRunner();
+        String output = reportRunner.runReport(report);
+
+        EJRWTImageRetriever.getGraphicsProvider().open(output,String.format("%s.%s", report.getName(),report.getProperties().getExportType().toString().toLowerCase()));
+
+    }
+
+    private EJReportFrameworkManager reportManager;
 
 }

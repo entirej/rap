@@ -54,6 +54,8 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -61,8 +63,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -650,29 +654,29 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
             if (title != null)
             {
                 section.setText(title);
-            }
+            }String frameTitle = mainScreenProperties.getFrameTitle();
             EJRWTImageRetriever.getGraphicsProvider().rendererSection(section);
-            if (mainScreenProperties.getDisplayFrame())
+            if (mainScreenProperties.getDisplayFrame()&& frameTitle != null && frameTitle.length() > 0)
             {
                 Group group = new Group(section, SWT.NONE);
                 group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 hookKeyListener(group);
-                String frameTitle = mainScreenProperties.getFrameTitle();
-                if (frameTitle != null && frameTitle.length() > 0)
-                {
+                
+               
                     group.setText(frameTitle);
-                }
+                
                 _mainPane = new EJRWTEntireJGridPane(group, 1);
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 section.setClient(group);
             }
             else
             {
-                _mainPane = new EJRWTEntireJGridPane(section, 1);
+                _mainPane = new EJRWTEntireJGridPane(section, 1,mainScreenProperties.getDisplayFrame()?SWT.BORDER:SWT.NONE);
                 _mainPane.setLayoutData(gridData);
-                _mainPane.cleanLayoutHorizontal();
+                if(!mainScreenProperties.getDisplayFrame())
+                    _mainPane.cleanLayoutHorizontal();
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 section.setClient(_mainPane);
             }
@@ -738,26 +742,27 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
         }
         else
         {
-            if (mainScreenProperties.getDisplayFrame())
+            String frameTitle = mainScreenProperties.getFrameTitle();
+            if (mainScreenProperties.getDisplayFrame() && frameTitle != null && frameTitle.length() > 0)
             {
                 Group group = new Group(blockCanvas, SWT.NONE);
                 group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 hookKeyListener(group);
-                String frameTitle = mainScreenProperties.getFrameTitle();
-                if (frameTitle != null && frameTitle.length() > 0)
-                {
+               
+                
                     group.setText(frameTitle);
-                }
+                
                 _mainPane = new EJRWTEntireJGridPane(group, 1);
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
             }
             else
             {
-                _mainPane = new EJRWTEntireJGridPane(blockCanvas, 1);
+                _mainPane = new EJRWTEntireJGridPane(blockCanvas, 1,mainScreenProperties.getDisplayFrame() ?SWT.BORDER:SWT.NONE);
                 _mainPane.setLayoutData(gridData);
-                _mainPane.cleanLayout();
+                if(!mainScreenProperties.getDisplayFrame())
+                    _mainPane.cleanLayout();
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
             }
         }
@@ -769,7 +774,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
         {
             style = style | SWT.BORDER;
         }
-       
+
         if (rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ROW_SELECTION_PROPERTY, true))
         {
             style = style | SWT.FULL_SELECTION;
@@ -788,14 +793,13 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
             if (allItemGroupProperties.size() > 0)
             {
                 EJItemGroupProperties displayProperties = allItemGroupProperties.iterator().next();
-                if (displayProperties.dispayGroupFrame())
+                if (displayProperties.dispayGroupFrame()&& displayProperties.getFrameTitle() != null && displayProperties.getFrameTitle().length() > 0)
                 {
                     Group group = new Group(_mainPane, SWT.NONE);
                     group.setLayout(new FillLayout());
-                    if (displayProperties.getFrameTitle() != null && displayProperties.getFrameTitle().length() > 0)
-                    {
+                    
                         group.setText(displayProperties.getFrameTitle());
-                    }
+                    
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
 
                     filterTree = new EJRWTAbstractFilteredTable(group, style)
@@ -808,7 +812,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                             {
                                 _filteredContentProvider.setFilter(filter);
                                 getViewer().setInput(filter);
-                                if(getFocusedRecord()==null)
+                                if (getFocusedRecord() == null)
                                 {
                                     selectRow(0);
                                 }
@@ -849,7 +853,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 else
                 {
 
-                    filterTree = new EJRWTAbstractFilteredTable(_mainPane, style)
+                    filterTree = new EJRWTAbstractFilteredTable(_mainPane,displayProperties.dispayGroupFrame()?style|SWT.BORDER: style)
                     {
                         @Override
                         public void filter(String filter)
@@ -859,7 +863,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                             {
                                 _filteredContentProvider.setFilter(filter);
                                 getViewer().setInput(filter);
-                                if(getFocusedRecord()==null)
+                                if (getFocusedRecord() == null)
                                 {
                                     selectRow(0);
                                 }
@@ -911,7 +915,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                         {
                             _filteredContentProvider.setFilter(filter);
                             getViewer().setInput(filter);
-                            if(getFocusedRecord()==null)
+                            if (getFocusedRecord() == null)
                             {
                                 selectRow(0);
                             }
@@ -959,20 +963,18 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
             if (allItemGroupProperties.size() > 0)
             {
                 EJItemGroupProperties displayProperties = allItemGroupProperties.iterator().next();
-                if (displayProperties.dispayGroupFrame())
+                if (displayProperties.dispayGroupFrame()&& displayProperties.getFrameTitle() != null && displayProperties.getFrameTitle().length() > 0)
                 {
                     Group group = new Group(_mainPane, SWT.NONE);
                     group.setLayout(new FillLayout());
-                    if (displayProperties.getFrameTitle() != null && displayProperties.getFrameTitle().length() > 0)
-                    {
-                        group.setText(displayProperties.getFrameTitle());
-                    }
+                    group.setText(displayProperties.getFrameTitle());
+                    
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
                     table = new Table(group, style);
                 }
                 else
                 {
-                    table = new Table(_mainPane, style);
+                    table = new Table(_mainPane, displayProperties.dispayGroupFrame()?style|SWT.BORDER:style);
                     table.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
                 }
             }
@@ -1008,11 +1010,16 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
         table.setLinesVisible(rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.SHOW_VERTICAL_LINES, true));
         table.setHeaderVisible(rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.SHOW_HEADING_PROPERTY, true));
-        
+
         int fixedColumns = rendererProp.getIntProperty(EJRWTMultiRecordBlockDefinitionProperties.COLUMNS_FIXED, -1);
-        if (fixedColumns>0)
+        if (fixedColumns > 0)
         {
-            table.setData(EJ_RWT.FIXED_COLUMNS,fixedColumns);
+            table.setData(EJ_RWT.FIXED_COLUMNS, fixedColumns);
+        }
+        int rowHeight = rendererProp.getIntProperty(EJRWTMultiRecordBlockDefinitionProperties.DISPLAY_HEIGH_PROPERTY, -1);
+        if (rowHeight > 0)
+        {
+            table.setData(EJ_RWT.CUSTOM_ITEM_HEIGHT, rowHeight);
         }
         Control[] children = table.getChildren();
         for (Control control : children)
@@ -1038,7 +1045,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 if (screenItem != null)
                 {
                     nodeTextProviders.add(screenItem);
-                    if(autoSize)
+                    if (autoSize)
                     {
                         EJFrameworkExtensionProperties itemBl = mainScreenItemProperties.getBlockRendererRequiredProperties();
 
@@ -1046,35 +1053,34 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
                     }
                 }
-                
-                
+
             }
         }
-      
-        if(autoSize)
+
+        if (autoSize)
         {
             table.addControlListener(new ControlListener()
             {
-                
+
                 @Override
                 public void controlResized(ControlEvent e)
                 {
-                    if(table.getSize().x>10)
+                    if (table.getSize().x > 10)
                     {
-                        table.getColumn(0).setWidth(table.getSize().x-10);
+                        table.getColumn(0).setWidth(table.getSize().x - 10);
                     }
-                    
+
                 }
-                
+
                 @Override
                 public void controlMoved(ControlEvent e)
                 {
                     // TODO Auto-generated method stub
-                    
+
                 }
             });
         }
-
+        table.setData(EJ_RWT.MARKUP_ENABLED, Boolean.TRUE);
         table.addFocusListener(new FocusListener()
         {
             @Override
@@ -1196,8 +1202,36 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 if (focusedRecord != null)
                 {
                     _block.newRecordInstance(focusedRecord);
+
                 }
                 notifyStatus();
+            }
+        });
+
+        table.addListener(SWT.MouseDown, new Listener()
+        {
+            @Override
+            public void handleEvent(Event event)
+            {
+                Point pt = new Point(event.x, event.y);
+                TableItem item = table.getItem(pt);
+                if (item == null || item.isDisposed())
+                    return;
+                for (int i = 0; i < table.getColumnCount(); i++)
+                {
+                    if (item == null || item.isDisposed())
+                        return;
+                    Rectangle rect = item.getBounds(i);
+                    if (rect.contains(pt))
+                    {
+
+                        TableColumn column = table.getColumn(i);
+                        if (column != null && column.getData("ITEM") instanceof EJScreenItemController)
+                        {
+                            ((EJScreenItemController) column.getData("ITEM")).executeActionCommand();
+                        }
+                    }
+                }
             }
         });
 
@@ -1269,6 +1303,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 TableViewerColumn viewerColumn = factory.createColumn(itemProps.getLabel(), displayedWidth, labelProvider, getComponentStyle(labelOrientation));
                 TableColumn column = viewerColumn.getColumn();
                 column.setData("KEY", itemProps.getReferencedItemName());
+                column.setData("ITEM", item);
                 column.setToolTipText(itemProps.getHint());
 
                 column.setMoveable(blockProperties.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ALLOW_COLUMN_REORDER, true));
@@ -1314,7 +1349,8 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     public void keyReleased(KeyEvent arg0)
     {
         int keyCode = arg0.keyCode;
-        KeyInfo keyInfo = EJRWTKeysUtil.toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
+        KeyInfo keyInfo = EJRWTKeysUtil
+                .toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
 
         String actionID = _actionInfoMap.get(keyInfo);
         if (actionID != null)

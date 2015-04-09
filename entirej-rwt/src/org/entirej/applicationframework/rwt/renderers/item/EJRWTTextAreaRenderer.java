@@ -22,6 +22,7 @@ import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 
 public class EJRWTTextAreaRenderer extends EJRWTTextItemRenderer
@@ -55,5 +56,45 @@ public class EJRWTTextAreaRenderer extends EJRWTTextItemRenderer
     public String getCSSKey()
     {
         return EJ_RWT.CSS_CV_ITEM_TEXTAREA;
+    }
+    
+    
+    @Override
+    public void refreshItemRendererProperty(String propertyName)
+    {
+        
+        if(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
+        {
+
+            
+            if(controlState(_label) && _rendererProps!=null)
+            {
+                String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    _label.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
+                else
+                {
+                    _label.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXTAREA);
+                }
+            }
+           
+            if(controlState(_textField) && _rendererProps!=null)
+            {
+                String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+                
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
+                else
+                {
+                    _textField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXTAREA);
+                }
+            }
+            
+        }
     }
 }

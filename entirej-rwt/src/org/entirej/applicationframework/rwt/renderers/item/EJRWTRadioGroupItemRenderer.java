@@ -240,7 +240,35 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     @Override
     public void refreshItemRendererProperty(String propertyName)
     {
+        
+        if(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
+        {
 
+            
+            if(controlState(_radioGroup) && _rendererProps!=null)
+            {
+                String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    _radioGroup.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                    for (RadioButtonValue value : _radioButtons.values())
+                    {
+                        value.button.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                    }
+                }
+                else
+                {
+                    _radioGroup.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_RADIO);
+                    
+                    for (RadioButtonValue value : _radioButtons.values())
+                    {
+                        value.button.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_RADIO);
+                    }
+                }
+            }
+           
+        }
     }
 
     @Override

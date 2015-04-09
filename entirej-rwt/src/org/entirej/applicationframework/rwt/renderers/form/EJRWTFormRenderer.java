@@ -438,6 +438,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         _formPanes.put(name, stackedPane);
 
         _canvasesIds.add(name);
+        
+        if(canvasProperties.getReferredFormId()!=null && canvasProperties.getReferredFormId().length()>0)
+        {
+            _form.openEmbeddedForm(canvasProperties.getReferredFormId(), name, null);
+        }
     }
 
     private void createTabCanvas(Composite parent, EJCanvasProperties canvasProperties, final EJCanvasController canvasController)
@@ -538,20 +543,20 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
     private void createGroupCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
     {
-        if (canvasProperties.getDisplayGroupFrame())
+        String frameTitle = canvasProperties.getGroupFrameTitle();
+        if (canvasProperties.getDisplayGroupFrame()&& frameTitle != null && frameTitle.length() > 0)
         {
             Group group = new Group(parent, SWT.NONE);
             group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
             group.setLayout(new FillLayout());
             group.setLayoutData(createCanvasGridData(canvasProperties));
-            String frameTitle = canvasProperties.getGroupFrameTitle();
-            if (frameTitle != null && frameTitle.length() > 0)
-            {
+            
+           
                 group.setText(frameTitle);
-            }
+            
             parent = group;
         }
-        final EJRWTEntireJGridPane groupPane = new EJRWTEntireJGridPane(parent, canvasProperties.getNumCols());
+        final EJRWTEntireJGridPane groupPane = new EJRWTEntireJGridPane(parent, canvasProperties.getNumCols(),canvasProperties.getDisplayGroupFrame()?SWT.BORDER:SWT.NONE);
         groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         if (canvasProperties.getDisplayGroupFrame())
         {
@@ -643,11 +648,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (containedCanvas.getType() == EJCanvasType.BLOCK && containedCanvas.getBlockProperties() != null
                         && containedCanvas.getBlockProperties().getMainScreenProperties() != null)
                 {
-                    weights[items.indexOf(containedCanvas)] = containedCanvas.getBlockProperties().getMainScreenProperties().getWidth() + 1;
+                    weights[items.indexOf(containedCanvas)] = canvasProperties.getSplitOrientation()==EJCanvasSplitOrientation.HORIZONTAL ?containedCanvas.getBlockProperties().getMainScreenProperties().getWidth()+1:containedCanvas.getBlockProperties().getMainScreenProperties().getHeight() + 1;
                 }
                 else
                 {
-                    weights[items.indexOf(containedCanvas)] = containedCanvas.getWidth() + 1;
+                    weights[items.indexOf(containedCanvas)] = canvasProperties.getSplitOrientation()==EJCanvasSplitOrientation.HORIZONTAL ?containedCanvas.getWidth()+1:containedCanvas.getHeight() + 1;
                 }
 
                 switch (containedCanvas.getType())

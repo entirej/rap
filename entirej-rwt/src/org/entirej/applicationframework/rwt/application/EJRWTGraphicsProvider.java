@@ -32,4 +32,6 @@ public interface EJRWTGraphicsProvider
 
     void rendererSection(Section section);
 
+    
+    void open(String output,String name);
 }

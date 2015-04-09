@@ -1144,7 +1144,7 @@ TreeColumn {
 	background-color: #f0f0f0;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
 		to(#e4e4e4) );
-	padding: 8px 10px 8px 6px;
+	padding: 4px 3px 4px 3px;
 	border-bottom: 1px solid #bdbdbd;
 	text-shadow: none;
 }
@@ -1170,7 +1170,7 @@ TreeColumn-SortIndicator:down {
 
 Tree-Cell {
 	spacing: 3px;
-	padding: 2px 2px 2px 2px;
+	padding: 4px 3px 6px 4px;
 }
 
 Tree-GridLine {

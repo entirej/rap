@@ -371,7 +371,40 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     @Override
     public void refreshItemRendererProperty(String propertyName)
     {
+        
+        if(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
+        {
 
+            
+            if(controlState(_label) && _rendererProps!=null)
+            {
+                String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    _label.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
+                else
+                {
+                    _label.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXTAREA);
+                }
+            }
+           
+            if(controlState(_listField) && _rendererProps!=null)
+            {
+                String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+                
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    _listField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
+                else
+                {
+                    _listField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_LIST);
+                }
+            }
+            
+        }
     }
 
     @Override
@@ -964,14 +997,14 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                         EJDataRecord record = controller.getFocusedRecord();
                         if (record == null)
                         {
-                            return;
+                            break;
                         }
 
                         if (record.containsItem(itemName))
                         {
                             record.setValue(itemName, _returnItemValues.get(itemName));
                         }
-                        return;
+                        break;
                     case INSERT:
                         abstractScreenRenderer = (EJRWTAbstractScreenRenderer) controller.getManagedInsertScreenRenderer().getUnmanagedRenderer();
                         break;
