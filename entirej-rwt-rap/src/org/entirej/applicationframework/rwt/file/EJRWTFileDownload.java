@@ -36,7 +36,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
+import org.entirej.applicationframework.rwt.application.launcher.EJRWTContext;
+import org.entirej.framework.core.EJApplicationException;
 
 public class EJRWTFileDownload
 {
@@ -46,6 +50,15 @@ public class EJRWTFileDownload
     public static void download(String sourcePath, String outputName)
     {
 
+        File file = new File( sourcePath);
+        
+        if(!file.exists())
+        {
+          throw new EJApplicationException(String.format("File not found :%s", file.getName()));
+            
+            
+        }
+        
         UUID randomUUID = UUID.randomUUID();
         String fileKey = randomUUID.toString();
         keys.put(fileKey, sourcePath);
@@ -128,8 +141,11 @@ public class EJRWTFileDownload
             String output = request.getParameter("output");
             // Get the file content
 
-            String name = keys.get(fileName);
-            BufferedInputStream fileToDownload = new BufferedInputStream(new FileInputStream(name));
+            File file = new File( keys.get(fileName));
+            
+           
+            
+            BufferedInputStream fileToDownload = new BufferedInputStream(new FileInputStream(file));
 
             // Send the file in the response
             response.setContentType("application/octet-stream");
