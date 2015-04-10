@@ -988,7 +988,22 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             }
             else
             {
-                Composite group = new Composite(parent,groupProperties.dispayGroupFrame()?SWT.BORDER: SWT.NONE);
+                
+                
+                
+                
+                Composite group ;
+                
+                if(hasGroup)
+                {
+                     Group g = new Group(parent, SWT.NONE);
+                    g.setText(frameTitle);
+                    group = g;
+                }
+                else
+                {
+                    group = new Composite(parent,groupProperties.dispayGroupFrame()?SWT.BORDER: SWT.NONE);
+                }
                 group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 String customCSSKey = rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY);
 
