@@ -68,6 +68,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -83,6 +84,7 @@ import org.entirej.applicationframework.rwt.application.components.actions.EJRWT
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderers.blocks.EJRWTMultiRecordBlockRenderer.ColumnInfo;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeTableBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
@@ -195,6 +197,32 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
                 {
                     _tableViewer.setInput(new Object());
+                }
+            }
+        }
+        else if (EJManagedScreenProperty.VISIBLE.equals(managedItemPropertyType))
+        {
+            if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
+            {
+                TreeColumn[] columns = _tableViewer.getTree().getColumns();
+                for (TreeColumn tableColumn : columns)
+                {
+                    if (itemName.equals(tableColumn.getData("KEY")))
+                    {
+                        EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemName);
+                        ColumnInfo data = (ColumnInfo) tableColumn.getData("INFO");
+                        if (item.isVisible() && data != null)
+                        {
+                            tableColumn.setWidth(data.width);
+                            tableColumn.setResizable(data.resizable);
+                        }
+                        else
+                        {
+                            tableColumn.setWidth(0);
+                            tableColumn.setResizable(false);
+                        }
+                        break;
+                    }
                 }
             }
         }
@@ -565,7 +593,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     public void selectFirst()
     {
-        if (_tableViewer != null && !_tableViewer.getTree().isDisposed() && _tableViewer.getTree().getTopItem()!=null)
+        if (_tableViewer != null && !_tableViewer.getTree().isDisposed() && _tableViewer.getTree().getTopItem() != null)
         {
             _tableViewer.getTree().select(_tableViewer.getTree().getTopItem());
         }
@@ -655,7 +683,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 section.setText(title);
             }
             EJRWTImageRetriever.getGraphicsProvider().rendererSection(section);
-             String frameTitle = mainScreenProperties.getFrameTitle();
+            String frameTitle = mainScreenProperties.getFrameTitle();
             if (mainScreenProperties.getDisplayFrame() && frameTitle != null && frameTitle.length() > 0)
             {
                 Group group = new Group(section, SWT.NONE);
@@ -663,11 +691,10 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 hookKeyListener(group);
-               
-                
-                    group.setText(frameTitle);
-                
-                _mainPane = new EJRWTEntireJGridPane(group, 1,mainScreenProperties.getDisplayFrame()?SWT.BORDER:SWT.NONE);
+
+                group.setText(frameTitle);
+
+                _mainPane = new EJRWTEntireJGridPane(group, 1, mainScreenProperties.getDisplayFrame() ? SWT.BORDER : SWT.NONE);
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 section.setClient(group);
 
@@ -750,10 +777,10 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
                 hookKeyListener(group);
-               
+
                 group.setText(frameTitle);
-                
-                _mainPane = new EJRWTEntireJGridPane(group, 1,mainScreenProperties.getDisplayFrame()?SWT.BORDER:SWT.NONE);
+
+                _mainPane = new EJRWTEntireJGridPane(group, 1, mainScreenProperties.getDisplayFrame() ? SWT.BORDER : SWT.NONE);
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
             }
             else
@@ -787,7 +814,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     Group group = new Group(_mainPane, SWT.NONE);
                     group.setLayout(new FillLayout());
                     group.setText(displayProperties.getFrameTitle());
-                    
+
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
                     filterTree = new EJRWTAbstractFilteredTree(group, style)
                     {
@@ -805,7 +832,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 }
                 else
                 {
-                    filterTree = new EJRWTAbstractFilteredTree(_mainPane, displayProperties.dispayGroupFrame()?style|SWT.BORDER : style)
+                    filterTree = new EJRWTAbstractFilteredTree(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
                     {
                         @Override
                         public void filter(String filter)
@@ -851,14 +878,14 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 {
                     Group group = new Group(_mainPane, SWT.NONE);
                     group.setLayout(new FillLayout());
-                   group.setText(displayProperties.getFrameTitle());
-                    
+                    group.setText(displayProperties.getFrameTitle());
+
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
                     table = new Tree(group, style);
                 }
                 else
                 {
-                    table = new Tree(_mainPane, displayProperties.dispayGroupFrame()? style|SWT.BORDER:style);
+                    table = new Tree(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style);
 
                     table.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
                 }
@@ -1078,12 +1105,12 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
         }
         int intProperty = _rendererProp.getIntProperty(EJRWTTreeTableBlockDefinitionProperties.NODE_EXPAND_LEVEL, 1);
-        intProperty++;//workaround
-        if (intProperty<1 && intProperty < 2)
+        intProperty++;// workaround
+        if (intProperty < 1 && intProperty < 2)
         {
             intProperty = 2;
         }
-        if (intProperty>1)
+        if (intProperty > 1)
             _tableViewer.setAutoExpandLevel(intProperty);
 
         _tableViewer.setContentProvider(_filteredContentProvider = new FilteredContentProvider()
@@ -1370,8 +1397,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             }
         });
     }
-    
-    
+
     private class ColumnInfo
     {
         boolean resizable = true;
@@ -1449,12 +1475,12 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 column.setData("VIEWER", viewerColumn);
                 column.setData("ITEM", item);
                 column.setToolTipText(itemProps.getHint());
-                
+
                 ColumnInfo info = new ColumnInfo();
                 column.setData("INFO", info);
 
                 column.setMoveable(blockProperties.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.ALLOW_COLUMN_REORDER, true));
-                column.setResizable(info.resizable= blockProperties.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.ALLOW_COLUMN_RESIZE, true));
+                column.setResizable(info.resizable = blockProperties.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.ALLOW_COLUMN_RESIZE, true));
                 if (blockProperties.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.ALLOW_ROW_SORTING, true))
                 {
                     EJRWTAbstractTableSorter columnSorter = itemRenderer.getColumnSorter(itemProps, item);
@@ -1475,9 +1501,9 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     float avgCharWidth = EJRWTImageRetriever.getGraphicsProvider().getAvgCharWidth(font);
                     if (avgCharWidth > 0)
                     {
-                        column.setWidth(info.width=((int) ((column.getWidth() + 1) * avgCharWidth)));// add
-                                                                                        // +1
-                                                                                        // padding
+                        column.setWidth(info.width = ((int) ((column.getWidth() + 1) * avgCharWidth)));// add
+                        // +1
+                        // padding
                     }
                 }
 
