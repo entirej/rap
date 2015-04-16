@@ -68,8 +68,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -86,7 +84,6 @@ import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
-import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeTableBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
@@ -101,7 +98,6 @@ import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
 import org.entirej.framework.core.EJForm;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
-import org.entirej.framework.core.data.controllers.EJBlockController;
 import org.entirej.framework.core.data.controllers.EJEditableBlockController;
 import org.entirej.framework.core.data.controllers.EJQuestion;
 import org.entirej.framework.core.enumerations.EJManagedBlockProperty;
@@ -1374,6 +1370,13 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             }
         });
     }
+    
+    
+    private class ColumnInfo
+    {
+        boolean resizable = true;
+        int     width     = 0;
+    }
 
     private void addActionKeyinfo(String actionKey, String actionId)
     {
@@ -1446,9 +1449,12 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 column.setData("VIEWER", viewerColumn);
                 column.setData("ITEM", item);
                 column.setToolTipText(itemProps.getHint());
+                
+                ColumnInfo info = new ColumnInfo();
+                column.setData("INFO", info);
 
                 column.setMoveable(blockProperties.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.ALLOW_COLUMN_REORDER, true));
-                column.setResizable(blockProperties.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.ALLOW_COLUMN_RESIZE, true));
+                column.setResizable(info.resizable= blockProperties.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.ALLOW_COLUMN_RESIZE, true));
                 if (blockProperties.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.ALLOW_ROW_SORTING, true))
                 {
                     EJRWTAbstractTableSorter columnSorter = itemRenderer.getColumnSorter(itemProps, item);
@@ -1469,7 +1475,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     float avgCharWidth = EJRWTImageRetriever.getGraphicsProvider().getAvgCharWidth(font);
                     if (avgCharWidth > 0)
                     {
-                        column.setWidth((int) ((column.getWidth() + 1) * avgCharWidth));// add
+                        column.setWidth(info.width=((int) ((column.getWidth() + 1) * avgCharWidth)));// add
                                                                                         // +1
                                                                                         // padding
                     }
