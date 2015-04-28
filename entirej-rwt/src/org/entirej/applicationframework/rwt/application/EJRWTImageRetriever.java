@@ -21,6 +21,7 @@ package org.entirej.applicationframework.rwt.application;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
 public class EJRWTImageRetriever
@@ -78,6 +79,14 @@ public class EJRWTImageRetriever
         ClassLoader loader = EJRWTImageRetriever.class.getClassLoader();
         return graphicsProvider.getImage(name, loader);
     }
+    
+    public static ImageDescriptor createDescriptor(String name)
+    {
+        ClassLoader loader = EJRWTImageRetriever.class.getClassLoader();
+        return ImageDescriptor.createFromURL(loader.getResource(name));
+    }
+    
+    
 
     public static EJRWTGraphicsProvider getGraphicsProvider()
     {

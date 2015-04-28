@@ -755,7 +755,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                         }
                         if (actionImage != null && actionImage.length() > 0)
                         {
-                            action.setImageDescriptor(ImageDescriptor.createFromImage(EJRWTImageRetriever.get(actionImage)));
+                            action.setImageDescriptor((EJRWTImageRetriever.createDescriptor(actionImage)));
                         }
                         toolBarManager.add(action);
                     }
