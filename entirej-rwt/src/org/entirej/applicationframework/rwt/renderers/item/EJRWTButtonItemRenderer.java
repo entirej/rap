@@ -28,6 +28,8 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -36,9 +38,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTLabelItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
+import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
@@ -456,9 +460,97 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
     }
 
     @Override
-    public ColumnLabelProvider createColumnLabelProvider(EJScreenItemProperties item, EJScreenItemController controller)
+    public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)
     {
-        return null;
+        
+        final Image image ;
+        String pictureName = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_PICTURE);
+
+        if (pictureName != null && pictureName.length() > 0)
+        {
+            image = EJRWTImageRetriever.get(pictureName);
+        }
+        else
+        {
+            image = null;
+        }
+        ColumnLabelProvider provider = new ColumnLabelProvider()
+        {
+            
+            @Override
+            public Image getImage(Object element)
+            {
+                return image;
+            }
+            
+            @Override
+            public Color getBackground(Object element)
+            {
+
+                EJCoreVisualAttributeProperties properties = getAttributes(item, element);
+                if (properties != null)
+                {
+                    Color background = EJRWTVisualAttributeUtils.INSTANCE.getBackground(properties);
+                    if (background != null)
+                    {
+                        return background;
+                    }
+                }
+                return super.getBackground(element);
+            }
+
+            @Override
+            public Color getForeground(Object element)
+            {
+                EJCoreVisualAttributeProperties properties = getAttributes(item, element);
+                if (properties != null)
+                {
+                    Color foreground = EJRWTVisualAttributeUtils.INSTANCE.getForeground(properties);
+                    if (foreground != null)
+                    {
+                        return foreground;
+                    }
+                }
+                return super.getForeground(element);
+            }
+
+            private EJCoreVisualAttributeProperties getAttributes(final EJScreenItemProperties item, Object element)
+            {
+                EJCoreVisualAttributeProperties properties = null;
+                if (element instanceof EJDataRecord)
+                {
+                    EJDataRecord record = (EJDataRecord) element;
+                    properties = record.getItem(item.getReferencedItemName()).getVisualAttribute();
+                }
+                if (properties == null)
+                {
+                    properties = _visualAttributeProperties;
+                }
+                return properties;
+            }
+
+            @Override
+            public Font getFont(Object element)
+            {
+                EJCoreVisualAttributeProperties properties = getAttributes(item, element);
+                if (properties != null)
+                {
+                    return EJRWTVisualAttributeUtils.INSTANCE.getFont(properties, super.getFont(element));
+
+                }
+                return super.getFont(element);
+            }
+
+            @Override
+            public String getText(Object element)
+            { 
+               
+                String label = item.getLabel();
+                return label != null ? label : "";
+            }
+
+        };
+        return provider;
     }
 
     @Override
