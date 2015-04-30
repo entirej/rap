@@ -20,6 +20,7 @@ package org.entirej.applicationframework.rwt.application.launcher;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +30,8 @@ import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -195,9 +198,27 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                             }
 
                             @Override
-                            public void open(String output,String outputName)
+                            public void open(final String output,String outputName)
                             {
                                 EJRWTFileDownload.download(output, outputName);
+                                RWT.getUISession().addUISessionListener(new UISessionListener()
+                                {
+
+                                  
+                                    private static final long serialVersionUID = 1L;
+
+                                    @Override
+                                    public void beforeDestroy(UISessionEvent arg0)
+                                    {
+                                        File f = new File(output);
+                                        if (f.exists())
+                                        {
+                                               
+                                                f.delete();
+                                        }
+
+                                    }
+                                });
                                 
                             }
                         });

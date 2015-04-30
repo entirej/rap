@@ -20,6 +20,7 @@ package org.entirej.applicationframework.rwt.application.launcher;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
@@ -37,6 +38,8 @@ import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.service.ResourceLoader;
+import org.eclipse.rap.rwt.service.UISessionEvent;
+import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -233,9 +236,28 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             }
 
                             @Override
-                            public void open(String output, String outputName)
+                            public void open(final String output, String outputName)
                             {
                                 EJRWTFileDownload.download(output, outputName);
+                                
+                                RWT.getUISession().addUISessionListener(new UISessionListener()
+                                {
+
+                                  
+                                    private static final long serialVersionUID = 1L;
+
+                                    @Override
+                                    public void beforeDestroy(UISessionEvent arg0)
+                                    {
+                                        File f = new File(output);
+                                        if (f.exists())
+                                        {
+                                               
+                                                f.delete();
+                                        }
+
+                                    }
+                                });
 
                             }
 
