@@ -153,26 +153,26 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             throw new NullPointerException("The ApplicationContainer cannot bu null");
         }
         shell = mainWindow.getShell();
-        //build menu
+        // build menu
         EJCoreProperties instance = EJCoreProperties.getInstance();
         EJFrameworkExtensionProperties definedProperties = instance.getApplicationDefinedProperties();
 
-        if (definedProperties != null )
+        if (definedProperties != null)
         {
-            
+
             String menuConfigID = definedProperties.getStringProperty("APPLICATION_MENU");
-        
-            if(menuConfigID!=null && menuConfigID.length()>0)
+
+            if (menuConfigID != null && menuConfigID.length() > 0)
             {
                 EJRWTMenuTreeRoot root = EJRWTDefaultMenuPropertiesBuilder.buildMenuProperties(this, menuConfigID);
-                if(root!=null)
+                if (root != null)
                 {
                     EJRWTDefaultMenuBuilder.createApplicationMenu(this, shell, root);
                 }
             }
-            
+
         }
-        
+
         _applicationContainer = container;
         _applicationContainer.buildApplication(this, mainWindow);
     }
@@ -300,13 +300,13 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     {
         embeddedController.getCallingForm().getRenderer().openEmbeddedForm(embeddedController);
     }
-    
+
     @Override
     public void closeEmbeddedForm(EJEmbeddedFormController embeddedController)
     {
         embeddedController.getCallingForm().getRenderer().closeEmbeddedForm(embeddedController);
     }
-    
+
     @Override
     public void popupFormClosed()
     {
@@ -399,35 +399,35 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     {
         messenger.askInternalQuestion(question);
     }
-    
+
     @Override
     public void openForm(String formName, EJParameterList parameterList, boolean blocking)
     {
         _frameworkManager.openForm(formName, parameterList, blocking);
-        
+
     }
 
     @Override
     public void openForm(String formName, EJParameterList parameterList)
     {
         _frameworkManager.openForm(formName, parameterList);
-        
+
     }
 
     @Override
     public void openForm(String formName)
     {
         _frameworkManager.openForm(formName);
-        
+
     }
-    
-    
+
     @Override
     public void runReport(String reportName)
     {
         runReport(reportName, null);
-        
+
     }
+
     @Override
     public void runReport(String reportName, EJParameterList parameterList)
     {
@@ -436,32 +436,73 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             reportManager = EJReportFrameworkInitialiser.initialiseFramework("report.ejprop");
         }
         EJReport report;
-        if(parameterList==null)
+        if (parameterList == null)
         {
-             report = reportManager.createReport(reportName);
+            report = reportManager.createReport(reportName);
         }
         else
         {
-            
-            
+
             EJReportParameterList list = new EJReportParameterList();
-            
+
             Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
             for (EJFormParameter parameter : allParameters)
             {
                 EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
                 reportParameter.setValue(parameter.getValue());
-                
+
                 list.addParameter(reportParameter);
             }
-            report = reportManager.createReport(reportName,list);
+            report = reportManager.createReport(reportName, list);
         }
 
         EJReportRunner reportRunner = reportManager.createReportRunner();
         String output = reportRunner.runReport(report);
 
-        EJRWTImageRetriever.getGraphicsProvider().open(output,String.format("%s.%s", report.getName(),report.getProperties().getExportType().toString().toLowerCase()));
+        EJRWTImageRetriever.getGraphicsProvider().open(output,
+                String.format("%s.%s", report.getName(), report.getProperties().getExportType().toString().toLowerCase()));
 
+    }
+
+    @Override
+    public String generateReport(String reportName)
+    {
+        return generateReport(reportName, null);
+
+    }
+
+    @Override
+    public String generateReport(String reportName, EJParameterList parameterList)
+    {
+        if (reportManager == null)
+        {
+            reportManager = EJReportFrameworkInitialiser.initialiseFramework("report.ejprop");
+        }
+        EJReport report;
+        if (parameterList == null)
+        {
+            report = reportManager.createReport(reportName);
+        }
+        else
+        {
+
+            EJReportParameterList list = new EJReportParameterList();
+
+            Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
+            for (EJFormParameter parameter : allParameters)
+            {
+                EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
+                reportParameter.setValue(parameter.getValue());
+
+                list.addParameter(reportParameter);
+            }
+            report = reportManager.createReport(reportName, list);
+        }
+
+        EJReportRunner reportRunner = reportManager.createReportRunner();
+        String output = reportRunner.runReport(report);
+
+        return output;
     }
 
     private EJReportFrameworkManager reportManager;
