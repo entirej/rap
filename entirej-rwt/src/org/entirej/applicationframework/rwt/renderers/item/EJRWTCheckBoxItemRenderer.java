@@ -118,14 +118,7 @@ public class EJRWTCheckBoxItemRenderer extends EJRWTButtonItemRenderer
                 else
                 {
                     _button.setGrayed(false);
-                    if (_uncheckedValue != null && _uncheckedValue.equals(_defaultValue))
-                    {
-                        _button.setSelection(false);
-                    }
-                    else
-                    {
-                        _button.setSelection(true);
-                    }
+                    _button.setSelection(EJRWTCheckBoxRendererDefinitionProperties.CHECKED.equals(_defaultValue));
                 }
             }
         }
