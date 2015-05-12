@@ -132,9 +132,9 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     protected void addOtherResources(final Application configuration)
     {
         // Add FORMS UI configs
-        configuration.addThemableWidget(Hyperlink.class);
-        configuration.addThemableWidget(FormText.class);
-        configuration.addThemableWidget(ToggleHyperlink.class);
+        configuration.addThemeableWidget(Hyperlink.class);
+        configuration.addThemeableWidget(FormText.class);
+        configuration.addThemeableWidget(ToggleHyperlink.class);
         addResource(configuration, new org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit.ToggleHyperlinkResource());
         addResource(configuration, new org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit.ToggleHyperlinkAdapterResource());
         addResource(configuration, new org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkResource());
@@ -160,7 +160,6 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     public void createEntryPoint(final Application configuration)
     {
 
-        configuration.setOperationMode(OperationMode.SWT_COMPATIBILITY);
         Map<String, String> properties = new HashMap<String, String>();
         if (this.getClass().getClassLoader().getResource("application.ejprop") != null)
         {
@@ -375,16 +374,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     public static int openShell(Display display, Shell shell)
     {
         shell.open();
-        if (RWT.getLifeCycle() instanceof RWTLifeCycle)
-        {
-            while (!shell.isDisposed())
-            {
-                if (!display.readAndDispatch())
-                {
-                    display.sleep();
-                }
-            }
-        }
+        
         return 0;
     }
 
