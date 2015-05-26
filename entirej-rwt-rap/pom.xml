@@ -168,52 +168,65 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.jface</artifactId>
-			<version>2.3.0</version>
+			<version>3.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.jface_3.0.0.20150505-1714.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.forms</artifactId>
-			<version>2.3.0</version>
+			<version>3.0.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui.forms_2.3.0.20140512-0919.jar</systemPath>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui.forms_3.0.0.20150505-1714.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui</artifactId>
-			<version>2.3.0</version>
+			<version>3.0.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui_2.3.0.20140527-0814.jar</systemPath>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui_3.0.0.20150428-0840.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.workbench</artifactId>
-			<version>2.3.0</version>
+			<version>3.0.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui.workbench_2.3.0.20140212-1749.jar</systemPath>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui.workbench_3.0.0.20150505-1714.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap.incubator</groupId>
-			<artifactId>org.eclipse.rap.addons.fileupload</artifactId>
-			<version>0.5</version>
+			<artifactId>org.eclipse.rap.addons.nebula</artifactId>
+			<version>3.0.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.addons.fileupload_0.6.0.20140611-1558.jar</systemPath>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.nebula.widgets.grid_3.0.0.20150505-1304.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rap.incubator</groupId>
+			<artifactId>org.eclipse.rap.addons.nebula.gridviewer</artifactId>
+			<version>3.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.nebula.jface.gridviewer_3.0.0.20150428-0840.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap.incubator</groupId>
 			<artifactId>org.eclipse.rap.addons.filedialog</artifactId>
-			<version>0.6</version>
+			<version>3.0.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.addons.filedialog_0.6.0.20140611-1558.jar</systemPath>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.filedialog_3.0.0.20150428-0840.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt</artifactId>
-			<version>2.3.0</version>
+			<version>3.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.rwt_3.0.0.20150505-1714.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt.osgi</artifactId>
-			<version>2.3.0</version>
+			<version>3.0.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.rwt.osgi_3.0.0.20150428-0840.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
@@ -223,7 +236,9 @@
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>org.eclipse.core.commands</artifactId>
-			<version>3.6.0</version>
+			<version>3.7.0</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.core.commands_3.7.0.v20150422-0725.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -234,7 +249,7 @@
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.2</version>
+			<version>1.3.1</version>
 		</dependency>
 
 	</dependencies>
