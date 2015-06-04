@@ -781,6 +781,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             {
                 _valueLabel.setToolTipText(hint);
             }
+            EJ_RWT.setTestId(_valueLabel, _itemProperties.getBlockName()+"."+_registeredItemName);
             setValueLabelAlign(alignmentProperty);
             _visualContext = new EJRWTItemRendererVisualContext(_valueLabel.getBackground(), _valueLabel.getForeground(), _valueLabel.getFont());
             setInitialValue(_baseValue);
@@ -800,6 +801,8 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     }
                     _textField = newTextField(parent, getComponentStyle(alignmentProp, style));
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
+                    
+                    EJ_RWT.setTestId(_textField, _itemProperties.getBlockName()+"."+_registeredItemName);
                     String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
                     if (customCSSKey != null && customCSSKey.trim().length() > 0)

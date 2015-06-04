@@ -386,7 +386,7 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
         {
             _button.setImage(EJRWTImageRetriever.get(pictureName));
         }
-
+        EJ_RWT.setTestId(_button, _itemProperties.getBlockName()+"."+_registeredItemName);
         _button.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_BUTTON);
         String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
