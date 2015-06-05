@@ -160,7 +160,6 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     public void createEntryPoint(final Application configuration)
     {
 
-        configuration.setOperationMode(OperationMode.SWT_COMPATIBILITY);
         Map<String, String> properties = new HashMap<String, String>();
         if (this.getClass().getClassLoader().getResource("application.ejprop") != null)
         {
@@ -376,15 +375,6 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     {
         shell.open();
         
-            while (!shell.isDisposed())
-            {
-                if (!display.readAndDispatch())
-                {
-                    display.sleep();
-                }
-            }
-        
-
         return 0;
     }
 
