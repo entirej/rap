@@ -2,11 +2,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.entirej</groupId>
-	<artifactId>entirej-rwt</artifactId>
+	<artifactId>entirej-rwt-rcp</artifactId>
 	<version>${VERSION}</version>
-	<name>Entirej RWT</name>
+	<name>Entirej RWT RCP Extension </name>
 	<build>
-		<finalName>entirej-rwt-appframework-${VERSION}</finalName>
+		<finalName>entirej-rwt-appframework-rcp-${VERSION}</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>tests</testSourceDirectory>
 		<resources>
@@ -62,7 +62,7 @@
 					<javadocVersion>1.6</javadocVersion>
 					<source>1.6</source>
 					<show>public</show>
-					<doctitle>Entirej RWT API</doctitle>
+					<doctitle>Entirej RWT RCP API</doctitle>
 					<title>Entirej Development API</title>
 					<excludePackageNames>org.entirej.framework.core.properties.reader.*</excludePackageNames>
 				</configuration>
@@ -145,8 +145,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.entirej</groupId>
-			<artifactId>entirej-report</artifactId>
-			<version>${VERSION.REPORT}</version>
+			<artifactId>entirej-rwt</artifactId>
+			<version>${VERSION}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.swt</groupId>
@@ -190,7 +190,6 @@
 	<properties>
 		<VERSION>DEVELOPMENT</VERSION>
 		<VERSION.CORE>DEVELOPMENT</VERSION.CORE>
-		<VERSION.REPORT>DEVELOPMENT</VERSION.REPORT>
 		<MAVEN.REPO.PATH>development</MAVEN.REPO.PATH>
 		<GITHUB.OAUTH></GITHUB.OAUTH>
 		<built.repo.dir>${project.build.directory}/repo</built.repo.dir>
