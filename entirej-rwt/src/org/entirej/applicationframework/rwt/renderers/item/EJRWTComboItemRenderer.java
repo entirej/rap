@@ -239,7 +239,12 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
         _visibleItemCount = _rendererProps.getIntProperty(EJRWTComboBoxRendererDefinitionProperties.VISIBLE_ITEM_COUNT, 0);
-        connectLOVItems();
+        
+        if (_rendererProps.getBooleanProperty(EJRWTComboBoxRendererDefinitionProperties.AUTO_REFRESH, true))
+        {
+            connectLOVItems();
+        }
+        
         if (_rendererProps.getBooleanProperty(EJRWTComboBoxRendererDefinitionProperties.INITIALIES_LOV, true))
         {
             loadComboBoxValues();
