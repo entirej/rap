@@ -29,4 +29,5 @@ public interface EJRWTComboBoxRendererDefinitionProperties
     public static final String COLUMN_RETURN_ITEM  = "RETURN_ITEM";
     public static final String VISIBLE_ITEM_COUNT  = "VISIBLE_ITEM_COUNT";
     public static final String INITIALIES_LOV      = "INITIALIES_LOV";
+    public static final String AUTO_REFRESH        = "AUTO_REFRESH";
 }

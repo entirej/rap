@@ -49,6 +49,8 @@ public class EJRWTComboBoxRendererDefinition implements EJDevItemRendererDefinit
     public static final String COLUMN_RETURN_ITEM  = "RETURN_ITEM";
     public static final String VISIBLE_ITEM_COUNT  = "VISIBLE_ITEM_COUNT";
     public static final String INITIALIES_LOV      = "INITIALIES_LOV";
+    public static final String AUTO_REFRESH        = "AUTO_REFRESH";
+
     public static final String CSS_KEY             = "CSS_KEY";
 
     public EJRWTComboBoxRendererDefinition()
@@ -140,10 +142,15 @@ public class EJRWTComboBoxRendererDefinition implements EJDevItemRendererDefinit
         visibleItemCount.setDefaultValue("10");
         visibleItemCount.setNotifyWhenChanged(true);
 
+        EJDevPropertyDefinition autorefreshLov = new EJDevPropertyDefinition(AUTO_REFRESH, EJPropertyDefinitionType.BOOLEAN);
+        autorefreshLov.setLabel("Auto-Refresh");
+        autorefreshLov
+                .setDescription("Because Combo Boxes are based upon lov definitions, lov query mapping value changes will auto refresh combo content");
+        autorefreshLov.setDefaultValue("true");
         EJDevPropertyDefinition initialiseLov = new EJDevPropertyDefinition(INITIALIES_LOV, EJPropertyDefinitionType.BOOLEAN);
         initialiseLov.setLabel("Populate on creation");
         initialiseLov
-                .setDescription("Because Combo Boxes are based upon lov definitions, they need to make a query to be created. Thsi could take time dependin on how many combo boxes you are displaying. You can set the Populate On Creation to false to delay the population of the Combo Box until either the items gets set to a value in the action processor or you request that the item renderer be refreshed");
+        .setDescription("Because Combo Boxes are based upon lov definitions, they need to make a query to be created. Thsi could take time dependin on how many combo boxes you are displaying. You can set the Populate On Creation to false to delay the population of the Combo Box until either the items gets set to a value in the action processor or you request that the item renderer be refreshed");
         initialiseLov.setDefaultValue("true");
 
         EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(CSS_KEY, EJPropertyDefinitionType.STRING);
@@ -153,6 +160,7 @@ public class EJRWTComboBoxRendererDefinition implements EJDevItemRendererDefinit
 
         mainGroup.addPropertyDefinition(lovDefName);
         mainGroup.addPropertyDefinition(initialiseLov);
+        mainGroup.addPropertyDefinition(autorefreshLov);
         mainGroup.addPropertyDefinitionList(list);
         mainGroup.addPropertyDefinition(visibleItemCount);
         mainGroup.addPropertyDefinition(customCSSKey);
