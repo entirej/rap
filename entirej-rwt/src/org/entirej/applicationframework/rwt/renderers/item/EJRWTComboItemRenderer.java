@@ -60,6 +60,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
+import org.entirej.applicationframework.rwt.application.EJRWTMessenger;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionCombo;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
@@ -101,6 +102,8 @@ import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
 import org.entirej.framework.core.renderers.eventhandlers.EJItemValueChangedListener;
 import org.entirej.framework.core.renderers.interfaces.EJItemRenderer;
 import org.entirej.framework.core.renderers.registry.EJBlockItemRendererRegister;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListener, Serializable, EJRWTItemTextChangeNotifier
 {
@@ -310,7 +313,8 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
             String paramTypeCode = defaultValue.substring(0, defaultValue.indexOf(':'));
             String paramValue = defaultValue.substring(defaultValue.indexOf(':') + 1);
             
-           
+            final Logger                          logger = LoggerFactory.getLogger(EJRWTComboItemRenderer.class);
+
             if ("APP_PARAMETER".equals(paramTypeCode))
             {
                 EJApplicationLevelParameter param = form.getApplicationLevelParameter(paramValue);
@@ -323,6 +327,8 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                         @Override
                         public void parameterChanged(String parameterName, Object oldValue, Object newValue)
                         {
+                            
+                            logger.debug( "APP_PARAMETER:parameterChanged %s.%s", _item.getBlock().getProperties().getName(),_item.getName());
                             loadComboBoxValues();
                             refreshCombo();
                             
@@ -341,6 +347,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                         @Override
                         public void parameterChanged(String parameterName, Object oldValue, Object newValue)
                         {
+                            logger.debug( "FORM_PARAMETER.parameterChanged %s.%s", _item.getBlock().getProperties().getName(),_item.getName());
                             loadComboBoxValues();
                             refreshCombo();
                             
@@ -371,6 +378,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                                 public void valueChanged(EJScreenItemController item, EJItemRenderer changedRenderer)
                                 {
 
+                                    logger.debug( "BLOCK_ITEM.valueChanged %s.%s", _item.getBlock().getProperties().getName(),_item.getName());
                                     loadComboBoxValues();
                                     refreshCombo();
                                     
