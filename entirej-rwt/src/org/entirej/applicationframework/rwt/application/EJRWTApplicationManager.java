@@ -18,8 +18,6 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.application;
 
-import java.awt.Desktop;
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,7 +72,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         messenger = new EJRWTMessenger(this);
     }
 
-    @Override
+
     public EJFrameworkManager getFrameworkManager()
     {
         return _frameworkManager;
@@ -95,13 +93,13 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         return _applicationContainer.getStatusbar();
     }
 
-    @Override
+
     public void setFrameworkManager(EJFrameworkManager manager)
     {
         _frameworkManager = manager;
     }
 
-    @Override
+
     public EJMessenger getApplicationMessenger()
     {
         return messenger;
@@ -177,7 +175,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         _applicationContainer.buildApplication(this, mainWindow);
     }
 
-    @Override
+
     public EJInternalForm getActiveForm()
     {
         if (_applicationContainer == null)
@@ -188,7 +186,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         return _applicationContainer.getActiveForm();
     }
 
-    @Override
+
     public EJInternalForm getForm(String formName)
     {
 
@@ -232,7 +230,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         return null;
     }
 
-    @Override
+
     public void removeFormFromContainer(EJInternalForm form)
     {
         if (_applicationContainer == null)
@@ -243,7 +241,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         _applicationContainer.remove(form);
     }
 
-    @Override
+
     public int getOpenedFormCount()
     {
         if (_applicationContainer == null)
@@ -254,7 +252,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         return _applicationContainer.getOpenFormCount();
     }
 
-    @Override
+
     public boolean isFormOpened(String formName)
     {
         if (_applicationContainer == null)
@@ -265,7 +263,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         return _applicationContainer.isFormOpened(formName);
     }
 
-    @Override
+
     public void addFormToContainer(EJInternalForm form, boolean blocking)
     {
         if (_applicationContainer == null)
@@ -286,7 +284,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
      *            The controller holding all required values to open the popup
      *            form
      */
-    @Override
+
     public void openPopupForm(EJPopupFormController popupController)
     {
         if (_applicationContainer.getFormContainer() != null)
@@ -295,19 +293,19 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         }
     }
 
-    @Override
+
     public void openEmbeddedForm(EJEmbeddedFormController embeddedController)
     {
         embeddedController.getCallingForm().getRenderer().openEmbeddedForm(embeddedController);
     }
 
-    @Override
+
     public void closeEmbeddedForm(EJEmbeddedFormController embeddedController)
     {
         embeddedController.getCallingForm().getRenderer().closeEmbeddedForm(embeddedController);
     }
 
-    @Override
+
     public void popupFormClosed()
     {
         if (_applicationContainer.getFormContainer() != null)
@@ -316,26 +314,26 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         }
     }
 
-    @Override
+
     public EJInternalForm switchToForm(String key)
     {
 
         return _applicationContainer.switchToForm(key);
     }
 
-    @Override
+
     public EJManagedFrameworkConnection getConnection()
     {
         return _frameworkManager.getConnection();
     }
 
-    @Override
+
     public EJApplicationLevelParameter getApplicationLevelParameter(String valueName)
     {
         return _frameworkManager.getApplicationLevelParameter(valueName);
     }
 
-    @Override
+
     public void setApplicationLevelParameter(String valueName, Object value)
     {
         _frameworkManager.setApplicationLevelParameter(valueName, value);
@@ -352,83 +350,83 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
      * @param locale
      *            The locale to use for this application
      */
-    @Override
+
     public void changeLocale(Locale locale)
     {
         _frameworkManager.changeLocale(locale);
     }
 
-    @Override
+
     public Locale getCurrentLocale()
     {
         return _frameworkManager.getCurrentLocale();
     }
 
-    @Override
+
     public EJTranslatorHelper getTranslatorHelper()
     {
         return _frameworkManager.getTranslatorHelper();
     }
 
-    @Override
+
     public void handleMessage(EJMessage message)
     {
         messenger.handleMessage(message);
     }
 
-    @Override
+
     public void handleException(Exception exception)
     {
         messenger.handleException(exception);
     }
 
-    @Override
+
     public void handleException(Exception exception, boolean showUserMessage)
     {
         messenger.handleException(exception, showUserMessage);
     }
 
-    @Override
+
     public void askQuestion(EJQuestion question)
     {
         messenger.askQuestion(question);
     }
 
-    @Override
+
     public void askInternalQuestion(EJInternalQuestion question)
     {
         messenger.askInternalQuestion(question);
     }
 
-    @Override
+
     public void openForm(String formName, EJParameterList parameterList, boolean blocking)
     {
         _frameworkManager.openForm(formName, parameterList, blocking);
 
     }
 
-    @Override
+
     public void openForm(String formName, EJParameterList parameterList)
     {
         _frameworkManager.openForm(formName, parameterList);
 
     }
 
-    @Override
+
     public void openForm(String formName)
     {
         _frameworkManager.openForm(formName);
 
     }
 
-    @Override
+
     public void runReport(String reportName)
     {
         runReport(reportName, null);
 
     }
 
-    @Override
+
     public void runReport(String reportName, EJParameterList parameterList)
     {
         if (reportManager == null)
@@ -464,14 +462,14 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
     }
 
-    @Override
+
     public String generateReport(String reportName)
     {
         return generateReport(reportName, null);
 
     }
 
-    @Override
+
     public String generateReport(String reportName, EJParameterList parameterList)
     {
         if (reportManager == null)

@@ -597,11 +597,7 @@ public class EJRWTCheckBoxItemRenderer extends EJRWTButtonItemRenderer
                 return 0;
             }
             
-            @Override
-            public int compare(Viewer viewer, Object e1, Object e2, TYPE type)
-            {
-                return compare(viewer, e1, e2);
-            }
+          
             
             
         };

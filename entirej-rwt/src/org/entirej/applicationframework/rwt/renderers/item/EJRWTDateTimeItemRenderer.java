@@ -57,7 +57,6 @@ import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRend
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTDateTimeItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
-import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter.TYPE;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJMessage;
@@ -1092,11 +1091,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
                 return 0;
             }
             
-            @Override
-            public int compare(Viewer viewer, Object e1, Object e2, TYPE type)
-            {
-                return compare(viewer, e1, e2);
-            }
+            
         };
     }
 

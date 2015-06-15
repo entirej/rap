@@ -42,8 +42,6 @@ import org.eclipse.swt.widgets.Text;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
-import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter.TYPE;
-import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJMessage;
@@ -546,11 +544,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                 return 0;
             }
             
-            @Override
-            public int compare(Viewer viewer, Object e1, Object e2, TYPE type)
-            {
-                return compare(viewer, e1, e2);
-            }
+          
         };
     }
 }

@@ -19,9 +19,11 @@
 package org.entirej.applicationframework.rwt.renderers.item;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.text.Collator;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
@@ -55,7 +57,6 @@ import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfac
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
-import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter.TYPE;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJApplicationException;
@@ -71,7 +72,7 @@ import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
 
 public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListener, Serializable, EJRWTItemTextChangeNotifier
 {
-    private List<ChangeListener>              _changeListeners  = new ArrayList<EJRWTItemTextChangeNotifier.ChangeListener>(1);
+    private List<ChangeListener>              _changeListeners = new ArrayList<EJRWTItemTextChangeNotifier.ChangeListener>(1);
     protected EJFrameworkExtensionProperties  _rendererProps;
     protected EJScreenItemController          _item;
     protected EJScreenItemProperties          _screenItemProperties;
@@ -87,7 +88,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     protected boolean                         _displayValueAsLabel;
     protected boolean                         _displayValueAsProtected;
     protected boolean                         _valueChanged;
-    protected final TextModifyListener        _modifyListener   = new TextModifyListener();
+    protected final TextModifyListener        _modifyListener  = new TextModifyListener();
     protected VALUE_CASE                      _valueCase       = VALUE_CASE.DEFAULT;
 
     protected boolean                         _lovActivated;
@@ -105,7 +106,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         return control != null && !control.isDisposed();
 
     }
-    
+
     public String getCSSKey()
     {
         return EJ_RWT.CSS_CV_ITEM_TEXT;
@@ -120,12 +121,11 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     @Override
     public void refreshItemRendererProperty(String propertyName)
     {
-        
-        if(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
+
+        if (EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
         {
 
-            
-            if(controlState(_label) && _rendererProps!=null)
+            if (controlState(_label) && _rendererProps != null)
             {
                 String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
@@ -138,11 +138,11 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     _label.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXT);
                 }
             }
-           
-            if(controlState(_textField) && _rendererProps!=null)
+
+            if (controlState(_textField) && _rendererProps != null)
             {
                 String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
-                
+
                 if (customCSSKey != null && customCSSKey.trim().length() > 0)
                 {
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
@@ -152,7 +152,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXT);
                 }
             }
-            
+
         }
     }
 
@@ -564,18 +564,17 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     {
         Object base = _baseValue;
         Object value = getValue();
-     
+
         if (!_textField.isFocusControl())
         {
-           
-           
-            if(_valueChanged ||  ((base==null && value!=null) || (base!=null && value==null) || (value!=null && !value.equals(base))  ))
+
+            if (_valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base))))
                 _item.itemValueChaged();
             _valueChanged = false;
         }
         else
         {
-            _valueChanged = _valueChanged ||  ((base==null && value!=null) || (base!=null && value==null) || (value!=null && !value.equals(base))   );
+            _valueChanged = _valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base)));
         }
         setMandatoryBorder(_mandatory);
         fireTextChange();
@@ -613,7 +612,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     {
         Display.getCurrent().asyncExec(new Runnable()
         {
-            
+
             @Override
             public void run()
             {
@@ -622,10 +621,10 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     _valueChanged = false;
                     _item.itemValueChaged();
                     setMandatoryBorder(_mandatory);
-                    
+
                 }
                 _item.itemFocusLost();
-                
+
             }
         });
     }
@@ -772,7 +771,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
             _valueLabel = newVlaueLabel(composite);
             _valueLabel.setData(_itemProperties.getName());
-            _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
+            _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT, getCSSKey());
             String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
             if (customCSSKey != null && customCSSKey.trim().length() > 0)
@@ -801,7 +800,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                         style = style | SWT.PASSWORD;
                     }
                     _textField = newTextField(parent, getComponentStyle(alignmentProp, style));
-                    _textField.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
+                    _textField.setData(EJ_RWT.CUSTOM_VARIANT, getCSSKey());
                     String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
                     if (customCSSKey != null && customCSSKey.trim().length() > 0)
@@ -868,23 +867,22 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                         @Override
                         public void keyReleased(KeyEvent arg0)
                         {
-                            
-                           
-                                if ((arg0.stateMask & SWT.SHIFT) != 0 && arg0.keyCode == SWT.ARROW_DOWN && isLovActivated())
+
+                            if ((arg0.stateMask & SWT.SHIFT) != 0 && arg0.keyCode == SWT.ARROW_DOWN && isLovActivated())
+                            {
+                                _item.getItemLovController().displayLov(EJLovDisplayReason.LOV);
+                            }
+
+                            if (arg0.keyCode == 13 && (SWT.MULTI != (_textField.getStyle() & SWT.MULTI) || (arg0.stateMask & SWT.CONTROL) != 0))
+                            {
+                                if (_valueChanged)
                                 {
-                                    _item.getItemLovController().displayLov(EJLovDisplayReason.LOV);
+                                    _valueChanged = false;
+                                    _item.itemValueChaged();
+                                    setMandatoryBorder(_mandatory);
                                 }
-    
-                                if (arg0.keyCode == 13 && (SWT.MULTI != (_textField.getStyle() & SWT.MULTI) || (arg0.stateMask & SWT.CONTROL) != 0))
-                                {
-                                    if (_valueChanged)
-                                    {
-                                        _valueChanged = false;
-                                        _item.itemValueChaged();
-                                        setMandatoryBorder(_mandatory);
-                                    }
-                                }
-                            
+                            }
+
                         }
 
                         @Override
@@ -923,8 +921,8 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             }
             _mandatoryDecoration.hide();
             _textField.addModifyListener(_modifyListener);
-            //TODO: Move to client side validation on Rap 2.4 
-            if(_valueCase!=null && _valueCase!= VALUE_CASE.DEFAULT)
+            // TODO: Move to client side validation on Rap 2.4
+            if (_valueCase != null && _valueCase != VALUE_CASE.DEFAULT)
             {
 
                 _textField.addVerifyListener(new VerifyListener()
@@ -933,7 +931,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     public void verifyText(VerifyEvent event)
                     {
                         String caseValue = toCaseValue(event.text);
-                        if(!event.text.equals(caseValue))
+                        if (!event.text.equals(caseValue))
                         {
                             event.text = caseValue;
                         }
@@ -993,7 +991,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     public void createLable(Composite composite)
     {
         _label = new Label(composite, SWT.NONE);
-        _label.setData(EJ_RWT.CUSTOM_VARIANT,getCSSKey());
+        _label.setData(EJ_RWT.CUSTOM_VARIANT, getCSSKey());
         String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
         if (customCSSKey != null && customCSSKey.trim().length() > 0)
@@ -1005,16 +1003,15 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
     class TextModifyListener implements ModifyListener
     {
-        protected boolean         enable           = true;
+        protected boolean enable = true;
 
-        
         @Override
         public void modifyText(ModifyEvent event)
         {
-            
-            if (enable )
+
+            if (enable)
             {
-                
+
                 valueChanged();
             }
         }
@@ -1138,10 +1135,9 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 }
                 return 0;
             }
-            
-            
+
             @Override
-            public int compare(Viewer viewer, Object e1, Object e2, TYPE type)
+            public int compareNumber(Viewer viewer, Object e1, Object e2)
             {
                 if (e1 instanceof EJDataRecord && e2 instanceof EJDataRecord)
                 {
@@ -1164,36 +1160,69 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                         {
                             return 1;
                         }
-                        
-                        switch (type)
-                        {
-                            case NUMBER:
-                                
-                                if(value1 instanceof String && value2 instanceof String)
-                                {
-                                    try
-                                    {
-                                        double dv1 =  Double.parseDouble((String)value1);
-                                        double dv2 =  Double.parseDouble((String)value2);
-                                        
-                                        return Double.compare(dv1, dv2);
-                                    }
-                                    catch(NumberFormatException f)
-                                    {
-                                        return compareCollator.compare(value1, value2);
-                                    }
-                                }
-                                return compareCollator.compare(value1, value2);
-                            case DATE:
-                                
-                                
-                                
-                                return compareCollator.compare(value1, value2);
-                                
 
-                            default:
+                        if (value1 instanceof String && value2 instanceof String)
+                        {
+                            try
+                            {
+                                double dv1 = Double.parseDouble((String) value1);
+                                double dv2 = Double.parseDouble((String) value2);
+
+                                return Double.compare(dv1, dv2);
+                            }
+                            catch (NumberFormatException f)
+                            {
                                 return compareCollator.compare(value1, value2);
+                            }
                         }
+                        return compareCollator.compare(value1, value2);
+
+                    }
+                }
+                return 0;
+            }
+            @Override
+            public int compareDate(Viewer viewer, Object e1, Object e2,String formt)
+            {
+                if (e1 instanceof EJDataRecord && e2 instanceof EJDataRecord)
+                {
+                    EJDataRecord d1 = (EJDataRecord) e1;
+                    EJDataRecord d2 = (EJDataRecord) e2;
+                    if (d1 != null && d2 != null)
+                    {
+                        
+                        Object value1 = d1.getValue(item.getReferencedItemName());
+                        Object value2 = d2.getValue(item.getReferencedItemName());
+                        if (value1 == null && value2 == null)
+                        {
+                            return 0;
+                        }
+                        if (value1 == null && value2 != null)
+                        {
+                            return -1;
+                        }
+                        if (value1 != null && value2 == null)
+                        {
+                            return 1;
+                        }
+                        
+                        if (value1 instanceof String && value2 instanceof String)
+                        {
+                            SimpleDateFormat format = new SimpleDateFormat(formt);
+                            try
+                            {
+                                Date dv1 = format.parse((String) value1);
+                                Date dv2 = format.parse((String) value1);
+                                
+                                return dv1.compareTo(dv2);
+                            }
+                            
+                            catch (ParseException e)
+                            {
+                                //ignore 
+                            }
+                        }
+                        return compareCollator.compare(value1, value2);
                         
                     }
                 }

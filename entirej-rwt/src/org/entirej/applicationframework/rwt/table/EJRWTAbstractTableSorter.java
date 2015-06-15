@@ -24,7 +24,7 @@ import org.entirej.applicationframework.rwt.table.EJRWTTableSortSelectionListene
 
 public abstract class EJRWTAbstractTableSorter extends InvertableSorter
 {
-    public enum TYPE {CHAR,NUMBER,DATE};
+   
     
     private final InvertableSorter _inverse = new InvertableSorter()
                                            {
@@ -62,6 +62,13 @@ public abstract class EJRWTAbstractTableSorter extends InvertableSorter
     @Override
     public abstract int compare(Viewer viewer, Object e1, Object e2);
     
-    public abstract int compare(Viewer viewer, Object e1, Object e2,TYPE type);
+    public  int compareNumber(Viewer viewer, Object e1, Object e2){
+        return compare(viewer, e1, e2);
+        
+    }
+    public  int compareDate(Viewer viewer, Object e1, Object e2,String format){
+        return compare(viewer, e1, e2);
+        
+    }
     
 }
