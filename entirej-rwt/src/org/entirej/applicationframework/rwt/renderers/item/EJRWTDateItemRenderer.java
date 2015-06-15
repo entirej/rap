@@ -62,6 +62,7 @@ import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTDateItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
+import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter.TYPE;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.EJMessageFactory;
@@ -567,6 +568,12 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                 }
 
                 return 0;
+            }
+            
+            @Override
+            public int compare(Viewer viewer, Object e1, Object e2, TYPE type)
+            {
+                return compare(viewer, e1, e2);
             }
         };
     }

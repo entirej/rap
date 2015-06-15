@@ -19,6 +19,7 @@
 package org.entirej.applicationframework.rwt.renderers.item;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,7 @@ import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfac
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
+import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter.TYPE;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJApplicationException;
@@ -1132,6 +1134,67 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                             return 1;
                         }
                         return compareCollator.compare(value1, value2);
+                    }
+                }
+                return 0;
+            }
+            
+            
+            @Override
+            public int compare(Viewer viewer, Object e1, Object e2, TYPE type)
+            {
+                if (e1 instanceof EJDataRecord && e2 instanceof EJDataRecord)
+                {
+                    EJDataRecord d1 = (EJDataRecord) e1;
+                    EJDataRecord d2 = (EJDataRecord) e2;
+                    if (d1 != null && d2 != null)
+                    {
+
+                        Object value1 = d1.getValue(item.getReferencedItemName());
+                        Object value2 = d2.getValue(item.getReferencedItemName());
+                        if (value1 == null && value2 == null)
+                        {
+                            return 0;
+                        }
+                        if (value1 == null && value2 != null)
+                        {
+                            return -1;
+                        }
+                        if (value1 != null && value2 == null)
+                        {
+                            return 1;
+                        }
+                        
+                        switch (type)
+                        {
+                            case NUMBER:
+                                
+                                if(value1 instanceof String && value2 instanceof String)
+                                {
+                                    try
+                                    {
+                                        double dv1 =  Double.parseDouble((String)value1);
+                                        double dv2 =  Double.parseDouble((String)value2);
+                                        
+                                        return Double.compare(dv1, dv2);
+                                    }
+                                    catch(NumberFormatException f)
+                                    {
+                                        return compareCollator.compare(value1, value2);
+                                    }
+                                }
+                                return compareCollator.compare(value1, value2);
+                            case DATE:
+                                
+                                
+                                
+                                return compareCollator.compare(value1, value2);
+                                
+
+                            default:
+                                return compareCollator.compare(value1, value2);
+                        }
+                        
                     }
                 }
                 return 0;
