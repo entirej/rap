@@ -20,6 +20,7 @@ package org.entirej.applicationframework.rwt.renderers.item;
 
 import java.io.Serializable;
 import java.text.Collator;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1137,7 +1138,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             }
 
             @Override
-            public int compareNumber(Viewer viewer, Object e1, Object e2)
+            public int compareNumber(Viewer viewer, Object e1, Object e2,String format)
             {
                 if (e1 instanceof EJDataRecord && e2 instanceof EJDataRecord)
                 {
@@ -1163,14 +1164,20 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
                         if (value1 instanceof String && value2 instanceof String)
                         {
+                            final    DecimalFormat frm = new DecimalFormat(format);
                             try
                             {
-                                double dv1 = Double.parseDouble((String) value1);
-                                double dv2 = Double.parseDouble((String) value2);
+                                
+                                Number dv1 = frm.parse((String) value1);
+                                Number dv2 = frm.parse((String) value2);
 
-                                return Double.compare(dv1, dv2);
+                                return Double.compare(dv1.doubleValue(), dv2.doubleValue());
                             }
                             catch (NumberFormatException f)
+                            {
+                                return compareCollator.compare(value1, value2);
+                            }
+                            catch (ParseException e)
                             {
                                 return compareCollator.compare(value1, value2);
                             }

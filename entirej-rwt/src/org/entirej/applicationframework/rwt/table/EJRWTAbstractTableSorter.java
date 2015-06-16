@@ -62,7 +62,7 @@ public abstract class EJRWTAbstractTableSorter extends InvertableSorter
     @Override
     public abstract int compare(Viewer viewer, Object e1, Object e2);
     
-    public  int compareNumber(Viewer viewer, Object e1, Object e2){
+    public  int compareNumber(Viewer viewer, Object e1, Object e2,String format){
         return compare(viewer, e1, e2);
         
     }
