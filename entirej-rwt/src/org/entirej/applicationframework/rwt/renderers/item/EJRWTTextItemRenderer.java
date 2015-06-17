@@ -1219,7 +1219,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                             try
                             {
                                 Date dv1 = format.parse((String) value1);
-                                Date dv2 = format.parse((String) value1);
+                                Date dv2 = format.parse((String) value2);
                                 
                                 return dv1.compareTo(dv2);
                             }
