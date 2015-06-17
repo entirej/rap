@@ -18,6 +18,7 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.table;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 
 import org.eclipse.jface.viewers.Viewer;
@@ -68,7 +69,7 @@ public abstract class EJRWTAbstractTableSorter extends InvertableSorter
         return compare(viewer, e1, e2);
         
     }
-    public  int compareDate(Viewer viewer, Object e1, Object e2,String format){
+    public  int compareDate(Viewer viewer, Object e1, Object e2,DateFormat format){
         return compare(viewer, e1, e2);
         
     }

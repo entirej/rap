@@ -20,14 +20,13 @@ package org.entirej.applicationframework.rwt.renderers.item;
 
 import java.io.Serializable;
 import java.text.Collator;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -1191,7 +1190,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 return 0;
             }
             @Override
-            public int compareDate(Viewer viewer, Object e1, Object e2,String formt)
+            public int compareDate(Viewer viewer, Object e1, Object e2,DateFormat format)
             {
                 if (e1 instanceof EJDataRecord && e2 instanceof EJDataRecord)
                 {
@@ -1217,7 +1216,6 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                         
                         if (value1 instanceof String && value2 instanceof String)
                         {
-                            SimpleDateFormat format = new SimpleDateFormat(formt);
                             try
                             {
                                 Date dv1 = format.parse((String) value1);
