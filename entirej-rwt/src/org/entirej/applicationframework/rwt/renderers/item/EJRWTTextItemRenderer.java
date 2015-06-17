@@ -21,11 +21,13 @@ package org.entirej.applicationframework.rwt.renderers.item;
 import java.io.Serializable;
 import java.text.Collator;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -1138,7 +1140,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             }
 
             @Override
-            public int compareNumber(Viewer viewer, Object e1, Object e2,String format)
+            public int compareNumber(Viewer viewer, Object e1, Object e2, DecimalFormat frm)
             {
                 if (e1 instanceof EJDataRecord && e2 instanceof EJDataRecord)
                 {
@@ -1164,7 +1166,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
                         if (value1 instanceof String && value2 instanceof String)
                         {
-                            final    DecimalFormat frm = new DecimalFormat(format);
+                           
                             try
                             {
                                 

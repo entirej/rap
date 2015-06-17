@@ -18,6 +18,8 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.table;
 
+import java.text.DecimalFormat;
+
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.entirej.applicationframework.rwt.table.EJRWTTableSortSelectionListener.InvertableSorter;
@@ -62,7 +64,7 @@ public abstract class EJRWTAbstractTableSorter extends InvertableSorter
     @Override
     public abstract int compare(Viewer viewer, Object e1, Object e2);
     
-    public  int compareNumber(Viewer viewer, Object e1, Object e2,String format){
+    public  int compareNumber(Viewer viewer, Object e1, Object e2, DecimalFormat frm){
         return compare(viewer, e1, e2);
         
     }
