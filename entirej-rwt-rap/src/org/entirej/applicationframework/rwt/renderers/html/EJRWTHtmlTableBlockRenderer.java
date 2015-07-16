@@ -135,6 +135,8 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     public static final String                                ROW_ODD_VA                 = "ROW_ODD_VA";
     public static final String                                ROW_EVEN_VA                = "ROW_EVEN_VA";
 
+    public static final String                                ENABLE_MARKUP              = "ENABLE_MARKUP";
+
     private EJEditableBlockController                         _block;
     private boolean                                           _isFocused                 = false;
     private ScrolledComposite                                 scrollComposite;
@@ -1038,7 +1040,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                             ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
                                     header.append(functionDef).append(">");
                                 }
-                                header.append(ignoreHtml(itemProps.getLabel()));
+                                header.append(!rendererProperties.getBooleanProperty(ENABLE_MARKUP,false)? ignoreHtml(itemProps.getLabel()):itemProps.getLabel());
                                 if (sortInfo != null)
                                     header.append(String.format("<esh %s/>", sortInfo.id));
                             }
@@ -1485,8 +1487,9 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                                 String text = columnLabelProvider.getText(record);
 
-                                text = ignoreHtml(text);
-                                
+                                if(!rendererProperties.getBooleanProperty(ENABLE_MARKUP,false))
+                                    text = ignoreHtml(text);
+
                                 if (actionDef != null && text != null && text.length() > 0)
                                 {
                                     builder.append(String.format("<ejl><u %s class=\"%s %s\"  ", "style=\"line-height: 100%\"",
@@ -1615,15 +1618,15 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
     static String ignoreHtml(String text)
     {
-        if(text==null || text.isEmpty())return text;
-        
-       return replaceEach(text, new String[] { "&", "<", ">", "\"", "'", "/" }, new String[] { "&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;" }, false, 0);
+        if (text == null || text.isEmpty())
+            return text;
+
+        return replaceEach(text, new String[] { "&", "<", ">", "\"", "'", "/" }, new String[] { "&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;" }, false,
+                0);
     }
 
     private static String replaceEach(String text, String[] searchList, String[] replacementList, boolean repeat, int timeToLive)
     {
-
-       
 
         if (text == null || text.length() == 0 || searchList == null || searchList.length == 0 || replacementList == null || replacementList.length == 0)
         {
@@ -1886,7 +1889,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
         DIRECTION direction = DIRECTION.NONE;
     }
-    
+
     public static void main(String[] args)
     {
         System.out.println(ignoreHtml("<html/>"));

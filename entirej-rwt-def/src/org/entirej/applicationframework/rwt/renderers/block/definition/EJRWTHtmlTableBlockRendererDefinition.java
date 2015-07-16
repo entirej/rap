@@ -143,6 +143,9 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         rowEvenVA.setLabel("Row Even VA");
         rowEvenVA.setDescription("Specifies visual attribute for table even row");
 
+        
+       
+        
         mainGroup.addPropertyDefinitionList(list);
         mainGroup.addPropertyDefinition(filter);
         mainGroup.addPropertyDefinition(showTableHeader);
@@ -167,6 +170,8 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         mainGroup.addPropertyDefinition(displayWidth);
         
         
+        
+        
         EJDevPropertyDefinition allowColumnSorting = new EJDevPropertyDefinition(ALLOW_ROW_SORTING,
                 EJPropertyDefinitionType.BOOLEAN);
         allowColumnSorting.setLabel("Allow Column Sorting");
@@ -182,6 +187,12 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
                 .setDescription("If entered, the value in this column will be displayed as a URL and when the user clicks on the url, the action command will be passed to the forms action processor for execution.");
 
         mainGroup.addPropertyDefinition(cellActionCommand);
+        
+        
+        EJDevPropertyDefinition htmlFormat = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, EJPropertyDefinitionType.BOOLEAN);
+        htmlFormat.setLabel("HTML Formatting");
+        htmlFormat.setDescription("If this property is set, the Table formats  HTML tags in column values");
+        mainGroup.addPropertyDefinition(htmlFormat);
         return mainGroup;
     }
 
