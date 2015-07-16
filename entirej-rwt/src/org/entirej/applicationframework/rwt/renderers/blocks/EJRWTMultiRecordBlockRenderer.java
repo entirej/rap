@@ -1106,7 +1106,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 }
             });
         }
-        table.setData(EJ_RWT.MARKUP_ENABLED, Boolean.TRUE);
+        table.setData(EJ_RWT.MARKUP_ENABLED, rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, false));
         table.addFocusListener(new FocusListener()
         {
             @Override

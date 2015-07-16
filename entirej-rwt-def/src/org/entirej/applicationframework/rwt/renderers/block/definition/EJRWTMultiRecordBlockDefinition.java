@@ -174,6 +174,11 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
                 EJPropertyDefinitionType.INTEGER);
         rowHeight.setLabel("Row Height");
         
+        
+        EJDevPropertyDefinition htmlFormat = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, EJPropertyDefinitionType.BOOLEAN);
+        htmlFormat.setLabel("XHTML Formatting");
+        htmlFormat.setDescription("If this property is set, the Table formats certain XHTML tags ");
+        
 
         mainGroup.addPropertyDefinition(doubleClickActionCommand);
         mainGroup.addPropertyDefinition(showTableBorder);
@@ -183,6 +188,7 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         mainGroup.addPropertyDefinition(showVerticalLines);
         mainGroup.addPropertyDefinition(isFixedInTable);
         mainGroup.addPropertyDefinition(rowHeight);
+        mainGroup.addPropertyDefinition(htmlFormat);
 
         EJDevPropertyDefinitionGroup sectionGroup = new EJDevPropertyDefinitionGroup("TITLE_BAR");
         sectionGroup.setLabel("Title Bar");

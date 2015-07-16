@@ -24,6 +24,10 @@ import java.util.Collections;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
+import org.eclipse.swt.browser.LocationAdapter;
+import org.eclipse.swt.browser.LocationEvent;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
@@ -31,6 +35,8 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTTreeBlockDefinitionProperties;
@@ -232,12 +238,22 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
 
         layoutBody.setLayout(new FillLayout());
 
+      
+        if(System.getProperty("os.name").toLowerCase().indexOf("win")>-1)
+        {
+            Label  label = new Label(layoutBody, SWT.NONE);
+            label.setText("HTML Table Block");
+            return new EJDevBlockRendererDefinitionControl(blockDisplayProperties, Collections.<EJDevItemRendererDefinitionControl> emptyList());
+        }
+        
         EJDevItemGroupDisplayProperties displayProperties = null;
         if (blockDisplayProperties.getMainScreenItemGroupDisplayContainer().getAllItemGroupDisplayProperties().size() > 0)
         {
             displayProperties = blockDisplayProperties.getMainScreenItemGroupDisplayContainer().getAllItemGroupDisplayProperties().iterator().next();
 
         }
+        
+        
         EJFrameworkExtensionProperties blockRendererProperties = mainScreenProperties.getBlockProperties().getBlockRendererProperties();
         boolean addHeader = true;
         StringBuilder header = new StringBuilder();
@@ -310,7 +326,9 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
                 }
             }
 
-            Browser browser = new Browser(layoutBody, SWT.NONE);
+            final Browser browser = new Browser(layoutBody, SWT.NONE);
+            
+            
             StringBuilder builder = new StringBuilder();
             {
                 builder.append("<html>");

@@ -26,6 +26,7 @@ public interface EJRWTMultiRecordBlockDefinitionProperties
     public static final String DISPLAY_HEIGH_PROPERTY      = "DISPLAY_HEIGHT";
     public static final String SHOW_HEADING_PROPERTY       = "SHOW_HEADING";
     public static final String SHOW_VERTICAL_LINES         = "SHOW_HORIZONTAL_LINES";
+    public static final String ENABLE_MARKUP               = "ENABLE_MARKUP";
     public static final String SHOW_HORIZONTAL_LINES       = "SHOW_VERTICAL_LINES";
     public static final String ROW_SELECTION_PROPERTY      = "ROW_SELECTION";
     public static final String USE_STANDARD_HEADING        = "STANDARD_HEADING";
