@@ -135,7 +135,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     public static final String                                ROW_ODD_VA                 = "ROW_ODD_VA";
     public static final String                                ROW_EVEN_VA                = "ROW_EVEN_VA";
 
-    public static final String                                ENABLE_MARKUP              = "ENABLE_MARKUP";
+    public static final String                                ENABLE_MARKUP              = "HTML_FORMAT";
 
     private EJEditableBlockController                         _block;
     private boolean                                           _isFocused                 = false;
@@ -951,14 +951,14 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
             int cellSpacing = blockProperties.getBlockRendererProperties().getIntProperty(CELL_SPACING_PROPERTY, 0);
             int cellPadding = blockProperties.getBlockRendererProperties().getIntProperty(CELL_PADDING_PROPERTY, 0);
-            String paddingStyle = null;
+            String paddingStyle = "";
             if (cellPadding > 0)
             {
                 String str = String.valueOf(cellPadding);
-                paddingStyle = String.format("padding: %spx %spx %spx %spx; ", str, str, str, str);
+                paddingStyle += String.format("padding: %spx %spx %spx %spx; ", str, str, str, str);
             }
 
-            StringBuilder header = new StringBuilder();
+            StringBuilder header = new StringBuilder("<thead><tr>");
             for (EJItemGroupProperties groupProperties : allItemGroupProperties)
             {
                 Collection<EJScreenItemProperties> itemProperties = groupProperties.getAllItemProperties();
@@ -981,7 +981,37 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                             String styleClass = "default_all";
                             EJFrameworkExtensionProperties rendererProperties = item.getReferencedItemProperties().getItemRendererProperties();
+                            EJFrameworkExtensionProperties extentionProperties = itemProps.getBlockRendererRequiredProperties();
+                            int  width = -1;
+                            if (width == -1)
+                            {
+                                width = extentionProperties.getIntProperty(DISPLAY_WIDTH_PROPERTY, 0);
+                            }
+                            
                             header.append("<th ");
+                            
+                            if (width > 0)
+                            {
+                                Font font = labelProvider.getFont(new Object());
+
+                                if (font == null)
+                                    font = _browser.getFont();
+                                if (font != null)
+                                {
+                                    float avgCharWidth = RWTUtils.getAvgCharWidth(font);
+                                    if (avgCharWidth > 0)
+                                    {
+                                        if (width != 1)
+                                        {
+                                            // add +1 padding
+                                            width = ((int) (((width + 1) * avgCharWidth)));
+                                        }
+                                    }
+                                }
+
+                                header.append(String.format(" width=%s ", width));
+                            }
+                            header.append("><div ");
 
                             String alignment = null;
 
@@ -992,7 +1022,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             }
                             alignment = getComponentAlignment(alignmentProperty);
 
-                            EJFrameworkExtensionProperties extentionProperties = itemProps.getBlockRendererRequiredProperties();
+                           
 
                             SortInfo sortInfo = null;
                             if (extentionProperties.getBooleanProperty(ALLOW_ROW_SORTING, true))
@@ -1026,6 +1056,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             {
                                 header.append(String.format(" align=\'%s\'", alignment));
                             }
+                            
                             if (paddingStyle != null)
                             {
                                 header.append(String.format(" style=\'%s\'", paddingStyle));
@@ -1044,7 +1075,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 if (sortInfo != null)
                                     header.append(String.format("<esh %s/>", sortInfo.id));
                             }
-                            header.append("</th>");
+                            header.append("</div></th>");
                         }
                     }
                 }
@@ -1052,6 +1083,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
             if (addHeader)
             {
+                header.append("</tr></thead>");
                 _headerTag = header.toString();
             }
         }
@@ -1344,6 +1376,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                     if (_headerTag != null)
                     {
+                       
                         String sortHeader = _headerTag;
                         if (activeSortColumn != null)
                         {
@@ -1365,6 +1398,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                     Collection<EJDataRecord> records = _tableBaseRecords;
 
+                    builder.append("<tbody>");
                     if (records.size() > 0)
                     {
 
@@ -1578,7 +1612,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                         builder.append("</tr>");
                     }
                 }
-                builder.append("</table>");
+                builder.append("</tbody></table>");
             }
             builder.append("</<div>");
         }
