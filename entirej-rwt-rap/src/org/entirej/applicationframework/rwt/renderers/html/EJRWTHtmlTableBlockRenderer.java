@@ -1011,7 +1011,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                                 header.append(String.format(" width=%s ", width));
                             }
-                            header.append("><div ");
+                            header.append(" ");
 
                             String alignment = null;
 
@@ -1075,7 +1075,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 if (sortInfo != null)
                                     header.append(String.format("<esh %s/>", sortInfo.id));
                             }
-                            header.append("</div></th>");
+                            header.append("</th>");
                         }
                     }
                 }
