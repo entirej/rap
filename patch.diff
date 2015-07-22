@@ -1,0 +1,60 @@
+diff --git a/entirej-rwt-rap/src/org/entirej/applicationframework/rwt/renderers/html/EJRWTHtmlTableBlockRenderer.java b/entirej-rwt-rap/src/org/entirej/applicationframework/rwt/renderers/html/EJRWTHtmlTableBlockRenderer.java
+index 5176a42..ad5dfd5 100644
+--- a/entirej-rwt-rap/src/org/entirej/applicationframework/rwt/renderers/html/EJRWTHtmlTableBlockRenderer.java
++++ b/entirej-rwt-rap/src/org/entirej/applicationframework/rwt/renderers/html/EJRWTHtmlTableBlockRenderer.java
+@@ -958,7 +958,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
+                 paddingStyle += String.format("padding: %spx %spx %spx %spx; ", str, str, str, str);
+             }
+ 
+-            StringBuilder header = new StringBuilder("<thead><tr>");
++            StringBuilder header = new StringBuilder("<thead><tr style=\"display: block;position: relative;\">");
+             for (EJItemGroupProperties groupProperties : allItemGroupProperties)
+             {
+                 Collection<EJScreenItemProperties> itemProperties = groupProperties.getAllItemProperties();
+@@ -988,7 +988,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
+                                 width = extentionProperties.getIntProperty(DISPLAY_WIDTH_PROPERTY, 0);
+                             }
+                             
+-                            header.append("<th ");
++                            header.append("<td ");
+                             
+                             if (width > 0)
+                             {
+@@ -1011,7 +1011,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
+ 
+                                 header.append(String.format(" width=%s ", width));
+                             }
+-                            header.append("><div ");
++                           
+ 
+                             String alignment = null;
+ 
+@@ -1075,7 +1075,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
+                                 if (sortInfo != null)
+                                     header.append(String.format("<esh %s/>", sortInfo.id));
+                             }
+-                            header.append("</div></th>");
++                            header.append("</td>");
+                         }
+                     }
+                 }
+@@ -1366,7 +1366,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
+                     String str = String.valueOf(cellPadding);
+                     paddingStyle = String.format("padding: %spx %spx %spx %spx; ", str, str, str, str);
+                 }
+-                builder.append("<table border=0 cellspacing=").append(cellSpacing).append(" width=\"100%\" >");
++                builder.append("<table style=\"table-layout: fixed; height: 100% \" border=0 cellspacing=").append(cellSpacing).append(" width=\"100%\" >");
+                 {
+                     builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+                     builder.append(createVACSSUrl());
+@@ -1397,8 +1397,8 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
+                     }
+ 
+                     Collection<EJDataRecord> records = _tableBaseRecords;
+-
+-                    builder.append("<tbody>");
++                    
++                    builder.append("<tbody style=\"display: block;overflow: auto;height: 100%;\">");
+                     if (records.size() > 0)
+                     {
+ 
