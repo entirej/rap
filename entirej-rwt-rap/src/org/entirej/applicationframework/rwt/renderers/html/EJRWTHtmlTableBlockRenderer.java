@@ -135,7 +135,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     public static final String                                ROW_ODD_VA                 = "ROW_ODD_VA";
     public static final String                                ROW_EVEN_VA                = "ROW_EVEN_VA";
 
-    public static final String                                ENABLE_MARKUP              = "HTML_FORMAT";
+    public static final String                                ENABLE_MARKUP              = "ENABLE_MARKUP";
 
     private EJEditableBlockController                         _block;
     private boolean                                           _isFocused                 = false;
@@ -1071,7 +1071,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                             ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
                                     header.append(functionDef).append(">");
                                 }
-                                header.append(!rendererProperties.getBooleanProperty(ENABLE_MARKUP,false)? ignoreHtml(itemProps.getLabel()):itemProps.getLabel());
+                                header.append(!(extentionProperties.getBooleanProperty(ENABLE_MARKUP,false) || rendererProperties.getBooleanProperty("HTML_FORMAT", false))? ignoreHtml(itemProps.getLabel()):itemProps.getLabel());
                                 if (sortInfo != null)
                                     header.append(String.format("<esh %s/>", sortInfo.id));
                             }
@@ -1449,7 +1449,6 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 }
 
                                 EJFrameworkExtensionProperties rendererProperties = item.getReferencedItemProperties().getItemRendererProperties();
-
                                 EJCoreVisualAttributeProperties diva = record.getItem(item.getReferencedItemName()).getVisualAttribute();
                                 if (diva != null)
                                 {
@@ -1521,7 +1520,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                                 String text = columnLabelProvider.getText(record);
 
-                                if(!rendererProperties.getBooleanProperty(ENABLE_MARKUP,false))
+                                if(!(extentionProperties.getBooleanProperty(ENABLE_MARKUP,false) || rendererProperties.getBooleanProperty("HTML_FORMAT", false)))
                                     text = ignoreHtml(text);
 
                                 if (actionDef != null && text != null && text.length() > 0)
