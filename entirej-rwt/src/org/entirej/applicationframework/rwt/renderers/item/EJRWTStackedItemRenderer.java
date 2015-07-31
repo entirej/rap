@@ -588,6 +588,10 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     public void setValue(Object value)
     {
         setLabel("");
+        if(controlState(stackedPane))
+        {
+            _errorDecoration.hide();
+        }
         _valueChanged = false;
         try
         {
@@ -1254,6 +1258,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         try
                         {
                             _decimalFormatter.parse(textField.getText());
+                            _errorDecoration.hide();
                         }
                         catch (ParseException e)
                         {
@@ -1330,6 +1335,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         try
                         {
                             _dateFormat.parse(textField.getText());
+                            _errorDecoration.hide();
                         }
                         catch (ParseException e)
                         {
