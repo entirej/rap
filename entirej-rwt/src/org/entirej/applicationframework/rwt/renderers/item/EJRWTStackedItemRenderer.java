@@ -51,7 +51,9 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractPanelAction;
@@ -278,6 +280,10 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     {
                         ((Combo) control).setText("");
                     }
+                    else if (control instanceof Button)
+                    {
+                        ((Button) control).setSelection(false);
+                    }
                     // check_box/combo
                 }
             }
@@ -327,6 +333,15 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     _baseValue.setValue(value);
                     break;
                 }
+                case CHECKBOX:
+                {
+                    Button control = (Button) stackedPane.getControl(_baseValue.getType().name());
+                   
+                    
+                   
+                    _baseValue.setValue(control.getSelection()?_baseValue.getCheckBoxCheckedValue():_baseValue.getCheckBoxUnCheckedValue());
+                    break;
+                }
                 case NUMBER:
                 {
 
@@ -336,7 +351,8 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     {
                         value = null;
                     }
-                    else {
+                    else
+                    {
                         try
                         {
                             value = _decimalFormatter.parse(control.getText());
@@ -513,7 +529,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
         if (_isValid)
         {
-            if (_mandatory && (getValue() == null || _baseValue.getValue()==null))
+            if (_mandatory && (getValue() == null || _baseValue.getValue() == null))
             {
                 return false;
             }
@@ -588,7 +604,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     public void setValue(Object value)
     {
         setLabel("");
-        if(controlState(stackedPane))
+        if (controlState(stackedPane))
         {
             _errorDecoration.hide();
         }
@@ -634,10 +650,11 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
         _item.setItemLovController(null);
         enableLovActivation(false);
-        
+
         if (_baseValue != null)
         {
-            if (controlState(_label) && _baseValue.getType()!=EJStackedItemRendererType.SPACER)
+            if (controlState(_label)
+                    && !(_baseValue.getType() == EJStackedItemRendererType.SPACER || _baseValue.getType() == EJStackedItemRendererType.CHECKBOX))
             {
                 if (_baseValue.getLabel() != null)
                 {
@@ -677,11 +694,11 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 }
                 else if (_item.getProperties() instanceof EJCoreMainScreenItemProperties)
                 {
-                   
+
                     ((EJCoreMainScreenItemProperties) _item.getProperties()).setActionCommand(_baseValue.getActionCommand());
                 }
                 _item.setItemLovController(_baseValue.getLovMapping());
-                enableLovActivation(_item.getItemLovController()!=null);
+                enableLovActivation(_item.getItemLovController() != null);
 
             }
 
@@ -719,6 +736,15 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     else if (control instanceof Combo)
                     {
                         ((Combo) control).setText("");
+                    }
+                    else if (control instanceof Button)
+                    {
+                        ((Button) control).setText(_baseValue.getLabel() == null ? (_item.getProperties().getLabel() == null ? "" : _item.getProperties()
+                                .getLabel()) : _baseValue.getLabel());
+                        ((Button) control).setToolTipText(_baseValue.getTooltip() == null ? (_item.getProperties().getHint() == null ? "" : _item
+                                .getProperties().getHint()) : _baseValue.getTooltip());
+                        ((Button) control).setSelection(_baseValue.getCheckBoxCheckedValue() == value
+                                || (value != null && value.equals(_baseValue.getCheckBoxCheckedValue())));
                     }
                     // check_box/combo
                 }
@@ -772,7 +798,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     control.setMessage(_dateFormat.toFormatString());
                     break;
                 }
-                
+
                 case SPACER:
                 {
                     setLabel("");
@@ -866,7 +892,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     protected void setMandatoryBorder(boolean req)
     {
 
-        if (req && (getValue() == null || _baseValue.getValue()==null))
+        if (req && (getValue() == null || _baseValue.getValue() == null))
         {
             _mandatoryDecoration.show();
         }
@@ -1197,6 +1223,36 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             label.setData("EJRWTItemRendererVisualContext", new EJRWTItemRendererVisualContext(label.getBackground(), label.getForeground(), label.getFont()));
 
         }
+        {
+            int style = SWT.NONE;
+            Button _button = new Button(stackedPane, style = style | SWT.CHECK);
+
+            _button.addListener(SWT.Selection, new Listener()
+            {
+                @Override
+                public void handleEvent(Event e)
+                {
+
+                    _item.executeActionCommand();
+                    _item.itemValueChaged();
+                }
+
+            });
+
+            _button.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_CHECKBOX);
+            _button.setData(EJ_RWT.CUSTOM_VARIANT + "_DEF", EJ_RWT.CSS_CV_ITEM_CHECKBOX);
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _button.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
+            stackedPane.add(EJStackedItemRendererType.CHECKBOX.name(), _button);
+            _button.setData(_item.getReferencedItemProperties().getName());
+            _button.setData("EJRWTItemRendererVisualContext",
+                    new EJRWTItemRendererVisualContext(_button.getBackground(), _button.getForeground(), _button.getFont()));
+
+        }
         // EJStackedItemRendererType.SPACER;
         {
             Label label = new Label(stackedPane, SWT.NONE);
@@ -1282,7 +1338,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     {
                         _modifyListener.enable = false;
                         Object value = getValue();
-                        if (value != null && _baseValue.getValue()!=null)
+                        if (value != null && _baseValue.getValue() != null)
                         {
                             textField.setText(_decimalFormatter.format(_baseValue.getValue()));
                         }
@@ -1360,7 +1416,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     {
                         _modifyListener.enable = false;
                         Object value = getValue();
-                        if (value!=null && _baseValue.getValue()!=null)
+                        if (value != null && _baseValue.getValue() != null)
                         {
                             textField.setText(_dateFormat.format(_baseValue.getValue()));
                         }
@@ -1549,11 +1605,9 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         {
             defaultLocale = Locale.getDefault();
         }
-        
 
-       
-        String format = _baseValue!=null ? _baseValue.getFormat():null;
-        if(format!=null)
+        String format = _baseValue != null ? _baseValue.getFormat() : null;
+        if (format != null)
         {
             String[] split = format.split("\\|");
             SimpleDateFormat[] formats = new SimpleDateFormat[split.length];
