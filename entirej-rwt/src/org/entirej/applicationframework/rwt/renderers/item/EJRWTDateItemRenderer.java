@@ -197,9 +197,8 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     }
                     catch (ParseException e)
                     {
-                        _rendererProps.getStringProperty(EJRWTDateItemRendererDefinitionProperties.PROPERTY_FORMAT);
-
-                        String format = _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_FORMAT);
+                       
+                        String format = _dateFormat.toFormatString();
                         if(format==null || format.length()==0)
                         {
                             format = "eg: "+_dateFormat.format(new Date());
@@ -723,7 +722,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         return label;
     }
 
-    private static class MultiDateFormater
+     static class MultiDateFormater
     {
 
         
@@ -815,6 +814,27 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                 return format.format(value);
             }
             return "";
+        }
+        
+        public String toFormatString()
+        {
+            StringBuilder builder = new StringBuilder();
+            
+            if(dateFormat!=null && dateFormat instanceof SimpleDateFormat)
+            {
+                builder.append(((SimpleDateFormat)dateFormat).toLocalizedPattern());
+            }
+            
+            for (SimpleDateFormat format : formats)
+            {
+                if(!builder.toString().isEmpty())
+                {
+                    builder.append(" | ");
+                }
+                builder.append(format.toLocalizedPattern());
+            }
+            
+            return builder.toString();
         }
 
     }

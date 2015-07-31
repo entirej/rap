@@ -324,7 +324,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         return numberType;
     }
 
-    private static DecimalFormat createFormatter(EJScreenItemController item, NUMBER_TYPE numberType)
+     static DecimalFormat createFormatter(EJScreenItemController item, NUMBER_TYPE numberType)
     {
         DecimalFormat _decimalFormatter = null;
         EJFrameworkExtensionProperties _rendererProps = item.getReferencedItemProperties().getItemRendererProperties();

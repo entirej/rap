@@ -93,6 +93,11 @@ public class EJRWTEntireJStackedPane extends Composite
         _pages.add(control);
     }
 
+    public Control getControl(String key)
+    {
+        return _panes.get(key);
+    }
+    
     public void showPane(String pane)
     {
         Control control = _panes.get(pane);
