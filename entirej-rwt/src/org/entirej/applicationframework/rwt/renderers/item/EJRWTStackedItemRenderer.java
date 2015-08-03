@@ -60,7 +60,6 @@ import org.entirej.applicationframework.rwt.application.components.EJRWTAbstract
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJStackedPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
-import org.entirej.applicationframework.rwt.renderers.item.EJRWTDateItemRenderer.DateFormats;
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTDateItemRenderer.MultiDateFormater;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
@@ -69,6 +68,8 @@ import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.EJMessageFactory;
+import org.entirej.framework.core.data.EJStackedItemRendererConfig;
+import org.entirej.framework.core.data.EJStackedItemRendererConfig.CheckBox;
 import org.entirej.framework.core.data.EJStackedItemRendererValue;
 import org.entirej.framework.core.enumerations.EJFrameworkMessage;
 import org.entirej.framework.core.enumerations.EJLovDisplayReason;
@@ -318,12 +319,12 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     {
         if (_baseValue != null)
         {
-            switch (_baseValue.getType())
+            switch (_baseValue.getConfig().getType())
             {
 
                 case TEXT:
                 {
-                    Text control = (Text) stackedPane.getControl(_baseValue.getType().name());
+                    Text control = (Text) stackedPane.getControl(_baseValue.getConfig().getType().name());
                     String value = control.getText();
 
                     if (value == null || value.length() == 0)
@@ -335,17 +336,17 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 }
                 case CHECKBOX:
                 {
-                    Button control = (Button) stackedPane.getControl(_baseValue.getType().name());
+                    Button control = (Button) stackedPane.getControl(_baseValue.getConfig().getType().name());
                    
-                    
+                    EJStackedItemRendererConfig.CheckBox config = (CheckBox) _baseValue.getConfig();
                    
-                    _baseValue.setValue(control.getSelection()?_baseValue.getCheckBoxCheckedValue():_baseValue.getCheckBoxUnCheckedValue());
+                    _baseValue.setValue(control.getSelection()?config.getCheckBoxCheckedValue():config.getCheckBoxUnCheckedValue());
                     break;
                 }
                 case NUMBER:
                 {
 
-                    Text control = (Text) stackedPane.getControl(_baseValue.getType().name());
+                    Text control = (Text) stackedPane.getControl(_baseValue.getConfig().getType().name());
                     Number value = null;
                     if (control.getText() != null && control.getText().isEmpty())
                     {
@@ -400,7 +401,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 case DATE:
                 {
 
-                    Text control = (Text) stackedPane.getControl(_baseValue.getType().name());
+                    Text control = (Text) stackedPane.getControl(_baseValue.getConfig().getType().name());
                     Date value = null;
                     try
                     {
@@ -654,11 +655,11 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         if (_baseValue != null)
         {
             if (controlState(_label)
-                    && !(_baseValue.getType() == EJStackedItemRendererType.SPACER || _baseValue.getType() == EJStackedItemRendererType.CHECKBOX))
+                    && !(_baseValue.getConfig().getType() == EJStackedItemRendererType.SPACER || _baseValue.getConfig().getType() == EJStackedItemRendererType.CHECKBOX))
             {
-                if (_baseValue.getLabel() != null)
+                if (_baseValue.getConfig().getLabel() != null)
                 {
-                    setLabel(_baseValue.getLabel());
+                    setLabel(_baseValue.getConfig().getLabel());
                 }
                 else
                 {
@@ -667,39 +668,43 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
             }
 
-            if (_baseValue.getTooltip() != null)
+            if (_baseValue.getConfig().getTooltip() != null)
             {
-                setHint(_baseValue.getLabel());
+                setHint(_baseValue.getConfig().getLabel());
             }
             else
             {
                 setHint(_screenItemProperties.getHint() == null ? "" : _screenItemProperties.getHint());
             }
 
-            stackedPane.showPane(_baseValue.getType().name());
+            stackedPane.showPane(_baseValue.getConfig().getType().name());
 
             // setLOV mapping
+            if(_baseValue.getConfig() instanceof EJStackedItemRendererConfig.ActionSupportConfig)
             {
                 if (_item.getProperties() instanceof EJCoreInsertScreenItemProperties)
                 {
-                    ((EJCoreInsertScreenItemProperties) _item.getProperties()).setActionCommand(_baseValue.getActionCommand());
+                    ((EJCoreInsertScreenItemProperties) _item.getProperties()).setActionCommand(((EJStackedItemRendererConfig.ActionSupportConfig)_baseValue.getConfig()).getActionCommand());
                 }
                 else if (_item.getProperties() instanceof EJCoreQueryScreenItemProperties)
                 {
-                    ((EJCoreQueryScreenItemProperties) _item.getProperties()).setActionCommand(_baseValue.getActionCommand());
+                    ((EJCoreQueryScreenItemProperties) _item.getProperties()).setActionCommand(((EJStackedItemRendererConfig.ActionSupportConfig)_baseValue.getConfig()).getActionCommand());
                 }
                 else if (_item.getProperties() instanceof EJCoreUpdateScreenItemProperties)
                 {
-                    ((EJCoreUpdateScreenItemProperties) _item.getProperties()).setActionCommand(_baseValue.getActionCommand());
+                    ((EJCoreUpdateScreenItemProperties) _item.getProperties()).setActionCommand(((EJStackedItemRendererConfig.ActionSupportConfig)_baseValue.getConfig()).getActionCommand());
                 }
                 else if (_item.getProperties() instanceof EJCoreMainScreenItemProperties)
                 {
 
-                    ((EJCoreMainScreenItemProperties) _item.getProperties()).setActionCommand(_baseValue.getActionCommand());
+                    ((EJCoreMainScreenItemProperties) _item.getProperties()).setActionCommand(((EJStackedItemRendererConfig.ActionSupportConfig)_baseValue.getConfig()).getActionCommand());
                 }
-                _item.setItemLovController(_baseValue.getLovMapping());
-                enableLovActivation(_item.getItemLovController() != null);
+                
 
+            }
+            if(_baseValue.getConfig() instanceof EJStackedItemRendererConfig.LOVSupportConfig)
+            {
+                enableLovActivation(_item.getItemLovController() != null);
             }
 
             setStackValue();
@@ -739,12 +744,8 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     }
                     else if (control instanceof Button)
                     {
-                        ((Button) control).setText(_baseValue.getLabel() == null ? (_item.getProperties().getLabel() == null ? "" : _item.getProperties()
-                                .getLabel()) : _baseValue.getLabel());
-                        ((Button) control).setToolTipText(_baseValue.getTooltip() == null ? (_item.getProperties().getHint() == null ? "" : _item
-                                .getProperties().getHint()) : _baseValue.getTooltip());
-                        ((Button) control).setSelection(_baseValue.getCheckBoxCheckedValue() == value
-                                || (value != null && value.equals(_baseValue.getCheckBoxCheckedValue())));
+                        //ignore
+                       
                     }
                     // check_box/combo
                 }
@@ -756,17 +757,17 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         }
         if (value != null)
         {
-            switch (_baseValue.getType())
+            switch (_baseValue.getConfig().getType())
             {
                 case LABEL:
                 {
-                    Label control = (Label) stackedPane.getControl(_baseValue.getType().name());
+                    Label control = (Label) stackedPane.getControl(_baseValue.getConfig().getType().name());
                     control.setText(value.toString());
                     break;
                 }
                 case TEXT:
                 {
-                    Text control = (Text) stackedPane.getControl(_baseValue.getType().name());
+                    Text control = (Text) stackedPane.getControl(_baseValue.getConfig().getType().name());
                     control.setText(value.toString());
                     break;
                 }
@@ -780,7 +781,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                                 Number.class.getName(), value.getClass().getName());
                         throw new IllegalArgumentException(message.getMessage());
                     }
-                    Text control = (Text) stackedPane.getControl(_baseValue.getType().name());
+                    Text control = (Text) stackedPane.getControl(_baseValue.getConfig().getType().name());
                     control.setText(_decimalFormatter.format(value));
                     break;
                 }
@@ -793,7 +794,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                                 Date.class.getName(), value.getClass().getName());
                         throw new IllegalArgumentException(message.getMessage());
                     }
-                    Text control = (Text) stackedPane.getControl(_baseValue.getType().name());
+                    Text control = (Text) stackedPane.getControl(_baseValue.getConfig().getType().name());
                     control.setText(_dateFormat.format(value));
                     control.setMessage(_dateFormat.toFormatString());
                     break;
@@ -802,6 +803,19 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 case SPACER:
                 {
                     setLabel("");
+                    break;
+                }
+                case CHECKBOX:
+                {
+                    setLabel("");
+                    Control control = stackedPane.getControl(_baseValue.getConfig().getType().name());
+                    EJStackedItemRendererConfig.CheckBox config=  ((EJStackedItemRendererConfig.CheckBox)_baseValue.getConfig());
+                    ((Button) control).setText(config.getLabel() == null ? (_item.getProperties().getLabel() == null ? "" : _item.getProperties()
+                            .getLabel()) : config.getLabel());
+                    ((Button) control).setToolTipText(config.getTooltip() == null ? (_item.getProperties().getHint() == null ? "" : _item
+                            .getProperties().getHint()) : config.getTooltip());
+                    ((Button) control).setSelection(config.getCheckBoxCheckedValue() == value
+                            || (value != null && value.equals(config.getCheckBoxCheckedValue())));
                     break;
                 }
 
@@ -1606,7 +1620,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             defaultLocale = Locale.getDefault();
         }
 
-        String format = _baseValue != null ? _baseValue.getFormat() : null;
+        String format = _baseValue != null ? ((EJStackedItemRendererConfig.Date) _baseValue.getConfig()).getFormat() : null;
         if (format != null)
         {
             String[] split = format.split("\\|");
