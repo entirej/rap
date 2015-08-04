@@ -169,4 +169,10 @@ public enum EJRWTVisualAttributeUtils
         }
         return defaultFont;
     }
+    
+    @Override
+    public String toString()
+    {
+        return super.toString();
+    }
 }
