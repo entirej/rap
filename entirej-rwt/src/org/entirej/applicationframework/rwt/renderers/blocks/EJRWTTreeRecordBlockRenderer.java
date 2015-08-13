@@ -382,16 +382,19 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
 
     public void refresh(Object input)
     {
-        TreeViewer treeview = _tableViewer;
-        if (treeview != null)
+        if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
         {
-            Object[] expanded = treeview.getExpandedElements();
-
-            treeview.getControl().setRedraw(false);
-            treeview.setInput(input);
-            treeview.setExpandedElements(expanded);
-            treeview.getControl().setRedraw(true);
-            treeview.refresh();
+            TreeViewer treeview = _tableViewer;
+            if (treeview != null)
+            {
+                Object[] expanded = treeview.getExpandedElements();
+    
+                treeview.getControl().setRedraw(false);
+                treeview.setInput(input);
+                treeview.setExpandedElements(expanded);
+                treeview.getControl().setRedraw(true);
+                treeview.refresh();
+            }
         }
     }
 
@@ -928,6 +931,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 }
             }
         });
+        table.setLinesVisible(true);
         final String pid = rendererProp.getStringProperty(EJRWTTreeBlockDefinitionProperties.PARENT_ITEM);
         final String rid = rendererProp.getStringProperty(EJRWTTreeBlockDefinitionProperties.RELATION_ITEM);
         final String imageid = rendererProp.getStringProperty(EJRWTTreeBlockDefinitionProperties.NODE_IMAGE_ITEM);

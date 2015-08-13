@@ -419,16 +419,19 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     public void refresh(Object input)
     {
-        TreeViewer treeview = _tableViewer;
-        if (treeview != null)
+        if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
         {
-            Object[] expanded = treeview.getExpandedElements();
+            TreeViewer treeview = _tableViewer;
+            if (treeview != null)
+            {
+                Object[] expanded = treeview.getExpandedElements();
 
-            treeview.getControl().setRedraw(false);
-            treeview.setInput(input);
-            treeview.setExpandedElements(expanded);
-            treeview.getControl().setRedraw(true);
-            treeview.refresh();
+                treeview.getControl().setRedraw(false);
+                treeview.setInput(input);
+                treeview.setExpandedElements(expanded);
+                treeview.getControl().setRedraw(true);
+                treeview.refresh();
+            }
         }
     }
 

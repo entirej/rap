@@ -27,34 +27,54 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractPanelAction;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJStackedPane;
@@ -63,19 +83,29 @@ import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfac
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTDateItemRenderer.MultiDateFormater;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.screen.EJRWTAbstractScreenRenderer;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.EJMessageFactory;
+import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.data.EJStackedItemRendererConfig;
 import org.entirej.framework.core.data.EJStackedItemRendererConfig.CheckBox;
+import org.entirej.framework.core.data.EJStackedItemRendererConfig.Combo.Column;
+import org.entirej.framework.core.data.EJStackedItemRendererConfig.LOVSupportConfig;
+import org.entirej.framework.core.data.EJStackedItemRendererConfig.TextArea;
 import org.entirej.framework.core.data.EJStackedItemRendererValue;
+import org.entirej.framework.core.data.controllers.EJBlockController;
+import org.entirej.framework.core.data.controllers.EJItemLovController;
+import org.entirej.framework.core.data.controllers.EJLovController;
 import org.entirej.framework.core.enumerations.EJFrameworkMessage;
 import org.entirej.framework.core.enumerations.EJLovDisplayReason;
+import org.entirej.framework.core.enumerations.EJScreenType;
 import org.entirej.framework.core.enumerations.EJStackedItemRendererType;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.properties.EJCoreInsertScreenItemProperties;
+import org.entirej.framework.core.properties.EJCoreItemProperties;
 import org.entirej.framework.core.properties.EJCoreMainScreenItemProperties;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.EJCoreQueryScreenItemProperties;
@@ -83,7 +113,9 @@ import org.entirej.framework.core.properties.EJCoreUpdateScreenItemProperties;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.core.properties.interfaces.EJItemProperties;
+import org.entirej.framework.core.properties.interfaces.EJLovDefinitionProperties;
 import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
+import org.entirej.framework.core.renderers.registry.EJBlockItemRendererRegister;
 
 public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusListener, Serializable, EJRWTItemTextChangeNotifier
 {
@@ -214,7 +246,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     @Override
     public void setLabel(String label)
     {
-        if (_label != null)
+        if (_label != null && !_label.isDisposed())
         {
             _label.setText(label == null ? "" : label);
         }
@@ -323,6 +355,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             {
 
                 case TEXT:
+                case TEXT_AREA:
                 {
                     Text control = (Text) stackedPane.getControl(_baseValue.getConfig().getType().name());
                     String value = control.getText();
@@ -337,10 +370,29 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 case CHECKBOX:
                 {
                     Button control = (Button) stackedPane.getControl(_baseValue.getConfig().getType().name());
-                   
+
                     EJStackedItemRendererConfig.CheckBox config = (CheckBox) _baseValue.getConfig();
-                   
-                    _baseValue.setValue(control.getSelection()?config.getCheckBoxCheckedValue():config.getCheckBoxUnCheckedValue());
+
+                    _baseValue.setValue(control.getSelection() ? config.getCheckBoxCheckedValue() : config.getCheckBoxUnCheckedValue());
+                    break;
+                }
+                case COMBO:
+                {
+                    Combo control = (Combo) stackedPane.getControl(_baseValue.getConfig().getType().name());
+
+                    ComboViewer _vViewer = (ComboViewer) control.getData("VIEW");
+
+                    IStructuredSelection selection = (IStructuredSelection) _vViewer.getSelection();
+                    if (selection.getFirstElement() instanceof ComboBoxValue)
+                    {
+                        ComboBoxValue value = (ComboBoxValue) selection.getFirstElement();
+                        _baseValue.setValue(value.getItemValue());
+                    }
+                    else
+                    {
+                        _baseValue.setValue(null);
+                    }
+
                     break;
                 }
                 case NUMBER:
@@ -646,74 +698,145 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
     private void extractValuetoUi()
     {
+
         if (!controlState(stackedPane))
             return;
 
-        _item.setItemLovController(null);
-        enableLovActivation(false);
-
-        if (_baseValue != null)
+        try
         {
-            if (controlState(_label)
-                    && !(_baseValue.getConfig().getType() == EJStackedItemRendererType.SPACER || _baseValue.getConfig().getType() == EJStackedItemRendererType.CHECKBOX))
+            _item.setItemLovController(null);
+            enableLovActivation(false);
+
+            _actionControl.setCustomActionVisible(_baseValue!=null && _baseValue.getConfig().getType()==EJStackedItemRendererType.DATE);
+            if (_baseValue != null)
             {
-                if (_baseValue.getConfig().getLabel() != null)
+                if (controlState(_label)
+                        && !(_baseValue.getConfig().getType() == EJStackedItemRendererType.SPACER
+                                || _baseValue.getConfig().getType() == EJStackedItemRendererType.CHECKBOX || _baseValue.getConfig().getType() == EJStackedItemRendererType.BUTTON))
                 {
-                    setLabel(_baseValue.getConfig().getLabel());
+                    if (_baseValue.getConfig().getLabel() != null)
+                    {
+                        setLabel(_baseValue.getConfig().getLabel());
+                    }
+                    else
+                    {
+                        setLabel(_screenItemProperties.getLabel() == null ? "" : _screenItemProperties.getLabel());
+                    }
+
+                }
+
+                if (_baseValue.getConfig().getType() == EJStackedItemRendererType.COMBO)
+                {
+                    EJStackedItemRendererConfig.Combo config = (EJStackedItemRendererConfig.Combo) _baseValue.getConfig();
+
+                    List<ComboBoxValue> loadComboBoxValues = loadComboBoxValues(config);
+                    Combo control = (Combo) stackedPane.getControl(_baseValue.getConfig().getType().name());
+                    ((ComboViewer) control.getData("VIEW")).setInput(loadComboBoxValues);
+
+                    if (config.getVisibleItemCount() > 5)
+                    {
+                        control.setVisibleItemCount(config.getVisibleItemCount());
+                    }
+                }
+
+                if (_baseValue.getConfig().getTooltip() != null)
+                {
+                    setHint(_baseValue.getConfig().getLabel());
                 }
                 else
                 {
-                    setLabel(_screenItemProperties.getLabel() == null ? "" : _screenItemProperties.getLabel());
+                    setHint(_screenItemProperties.getHint() == null ? "" : _screenItemProperties.getHint());
                 }
 
-            }
+                stackedPane.showPane(_baseValue.getConfig().getType().name());
 
-            if (_baseValue.getConfig().getTooltip() != null)
-            {
-                setHint(_baseValue.getConfig().getLabel());
+                if (_baseValue.getConfig().getType() == EJStackedItemRendererType.TEXT_AREA)
+                {
+                    Object layoutData = _actionControl.getLayoutData();
+                    if (layoutData instanceof GridData)
+                    {
+                        GridData data = (GridData) layoutData;
+                        EJStackedItemRendererConfig.TextArea config = (TextArea) _baseValue.getConfig();
+                        Control control = stackedPane.getControl(_baseValue.getConfig().getType().name());
+
+                        float avgCharHeight = EJRWTImageRetriever.getGraphicsProvider().getCharHeight(control.getFont());
+
+                        // add padding
+                        if (config.getLines() > 0)
+                        {
+                            if (_actionControl.getData("data.heightHint") == null)
+                                _actionControl.setData("data.heightHint", data.heightHint);
+
+                            data.heightHint = (int) ((config.getLines() + 1) * avgCharHeight);
+                            _actionControl.getParent().layout();
+                        }
+
+                    }
+                }
+                else
+                {
+                    Object layoutData = _actionControl.getLayoutData();
+                    if (layoutData instanceof GridData)
+                    {
+                        GridData data = (GridData) layoutData;
+
+                        // add padding
+                        if (_actionControl.getData("data.heightHint") != null)
+                        {
+
+                            data.heightHint = (Integer) _actionControl.getData("data.heightHint");
+                            _actionControl.getParent().layout();
+                            _actionControl.setData("data.heightHint", null);
+                        }
+
+                    }
+                }
+
+                // setLOV mapping
+                if (_baseValue.getConfig() instanceof EJStackedItemRendererConfig.ActionSupportConfig)
+                {
+                    if (_item.getProperties() instanceof EJCoreInsertScreenItemProperties)
+                    {
+                        ((EJCoreInsertScreenItemProperties) _item.getProperties())
+                                .setActionCommand(((EJStackedItemRendererConfig.ActionSupportConfig) _baseValue.getConfig()).getActionCommand());
+                    }
+                    else if (_item.getProperties() instanceof EJCoreQueryScreenItemProperties)
+                    {
+                        ((EJCoreQueryScreenItemProperties) _item.getProperties())
+                                .setActionCommand(((EJStackedItemRendererConfig.ActionSupportConfig) _baseValue.getConfig()).getActionCommand());
+                    }
+                    else if (_item.getProperties() instanceof EJCoreUpdateScreenItemProperties)
+                    {
+                        ((EJCoreUpdateScreenItemProperties) _item.getProperties())
+                                .setActionCommand(((EJStackedItemRendererConfig.ActionSupportConfig) _baseValue.getConfig()).getActionCommand());
+                    }
+                    else if (_item.getProperties() instanceof EJCoreMainScreenItemProperties)
+                    {
+
+                        ((EJCoreMainScreenItemProperties) _item.getProperties()).setActionCommand(((EJStackedItemRendererConfig.ActionSupportConfig) _baseValue
+                                .getConfig()).getActionCommand());
+                    }
+
+                }
+                if (_baseValue.getConfig() instanceof EJStackedItemRendererConfig.LOVSupportConfig)
+                {
+                    EJStackedItemRendererConfig.LOVSupportConfig lovMapping = (LOVSupportConfig) _baseValue.getConfig();
+                    _item.setItemLovController(lovMapping.getLovMapping());
+                    enableLovActivation(_item.getItemLovController() != null);
+                }
+
+                setStackValue();
             }
             else
             {
-                setHint(_screenItemProperties.getHint() == null ? "" : _screenItemProperties.getHint());
+                stackedPane.showPane(EJStackedItemRendererType.SPACER.name());// switch
+                                                                              // to
+                                                                              // empty
             }
-
-            stackedPane.showPane(_baseValue.getConfig().getType().name());
-
-            // setLOV mapping
-            if(_baseValue.getConfig() instanceof EJStackedItemRendererConfig.ActionSupportConfig)
-            {
-                if (_item.getProperties() instanceof EJCoreInsertScreenItemProperties)
-                {
-                    ((EJCoreInsertScreenItemProperties) _item.getProperties()).setActionCommand(((EJStackedItemRendererConfig.ActionSupportConfig)_baseValue.getConfig()).getActionCommand());
-                }
-                else if (_item.getProperties() instanceof EJCoreQueryScreenItemProperties)
-                {
-                    ((EJCoreQueryScreenItemProperties) _item.getProperties()).setActionCommand(((EJStackedItemRendererConfig.ActionSupportConfig)_baseValue.getConfig()).getActionCommand());
-                }
-                else if (_item.getProperties() instanceof EJCoreUpdateScreenItemProperties)
-                {
-                    ((EJCoreUpdateScreenItemProperties) _item.getProperties()).setActionCommand(((EJStackedItemRendererConfig.ActionSupportConfig)_baseValue.getConfig()).getActionCommand());
-                }
-                else if (_item.getProperties() instanceof EJCoreMainScreenItemProperties)
-                {
-
-                    ((EJCoreMainScreenItemProperties) _item.getProperties()).setActionCommand(((EJStackedItemRendererConfig.ActionSupportConfig)_baseValue.getConfig()).getActionCommand());
-                }
-                
-
-            }
-            if(_baseValue.getConfig() instanceof EJStackedItemRendererConfig.LOVSupportConfig)
-            {
-                enableLovActivation(_item.getItemLovController() != null);
-            }
-
-            setStackValue();
         }
-        else
+        finally
         {
-            stackedPane.showPane(EJStackedItemRendererType.SPACER.name());// switch
-                                                                          // to
-                                                                          // empty
+            _actionControl.getParent().layout();
         }
 
     }
@@ -744,8 +867,22 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     }
                     else if (control instanceof Button)
                     {
-                        //ignore
-                       
+
+                        EJStackedItemRendererConfig config = _baseValue.getConfig();
+                        ((Button) control).setText(config.getLabel() == null ? (_item.getProperties().getLabel() == null ? "" : _item.getProperties()
+                                .getLabel()) : config.getLabel());
+                        ((Button) control).setToolTipText(config.getTooltip() == null ? (_item.getProperties().getHint() == null ? "" : _item.getProperties()
+                                .getHint()) : config.getTooltip());
+
+                        if (config instanceof EJStackedItemRendererConfig.Button)
+                        {
+                            EJStackedItemRendererConfig.Button button = (EJStackedItemRendererConfig.Button) config;
+                            if (button.getImage() != null && button.getImage().trim().length() > 0)
+                            {
+                                ((Button) control).setImage(EJRWTImageRetriever.get(button.getImage()));
+                            }
+                        }
+
                     }
                     // check_box/combo
                 }
@@ -766,15 +903,59 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     break;
                 }
                 case TEXT:
+                case TEXT_AREA:
                 {
                     Text control = (Text) stackedPane.getControl(_baseValue.getConfig().getType().name());
                     control.setText(value.toString());
                     break;
                 }
+                case COMBO:
+                {
+
+                    Combo control = (Combo) stackedPane.getControl(_baseValue.getConfig().getType().name());
+                    List<ComboBoxValue> loadComboBoxValues = (List<ComboBoxValue>) ((ComboViewer) control.getData("VIEW")).getInput();
+                    ComboBoxValue boxValue = null;
+
+                    for (ComboBoxValue val : loadComboBoxValues)
+                    {
+                        if (val.getItemValue() == null && value == null)
+                        {
+                            boxValue = val;
+                            break;
+                        }
+
+                        if (val.getItemValue() == null)
+                        {
+                            continue;
+                        }
+
+                        if (!val.getItemValue().getClass().isAssignableFrom(value.getClass()))
+                        {
+                            EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM, _item.getName(),
+                                    val.getItemValue().getClass().getName(), value.getClass().getName());
+                            throw new IllegalArgumentException(message.getMessage());
+                        }
+
+                        if (val.getItemValue().equals(value))
+                        {
+                            boxValue = val;
+                            break;
+                        }
+                    }
+
+                    if (boxValue != null)
+                    {
+                        ((ComboViewer) control.getData("VIEW")).setSelection(new StructuredSelection(boxValue));
+                    }
+
+                    break;
+                }
                 case NUMBER:
                 {
+                    EJStackedItemRendererConfig.Number config = (EJStackedItemRendererConfig.Number) _baseValue.getConfig();
+
                     _numberType = getNumberType(value);
-                    _decimalFormatter = createFormatter(_numberType);
+                    _decimalFormatter = createFormatter(_numberType, config.getFormat());
                     if (value != null && !Number.class.isAssignableFrom(value.getClass()))
                     {
                         EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM, _item.getName(),
@@ -809,19 +990,36 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 {
                     setLabel("");
                     Control control = stackedPane.getControl(_baseValue.getConfig().getType().name());
-                    EJStackedItemRendererConfig.CheckBox config=  ((EJStackedItemRendererConfig.CheckBox)_baseValue.getConfig());
-                    ((Button) control).setText(config.getLabel() == null ? (_item.getProperties().getLabel() == null ? "" : _item.getProperties()
-                            .getLabel()) : config.getLabel());
-                    ((Button) control).setToolTipText(config.getTooltip() == null ? (_item.getProperties().getHint() == null ? "" : _item
-                            .getProperties().getHint()) : config.getTooltip());
+                    EJStackedItemRendererConfig.CheckBox config = ((EJStackedItemRendererConfig.CheckBox) _baseValue.getConfig());
+
                     ((Button) control).setSelection(config.getCheckBoxCheckedValue() == value
                             || (value != null && value.equals(config.getCheckBoxCheckedValue())));
+                    break;
+                }
+                case BUTTON:
+                {
+                    setLabel("");
+
                     break;
                 }
 
                 default:
                     break;
             }
+        }
+        else
+        {
+            switch (_baseValue.getConfig().getType())
+            {
+                case DATE:
+                    createDateFormat();
+                    break;
+                case NUMBER:
+                    _numberType = getNumberType(new Double(0));
+                    _decimalFormatter = createFormatter(_numberType, ((EJStackedItemRendererConfig.Number)_baseValue.getConfig()).getFormat());
+                    break;
+            }
+           
         }
     }
 
@@ -1035,7 +1233,200 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
     public Control createCustomButtonControl(Composite parent)
     {
-        return null;
+        final Label label = new Label(parent, SWT.NONE);
+        label.setImage(EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_DATE_SELECTION));
+        label.addMouseListener(new MouseListener()
+        {
+            private final DateFormat  format           = new SimpleDateFormat("yyyy/MM/dd");
+
+            private void selectDate(final Shell abstractDialog, final DateTime calendar)
+            {
+                try
+                {
+                    setValue(format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay())));
+                    _item.itemValueChaged();
+                }
+                catch (ParseException e1)
+                {
+                    // ignore
+                }
+                abstractDialog.close();
+                abstractDialog.dispose();
+                _item.gainFocus();
+            }
+
+            @Override
+            public void mouseUp(MouseEvent arg0)
+            {
+                Shell shell = ((EJRWTApplicationManager) _item.getForm().getFrameworkManager().getApplicationManager()).getShell();
+                final Shell abstractDialog = new Shell(shell, SWT.ON_TOP | SWT.APPLICATION_MODAL | SWT.TITLE);
+                abstractDialog.setLayout(new GridLayout(3, false));
+                
+                GridData gridData = new GridData(GridData.FILL_BOTH|GridData.GRAB_HORIZONTAL);
+                new Label(abstractDialog, SWT.NONE).setLayoutData(gridData);
+                Link today = new Link(abstractDialog, SWT.PUSH);
+                today.setText("<A>Today</A>");
+                today.addSelectionListener(new SelectionAdapter()
+                {
+                    @Override
+                    public void widgetSelected(SelectionEvent e)
+                    {
+                        try
+                        {
+                            setValue(format.parse(format.format(new Date())));
+                            _item.itemValueChaged();
+                        }
+                        catch (ParseException e1)
+                        {
+                            // ignore
+                        }
+                        if (!abstractDialog.isDisposed())
+                        {
+                            abstractDialog.close();
+                            abstractDialog.dispose();
+                        }
+                        _item.gainFocus();
+                    }
+                });
+                Link clear = new Link(abstractDialog, SWT.PUSH);
+                clear.setText("<A>Clear</A>");
+                clear.addSelectionListener(new SelectionAdapter()
+                {
+                    @Override
+                    public void widgetSelected(SelectionEvent e)
+                    {
+
+                        setValue(null);
+                        _item.itemValueChaged();
+
+                        if (!abstractDialog.isDisposed())
+                        {
+                            abstractDialog.close();
+                            abstractDialog.dispose();
+                        }
+                        _item.gainFocus();
+                    }
+                });
+                
+                
+                final DateTime calendar = new DateTime(abstractDialog, SWT.CALENDAR | SWT.BORDER);
+
+                
+                if(_baseValue !=null && _baseValue.getValue() instanceof Date)
+                {
+                    Date currentDate = (Date) _baseValue.getValue();
+                    if (currentDate != null)
+                    {
+                        String dateText = format.format(currentDate);
+                        String[] split = dateText.split("/");
+                        if (split.length == 3)
+                        {
+                            calendar.setYear(Integer.parseInt(split[0]));
+                            calendar.setMonth(Integer.parseInt(split[1])-1);//month index from 0 
+                            calendar.setDay(Integer.parseInt(split[2]));
+                        }
+                    }
+
+                }
+                
+                
+               
+                calendar.addMouseListener(new MouseAdapter()
+                {
+                    @Override
+                    public void mouseDoubleClick(MouseEvent e)
+                    {
+                        if (e.y >= 40)
+                        {
+                            selectDate(abstractDialog, calendar);
+                        }
+                    }
+                });
+
+                String[] keys = new String[] { "ENTER", "RETURN", "CR" };
+                calendar.setData(EJ_RWT.ACTIVE_KEYS, keys);
+                calendar.addKeyListener(new KeyAdapter()
+                {
+                    @Override
+                    public void keyReleased(KeyEvent e)
+                    {
+
+                    }
+                });
+                 gridData = new GridData();
+                gridData.horizontalSpan = 3;
+                calendar.setLayoutData(gridData);
+
+                
+                gridData = new GridData(GridData.FILL_BOTH|GridData.GRAB_HORIZONTAL);
+                new Label(abstractDialog, SWT.NONE).setLayoutData(gridData);
+                Button ok = new Button(abstractDialog, SWT.PUSH);
+                
+
+                ok.setText("OK");
+                ok.addSelectionListener(new SelectionAdapter()
+                {
+                    @Override
+                    public void widgetSelected(SelectionEvent e)
+                    {
+                        try
+                        {
+                            setValue(format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay())));
+                            _item.itemValueChaged();
+                        }
+                        catch (ParseException e1)
+                        {
+                            // ignore
+                        }
+                        if (!abstractDialog.isDisposed())
+                        {
+                            abstractDialog.close();
+                            abstractDialog.dispose();
+                        }
+                        _item.gainFocus();
+                    }
+                });
+                Button close = new Button(abstractDialog, SWT.PUSH);
+                close.setText("Cancel");
+                close.addSelectionListener(new SelectionAdapter()
+                {
+                    @Override
+                    public void widgetSelected(SelectionEvent e)
+                    {
+
+
+                        if (!abstractDialog.isDisposed())
+                        {
+                            abstractDialog.close();
+                            abstractDialog.dispose();
+                        }
+                        _item.gainFocus();
+                    }
+                });
+                
+
+                abstractDialog.pack();
+                Rectangle shellBounds = shell.getBounds();
+                Point dialogSize = abstractDialog.getSize();
+                abstractDialog.setLocation(shellBounds.x + (shellBounds.width - dialogSize.x) / 2, shellBounds.y + (shellBounds.height - dialogSize.y) / 2);
+                abstractDialog.setText("Date Selection");
+                abstractDialog.open();
+            }
+
+            @Override
+            public void mouseDown(MouseEvent arg0)
+            {
+
+            }
+
+            @Override
+            public void mouseDoubleClick(MouseEvent arg0)
+            {
+
+            }
+        });
+
+        return label;
     }
 
     @Override
@@ -1049,8 +1440,8 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         }
 
         _numberType = getNumberType(_baseValue != null ? _baseValue.getValue() : null);
-        _decimalFormatter = createFormatter(_numberType);
-        createDateFormat();
+        _decimalFormatter = createFormatter(_numberType, null);
+        _dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.SHORT, _item.getForm().getFrameworkManager().getCurrentLocale()));
 
         String hint = _screenItemProperties.getHint();
 
@@ -1267,6 +1658,117 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     new EJRWTItemRendererVisualContext(_button.getBackground(), _button.getForeground(), _button.getFont()));
 
         }
+        {
+            int style = SWT.NONE;
+            Button _button = new Button(stackedPane, style);
+
+            _button.addListener(SWT.Selection, new Listener()
+            {
+                @Override
+                public void handleEvent(Event e)
+                {
+
+                    _item.executeActionCommand();
+                }
+
+            });
+
+            _button.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_BUTTON);
+            _button.setData(EJ_RWT.CUSTOM_VARIANT + "_DEF", EJ_RWT.CSS_CV_ITEM_BUTTON);
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _button.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
+            stackedPane.add(EJStackedItemRendererType.BUTTON.name(), _button);
+            _button.setData(_item.getReferencedItemProperties().getName());
+            _button.setData("EJRWTItemRendererVisualContext",
+                    new EJRWTItemRendererVisualContext(_button.getBackground(), _button.getForeground(), _button.getFont()));
+
+        }
+
+        {
+            int style = SWT.READ_ONLY;
+            final Combo _comboField = new Combo(stackedPane, style);
+
+            final ComboViewer _comboViewer = new ComboViewer(_comboField);
+
+            _comboField.setData(_item.getReferencedItemProperties().getName());
+
+            _comboField.addFocusListener(EJRWTStackedItemRenderer.this);
+            _comboViewer.setLabelProvider(new ColumnLabelProvider()
+            {
+
+                @Override
+                public String getText(Object element)
+                {
+                    if (element instanceof ComboBoxValue)
+                    {
+                        ComboBoxValue value = (ComboBoxValue) element;
+
+                        return value.getItemValueAsString();
+                    }
+                    return "";
+                }
+
+            });
+            _comboViewer.setContentProvider(new ArrayContentProvider());
+            _comboViewer.addSelectionChangedListener(new ISelectionChangedListener()
+            {
+
+                private ComboBoxValue getComboBoxValue()
+                {
+                    if (controlState(_comboField))
+                    {
+                        IStructuredSelection selection = (IStructuredSelection) _comboViewer.getSelection();
+                        return (ComboBoxValue) selection.getFirstElement();
+                    }
+
+                    return null;
+                }
+
+                @Override
+                public void selectionChanged(SelectionChangedEvent event)
+                {
+
+                    if (isValid())
+                    {
+                        ComboBoxValue value = getComboBoxValue();
+                        if (value != null)
+                        {
+                            value.populateReturnItems(_item.getBlock().getBlockController(), _item.getScreenType());
+                        }
+
+                        _item.itemValueChaged();
+
+                        setMandatoryBorder(_mandatory);
+                    }
+                    else
+                    {
+                        _isValid = true;
+                    }
+
+                    _item.executeActionCommand();
+
+                }
+            });
+
+            _comboField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_COMBOBOX);
+            _comboField.setData(EJ_RWT.CUSTOM_VARIANT + "_DEF", EJ_RWT.CSS_CV_ITEM_COMBOBOX);
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _comboField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
+            stackedPane.add(EJStackedItemRendererType.COMBO.name(), _comboField);
+            _comboField.setData(_item.getReferencedItemProperties().getName());
+            _comboField.setData("VIEW", _comboViewer);
+            _comboField.setData("EJRWTItemRendererVisualContext", new EJRWTItemRendererVisualContext(_comboField.getBackground(), _comboField.getForeground(),
+                    _comboField.getFont()));
+        }
+
         // EJStackedItemRendererType.SPACER;
         {
             Label label = new Label(stackedPane, SWT.NONE);
@@ -1300,6 +1802,26 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             }
             textField.addModifyListener(_modifyListener);
             stackedPane.add(EJStackedItemRendererType.TEXT.name(), textField);
+            textField.setData("EJRWTItemRendererVisualContext", new EJRWTItemRendererVisualContext(textField.getBackground(), textField.getForeground(),
+                    textField.getFont()));
+
+        }
+        // EJStackedItemRendererType.TEXT;
+        {
+
+            Text textField = new Text(stackedPane, SWT.BORDER | SWT.MULTI | SWT.WRAP);
+            connectLOVAction(textField);
+            textField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXTAREA);
+            textField.setData(EJ_RWT.CUSTOM_VARIANT + "_DEF", EJ_RWT.CSS_CV_ITEM_TEXTAREA);
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+            textField.setData(_item.getReferencedItemProperties().getName());
+            textField.addFocusListener(this);
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
+            textField.addModifyListener(_modifyListener);
+            stackedPane.add(EJStackedItemRendererType.TEXT_AREA.name(), textField);
             textField.setData("EJRWTItemRendererVisualContext", new EJRWTItemRendererVisualContext(textField.getBackground(), textField.getForeground(),
                     textField.getFont()));
 
@@ -1458,6 +1980,10 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
         }
 
+        {
+
+        }
+
     }
 
     protected int getComponentStyle(String alignmentProperty, int style)
@@ -1567,7 +2093,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         }
     }
 
-    DecimalFormat createFormatter(NUMBER_TYPE numberType)
+    DecimalFormat createFormatter(NUMBER_TYPE numberType, String format)
     {
         DecimalFormat _decimalFormatter = null;
         Locale defaultLocale = _item.getForm().getFrameworkManager().getCurrentLocale();
@@ -1575,8 +2101,6 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         {
             defaultLocale = Locale.getDefault();
         }
-
-        String format = null;// todo
 
         if (format == null || format.length() == 0)
         {
@@ -1637,6 +2161,245 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         }
 
         _dateFormat = dateFormat;
+    }
+
+    class ComboBoxValue
+    {
+        private String                  _valueLabel;
+        private Object                  _itemValue;
+
+        private HashMap<String, Object> _returnItemValues = new HashMap<String, Object>();
+
+        public ComboBoxValue(EJDataRecord record, String lovItemName, EJStackedItemRendererConfig.Combo comboConfig)
+        {
+            constructStringValue(record, lovItemName, comboConfig);
+        }
+
+        private void constructStringValue(EJDataRecord record, String lovItemName, EJStackedItemRendererConfig.Combo comboConfig)
+        {
+            if (record == null)
+            {
+                _itemValue = null;
+            }
+            else
+            {
+                _itemValue = record.getValue(lovItemName);
+            }
+
+            StringBuffer buffer = new StringBuffer();
+            boolean multi = false;
+
+            List<Column> columns = comboConfig.getColumns();
+
+            for (Column column : columns)
+            {
+                String format = column.getDatatypeFormat();
+                boolean display = column.isDisplayed();
+                String returnItem = column.getReturnItem();
+
+                // If I have a null record, then I need to initialize all my
+                // return items to null when this value is chosen
+                if (record == null)
+                {
+                    _returnItemValues.put(returnItem, null);
+                    _valueLabel = "";
+                    return;
+                }
+
+                Object val = record.getValue(column.getItem());
+
+                if (returnItem != null && !returnItem.isEmpty())
+                    _returnItemValues.put(returnItem, val);
+
+                if (display && val != null)
+                {
+                    if (multi)
+                    {
+                        buffer.append(" - ");
+                    }
+
+                    buffer.append(getFormattedString(val, format));
+                    multi = true;
+                }
+            }
+
+            _valueLabel = buffer.toString();
+        }
+
+        @Override
+        public String toString()
+        {
+            return getItemValueAsString();
+        }
+
+        public void populateReturnItems(EJBlockController controller, EJScreenType screenType)
+        {
+            for (String itemName : _returnItemValues.keySet())
+            {
+
+                if (itemName == null || itemName.length() == 0)
+                {
+                    continue;
+                }
+
+                EJScreenItemController itemController = controller.getScreenItem(screenType, itemName);
+                if (itemController != null)
+                {
+                    itemController.getItemRenderer().setValue(_returnItemValues.get(itemName));
+
+                    // Was a screen item, so no need to go to the record...
+                    continue;
+                }
+
+                EJRWTAbstractScreenRenderer abstractScreenRenderer = null;
+                switch (screenType)
+                {
+                    case MAIN:
+                        EJDataRecord record = controller.getFocusedRecord();
+                        if (record == null)
+                        {
+                            break;
+                        }
+
+                        if (record.containsItem(itemName))
+                        {
+                            record.setValue(itemName, _returnItemValues.get(itemName));
+                        }
+                        break;
+                    case INSERT:
+                        abstractScreenRenderer = (EJRWTAbstractScreenRenderer) controller.getManagedInsertScreenRenderer().getUnmanagedRenderer();
+                        break;
+                    case QUERY:
+                        abstractScreenRenderer = (EJRWTAbstractScreenRenderer) controller.getManagedQueryScreenRenderer().getUnmanagedRenderer();
+                        break;
+                    case UPDATE:
+                        abstractScreenRenderer = (EJRWTAbstractScreenRenderer) controller.getManagedUpdateScreenRenderer().getUnmanagedRenderer();
+                        break;
+                }
+                if (abstractScreenRenderer != null)
+                {
+                    EJBlockItemRendererRegister itemRegister = abstractScreenRenderer.getItemRegister();
+                    itemRegister.setItemValueNoValidate(screenType, itemName, _returnItemValues.get(itemName));
+                }
+
+            }
+        }
+
+        public String getItemValueAsString()
+        {
+            return _valueLabel;
+        }
+
+        public Object getItemValue()
+        {
+            return _itemValue;
+        }
+    }
+
+    private String getFormattedString(Object value, String format)
+    {
+        Locale defaultLocale = _item.getForm().getFrameworkManager().getCurrentLocale();
+        if (defaultLocale == null)
+        {
+            defaultLocale = Locale.UK;
+        }
+
+        if (value instanceof Number)
+        {
+
+            NUMBER_TYPE numberType = getNumberType(value);
+            DecimalFormat decimalFormat = createFormatter(numberType, format);
+
+            return decimalFormat.format(value);
+        }
+        else if (value instanceof Date)
+        {
+            SimpleDateFormat dateFormat;
+            if (format == null || format.trim().length() == 0)
+            {
+                dateFormat = (SimpleDateFormat) SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT, defaultLocale);
+            }
+            else
+                dateFormat = new SimpleDateFormat(format, defaultLocale);
+
+            return dateFormat.format(value);
+        }
+        else
+        {
+            return value.toString();
+        }
+    }
+
+    private List<ComboBoxValue> loadComboBoxValues(EJStackedItemRendererConfig.Combo config)
+    {
+        // Initialise both the field and the values.
+        List<ComboBoxValue> _comboValues = new ArrayList<ComboBoxValue>();
+        String lovDefName = config.getLovDefinition();
+
+        if (lovDefName == null || lovDefName.trim().length() == 0)
+        {
+            return _comboValues;
+        }
+
+        String defName = lovDefName;
+        String defItemName = config.getItemName();
+        if (defItemName == null || defItemName.trim().length() == 0)
+
+        {
+            EJMessage message = new EJMessage("No LovDefinition item has been chosen for the ComboBox renderer properties on item: "
+                    + _itemProperties.getName());
+            _item.getForm().getFrameworkManager().getApplicationManager().getApplicationMessenger().handleMessage(message);
+            return _comboValues;
+        }
+        if (_item.getBlock().getProperties().isReferenceBlock())
+        {
+            defName = String.format("%s.%s", _item.getBlock().getProperties().getReferencedBlockName(), defName);
+        }
+        EJLovDefinitionProperties lovDef = _item.getForm().getProperties().getLovDefinitionProperties(defName);
+
+        if (lovDef == null)
+        {
+            return _comboValues;
+        }
+
+        EJLovController lovController = _item.getForm().getLovController(defName);
+        if (lovController == null)
+        {
+            return _comboValues;
+        }
+        try
+        {
+            lovController.executeQuery(new EJItemLovController(_item.getBlock().getBlockController().getFormController(), _item,
+                    ((EJCoreItemProperties) _itemProperties).getLovMappingPropertiesOnUpdate()));
+
+            if (!_item.getProperties().isMandatory())
+            {
+                ComboBoxValue emptyValue = new ComboBoxValue(null, defItemName, config);
+                _comboValues.add(emptyValue);
+            }
+
+            Collection<EJDataRecord> records = lovController.getRecords();
+            for (EJDataRecord ejDataRecord : records)
+            {
+                if (!ejDataRecord.containsItem(defItemName))
+                {
+                    EJMessage message = new EJMessage("The item name '" + defItemName
+                            + "', does not exist within the lov definitions underlying block. Lov Definition: " + defName);
+                    _item.getForm().getFrameworkManager().getApplicationManager().getApplicationMessenger().handleMessage(message);
+                    return new ArrayList<ComboBoxValue>();
+                }
+
+                ComboBoxValue comboValue = new ComboBoxValue(ejDataRecord, defItemName, config);
+
+                _comboValues.add(comboValue);
+            }
+        }
+        catch (Exception e)
+        {
+            _item.getForm().getFrameworkManager().getApplicationManager().getApplicationMessenger().handleException(e, true);
+        }
+
+        return _comboValues;
     }
 
 }

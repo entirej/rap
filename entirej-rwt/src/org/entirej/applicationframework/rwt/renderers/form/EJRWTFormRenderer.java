@@ -153,7 +153,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         if (canvasName != null && pageName != null)
         {
             EJRWTEntireJStackedPane cardPane = _stackedPanes.get(canvasName);
-            if (cardPane != null)
+            if (cardPane != null && !cardPane.isDisposed())
             {
                 cardPane.showPane(pageName);
             }
