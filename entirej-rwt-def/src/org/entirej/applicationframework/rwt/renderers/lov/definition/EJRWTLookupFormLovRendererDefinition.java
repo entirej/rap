@@ -93,10 +93,18 @@ public class EJRWTLookupFormLovRendererDefinition implements EJDevLovRendererDef
         showVerticalLines.setDescription("Indicates if vertical lines should be displayed within the lov");
         showVerticalLines.setDefaultValue("true");
 
+        
+        EJDevPropertyDefinition quearyScreen = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.SHOW_QUERY_SCREEN,
+                EJPropertyDefinitionType.BOOLEAN);
+        quearyScreen.setLabel("Auto show query screen");
+        quearyScreen.setDescription("Indicates if the lov need to suto show query screen.");
+        quearyScreen.setDefaultValue("true");
+
         mainGroup.addPropertyDefinition(showTableBorder);
         mainGroup.addPropertyDefinition(showTableHeader);
         mainGroup.addPropertyDefinition(allowRowSelection);
         mainGroup.addPropertyDefinition(showVerticalLines);
+        mainGroup.addPropertyDefinition(quearyScreen);
 
         return mainGroup;
     }
