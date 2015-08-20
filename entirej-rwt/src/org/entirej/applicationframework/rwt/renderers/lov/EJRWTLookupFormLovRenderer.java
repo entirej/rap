@@ -30,16 +30,21 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
+import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.data.controllers.EJItemLovController;
 import org.entirej.framework.core.data.controllers.EJLovController;
 import org.entirej.framework.core.enumerations.EJLovDisplayReason;
+import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.core.renderers.interfaces.EJQueryScreenRenderer;
 
 public class EJRWTLookupFormLovRenderer extends EJRWTStandardLovRenderer
 {
+
+    public static final String    SHOW_QUERY_SCREEN = "SHOW_QUERY_SCREEN";
+
     private EJQueryScreenRenderer _queryScreenRenderer;
 
     public EJRWTLookupFormLovRenderer()
@@ -81,6 +86,15 @@ public class EJRWTLookupFormLovRenderer extends EJRWTStandardLovRenderer
         super.displayLov(itemToValidate, displayReason);
         if (displayReason == EJLovDisplayReason.LOV)
         {
+            
+            
+            EJFrameworkExtensionProperties rendererProp = getLovController().getDefinitionProperties().getLovRendererProperties();
+
+            if (!rendererProp.getBooleanProperty(SHOW_QUERY_SCREEN, true) && getLovController().getBlockRecordCount()>0 )
+            {
+                return;
+            }
+            
             Display.getDefault().asyncExec(new Runnable()
             {
                 @Override
