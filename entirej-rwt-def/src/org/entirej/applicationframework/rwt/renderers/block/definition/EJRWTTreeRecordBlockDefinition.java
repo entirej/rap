@@ -159,6 +159,13 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
         filter.setDescription("If selected, the renderer will display a filter field above the table. This filter can then be used by users to filter table data");
         filter.setDefaultValue("false");
 
+        EJDevPropertyDefinition showcolorEffect = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.COLORING_EFFECT,
+                EJPropertyDefinitionType.BOOLEAN);
+        showcolorEffect.setLabel("Enable Zebra Colouring");
+        showcolorEffect.setDescription("If set, the renderer will display block rows in alternative coloring, e.g. Grey / White");
+        showcolorEffect.setDefaultValue("true");
+        
+        
         EJDevPropertyDefinition parentItem = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.PARENT_ITEM, EJPropertyDefinitionType.BLOCK_ITEM);
         parentItem.setLabel("Parent Item");
         parentItem.setMandatory(true);
@@ -197,6 +204,7 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
         mainGroup.addPropertyDefinition(hideSelection);
         mainGroup.addPropertyDefinition(showTableBorder);
         mainGroup.addPropertyDefinition(filter);
+        mainGroup.addPropertyDefinition(showcolorEffect);
 
         EJDevPropertyDefinitionGroup sectionGroup = new EJDevPropertyDefinitionGroup("TITLE_BAR");
         sectionGroup.setLabel("Title Bar");

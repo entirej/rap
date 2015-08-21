@@ -77,6 +77,7 @@ import org.entirej.applicationframework.rwt.application.components.actions.EJRWT
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
@@ -931,7 +932,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 }
             }
         });
-        table.setLinesVisible(true);
+        table.setLinesVisible(rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.COLORING_EFFECT, true));
         final String pid = rendererProp.getStringProperty(EJRWTTreeBlockDefinitionProperties.PARENT_ITEM);
         final String rid = rendererProp.getStringProperty(EJRWTTreeBlockDefinitionProperties.RELATION_ITEM);
         final String imageid = rendererProp.getStringProperty(EJRWTTreeBlockDefinitionProperties.NODE_IMAGE_ITEM);
