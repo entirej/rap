@@ -1469,6 +1469,11 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                         itemRenderer.setInitialVisualAttribute(va);
                     }
                 }
+                
+                if(item.getProperties().getVisualAttributeProperties()!=null)
+                {
+                    renderer.setVisualAttribute(item.getProperties().getVisualAttributeProperties());
+                }
 
                 TreeViewerColumn viewerColumn = factory.createColumn(itemProps.getLabel(), displayedWidth, labelProvider, getComponentStyle(labelOrientation));
                 TreeColumn column = viewerColumn.getColumn();

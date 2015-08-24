@@ -1325,6 +1325,11 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                         itemRenderer.setInitialVisualAttribute(va);
                     }
                 }
+                
+                if(item.getProperties().getVisualAttributeProperties()!=null)
+                {
+                    renderer.setVisualAttribute(item.getProperties().getVisualAttributeProperties());
+                }
 
                 TableViewerColumn viewerColumn = factory.createColumn(itemProps.getLabel(), displayedWidth, labelProvider, getComponentStyle(labelOrientation));
                 TableColumn column = viewerColumn.getColumn();

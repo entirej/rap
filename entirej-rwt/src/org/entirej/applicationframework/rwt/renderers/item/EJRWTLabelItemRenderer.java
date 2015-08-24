@@ -727,7 +727,18 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public void setInitialVisualAttribute(EJCoreVisualAttributeProperties va)
     {
         this._initialVAProperties = va;
-        setVisualAttribute(va);
+        if(_visualAttributeProperties==null)
+            setVisualAttribute(va);
+        else
+        {
+            if (_labelField == null || _labelField.getControl() == null || _labelField.getControl().isDisposed())
+            {
+                return;
+            }
+            refreshBackground();
+            refreshForeground();
+            refreshFont();
+        }
     }
 
     @Override

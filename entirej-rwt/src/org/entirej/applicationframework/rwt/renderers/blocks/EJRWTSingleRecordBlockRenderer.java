@@ -1325,6 +1325,11 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             // Add the item to the pane according to its display coordinates.
             renderer.setMandatory(itemProperties.isMandatory());
             renderer.enableLovActivation(itemProperties.getLovMappingName() != null);
+            EJCoreMainScreenItemProperties properties = (EJCoreMainScreenItemProperties) item.getProperties();
+            if(properties.getVisualAttributeProperties()!=null)
+            {
+                renderer.setVisualAttribute(properties.getVisualAttributeProperties());
+            }
 
             if (_firstNavigationalItem == null)
             {

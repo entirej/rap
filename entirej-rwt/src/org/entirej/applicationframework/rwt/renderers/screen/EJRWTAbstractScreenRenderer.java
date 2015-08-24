@@ -334,6 +334,11 @@ public abstract class EJRWTAbstractScreenRenderer implements EJRenderer
                     itemRenderer.setInitialVisualAttribute(va);
                 }
             }
+            
+            if(item.getProperties().getVisualAttributeProperties()!=null)
+            {
+                renderer.setVisualAttribute(item.getProperties().getVisualAttributeProperties());
+            }
             EJScreenItemProperties itemProperties = item.getProperties();
 
             renderer.setVisible(itemProperties.isVisible());
