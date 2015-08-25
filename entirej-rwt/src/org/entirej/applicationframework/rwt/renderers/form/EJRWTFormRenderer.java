@@ -865,7 +865,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         void close()
         {
-            if (_popupDialog != null)
+            if (_popupDialog != null &&  _popupDialog.getShell() != null && _popupDialog.getShell().isVisible())
             {
                 _popupDialog.close();
             }
