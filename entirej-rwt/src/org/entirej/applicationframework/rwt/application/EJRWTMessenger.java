@@ -24,6 +24,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.rwt.EJ_RWT;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 import org.entirej.applicationframework.rwt.notifications.EJRWTNotifierDialog;
 import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJMessage;
@@ -64,12 +70,12 @@ public class EJRWTMessenger implements EJMessenger
                 switch (contex.infoType)
                 {
                     case BOTH:
-                        MessageDialog.openInformation(manager.getShell(), "Message", message.getMessage());
+                        EJMessageDialog.openInformation(manager.getShell(), "Message", message.getMessage());
                         EJRWTNotifierDialog.notify("Message", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_INFO), contex.infoWidth,
                                 contex.infoHeight, contex.infoNotificationAutoHide);
                         break;
                     case DIALOG:
-                        MessageDialog.openInformation(manager.getShell(), "Message", message.getMessage());
+                        EJMessageDialog.openInformation(manager.getShell(), "Message", message.getMessage());
                         break;
                     case NOTFICATION:
                         EJRWTNotifierDialog.notify("Message", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_INFO), contex.infoWidth,
@@ -82,12 +88,12 @@ public class EJRWTMessenger implements EJMessenger
                 switch (contex.warningType)
                 {
                     case BOTH:
-                        MessageDialog.openWarning(manager.getShell(), "Warning", message.getMessage());
+                        EJMessageDialog.openWarning(manager.getShell(), "Warning", message.getMessage());
                         EJRWTNotifierDialog.notify("Warning", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_WARNING), contex.warnWidth,
                                 contex.warnHeight, contex.warnNotificationAutoHide);
                         break;
                     case DIALOG:
-                        MessageDialog.openWarning(manager.getShell(), "Warning", message.getMessage());
+                        EJMessageDialog.openWarning(manager.getShell(), "Warning", message.getMessage());
                         break;
                     case NOTFICATION:
                         EJRWTNotifierDialog.notify("Warning", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_WARNING), contex.warnWidth,
@@ -101,12 +107,12 @@ public class EJRWTMessenger implements EJMessenger
                 switch (contex.errorType)
                 {
                     case BOTH:
-                        MessageDialog.openWarning(manager.getShell(), "Error", message.getMessage());
+                        EJMessageDialog.openWarning(manager.getShell(), "Error", message.getMessage());
                         EJRWTNotifierDialog.notify("Error", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_ERROR), contex.errorWidth,
                                 contex.errorHeight, contex.errorNotificationAutoHide);
                         break;
                     case DIALOG:
-                        MessageDialog.openWarning(manager.getShell(), "Error", message.getMessage());
+                        EJMessageDialog.openWarning(manager.getShell(), "Error", message.getMessage());
                         break;
                     case NOTFICATION:
                         EJRWTNotifierDialog.notify("Error", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_ERROR), contex.errorWidth,
@@ -184,7 +190,7 @@ public class EJRWTMessenger implements EJMessenger
 
         return options.toArray(new EJQuestionButton[0]);
     }
-    
+
     @Override
     public void handleException(Exception exception, boolean showUserMessage)
     {
@@ -195,7 +201,7 @@ public class EJRWTMessenger implements EJMessenger
             // is not need to handler the exception
             logger.error(exception.getMessage(), exception);
             EJMessage frameworkMessage = ((EJApplicationException) exception).getFrameworkMessage();
-            if(frameworkMessage.getMessage()!=null)
+            if (frameworkMessage.getMessage() != null)
             {
                 handleMessage(frameworkMessage);
             }
@@ -354,4 +360,151 @@ public class EJRWTMessenger implements EJMessenger
             }
         }
     }
+
+    static class EJMessageDialog 
+    {
+
+
+        /**
+         * Convenience method to open a simple confirm (OK/Cancel) dialog.
+         * 
+         * @param parent
+         *            the parent shell of the dialog, or <code>null</code> if
+         *            none
+         * @param title
+         *            the dialog's title, or <code>null</code> if none
+         * @param message
+         *            the message
+         * @return <code>true</code> if the user presses the OK button,
+         *         <code>false</code> otherwise
+         */
+        public static boolean openConfirm(Shell parent, String title, String message)
+        {
+            return open(MessageDialog .CONFIRM, parent, title, message, SWT.NONE);
+        }
+
+        /**
+         * Convenience method to open a standard error dialog.
+         * 
+         * @param parent
+         *            the parent shell of the dialog, or <code>null</code> if
+         *            none
+         * @param title
+         *            the dialog's title, or <code>null</code> if none
+         * @param message
+         *            the message
+         */
+        public static void openError(Shell parent, String title, String message)
+        {
+            open(MessageDialog.ERROR, parent, title, message, SWT.NONE);
+        }
+
+        /**
+         * Convenience method to open a standard information dialog.
+         * 
+         * @param parent
+         *            the parent shell of the dialog, or <code>null</code> if
+         *            none
+         * @param title
+         *            the dialog's title, or <code>null</code> if none
+         * @param message
+         *            the message
+         */
+        public static void openInformation(Shell parent, String title, String message)
+        {
+            open(MessageDialog.INFORMATION, parent, title, message, SWT.NONE);
+        }
+
+        /**
+         * Convenience method to open a simple Yes/No question dialog.
+         * 
+         * @param parent
+         *            the parent shell of the dialog, or <code>null</code> if
+         *            none
+         * @param title
+         *            the dialog's title, or <code>null</code> if none
+         * @param message
+         *            the message
+         * @return <code>true</code> if the user presses the Yes button,
+         *         <code>false</code> otherwise
+         */
+        public static boolean openQuestion(Shell parent, String title, String message)
+        {
+            return open(MessageDialog.QUESTION, parent, title, message, SWT.NONE);
+        }
+
+        /**
+         * Convenience method to open a standard warning dialog.
+         * 
+         * @param parent
+         *            the parent shell of the dialog, or <code>null</code> if
+         *            none
+         * @param title
+         *            the dialog's title, or <code>null</code> if none
+         * @param message
+         *            the message
+         */
+        public static void openWarning(Shell parent, String title, String message)
+        {
+            open(MessageDialog.WARNING, parent, title, message, SWT.NONE);
+        }
+
+        public static boolean open(int kind, Shell parent, String title, String message, int style)
+        {
+            
+        
+            MessageDialog dialog = new MessageDialog(parent, title, null, message, kind, getButtonLabels(kind), 0)
+            {
+                
+                
+                @Override
+                protected Control createMessageArea(Composite composite)
+                {
+                    Control createMessageArea = super.createMessageArea(composite);
+                    messageLabel.setData(EJ_RWT.MARKUP_ENABLED,true);
+                    return createMessageArea;
+                }
+            };
+           
+            return dialog.open() == 0;
+
+        }
+
+        private  static String[] getButtonLabels(int kind)
+        {
+            String[] dialogButtonLabels;
+            switch (kind)
+            {
+                case MessageDialog.ERROR:
+                case MessageDialog.INFORMATION:
+                case MessageDialog.WARNING:
+                {
+                    dialogButtonLabels = new String[] { "OK"};
+                    break;
+                }
+                case MessageDialog.CONFIRM:
+                {
+                    dialogButtonLabels = new String[] { "OK", "Cancel"};
+                    break;
+                }
+                case MessageDialog.QUESTION:
+                {
+                    dialogButtonLabels = new String[] { "Yes", "No" };
+                    break;
+                }
+                case MessageDialog.QUESTION_WITH_CANCEL:
+                {
+                    dialogButtonLabels = new String[] { "Yes", "No",  "Cancel" };
+                    break;
+                }
+                default:
+                {
+                    throw new IllegalArgumentException("Illegal value for kind in MessageDialog.open()"); //$NON-NLS-1$
+                }
+            }
+            return dialogButtonLabels;
+        }
+
+    }
+
 }
