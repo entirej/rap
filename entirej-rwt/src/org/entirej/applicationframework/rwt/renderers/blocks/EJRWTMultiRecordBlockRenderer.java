@@ -1368,6 +1368,13 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                         column.setWidth(info.width = ((int) ((column.getWidth() + 1) * avgCharWidth)));
                     }
                 }
+                
+                if(!item.isVisible())
+               
+                {
+                    column.setWidth(0);
+                    column.setResizable(false);
+                }
                 return labelProvider;
             }
         }
