@@ -38,7 +38,8 @@ import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendere
 public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererDefinition
 {
 
-    public static final String PROPERTY_CSS_KEY = "CSS_KEY";
+    public static final String PROPERTY_CSS_KEY    = "CSS_KEY";
+    public static final String PROPERTY_INLINE_KEY = "INLINE";
 
     public EJRWTHtmlEditorItemRendererDefinition()
     {
@@ -75,7 +76,13 @@ public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererD
                 .setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
 
         mainGroup.addPropertyDefinition(customCSSKey);
-
+        
+        
+        EJDevPropertyDefinition inlineMode = new EJDevPropertyDefinition(PROPERTY_INLINE_KEY, EJPropertyDefinitionType.BOOLEAN);
+        inlineMode.setLabel("Inline mode");
+        inlineMode.setDescription("Indicates if this item should edit with inline toolbar");
+        inlineMode.setDefaultValue("false");
+        mainGroup.addPropertyDefinition(inlineMode);
         return mainGroup;
     }
 

@@ -22,6 +22,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
   eclipsesource.CKEditor = function( properties ) {
     bindAll( this, [ "layout", "onReady", "onSend", "onRender" ] );
     this.parent = rap.getObject( properties.parent );
+    this.inline =  properties.inline ;
     this.element = document.createElement( "div" );
 
     this.element.style.height = '100%';
@@ -63,8 +64,16 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 
     onRender : function() {
       if( this.element.parentNode ) {
-        rap.off( "render", this.onRender );
-        this.editor = CKEDITOR.appendTo( this.element );
+    	  rap.off( "render", this.onRender );
+		  if (this.inline)
+		  {
+					this.editor = CKEDITOR.inline(this.element);
+		  } 
+		  else 
+		  {
+					this.editor = CKEDITOR.appendTo(this.element);
+		  }
+        
         this.editor.on( "instanceReady", this.onReady );
         rap.on( "send", this.onSend );
       }

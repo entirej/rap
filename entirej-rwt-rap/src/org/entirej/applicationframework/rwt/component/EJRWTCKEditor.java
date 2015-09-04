@@ -60,7 +60,7 @@ public class EJRWTCKEditor extends Composite
                                                         }
                                                     };
 
-    public EJRWTCKEditor(Composite parent, int style)
+    public EJRWTCKEditor(Composite parent, int style,boolean inline)
     {
         super(parent, style);
        
@@ -70,6 +70,7 @@ public class EJRWTCKEditor extends Composite
         remoteObject = connection.createRemoteObject(REMOTE_TYPE);
         remoteObject.setHandler(operationHandler);
         remoteObject.set("parent", WidgetUtil.getId(this));
+        remoteObject.set("inline", inline);
         
     }
 
