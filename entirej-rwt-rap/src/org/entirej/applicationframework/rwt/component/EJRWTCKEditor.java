@@ -28,6 +28,7 @@ import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.widgets.WidgetUtil;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
@@ -62,12 +63,14 @@ public class EJRWTCKEditor extends Composite
     public EJRWTCKEditor(Composite parent, int style)
     {
         super(parent, style);
+       
         registerResources();
         loadJavaScript();
         Connection connection = RWT.getUISession().getConnection();
         remoteObject = connection.createRemoteObject(REMOTE_TYPE);
         remoteObject.setHandler(operationHandler);
         remoteObject.set("parent", WidgetUtil.getId(this));
+        
     }
 
     private void registerResources()

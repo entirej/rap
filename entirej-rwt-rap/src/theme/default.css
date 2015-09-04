@@ -12,37 +12,37 @@ Default theme for all widgets */
 }
 
 Widget-ToolTip {
-  padding: 10px;
-  background-color: rgb(32, 31, 27);
-  background-image: none;
-  border: none;
-  border-radius: 1px;
-  font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
-  color: #e0e0e0;
-  opacity: 0.9;
-  animation: fadeIn 150ms ease-in, fadeOut 150ms ease-in;
-  box-shadow: none;
-  text-align: center;
+	padding: 10px;
+	background-color: rgb(32, 31, 27);
+	background-image: none;
+	border: none;
+	border-radius: 1px;
+	font: 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+	color: #e0e0e0;
+	opacity: 0.9;
+	animation: fadeIn 150ms ease-in, fadeOut 150ms ease-in;
+	box-shadow: none;
+	text-align: center;
 }
 
 Widget-ToolTip-Pointer {
-  background-image: none;
+	background-image: none;
 }
 
 Widget-ToolTip-Pointer:up {
-  background-image : url( resource/widget/rap/arrows/tooltip-up.png );
+	background-image: url( resource/widget/rap/arrows/tooltip-up.png );
 }
 
 Widget-ToolTip-Pointer:down {
-  background-image : url( resource/widget/rap/arrows/tooltip-down.png );
+	background-image: url( resource/widget/rap/arrows/tooltip-down.png );
 }
 
 Widget-ToolTip-Pointer:left {
-  background-image : url( resource/widget/rap/arrows/tooltip-left.png );
+	background-image: url( resource/widget/rap/arrows/tooltip-left.png );
 }
 
 Widget-ToolTip-Pointer:right {
-  background-image : url( resource/widget/rap/arrows/tooltip-right.png );
+	background-image: url( resource/widget/rap/arrows/tooltip-right.png );
 }
 
 Display {
@@ -89,7 +89,6 @@ Composite[BORDER] {
 	border-radius: 2px;
 }
 
-
 /* Button default theme */
 Button {
 	font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
@@ -106,25 +105,25 @@ Button {
 	text-shadow: none;
 }
 
-Button[PUSH],Button[TOGGLE],Button[PUSH][BORDER],Button[TOGGLE][BORDER],Button[PUSH][FLAT],Button[TOGGLE][FLAT]
-	{
+Button[PUSH], Button[TOGGLE], Button[PUSH][BORDER], Button[TOGGLE][BORDER],
+	Button[PUSH][FLAT], Button[TOGGLE][FLAT] {
 	border: 1px solid #bdbdbd;
 	border-radius: 2px;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	animation: none;
 	cursor: pointer;
 	text-shadow: 0 1px 0 #ffffff;
 }
 
-Button[PUSH]:default,Button[TOGGLE]:default {
+Button[PUSH]:default, Button[TOGGLE]:default {
 	background-color: #416693;
 	background-image: gradient(linear, left top, left bottom, from(#e2eefc),
-		to(#d4d4d4) );
+		to(#d4d4d4));
 	border: 1px solid #a0b3ca;
 }
 
-Button[PUSH]:disabled,Button[TOGGLE]:disabled {
+Button[PUSH]:disabled, Button[TOGGLE]:disabled {
 	cursor: default;
 	color: #d2d2d2;
 	background-image: none;
@@ -132,32 +131,32 @@ Button[PUSH]:disabled,Button[TOGGLE]:disabled {
 	border: 1px solid #d2d2d2;
 }
 
-Button[PUSH]:hover,Button[TOGGLE]:hover {
+Button[PUSH]:hover, Button[TOGGLE]:hover {
 	background-image: gradient(linear, left top, left bottom, from(#eaeaea),
-		to(#d5d5d5) );
+		to(#d5d5d5));
 }
 
-Button[PUSH]:pressed,Button[TOGGLE]:pressed {
+Button[PUSH]:pressed, Button[TOGGLE]:pressed {
 	background-image: gradient(linear, left top, left bottom, from(#d5d5d5),
-		to(#eaeaea) );
+		to(#eaeaea));
 }
 
 Button[TOGGLE]:selected {
 	background-image: gradient(linear, left top, left bottom, from(#d5d5d5),
-		to(#eaeaea) );
+		to(#eaeaea));
 }
 
 Button[TOGGLE]:selected:hover {
 	background-image: gradient(linear, left top, left bottom, from(#d5d5d5),
-		to(#eaeaea) );
+		to(#eaeaea));
 }
 
-Button[CHECK],Button[RADIO] {
+Button[CHECK], Button[RADIO] {
 	padding: 3px 3px 3px 0;
 	spacing: 7px;
 }
 
-Button[CHECK][BORDER],Button[RADIO][BORDER] {
+Button[CHECK][BORDER], Button[RADIO][BORDER] {
 	cursor: default;
 	background-image: none;
 	border: 1px solid #bdbdbd;
@@ -209,7 +208,7 @@ Button-RadioIcon:selected:hover {
 		url( resource/widget/rap/button/radio-selected-hover.png );
 }
 
-Button-FocusIndicator[PUSH],Button-FocusIndicator[TOGGLE] {
+Button-FocusIndicator[PUSH], Button-FocusIndicator[TOGGLE] {
 	background-color: transparent;
 	border: 1px dotted #b8b8b8;
 	margin: 2px;
@@ -217,7 +216,7 @@ Button-FocusIndicator[PUSH],Button-FocusIndicator[TOGGLE] {
 	opacity: 1;
 }
 
-Button-FocusIndicator[CHECK],Button-FocusIndicator[RADIO] {
+Button-FocusIndicator[CHECK], Button-FocusIndicator[RADIO] {
 	background-color: transparent;
 	border: 1px dotted #b8b8b8;
 	padding: 2px 2px 2px 1px;
@@ -226,7 +225,7 @@ Button-FocusIndicator[CHECK],Button-FocusIndicator[RADIO] {
 }
 
 /* Combo default theme */
-Combo,Combo[BORDER] {
+Combo, Combo[BORDER] {
 	font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 	color: #4a4a4a;
 	background-color: #ffffff;
@@ -236,11 +235,12 @@ Combo,Combo[BORDER] {
 	text-shadow: none;
 	box-shadow: inset 0 0 3px #bdbdbd;
 }
-Combo,Combo[BORDER]:disabled {
+
+Combo, Combo[BORDER]:disabled {
 	color: #4a4a4a;
 }
 
-Combo:focused,Combo[BORDER]:focused {
+Combo:focused, Combo[BORDER]:focused {
 	border: 1px solid #4f7cb1;
 	box-shadow: 0 0 5px #4f7cb1;
 }
@@ -252,7 +252,7 @@ Combo-Button {
 	border-left: 1px solid #bdbdbd;
 	border-radius: 0px 2px 2px 0px;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	width: 20px;
 }
 
@@ -297,9 +297,6 @@ CTabFolder {
 	border-radius: 1px;
 }
 
-
-
-
 CTabItem {
 	font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 	color: #4a4a4a;
@@ -312,7 +309,7 @@ CTabItem:selected {
 	color: #4a4a4a;
 	background-color: #d6d6d6;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	text-shadow: 0 1px 0 #ffffff;
 }
 
@@ -436,21 +433,21 @@ List-Item:hover {
 	color: #4a4a4a;
 	background-color: #dae9f7;
 	background-image: gradient(linear, left top, left bottom, from(#ebebeb),
-		to(#d5d5d5) );
+		to(#d5d5d5));
 }
 
 List-Item:selected {
 	color: #ffffff;
 	background-color: #00589f;
 	background-image: gradient(linear, left top, left bottom, from(#5882b5),
-		to(#416693) );
+		to(#416693));
 }
 
 List-Item:selected:unfocused {
 	background-color: #959595;
 	color: #ffffff;
 	background-image: gradient(linear, left top, left bottom, from(#b5b5b5),
-		to(#818181) );
+		to(#818181));
 }
 
 List-Item:even {
@@ -461,21 +458,21 @@ List-Item:even:hover {
 	color: #4a4a4a;
 	background-color: #818181;
 	background-image: gradient(linear, left top, left bottom, from(#ebebeb),
-		to(#d5d5d5) );
+		to(#d5d5d5));
 }
 
 List-Item:even:selected {
 	color: #ffffff;
 	background-color: #818181;
 	background-image: gradient(linear, left top, left bottom, from(#5882b5),
-		to(#416693) );
+		to(#416693));
 }
 
 List-Item:even:selected:unfocused {
 	background-color: #959595;
 	color: #ffffff;
 	background-image: gradient(linear, left top, left bottom, from(#b5b5b5),
-		to(#818181) );
+		to(#818181));
 }
 
 /* Menu default theme */
@@ -484,7 +481,7 @@ Menu {
 	color: #0059a5;
 	background-color: #f9f9f9;
 	background-image: gradient(linear, left top, left bottom, from(#f4f4f4),
-		to(#ffffff) );
+		to(#ffffff));
 	border: 1px solid #a0b3ca;
 	border-radius: 2px;
 	box-shadow: 0 0 4px #ababab;
@@ -508,13 +505,13 @@ MenuItem[SEPARATOR] {
 MenuItem:hover {
 	color: #ffffff;
 	background-image: gradient(linear, left top, left bottom, from(#5882b5),
-		to(#416693) );
+		to(#416693));
 }
 
 MenuItem:pressed {
 	color: #ffffff;
 	background-image: gradient(linear, left top, left bottom, from(#416693),
-		to(#5882b5) );
+		to(#5882b5));
 }
 
 MenuItem:disabled {
@@ -550,19 +547,19 @@ ProgressBar {
 ProgressBar-Indicator {
 	background-color: #00589f;
 	background-image: gradient(linear, left top, left bottom, from(#5882b5),
-		to(#416693) );
+		to(#416693));
 	border: none;
 	opacity: 1;
 }
 
 ProgressBar-Indicator:paused {
 	background-image: gradient(linear, left top, right top, from(#818181),
-		to(#b5b5b5) );
+		to(#b5b5b5));
 }
 
 ProgressBar-Indicator:error {
 	background-image: gradient(linear, left top, right top, from(#e9614f),
-		to(#ec7869) );
+		to(#ec7869));
 }
 
 /* Shell default theme */
@@ -577,7 +574,7 @@ Shell {
 	box-shadow: none;
 }
 
-Shell[TITLE],Shell[BORDER] {
+Shell[TITLE], Shell[BORDER] {
 	background-color: #ffffff;
 	border: 1px solid #6e6e6e;
 	border-radius: 2px;
@@ -585,19 +582,16 @@ Shell[TITLE],Shell[BORDER] {
 	box-shadow: 0 0 4px #ababab;
 }
 
-Shell[BORDER]:inactive,Shell[TITLE]:inactive {
+Shell[BORDER]:inactive, Shell[TITLE]:inactive {
 	border: 1px solid #bdbdbd;
 	box-shadow: none;
 }
 
-Shell:maximized,Shell:maximized:inactive {
+Shell:maximized, Shell:maximized:inactive {
 	border: none;
 	box-shadow: none;
 	border-radius: 0px;
 }
-
-
-
 
 Shell-DisplayOverlay {
 	animation: fadeIn 200ms linear, fadeOut 400ms ease-out;
@@ -613,7 +607,7 @@ Shell-Titlebar {
 	background-gradient-color: #d5d5d5;
 	color: #ffffff;
 	background-image: gradient(linear, left top, left bottom, from(#416693),
-		to(#5882b5) );
+		to(#5882b5));
 	padding: 0 10px 0 10px;
 	margin: 0px;
 	height: 38px;
@@ -626,7 +620,7 @@ Shell-Titlebar:inactive {
 	background-color: #7996a5;
 	background-gradient-color: #7996a5;
 	background-image: gradient(linear, left top, left bottom, from(#818181),
-		to(#b5b5b5) );
+		to(#b5b5b5));
 }
 
 /* Shell buttons */
@@ -739,7 +733,7 @@ Spinner-Field {
 Spinner-UpButton {
 	background-color: #efefef;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#efefef) );
+		to(#efefef));
 	width: 30px;
 	border: none;
 	border-left: 1px solid #bdbdbd;
@@ -758,7 +752,7 @@ Spinner-UpButton-Icon:hover {
 Spinner-DownButton {
 	background-color: #efefef;
 	background-image: gradient(linear, left top, left bottom, from(#efefef),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	width: 30px;
 	border: none;
 	border-left: 1px solid #bdbdbd;
@@ -791,7 +785,7 @@ TabFolder-ContentContainer {
 TabItem {
 	background-color: #ffffff;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	border-top-color: #5882b5;
 	border-bottom-color: #5882b5;
 	text-shadow: 0 1px 0 #ffffff;
@@ -800,7 +794,7 @@ TabItem {
 
 TabItem:selected {
 	background-image: gradient(linear, left top, left bottom, from(#d5d5d5),
-		to(#eaeaea) );
+		to(#eaeaea));
 	padding: 6px 6px 7px 6px;
 }
 
@@ -822,7 +816,7 @@ TableColumn {
 	background-color: #f0f0f0;
 	padding: 4px 3px 4px 3px;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	color: #4a4a4a;
 	border-bottom: 1px solid #bdbdbd;
 	text-shadow: 0 1px 0 #ffffff;
@@ -830,7 +824,7 @@ TableColumn {
 
 TableColumn:hover {
 	background-image: gradient(linear, left top, left bottom, from(#e4e4e4),
-		to(#f9f9f9) );
+		to(#f9f9f9));
 }
 
 TableItem {
@@ -845,21 +839,21 @@ TableItem:hover {
 	color: #4a4a4a;
 	background-color: #b5b5b5;
 	background-image: gradient(linear, left top, left bottom, from(#ebebeb),
-		to(#d5d5d5) );
+		to(#d5d5d5));
 }
 
 TableItem:selected {
 	color: #ffffff;
 	background-color: #5882b5;
 	background-image: gradient(linear, left top, left bottom, from(#5882b5),
-		to(#416693) );
+		to(#416693));
 }
 
 TableItem:selected:unfocused {
 	color: #ffffff;
 	background-color: #b5b5b5;
 	background-image: gradient(linear, left top, left bottom, from(#b5b5b5),
-		to(#818181) );
+		to(#818181));
 }
 
 TableItem:linesvisible:even {
@@ -871,14 +865,14 @@ TableItem:linesvisible:even:hover {
 	color: #4a4a4a;
 	background-color: #b5b5b5;
 	background-image: gradient(linear, left top, left bottom, from(#ebebeb),
-		to(#d5d5d5) );
+		to(#d5d5d5));
 }
 
 TableItem:linesvisible:even:selected {
 	color: #ffffff;
 	background-color: #5882b5;
 	background-image: gradient(linear, left top, left bottom, from(#5882b5),
-		to(#416693) );
+		to(#416693));
 }
 
 TableItem:even:selected:unfocused {
@@ -897,14 +891,14 @@ TableItem:even:hover {
 	color: #4a4a4a;
 	background-color: #b5b5b5;
 	background-image: gradient(linear, left top, left bottom, from(#ebebeb),
-		to(#d5d5d5) );
+		to(#d5d5d5));
 }
 
 TableItem:even:selected {
 	color: #ffffff;
 	background-color: #5882b5;
 	background-image: gradient(linear, left top, left bottom, from(#5882b5),
-		to(#416693) );
+		to(#416693));
 }
 
 TableItem:even:selected:unfocused {
@@ -913,7 +907,6 @@ TableItem:even:selected:unfocused {
 	text-decoration: none;
 	text-shadow: none;
 }
-
 
 TableColumn-SortIndicator {
 	background-image: none;
@@ -994,13 +987,13 @@ Text[MULTI] { /*
 	padding: 5px 10px 5px 10px;
 }
 
-Text[BORDER],Text[MULTI][BORDER] {
+Text[BORDER], Text[MULTI][BORDER] {
 	border: 1px solid #aaaaaa;
 	border-radius: 0;
 	box-shadow: inset 0 0 3px #bdbdbd;
 }
 
-Text[BORDER]:focused,Text[MULTI][BORDER]:focused {
+Text[BORDER]:focused, Text[MULTI][BORDER]:focused {
 	border: 1px solid #4f7cb1;
 	box-shadow: 0 0 5px #4f7cb1;
 }
@@ -1043,17 +1036,17 @@ ToolItem {
 ToolItem:hover {
 	background-color: #f0f0f0;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	border: 1px solid #bdbdbd;
 	border-radius: 2px;
 }
 
-ToolItem:pressed,ToolItem:selected {
+ToolItem:pressed, ToolItem:selected {
 	border: 1px solid #a4a4a4;
 	border-radius: 2px;
 	padding: 9px 8px 8px 9px;
 	background-image: gradient(linear, left top, left bottom, from(#e4e4e4),
-		to(#f9f9f9) );
+		to(#f9f9f9));
 }
 
 ToolItem-DropDownIcon {
@@ -1082,7 +1075,6 @@ Tree[BORDER] {
 }
 
 TreeItem {
-	
 	background-color: transparent;
 	color: #4a4a4a;
 	text-decoration: none;
@@ -1094,21 +1086,21 @@ TreeItem:hover {
 	color: #4a4a4a;
 	background-color: #b5b5b5;
 	background-image: gradient(linear, left top, left bottom, from(#ebebeb),
-		to(#d5d5d5) );
+		to(#d5d5d5));
 }
 
 TreeItem:selected {
 	color: #ffffff;
 	background-color: #5882b5;
 	background-image: gradient(linear, left top, left bottom, from(#5882b5),
-		to(#416693) );
+		to(#416693));
 }
 
 TreeItem:selected:unfocused {
 	color: #ffffff;
 	background-color: #b5b5b5;
 	background-image: gradient(linear, left top, left bottom, from(#b5b5b5),
-		to(#818181) );
+		to(#818181));
 }
 
 TreeItem:linesvisible:even {
@@ -1121,53 +1113,50 @@ TreeItem:linesvisible:even:hover {
 	color: #4a4a4a;
 	background-color: #b5b5b5;
 	background-image: gradient(linear, left top, left bottom, from(#ebebeb),
-		to(#d5d5d5) );
+		to(#d5d5d5));
 }
 
 TreeItem:linesvisible:even:selected {
 	color: #ffffff;
 	background-color: #5882b5;
 	background-image: gradient(linear, left top, left bottom, from(#5882b5),
-		to(#416693) );
+		to(#416693));
 }
 
 TreeItem:linesvisible:even:selected:unfocused {
 	color: #ffffff;
 	background-color: #b5b5b5;
 	background-image: gradient(linear, left top, left bottom, from(#b5b5b5),
-		to(#818181) );
+		to(#818181));
 }
-
-
 
 TreeItem:even:hover {
 	color: #4a4a4a;
 	background-color: #b5b5b5;
 	background-image: gradient(linear, left top, left bottom, from(#ebebeb),
-		to(#d5d5d5) );
+		to(#d5d5d5));
 }
 
 TreeItem:even:selected {
 	color: #ffffff;
 	background-color: #5882b5;
 	background-image: gradient(linear, left top, left bottom, from(#5882b5),
-		to(#416693) );
+		to(#416693));
 }
 
 TreeItem:even:selected:unfocused {
 	color: #ffffff;
 	background-color: #b5b5b5;
 	background-image: gradient(linear, left top, left bottom, from(#b5b5b5),
-		to(#818181) );
+		to(#818181));
 }
-
 
 TreeColumn {
 	font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 	color: #4a4a4a;
 	background-color: #f0f0f0;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	padding: 4px 3px 4px 3px;
 	border-bottom: 1px solid #bdbdbd;
 	text-shadow: none;
@@ -1175,7 +1164,7 @@ TreeColumn {
 
 TreeColumn:hover {
 	background-image: gradient(linear, left top, left bottom, from(#e4e4e4),
-		to(#f9f9f9) );
+		to(#f9f9f9));
 }
 
 TreeColumn-SortIndicator {
@@ -1350,7 +1339,7 @@ DateTime {
 }
 
 DateTime[BORDER]:focused {
-	border: 1px solid #4f7cb1; 
+	border: 1px solid #4f7cb1;
 }
 
 DateTime-Field {
@@ -1367,7 +1356,7 @@ DateTime-Calendar-Day {
 	text-shadow: none;
 }
 
-DateTime-Field:selected,DateTime-Calendar-Day:selected {
+DateTime-Field:selected, DateTime-Calendar-Day:selected {
 	background-color: #5882b5;
 	color: #ffffff;
 }
@@ -1395,7 +1384,7 @@ DateTime-Calendar-Navbar {
 	border-radius: 0;
 	background-color: #00569c;
 	background-image: gradient(linear, left top, left bottom, from(#416693),
-		to(#5882b5) );
+		to(#5882b5));
 	color: white;
 	font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 	text-shadow: none;
@@ -1442,7 +1431,7 @@ DateTime-Calendar-NextYearButton:hover {
 DateTime-UpButton {
 	background-color: #f0f0f0;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#efefef) );;
+		to(#efefef));;
 	width: 30px;
 	border: none;
 	border-left: 1px solid #bdbdbd;
@@ -1461,7 +1450,7 @@ DateTime-UpButton-Icon:hover {
 DateTime-DownButton {
 	background-color: #f0f0f0;
 	background-image: gradient(linear, left top, left bottom, from(#efefef),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	width: 30px;
 	border: none;
 	border-left: 1px solid #bdbdbd;
@@ -1484,7 +1473,7 @@ DateTime-DropDownButton {
 	border-left: 1px solid #bdbdbd;
 	border-radius: 0px 2px 2px 0px;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	width: 30px;
 }
 
@@ -1521,7 +1510,7 @@ ExpandItem-Header {
 	border-radius: 0;
 	cursor: pointer;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	text-shadow: none;
 }
 
@@ -1556,7 +1545,6 @@ Sash {
 	background-color: transparent;
 }
 
-
 Sash[BORDER] {
 	border: 1px solid #bdbdbd;
 }
@@ -1577,7 +1565,7 @@ Slider {
 }
 
 /* Thumb */
-Slider-Thumb[HORIZONTAL],Slider-Thumb[VERTICAL] {
+Slider-Thumb[HORIZONTAL], Slider-Thumb[VERTICAL] {
 	background-color: #e4e4e4;
 	background-image:
 		url( resource/widget/rap/slider/slider-background.png );
@@ -1586,27 +1574,27 @@ Slider-Thumb[HORIZONTAL],Slider-Thumb[VERTICAL] {
 }
 
 /* Buttons */
-Slider-UpButton,Slider-DownButton {
+Slider-UpButton, Slider-DownButton {
 	background-color: #e4e4e4;
 	border: 1px solid #bdbdbd;
 	cursor: default;
 	padding: 0;
 }
 
-Slider-UpButton[HORIZONTAL],Slider-DownButton[HORIZONTAL] {
+Slider-UpButton[HORIZONTAL], Slider-DownButton[HORIZONTAL] {
 	background-image: none;
 }
 
-Slider-UpButton[VERTICAL],Slider-DownButton[VERTICAL] {
+Slider-UpButton[VERTICAL], Slider-DownButton[VERTICAL] {
 	background-image: none;
 }
 
-Slider-UpButton[HORIZONTAL]:pressed,Slider-DownButton[HORIZONTAL]:pressed
+Slider-UpButton[HORIZONTAL]:pressed, Slider-DownButton[HORIZONTAL]:pressed
 	{
 	background-image: none;
 }
 
-Slider-UpButton[VERTICAL]:pressed,Slider-DownButton[VERTICAL]:pressed {
+Slider-UpButton[VERTICAL]:pressed, Slider-DownButton[VERTICAL]:pressed {
 	background-image: none;
 }
 
@@ -1653,7 +1641,7 @@ ToolTip {
 	opacity: 1;
 	color: #4a4a4a;
 	background-image: gradient(linear, left top, right top, from(#f8f9ff),
-		to(#f4f4f4) );
+		to(#f4f4f4));
 	font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 	background-color: #fcfcfc;
 	animation: fadeIn 200ms linear, fadeOut 600ms ease-out;
@@ -1711,7 +1699,7 @@ CCombo-Button {
 	cursor: default;
 	background-color: #efefef;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	border: none;
 	border-left: 1px solid #bdbdbd;
 	border-radius: 0px 2px 2px 0px;
@@ -1789,7 +1777,7 @@ ScrollBar-Thumb {
 	min-height: 20px;
 }
 
-ScrollBar-UpButton,ScrollBar-DownButton {
+ScrollBar-UpButton, ScrollBar-DownButton {
 	background-color: transparent;
 	border: none;
 	border-radius: 0;
@@ -1816,7 +1804,7 @@ ScrollBar-DownButton[VERTICAL] {
 FileUpload {
 	font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 	background-image: gradient(linear, left top, left bottom, from(#f9f9f9),
-		to(#e4e4e4) );
+		to(#e4e4e4));
 	border: 1px solid #bdbdbd;
 	border-radius: 2px;
 	padding: 6px 15px;
@@ -1839,12 +1827,12 @@ FileUpload:disabled {
 
 FileUpload:hover {
 	background-image: gradient(linear, left top, left bottom, from(#eaeaea),
-		to(#d5d5d5) );
+		to(#d5d5d5));
 }
 
 FileUpload:pressed {
 	background-image: gradient(linear, left top, left bottom, from(#d5d5d5),
-		to(#eaeaea) );
+		to(#eaeaea));
 }
 
 FileUpload-FocusIndicator {
@@ -1856,18 +1844,16 @@ FileUpload-FocusIndicator {
 }
 
 /* JFace specific theming */
-Shell.jface_contentProposalPopup,Shell.jface_infoPopupDialog {
+Shell.jface_contentProposalPopup, Shell.jface_infoPopupDialog {
 	border: 1px solid #bdbdbd;
 	padding: 0;
 	box-shadow: 0 0 4px #ababab;
 }
 
 /*EJ specific theming*/
-
 Composite.applayout {
 	background-color: #F5F5F5;
 }
-
 
 Composite.notifierDialog {
 	border: 1px solid #bdbdbd;
@@ -1877,19 +1863,18 @@ Composite.notifierDialog {
 
 /*EJ Item Group related theming*/
 Composite.itemgroup {
+	
 }
 
-
 Group.itemgroup {
-	
 	
 }
 
 Composite.itemgroupclear {
 	background-color: transparent;
 }
+
 Link.itemlabel {
 	background-color: transparent;
 }
-
 

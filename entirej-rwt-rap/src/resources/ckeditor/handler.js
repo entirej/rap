@@ -24,7 +24,20 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
     this.parent = rap.getObject( properties.parent );
     this.element = document.createElement( "div" );
 
-
+    this.element.style.height = '100%';
+    this.element.style.overflow = 'auto';
+    this.element.style.position = 'absolute';
+    this.element.style.bottom= '0px';
+    this.element.style.top= '0px';
+    this.element.style.left= '0px';
+    this.element.style.right= '0px';
+    this.element.class = "selectionAllow";
+    
+    
+    /*
+     
+     */
+    this.element.setAttribute('contenteditable',true)
     this.parent.append( this.element );
     this.parent.addListener( "Resize", this.layout );
     rap.on( "render", this.onRender );
