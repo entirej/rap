@@ -64,6 +64,7 @@ public class EJRWTCKEditor extends Composite
     {
         super(parent, style);
        
+    
         registerResources();
         loadJavaScript();
         Connection connection = RWT.getUISession().getConnection();
@@ -169,6 +170,14 @@ public class EJRWTCKEditor extends Composite
         super.dispose();
     }
 
+    
+    @Override
+    public void setEnabled(boolean enabled)
+    {
+        super.setEnabled(enabled);
+        remoteObject.set("enable", enabled);
+    }
+    
     // ////
     // API
 
@@ -209,7 +218,7 @@ public class EJRWTCKEditor extends Composite
 
     public void setEditable(boolean editAllowed)
     {
-        // TODO
+        setEnabled(editAllowed);
 
     }
 

@@ -428,7 +428,12 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
     protected void setMandatoryBorder(boolean req)
     {
 
-        if (req && getValue() == null)
+        if(_textField.isDisposed() )
+        {
+            return;
+        }
+        
+        if (req && getValue() == null )
         {
             _mandatoryDecoration.show();
         }
@@ -555,7 +560,9 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
 
         {
 
+            composite.setData(EJ_RWT.CUSTOM_VARIANT, "html");
             _textField = new EJRWTCKEditor(composite, SWT.NONE,_rendererProps.getBooleanProperty(PROPERTY_INLINE_KEY, false));
+            _textField.setData(EJ_RWT.CUSTOM_VARIANT, "html");
             _textField.setData(EJ_RWT.CUSTOM_VARIANT, getCSSKey());
             String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 

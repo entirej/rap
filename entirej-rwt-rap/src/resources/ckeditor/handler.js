@@ -11,7 +11,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 
     destructor : "destroy",
 
-    properties : [ "text", "font" ]
+    properties : [ "text", "font","enable" ]
 
   } );
 
@@ -32,9 +32,8 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
     this.element.style.top= '0px';
     this.element.style.left= '0px';
     this.element.style.right= '0px';
-    this.element.class = "selectionAllow";
     
-    
+ 
     /*
      
      */
@@ -59,6 +58,10 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
       if( this._font ) {
         this.setFont( this._font );
         delete this._font;
+      }
+      if( this._enable != undefined  ) {
+    	  this.setEnable( this._enable );
+    	  delete this._enable;
       }
     },
 
@@ -102,12 +105,28 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
       } else {
         this._font = font;
       }
-    },
+    }
+    ,
+    
+    setEnable : function( enable ) {
+        if( this.ready ) {
+          this.editor.setReadOnly( !enable );
+        } else {
+          this._enable = enable;
+        }
+      }
+    ,
 
     destroy : function() {
       if( this.element.parentNode ) {
         rap.off( "send", this.onSend );
-        this.editor.destroy();
+        try
+        {
+        	this.editor.destroy();
+        }
+        catch (e )
+        {}
+        
         this.element.parentNode.removeChild( this.element );
       }
     },
