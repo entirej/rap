@@ -215,7 +215,7 @@
 					// When the user clears the selection by single-clicking in the editor then this event is fired before the selection is removed
 					// So we add a short delay to give the browser a chance to remove the selection before we do anything
 					setTimeout( function() {
-						if (is_text_selected()) {
+						if (true || is_text_selected()) {
 							// Save the current mouse-position
 							set_mousepos (mouse_event.data.$);
 							// when there is text selected after mouse-up: show the toolbar
@@ -275,7 +275,7 @@
 			 */
 			editor.addCommand( 'showFloatingTools', {
 				exec : function( editor ) {
-					if (is_text_selected()) {
+					if (true || is_text_selected()) {
 						toolbar = get_element();
 						unfocus_toolbar();
 						toolbar.show();

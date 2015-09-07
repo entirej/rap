@@ -41,7 +41,7 @@ public class EJRWTCKEditor extends Composite
     private static final String    RESOURCES_PATH   = "resources/ckeditor/";
     private static final String    REGISTER_PATH    = "ckeditor/";
 
-    private static final String[]  RESOURCE_FILES   = { "ckeditor.js", "styles.js", "config.js", "handler.js", "contents.css" };
+    private static final String[]  RESOURCE_FILES   = { "ckeditor.js", "styles.js",  "handler.js", "contents.css" };
     private static final String    REMOTE_TYPE      = "eclipsesource.CKEditor";
 
     private String                 text             = "";
@@ -60,7 +60,7 @@ public class EJRWTCKEditor extends Composite
                                                         }
                                                     };
 
-    public EJRWTCKEditor(Composite parent, int style,boolean inline)
+    public EJRWTCKEditor(Composite parent, int style,boolean inline,String profile)
     {
         super(parent, style);
        
@@ -72,6 +72,7 @@ public class EJRWTCKEditor extends Composite
         remoteObject.setHandler(operationHandler);
         remoteObject.set("parent", WidgetUtil.getId(this));
         remoteObject.set("inline", inline);
+        remoteObject.set("profile", profile==null ? "Standard":profile);
         
     }
 
@@ -125,7 +126,7 @@ public class EJRWTCKEditor extends Composite
 
         jsLoader.require(resourceManager.getLocation(REGISTER_PATH + "ckeditor.js"));
         jsLoader.require(resourceManager.getLocation(REGISTER_PATH + "styles.js"));
-        jsLoader.require(resourceManager.getLocation(REGISTER_PATH + "config.js"));
+        //jsLoader.require(resourceManager.getLocation(REGISTER_PATH + "config.js"));
 
     }
 
