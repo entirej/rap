@@ -196,7 +196,7 @@ public class EJRWTCKEditor extends Composite
     public String getText()
     {
         checkWidget();
-        return text;
+        return text!=null ? text.trim():null;
     }
 
     private String getCssFont()

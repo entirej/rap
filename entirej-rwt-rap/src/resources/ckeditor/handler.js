@@ -90,7 +90,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
     		           		{ name: 'about', groups: [ 'about' ] }
     		           	];
 
-    		  removeButtonsProfile = 'Source,Save,NewPage,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,BidiLtr,BidiRtl,Language,CreateDiv,Anchor,Unlink,Link,Flash,Smiley,Iframe,About,Preview,Print,Templates,Find,SelectAll,Subscript,Superscript,RemoveFormat,Image,Table,HorizontalRule,SpecialChar,PageBreak,JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,Outdent,Indent,Replace,Maximize,ShowBlocks,PasteFromWord,PasteText,Cut,Copy,Paste,Redo,Undo,Blockquote';
+    		  removeButtonsProfile = 'Source,Save,NewPage,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,BidiLtr,BidiRtl,Language,CreateDiv,Anchor,Unlink,Link,Flash,Smiley,Iframe,About,Preview,Print,Templates,Find,Subscript,Superscript,RemoveFormat,Image,Table,HorizontalRule,SpecialChar,PageBreak,JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,Outdent,Indent,Replace,Maximize,ShowBlocks,PasteFromWord,PasteText,Cut,Copy,Paste,Redo,Undo,Blockquote';
 
     	  }
     	  else if (this.profile=='Standard')
@@ -111,7 +111,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
     		           		{ name: 'about', groups: [ 'about' ] }
     		           	];
 
-    		  removeButtonsProfile = 'Source,Save,NewPage,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,BidiLtr,BidiRtl,Language,CreateDiv,Anchor,Unlink,Link,Flash,Smiley,Iframe,About,Preview,Print,SelectAll,RemoveFormat,Image,HorizontalRule,PageBreak,Maximize,ShowBlocks,Redo';
+    		  removeButtonsProfile = 'Source,Save,NewPage,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,BidiLtr,BidiRtl,Language,CreateDiv,Anchor,Unlink,Link,Flash,Smiley,Iframe,About,Preview,Print,RemoveFormat,Image,HorizontalRule,PageBreak,Maximize,ShowBlocks,Redo';
 
     		  }
     	  else
