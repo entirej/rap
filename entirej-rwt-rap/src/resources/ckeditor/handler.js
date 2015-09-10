@@ -38,7 +38,8 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
     /*
      
      */
-    this.element.setAttribute('contenteditable',true)
+    if(this.inline)
+    	this.element.setAttribute('contenteditable',true)
     this.parent.append( this.element );
     this.parent.addListener( "Resize", this.layout );
     rap.on( "render", this.onRender );
@@ -178,9 +179,9 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 				  			toolbarGroups : toolbarGroupsProfile,
 				  			 removeButtons: removeButtonsProfile,
 							 baseFloatZIndex : 3000000,
+							 title : false,
 							 removePlugins : 'floating-tools,wsc,forms,image,chartabout,a11yhelp,bidi,dialogadvtab,div,elementspath,filebrowser,flash,iframe,language,newpage,save,scayt,smiley,resize,sourcearea'
 							 
-							
 							
 						});
 		  } 
@@ -196,7 +197,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 						toolbarGroups : toolbarGroupsProfile,
 			  			removeButtons: removeButtonsProfile,
 						 baseFloatZIndex : 3000000,
-						 
+						 title : false,
 						 removePlugins : 'wsc,forms,image,chart,floating-tools,about,a11yhelp,bidi,dialogadvtab,div,elementspath,filebrowser,flash,iframe,language,newpage,save,scayt,smiley,resize,sourcearea'
 						 
 						
@@ -205,6 +206,9 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 		  }
         
         this.editor.on( "instanceReady", this.onReady );
+        this.editor.on('instanceReady', function(e) {
+            $(e.editor.element.$).removeAttr("title");
+          });
         rap.on( "send", this.onSend );
       }
     },
