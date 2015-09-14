@@ -1070,4 +1070,21 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
         return null;
     }
+
+    @Override
+    public void clearCanvasMessages(String canvasName)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void setCanvasMessages(String canvasName, Collection<EJMessage> messages)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    
+    
 }

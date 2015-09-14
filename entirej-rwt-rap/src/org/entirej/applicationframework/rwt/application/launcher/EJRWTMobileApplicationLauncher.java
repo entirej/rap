@@ -68,6 +68,7 @@ import org.entirej.framework.core.properties.EJCoreProperties;
 public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLauncher
 {
 
+    protected UI ui;
     protected static final String THEME_DEFAULT = "org.entirej.applicationframework.rwt.mobile.Default";
 
     @Override
@@ -314,6 +315,18 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                                 shell.layout();
                             }
                         });
+                        
+                        ui = new UI()
+                        {
+                            
+                            @Override
+                            public void showMenu(boolean show)
+                            {
+                                nav.setVisible(show);
+                                nav.setLayoutData(show ? navData : navEmptyData);
+                                shell.layout();
+                            }
+                        };
                         final GridData actioBData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
                         actioBData.widthHint = 40;
                         actioBData.heightHint = 40;
@@ -403,4 +416,10 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
         return "Default";
     }
 
+    
+    protected static interface UI{
+        
+        void showMenu(boolean show);
+        
+    }
 }
