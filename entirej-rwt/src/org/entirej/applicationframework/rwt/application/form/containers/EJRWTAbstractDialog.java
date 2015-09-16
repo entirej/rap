@@ -22,6 +22,7 @@ import java.io.Serializable;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.TrayDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
@@ -33,7 +34,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-public abstract class EJRWTAbstractDialog extends Dialog implements Serializable
+public abstract class EJRWTAbstractDialog extends TrayDialog implements Serializable
 {
     private Shell _parent;
     private int   _selectedButtonId = -1;

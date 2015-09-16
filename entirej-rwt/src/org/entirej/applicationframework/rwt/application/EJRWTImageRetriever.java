@@ -46,6 +46,9 @@ public class EJRWTImageRetriever
     public static final String                 IMG_INFO             = ICONS + "info.png";
     public static final String                 IMG_WARNING          = ICONS + "warning.png";
     public static final String                 IMG_ERROR            = ICONS + "error.png";
+    public static final String                 IMG_INFO_16             = ICONS + "info_16.png";
+    public static final String                 IMG_WARNING_16           = ICONS + "warning_16.png";
+    public static final String                 IMG_ERROR_16             = ICONS + "error_16.png";
     public static final String                 IMG_CLOSE            = ICONS + "close.png";
     private static EJRWTGraphicsProvider       graphicsProvider;
 
