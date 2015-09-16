@@ -168,6 +168,12 @@
 			<artifactId>app</artifactId>
 			<version>1.0.0-v20070606</version>
 		</dependency>
+		
+			<dependency>
+			<groupId>org.eclipse.rap</groupId>
+			<artifactId>org.eclipse.rap.rwt.osgi</artifactId>
+			<version>2.3.0</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>

@@ -82,7 +82,7 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
     private boolean                 _validate             = true;
 
     private EJFrameworkManager      _frameworkManager;
-    private EJRWTAbstractDialog     _dialog;
+    protected EJRWTAbstractDialog     _dialog;
 
     private EJInternalBlock         _block;
     private FilteredContentProvider _filteredContentProvider;

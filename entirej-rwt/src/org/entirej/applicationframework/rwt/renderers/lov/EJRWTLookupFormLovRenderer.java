@@ -21,6 +21,7 @@
  */
 package org.entirej.applicationframework.rwt.renderers.lov;
 
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -30,7 +31,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
-import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
@@ -86,23 +86,35 @@ public class EJRWTLookupFormLovRenderer extends EJRWTStandardLovRenderer
         super.displayLov(itemToValidate, displayReason);
         if (displayReason == EJLovDisplayReason.LOV)
         {
-            
-            
+
             EJFrameworkExtensionProperties rendererProp = getLovController().getDefinitionProperties().getLovRendererProperties();
 
-            if (!rendererProp.getBooleanProperty(SHOW_QUERY_SCREEN, true) && getLovController().getBlockRecordCount()>0 )
+            if (!rendererProp.getBooleanProperty(SHOW_QUERY_SCREEN, true) && getLovController().getBlockRecordCount() > 0)
             {
                 return;
             }
-            
-            Display.getDefault().asyncExec(new Runnable()
+
+            final ServerPushSession pushSession = new ServerPushSession();
+            pushSession.start();
+            final Display dp = Display.getDefault();
+            new java.util.Timer().schedule(new java.util.TimerTask()
             {
                 @Override
                 public void run()
                 {
-                    getLovController().enterQuery();
+                    dp.asyncExec(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            getLovController().enterQuery();
+                            pushSession.stop();
+                        }
+                    });
+
                 }
-            });
+            }, 100);
+
         }
     }
 
