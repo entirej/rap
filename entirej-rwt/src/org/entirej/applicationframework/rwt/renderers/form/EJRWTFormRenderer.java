@@ -776,7 +776,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 }
                 else
                 {
-                    MessageTray messageTray = new MessageTray()
+                    MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
                     {
 
                         @Override
@@ -931,7 +931,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 {
                     if (_popupDialog.getTray() == null)
                     {
-                        MessageTray messageTray = new MessageTray()
+                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
                         {
 
                             @Override
@@ -1199,6 +1199,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         Collection<EJMessage> msgs;
 
         EJRWTEntireJGridPane  shell;
+        boolean canClose;
+        public MessageTray(boolean canClose)
+        {
+          this.canClose = canClose;
+        }
 
         @Override
         protected Control createContents(Composite parent)
@@ -1241,7 +1246,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 shell.cleanLayoutVertical();
 
                 // add close button
-
+                if(canClose)
                 {
 
                     Label close = new Label(shell, SWT.None);
