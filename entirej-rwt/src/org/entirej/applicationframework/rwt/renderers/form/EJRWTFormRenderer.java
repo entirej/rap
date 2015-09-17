@@ -979,7 +979,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             return EJCanvasType.POPUP;
         }
 
-        public void setPopupButtonState(EJPopupButton button, boolean state)
+        public void enableButton(EJPopupButton button, boolean state)
         {
             switch (button)
             {
@@ -1006,7 +1006,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         }
 
-        public boolean getPopupButtonState(EJPopupButton button)
+        public boolean isButtonEnabled(EJPopupButton button)
         {
             switch (button)
             {
@@ -1244,25 +1244,25 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     }
 
     @Override
-    public void setPopupButtonState(String canvasName, EJPopupButton button, boolean state)
+    public void enableButton(String canvasName, EJPopupButton button, boolean state)
     {
         CanvasHandler canvasHandler = _canvases.get(canvasName);
         if (canvasHandler instanceof PopupCanvasHandler)
         {
             PopupCanvasHandler popupCanvasHandler = (PopupCanvasHandler) canvasHandler;
-            popupCanvasHandler.setPopupButtonState(button, state);
+            popupCanvasHandler.enableButton(button, state);
         }
 
     }
 
     @Override
-    public boolean getPopupButtonState(String canvasName, EJPopupButton button)
+    public boolean isButtonEnabled(String canvasName, EJPopupButton button)
     {
         CanvasHandler canvasHandler = _canvases.get(canvasName);
         if (canvasHandler instanceof PopupCanvasHandler)
         {
             PopupCanvasHandler popupCanvasHandler = (PopupCanvasHandler) canvasHandler;
-            return popupCanvasHandler.getPopupButtonState(button);
+            return popupCanvasHandler.isButtonEnabled(button);
         }
         return false;
     }
