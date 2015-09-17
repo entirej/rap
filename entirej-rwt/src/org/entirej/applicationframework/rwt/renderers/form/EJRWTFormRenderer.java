@@ -743,9 +743,15 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     private final class PopupCanvasHandler implements CanvasHandler
     {
         EJRWTAbstractDialog           _popupDialog;
-
+        final int ID_BUTTON_1 = 1;
+        final int ID_BUTTON_2 = 2;
+        final int ID_BUTTON_3 = 3;
         final EJCanvasProperties      canvasProperties;
         final EJCanvasController      canvasController;
+
+        boolean                       popupButton1 = true;
+        boolean                       popupButton2 = true;
+        boolean                       popupButton3 = true;
 
         private Collection<EJMessage> msgs;
 
@@ -820,9 +826,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             final String button2Label = canvasProperties.getButtonTwoText();
             final String button3Label = canvasProperties.getButtonThreeText();
 
-            final int ID_BUTTON_1 = 1;
-            final int ID_BUTTON_2 = 2;
-            final int ID_BUTTON_3 = 3;
+         
 
             if (_popupDialog == null || _popupDialog.getShell() == null || _popupDialog.getShell().isDisposed())
             {
@@ -867,6 +871,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         addExtraButton(parent, button3Label, ID_BUTTON_3);
                         addExtraButton(parent, button2Label, ID_BUTTON_2);
                         addExtraButton(parent, button1Label, ID_BUTTON_1);
+
+                        setButtonEnable(ID_BUTTON_1, popupButton1);
+                        setButtonEnable(ID_BUTTON_2, popupButton2);
+                        setButtonEnable(ID_BUTTON_3, popupButton3);
 
                     }
 
@@ -969,6 +977,50 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         public EJCanvasType getType()
         {
             return EJCanvasType.POPUP;
+        }
+
+        public void setPopupButtonState(EJPopupButton button, boolean state)
+        {
+            switch (button)
+            {
+                case ONE:
+                    popupButton1 = state;
+                    if (_popupDialog != null)
+                        _popupDialog.setButtonEnable(ID_BUTTON_1, popupButton1);
+
+                    break;
+                case TWO:
+                    popupButton2 = state;
+                    if (_popupDialog != null)
+                        _popupDialog.setButtonEnable(ID_BUTTON_2, popupButton2);
+                    break;
+                case THREE:
+                    popupButton3 = state;
+                    if (_popupDialog != null)
+                        _popupDialog.setButtonEnable(ID_BUTTON_3, popupButton3);
+                    break;
+
+                default:
+                    break;
+            }
+
+        }
+
+        public boolean getPopupButtonState(EJPopupButton button)
+        {
+            switch (button)
+            {
+                case ONE:
+                    return popupButton1;
+                case TWO:
+                    return popupButton2;
+                case THREE:
+                    return popupButton3;
+
+                default:
+                    break;
+            }
+            return false;
         }
     }
 
@@ -1191,6 +1243,30 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
     }
 
+    @Override
+    public void setPopupButtonState(String canvasName, EJPopupButton button, boolean state)
+    {
+        CanvasHandler canvasHandler = _canvases.get(canvasName);
+        if (canvasHandler instanceof PopupCanvasHandler)
+        {
+            PopupCanvasHandler popupCanvasHandler = (PopupCanvasHandler) canvasHandler;
+            popupCanvasHandler.setPopupButtonState(button, state);
+        }
+
+    }
+
+    @Override
+    public boolean getPopupButtonState(String canvasName, EJPopupButton button)
+    {
+        CanvasHandler canvasHandler = _canvases.get(canvasName);
+        if (canvasHandler instanceof PopupCanvasHandler)
+        {
+            PopupCanvasHandler popupCanvasHandler = (PopupCanvasHandler) canvasHandler;
+            return popupCanvasHandler.getPopupButtonState(button);
+        }
+        return false;
+    }
+
     public static abstract class MessageTray extends DialogTray
     {
 
@@ -1199,10 +1275,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         Collection<EJMessage> msgs;
 
         EJRWTEntireJGridPane  shell;
-        boolean canClose;
+        boolean               canClose;
+
         public MessageTray(boolean canClose)
         {
-          this.canClose = canClose;
+            this.canClose = canClose;
         }
 
         @Override
@@ -1246,7 +1323,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 shell.cleanLayoutVertical();
 
                 // add close button
-                if(canClose)
+                if (canClose)
                 {
 
                     Label close = new Label(shell, SWT.None);
