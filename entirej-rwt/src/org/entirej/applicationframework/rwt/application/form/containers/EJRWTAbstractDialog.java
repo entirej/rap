@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-public abstract class EJRWTAbstractDialog extends TrayDialog implements Serializable
+public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Serializable
 {
     private Shell _parent;
     private int   _selectedButtonId = -1;
@@ -123,9 +123,9 @@ public abstract class EJRWTAbstractDialog extends TrayDialog implements Serializ
 
     }
 
-    public void canceled()
+    public boolean canceled()
     {
-
+            return true;
     }
 
     @Override
@@ -139,7 +139,7 @@ public abstract class EJRWTAbstractDialog extends TrayDialog implements Serializ
             {
                 if (_selectedButtonId == -1)
                 {
-                    canceled();
+                    event.doit = canceled();
                 }
             }
         });

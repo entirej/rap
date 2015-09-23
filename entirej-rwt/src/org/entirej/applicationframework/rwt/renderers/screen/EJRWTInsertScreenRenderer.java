@@ -309,9 +309,11 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
             }
 
             @Override
-            public void canceled()
+            public boolean canceled()
             {
                 _block.insertCancelled();
+                
+                return  true;
             }
 
             @Override

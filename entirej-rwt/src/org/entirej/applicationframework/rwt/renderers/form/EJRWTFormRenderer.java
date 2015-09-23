@@ -25,31 +25,36 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jface.dialogs.DialogTray;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.Listener;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
+import org.entirej.applicationframework.rwt.application.form.containers.EJRWTDialogTray;
+import org.entirej.applicationframework.rwt.application.form.containers.EJRWTTrayDialog.TrayLocation;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJStackedPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
@@ -797,7 +802,30 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                     };
                     messageTray.setMessages(msgs);
-                    _popupDialog.openTray(messageTray);
+                    
+                    
+                    TrayLocation location = TrayLocation.RIGHT;
+                    
+                    switch (canvasProperties.getMessagePosition())
+                    {
+                        case BOTTOM:
+                            location = TrayLocation.BOTTOM;
+                            break;
+                        case LEFT:
+                            location = TrayLocation.LEFT;
+                            break;
+                        case RIGHT:
+                            location = TrayLocation.RIGHT;
+                            break;
+                        case TOP:
+                            location = TrayLocation.TOP;
+                            break;
+
+                        default:
+                            break;
+                    }
+                    
+                    _popupDialog.openTray(location,messageTray,canvasProperties.getMessagePaneSize());
                 }
 
             }
@@ -854,6 +882,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         scrollComposite.setExpandHorizontal(true);
                         scrollComposite.setExpandVertical(true);
                         scrollComposite.setMinSize(_mainPane.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
+                        
+                        
+                        
+                        
                     }
 
                     @Override
@@ -862,6 +894,13 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         return super.open();
                     }
 
+                    @Override
+                    public boolean canceled()
+                    {
+                        canvasController.closePopupCanvas(name, EJPopupButton.UNDEFINED);
+                        return false;
+                    }
+                    
                     @Override
                     protected void createButtonsForButtonBar(Composite parent)
                     {
@@ -891,6 +930,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     @Override
                     public boolean close()
                     {
+                        msgs = null;
                         return super.close();
                     }
 
@@ -902,18 +942,21 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                             case ID_BUTTON_1:
                             {
+                                msgs = null;
                                 canvasController.closePopupCanvas(name, EJPopupButton.ONE);
                                 break;
                             }
                             case ID_BUTTON_2:
                             {
+                                msgs = null;
                                 canvasController.closePopupCanvas(name, EJPopupButton.TWO);
                                 break;
                             }
                             case ID_BUTTON_3:
                             {
+                                msgs = null;
                                 canvasController.closePopupCanvas(name, EJPopupButton.THREE);
-                                close();
+                               
                                 break;
                             }
 
@@ -954,7 +997,28 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                         };
                         messageTray.setMessages(msgs);
-                        _popupDialog.openTray(messageTray);
+                        TrayLocation location = TrayLocation.RIGHT;
+                        
+                        switch (canvasProperties.getMessagePosition())
+                        {
+                            case BOTTOM:
+                                location = TrayLocation.BOTTOM;
+                                break;
+                            case LEFT:
+                                location = TrayLocation.LEFT;
+                                break;
+                            case RIGHT:
+                                location = TrayLocation.RIGHT;
+                                break;
+                            case TOP:
+                                location = TrayLocation.TOP;
+                                break;
+
+                            default:
+                                break;
+                        }
+                        
+                        _popupDialog.openTray(location,messageTray,canvasProperties.getMessagePaneSize());
                     }
                     else
                     {
@@ -967,6 +1031,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         void close()
         {
+            msgs = null;
             if (_popupDialog != null && _popupDialog.getShell() != null && _popupDialog.getShell().isVisible())
             {
                 _popupDialog.close();
@@ -1267,7 +1332,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         return false;
     }
 
-    public static abstract class MessageTray extends DialogTray
+    public static abstract class MessageTray extends EJRWTDialogTray
     {
 
         private Composite     parent;
@@ -1314,12 +1379,13 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     composite.cleanLayout();
                 }
 
-                shell = new EJRWTEntireJGridPane(composite, 2);
+                final ScrolledComposite scrollComposite = new ScrolledComposite(composite, SWT.V_SCROLL);
+                
+                shell = new EJRWTEntireJGridPane(scrollComposite, 2);
+                
 
                 GridData layoutData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL);
-                layoutData.widthHint = 250;
-                layoutData.minimumWidth = 250;
-                shell.setLayoutData(layoutData);
+                scrollComposite.setLayoutData(layoutData);
                 shell.cleanLayoutVertical();
 
                 // add close button
@@ -1389,6 +1455,26 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     }
                     composite.layout(true);
                 }
+                
+                composite.addControlListener(new ControlListener()
+                {
+                    
+                    @Override
+                    public void controlResized(ControlEvent e)
+                    {
+                        Point computeSize = shell.computeSize(composite.getBounds().width, SWT.DEFAULT);
+                        computeSize.x =computeSize.x-5;
+                        shell.setSize(computeSize);
+                    }
+                    
+                    @Override
+                    public void controlMoved(ControlEvent e)
+                    {
+                        // TODO Auto-generated method stub
+                        
+                    }
+                });
+                scrollComposite.setContent(shell);
             }
         }
 
