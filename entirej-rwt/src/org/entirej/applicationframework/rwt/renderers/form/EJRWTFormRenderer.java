@@ -907,9 +907,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         // Add the buttons in reverse order, as they will be
                         // added
                         // from left to right
-                        addExtraButton(parent, button3Label, ID_BUTTON_3);
-                        addExtraButton(parent, button2Label, ID_BUTTON_2);
-                        addExtraButton(parent, button1Label, ID_BUTTON_1);
+                        addExtraButton(parent, button3Label, ID_BUTTON_3,canvasProperties.getDefaultPopupButton()==EJPopupButton.THREE);
+                        addExtraButton(parent, button2Label, ID_BUTTON_2,canvasProperties.getDefaultPopupButton()==EJPopupButton.TWO);
+                        addExtraButton(parent, button1Label, ID_BUTTON_1,canvasProperties.getDefaultPopupButton()==EJPopupButton.ONE);
 
                         setButtonEnable(ID_BUTTON_1, popupButton1);
                         setButtonEnable(ID_BUTTON_2, popupButton2);
@@ -917,13 +917,13 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                     }
 
-                    private void addExtraButton(Composite parent, String label, int id)
+                    private void addExtraButton(Composite parent, String label, int id,boolean deafultButton)
                     {
                         if (label == null || label.length() == 0)
                         {
                             return;
                         }
-                        createButton(parent, id, label, false);
+                        createButton(parent, id, label, deafultButton);
 
                     }
 
