@@ -55,6 +55,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTDialogTray;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTTrayDialog.TrayLocation;
+import org.entirej.applicationframework.rwt.application.form.containers.EJRWTTrayPane;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJStackedPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
@@ -414,14 +415,106 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
     }
 
-    private void createStackedCanvas(final Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
+    private void createStackedCanvas( Composite parent, final EJCanvasProperties canvasProperties, EJCanvasController canvasController)
     {
         final String name = canvasProperties.getName();
+        
+        final  EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
+        trayPane.setLayoutData(createCanvasGridData(canvasProperties));
+        parent = trayPane;
         EJRWTEntireJStackedPane stackedPane = new EJRWTEntireJStackedPane(parent);
+        trayPane.initBase(stackedPane);
         stackedPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         stackedPane.setLayoutData(createCanvasGridData(canvasProperties));
         _stackedPanes.put(name, stackedPane);
+        CanvasHandler canvasHandler = new CanvasHandler()
+        {
 
+            private Collection<EJMessage> msgs;
+            
+            @Override
+            public void clearCanvasMessages()
+            {
+                this.msgs = null;
+                if (trayPane != null && !trayPane.isDisposed())
+                {
+                    trayPane.closeTray();
+                }
+
+            }
+
+            @Override
+            public void setCanvasMessages(Collection<EJMessage> messages)
+            {
+                this.msgs = messages;
+                if (trayPane != null && !trayPane.isDisposed())
+                {
+
+                    if (trayPane.getTray() != null)
+                    {
+                        trayPane.closeTray();
+                    }
+                   
+                    {
+                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        {
+
+                            @Override
+                            void close()
+                            {
+                                if (trayPane != null && !trayPane.isDisposed())
+                                {
+                                    trayPane.closeTray();
+                                }
+
+                            }
+
+                        };
+                        messageTray.setMessages(msgs);
+                        
+                        
+                        TrayLocation location = TrayLocation.RIGHT;
+                        
+                        switch (canvasProperties.getMessagePosition())
+                        {
+                            case BOTTOM:
+                                location = TrayLocation.BOTTOM;
+                                break;
+                            case LEFT:
+                                location = TrayLocation.LEFT;
+                                break;
+                            case RIGHT:
+                                location = TrayLocation.RIGHT;
+                                break;
+                            case TOP:
+                                location = TrayLocation.TOP;
+                                break;
+
+                            default:
+                                break;
+                        }
+                        
+                        trayPane.openTray(location,messageTray,canvasProperties.getMessagePaneSize());
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void add(EJInternalBlock block)
+            {
+
+              
+            }
+
+            @Override
+            public EJCanvasType getType()
+            {
+                return EJCanvasType.STACKED;
+            }
+        };
+        _canvases.put(canvasProperties.getName(), canvasHandler);
         for (EJStackedPageProperties page : canvasProperties.getStackedPageContainer().getAllStackedPageProperties())
         {
 
@@ -470,16 +563,108 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         _canvasesIds.add(name);
     }
 
-    private void createFormCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
+    private void createFormCanvas(Composite parent, final EJCanvasProperties canvasProperties, EJCanvasController canvasController)
     {
+        
+        final  EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
+        trayPane.setLayoutData(createCanvasGridData(canvasProperties));
+        parent = trayPane;
         final String name = canvasProperties.getName();
         Composite stackedPane = new Composite(parent, SWT.NONE);
         stackedPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         stackedPane.setLayout(new FillLayout());
         stackedPane.setLayoutData(createCanvasGridData(canvasProperties));
         _formPanes.put(name, stackedPane);
-
+        trayPane.initBase(stackedPane);
         _canvasesIds.add(name);
+        CanvasHandler canvasHandler = new CanvasHandler()
+        {
+
+            private Collection<EJMessage> msgs;
+            
+            @Override
+            public void clearCanvasMessages()
+            {
+                this.msgs = null;
+                if (trayPane != null && !trayPane.isDisposed())
+                {
+                    trayPane.closeTray();
+                }
+
+            }
+
+            @Override
+            public void setCanvasMessages(Collection<EJMessage> messages)
+            {
+                this.msgs = messages;
+                if (trayPane != null && !trayPane.isDisposed())
+                {
+
+                    if (trayPane.getTray() != null)
+                    {
+                        trayPane.closeTray();
+                    }
+                   
+                    {
+                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        {
+
+                            @Override
+                            void close()
+                            {
+                                if (trayPane != null && !trayPane.isDisposed())
+                                {
+                                    trayPane.closeTray();
+                                }
+
+                            }
+
+                        };
+                        messageTray.setMessages(msgs);
+                        
+                        
+                        TrayLocation location = TrayLocation.RIGHT;
+                        
+                        switch (canvasProperties.getMessagePosition())
+                        {
+                            case BOTTOM:
+                                location = TrayLocation.BOTTOM;
+                                break;
+                            case LEFT:
+                                location = TrayLocation.LEFT;
+                                break;
+                            case RIGHT:
+                                location = TrayLocation.RIGHT;
+                                break;
+                            case TOP:
+                                location = TrayLocation.TOP;
+                                break;
+
+                            default:
+                                break;
+                        }
+                        
+                        trayPane.openTray(location,messageTray,canvasProperties.getMessagePaneSize());
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void add(EJInternalBlock block)
+            {
+
+              
+            }
+
+            @Override
+            public EJCanvasType getType()
+            {
+                return EJCanvasType.FORM;
+            }
+        };
+        _canvases.put(canvasProperties.getName(), canvasHandler);
 
         if (canvasProperties.getReferredFormId() != null && canvasProperties.getReferredFormId().length() > 0)
         {
@@ -487,7 +672,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
     }
 
-    private void createTabCanvas(Composite parent, EJCanvasProperties canvasProperties, final EJCanvasController canvasController)
+    private void createTabCanvas(Composite parent, final EJCanvasProperties canvasProperties, final EJCanvasController canvasController)
     {
         int style = SWT.FLAT;
 
@@ -517,9 +702,15 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 break;
         }
         final String name = canvasProperties.getName();
+        
+        final  EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
+        trayPane.setLayoutData(createCanvasGridData(canvasProperties));
+        parent = trayPane;
         final CTabFolder folder = new CTabFolder(parent, style);
+        
         folder.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         EJTabFolder tabFolder = new EJTabFolder(folder, canvasController);
+        trayPane.initBase(tabFolder.getFolder());
         folder.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -528,8 +719,99 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 canvasController.tabPageChanged(name, (String) folder.getSelection().getData("TAB_KEY"));
             }
         });
+        
+        CanvasHandler canvasHandler = new CanvasHandler()
+        {
+
+            private Collection<EJMessage> msgs;
+            
+            @Override
+            public void clearCanvasMessages()
+            {
+                this.msgs = null;
+                if (trayPane != null && !trayPane.isDisposed())
+                {
+                    trayPane.closeTray();
+                }
+
+            }
+
+            @Override
+            public void setCanvasMessages(Collection<EJMessage> messages)
+            {
+                this.msgs = messages;
+                if (trayPane != null && !trayPane.isDisposed())
+                {
+
+                    if (trayPane.getTray() != null)
+                    {
+                        trayPane.closeTray();
+                    }
+                   
+                    {
+                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        {
+
+                            @Override
+                            void close()
+                            {
+                                if (trayPane != null && !trayPane.isDisposed())
+                                {
+                                    trayPane.closeTray();
+                                }
+
+                            }
+
+                        };
+                        messageTray.setMessages(msgs);
+                        
+                        
+                        TrayLocation location = TrayLocation.RIGHT;
+                        
+                        switch (canvasProperties.getMessagePosition())
+                        {
+                            case BOTTOM:
+                                location = TrayLocation.BOTTOM;
+                                break;
+                            case LEFT:
+                                location = TrayLocation.LEFT;
+                                break;
+                            case RIGHT:
+                                location = TrayLocation.RIGHT;
+                                break;
+                            case TOP:
+                                location = TrayLocation.TOP;
+                                break;
+
+                            default:
+                                break;
+                        }
+                        
+                        trayPane.openTray(location,messageTray,canvasProperties.getMessagePaneSize());
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void add(EJInternalBlock block)
+            {
+
+              
+            }
+
+            @Override
+            public EJCanvasType getType()
+            {
+                return EJCanvasType.TAB;
+            }
+        };
+        _canvases.put(canvasProperties.getName(), canvasHandler);
+        
+        
         _tabFolders.put(name, tabFolder);
-        folder.setLayoutData(createCanvasGridData(canvasProperties));
+        folder.setLayoutData(new GridData(GridData.FILL_BOTH|GridData.GRAB_HORIZONTAL|GridData.GRAB_VERTICAL));
 
         Collection<EJTabPageProperties> allTabPageProperties = canvasProperties.getTabPageContainer().getAllTabPageProperties();
         int index = 0;
@@ -582,8 +864,14 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         return gridData;
     }
 
-    private void createGroupCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
+    private void createGroupCanvas(Composite parent,final EJCanvasProperties canvasProperties, EJCanvasController canvasController)
     {
+        
+        
+       final  EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
+        trayPane.setLayoutData(createCanvasGridData(canvasProperties));
+        parent = trayPane;
+        
         String frameTitle = canvasProperties.getGroupFrameTitle();
         if (canvasProperties.getDisplayGroupFrame() && frameTitle != null && frameTitle.length() > 0)
         {
@@ -593,7 +881,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             group.setLayoutData(createCanvasGridData(canvasProperties));
 
             group.setText(frameTitle);
-
+            trayPane.initBase(group);
             parent = group;
         }
         final EJRWTEntireJGridPane groupPane = new EJRWTEntireJGridPane(parent, canvasProperties.getNumCols(),
@@ -612,22 +900,80 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         if (!canvasProperties.getDisplayGroupFrame())
         {
             groupPane.setLayoutData(createCanvasGridData(canvasProperties));
+            trayPane.initBase(groupPane);
         }
 
         CanvasHandler canvasHandler = new CanvasHandler()
         {
 
+            private Collection<EJMessage> msgs;
+            
             @Override
             public void clearCanvasMessages()
             {
-                // TODO Auto-generated method stub
+                this.msgs = null;
+                if (trayPane != null && !trayPane.isDisposed())
+                {
+                    trayPane.closeTray();
+                }
 
             }
 
             @Override
             public void setCanvasMessages(Collection<EJMessage> messages)
             {
-                // TODO Auto-generated method stub
+                this.msgs = messages;
+                if (trayPane != null && !trayPane.isDisposed())
+                {
+
+                    if (trayPane.getTray() != null)
+                    {
+                        trayPane.closeTray();
+                    }
+                   
+                    {
+                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        {
+
+                            @Override
+                            void close()
+                            {
+                                if (trayPane != null && !trayPane.isDisposed())
+                                {
+                                    trayPane.closeTray();
+                                }
+
+                            }
+
+                        };
+                        messageTray.setMessages(msgs);
+                        
+                        
+                        TrayLocation location = TrayLocation.RIGHT;
+                        
+                        switch (canvasProperties.getMessagePosition())
+                        {
+                            case BOTTOM:
+                                location = TrayLocation.BOTTOM;
+                                break;
+                            case LEFT:
+                                location = TrayLocation.LEFT;
+                                break;
+                            case RIGHT:
+                                location = TrayLocation.RIGHT;
+                                break;
+                            case TOP:
+                                location = TrayLocation.TOP;
+                                break;
+
+                            default:
+                                break;
+                        }
+                        
+                        trayPane.openTray(location,messageTray,canvasProperties.getMessagePaneSize());
+                    }
+
+                }
 
             }
 
@@ -642,6 +988,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             + " has a canvas defined but no renderer. A block cannot be rendererd if no canvas has been defined."));
                 }
                 blockRenderer.buildGuiComponent(groupPane);
+                trayPane.setLayoutData(groupPane.getLayoutData());
             }
 
             @Override
@@ -686,12 +1033,104 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
     }
 
-    private void createSplitCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
+    private void createSplitCanvas(Composite parent, final EJCanvasProperties canvasProperties, EJCanvasController canvasController)
     {
+        
+        final  EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
+        trayPane.setLayoutData(createCanvasGridData(canvasProperties));
+        parent = trayPane;
         SashForm layoutBody = new SashForm(parent, canvasProperties.getSplitOrientation() == EJCanvasSplitOrientation.HORIZONTAL ? SWT.HORIZONTAL
                 : SWT.VERTICAL);
+        trayPane.initBase(layoutBody);
         layoutBody.setLayoutData(createCanvasGridData(canvasProperties));
+        CanvasHandler canvasHandler = new CanvasHandler()
+        {
 
+            private Collection<EJMessage> msgs;
+            
+            @Override
+            public void clearCanvasMessages()
+            {
+                this.msgs = null;
+                if (trayPane != null && !trayPane.isDisposed())
+                {
+                    trayPane.closeTray();
+                }
+
+            }
+
+            @Override
+            public void setCanvasMessages(Collection<EJMessage> messages)
+            {
+                this.msgs = messages;
+                if (trayPane != null && !trayPane.isDisposed())
+                {
+
+                    if (trayPane.getTray() != null)
+                    {
+                        trayPane.closeTray();
+                    }
+                   
+                    {
+                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        {
+
+                            @Override
+                            void close()
+                            {
+                                if (trayPane != null && !trayPane.isDisposed())
+                                {
+                                    trayPane.closeTray();
+                                }
+
+                            }
+
+                        };
+                        messageTray.setMessages(msgs);
+                        
+                        
+                        TrayLocation location = TrayLocation.RIGHT;
+                        
+                        switch (canvasProperties.getMessagePosition())
+                        {
+                            case BOTTOM:
+                                location = TrayLocation.BOTTOM;
+                                break;
+                            case LEFT:
+                                location = TrayLocation.LEFT;
+                                break;
+                            case RIGHT:
+                                location = TrayLocation.RIGHT;
+                                break;
+                            case TOP:
+                                location = TrayLocation.TOP;
+                                break;
+
+                            default:
+                                break;
+                        }
+                        
+                        trayPane.openTray(location,messageTray,canvasProperties.getMessagePaneSize());
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void add(EJInternalBlock block)
+            {
+
+              
+            }
+
+            @Override
+            public EJCanvasType getType()
+            {
+                return EJCanvasType.SPLIT;
+            }
+        };
+        _canvases.put(canvasProperties.getName(), canvasHandler);
         layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         if (canvasProperties.getType() == EJCanvasType.SPLIT)
         {
@@ -782,10 +1221,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                 if (_popupDialog.getTray() != null)
                 {
-                    MessageTray tray = (MessageTray) _popupDialog.getTray();
-                    tray.setMessages(msgs);
+                    _popupDialog.closeTray();
                 }
-                else
+              
                 {
                     MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
                     {
@@ -838,7 +1276,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             this.msgs = null;
             if (_popupDialog != null && !_popupDialog.getShell().isDisposed())
             {
-                _popupDialog.close();
+                _popupDialog.closeTray();
             }
         }
 
@@ -1110,6 +1548,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 folder.setSelection(cTabItem.item);
             }
 
+        }
+        
+        public CTabFolder getFolder()
+        {
+            return folder;
         }
 
         public void setTabPageVisible(String pageName, boolean visible)
@@ -1497,5 +1940,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
     }
+    
+    
 
 }
