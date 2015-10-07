@@ -71,11 +71,15 @@ import org.entirej.framework.core.enumerations.EJPopupButton;
 import org.entirej.framework.core.internal.EJInternalBlock;
 import org.entirej.framework.core.internal.EJInternalEditableBlock;
 import org.entirej.framework.core.internal.EJInternalForm;
+import org.entirej.framework.core.properties.EJCoreCanvasProperties;
+import org.entirej.framework.core.properties.EJCoreMainScreenItemProperties;
+import org.entirej.framework.core.properties.EJCoreMainScreenProperties;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.containers.interfaces.EJCanvasPropertiesContainer;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.core.properties.interfaces.EJCanvasProperties;
 import org.entirej.framework.core.properties.interfaces.EJFormProperties;
+import org.entirej.framework.core.properties.interfaces.EJMainScreenProperties;
 import org.entirej.framework.core.properties.interfaces.EJStackedPageProperties;
 import org.entirej.framework.core.properties.interfaces.EJTabPageProperties;
 
@@ -897,7 +901,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
         groupPane.setPaneName(canvasProperties.getName());
-        if (!canvasProperties.getDisplayGroupFrame())
+        if (!(canvasProperties.getDisplayGroupFrame()&& frameTitle != null && frameTitle.length() > 0))
         {
             groupPane.setLayoutData(createCanvasGridData(canvasProperties));
             trayPane.initBase(groupPane);
@@ -1145,11 +1149,19 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     weights[items.indexOf(containedCanvas)] = canvasProperties.getSplitOrientation() == EJCanvasSplitOrientation.HORIZONTAL ? containedCanvas
                             .getBlockProperties().getMainScreenProperties().getWidth() + 1 : containedCanvas.getBlockProperties().getMainScreenProperties()
                             .getHeight() + 1;
+                    EJCoreMainScreenProperties mainScreenProperties = (EJCoreMainScreenProperties) containedCanvas
+                    .getBlockProperties().getMainScreenProperties();
+                    mainScreenProperties.setExpandHorizontally(true);
+                    mainScreenProperties.setExpandVertically(true);
                 }
                 else
                 {
                     weights[items.indexOf(containedCanvas)] = canvasProperties.getSplitOrientation() == EJCanvasSplitOrientation.HORIZONTAL ? containedCanvas
                             .getWidth() + 1 : containedCanvas.getHeight() + 1;
+                    
+                   EJCoreCanvasProperties coreCanvasProperties =  (EJCoreCanvasProperties) containedCanvas;
+                   coreCanvasProperties.setExpandHorizontally(true);
+                   coreCanvasProperties.setExpandVertically(true);
                 }
 
                 switch (containedCanvas.getType())
