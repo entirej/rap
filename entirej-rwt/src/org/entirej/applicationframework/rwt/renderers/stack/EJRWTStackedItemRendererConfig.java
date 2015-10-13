@@ -6,7 +6,7 @@ import java.util.List;
 public class EJRWTStackedItemRendererConfig
 {
 
-    public static final int                 DEFUALT = 0;
+    public static final int                    DEFUALT = 0;
     private final EJRWTStackedItemRendererType type;
 
     private EJRWTStackedItemRendererConfig(EJRWTStackedItemRendererType type)
@@ -17,8 +17,10 @@ public class EJRWTStackedItemRendererConfig
     private String  label;
     private String  tooltip;
 
-    private int     xSpan = DEFUALT;
-    private int     ySpan = DEFUALT;
+    private int     xSpan  = DEFUALT;
+    private int     ySpan  = DEFUALT;
+    private int     width  = DEFUALT;
+    private int     height = DEFUALT;
 
     private boolean expandHorizontally;
     private boolean expandVertically;
@@ -48,9 +50,26 @@ public class EJRWTStackedItemRendererConfig
         this.tooltip = tooltip;
     }
 
-    
-    
-    
+    public int getHeight()
+    {
+        return height;
+    }
+
+    public void setHeight(int height)
+    {
+        this.height = height;
+    }
+
+    public int getWidth()
+    {
+        return width;
+    }
+
+    public void setWidth(int width)
+    {
+        this.width = width;
+    }
+
     public int getXSpan()
     {
         return xSpan;
@@ -90,9 +109,6 @@ public class EJRWTStackedItemRendererConfig
     {
         this.expandVertically = expandVertically;
     }
-
-
-
 
     public static class LOVSupportConfig extends EJRWTStackedItemRendererConfig
     {

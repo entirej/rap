@@ -934,6 +934,48 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     }
                 }
 
+                
+                if (_baseValue.getConfig().getWidth()!= EJRWTStackedItemRendererConfig.DEFUALT)
+                {
+                    Object layoutData = _actionControl.getLayoutData();
+                    if (layoutData instanceof GridData)
+                    {
+                        GridData data = (GridData) layoutData;
+
+                        // add padding
+                        
+                        Control control = stackedPane.getControl(_baseValue.getConfig().getType().name());
+
+                        float avgCharHeight = EJRWTImageRetriever.getGraphicsProvider().getAvgCharWidth(control.getFont());
+
+                        if (_actionControl.getData("data.widthHint") == null)
+                            _actionControl.setData("data.widthHint", data.widthHint);
+
+                        data.widthHint = (int) (avgCharHeight* (_baseValue.getConfig().getWidth()+ 1));
+
+                    }
+                }
+                else
+                {
+                    Object layoutData = _actionControl.getLayoutData();
+                    if (layoutData instanceof GridData)
+                    {
+                        GridData data = (GridData) layoutData;
+
+                        // add padding
+                        if (_actionControl.getData("data.widthHint") != null)
+                        {
+
+                            data.widthHint = (Integer) _actionControl.getData("data.widthHint");
+
+                            _actionControl.setData("data.widthHint", null);
+                        }
+
+                    }
+                }
+                
+                
+                
                 if (_baseValue.getConfig().getType() == EJRWTStackedItemRendererType.TEXT_AREA)
                 {
                     Object layoutData = _actionControl.getLayoutData();
@@ -957,6 +999,43 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
                     }
 
+                    
+                    if (_label != null)
+                    {
+                        layoutData = _label.getLayoutData();
+                        if (layoutData instanceof GridData)
+                        {
+                            GridData data = (GridData) layoutData;
+                            
+                            if (_label.getData("data.VA") == null)
+                                _label.setData("data.VA", data.verticalAlignment);
+                            if (_label.getData("data.VI") == null)
+                                _label.setData("data.VI", data.verticalIndent);
+                            
+                            data.verticalIndent = 2;
+                            data.verticalAlignment = SWT.TOP;
+                        }
+                    }
+                }
+                else if (_baseValue.getConfig().getHeight()!= EJRWTStackedItemRendererConfig.DEFUALT)
+                {
+                    Object layoutData = _actionControl.getLayoutData();
+                    if (layoutData instanceof GridData)
+                    {
+                        GridData data = (GridData) layoutData;
+
+                        // add padding
+                        
+                        Control control = stackedPane.getControl(_baseValue.getConfig().getType().name());
+
+                        float avgCharHeight = EJRWTImageRetriever.getGraphicsProvider().getCharHeight(control.getFont());
+
+                        if (_actionControl.getData("data.heightHint") == null)
+                            _actionControl.setData("data.heightHint", data.heightHint);
+
+                        data.heightHint = (int) (avgCharHeight* (_baseValue.getConfig().getHeight()+ 1));
+
+                    }
                     
                     if (_label != null)
                     {
