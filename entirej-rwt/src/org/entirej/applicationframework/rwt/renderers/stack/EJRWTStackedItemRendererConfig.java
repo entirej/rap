@@ -191,16 +191,33 @@ public class EJRWTStackedItemRendererConfig
 
     public static class Date extends LOVSupportConfig
     {
+        public enum ReturnType
+        {
+            UTIL_DATE, SQL_DATE,SQL_TIME, SQL_TIMESTAMP
+            
+        }
+
         public Date()
         {
             super(EJRWTStackedItemRendererType.DATE);
         }
 
-        private String format;
+        private String     format;
+        private ReturnType returnType = ReturnType.UTIL_DATE;
 
         public String getFormat()
         {
             return format;
+        }
+
+        public void setReturnType(ReturnType returnType)
+        {
+            this.returnType = returnType;
+        }
+
+        public ReturnType getReturnType()
+        {
+            return returnType;
         }
 
         public void setFormat(String format)

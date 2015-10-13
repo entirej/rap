@@ -454,6 +454,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 {
 
                     Text control = (Text) stackedPane.getControl(_baseValue.getConfig().getType().name());
+                    EJRWTStackedItemRendererConfig.Date config = (EJRWTStackedItemRendererConfig.Date) _baseValue.getConfig();
                     Date value = null;
                     try
                     {
@@ -469,20 +470,23 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         // convert to correct type if need
                         if (value != null)
                         {
-                            String dataTypeClass = _baseValue.getValue() != null ? _baseValue.getValue().getClass().getName() : Date.class.getName();
-                            if (dataTypeClass.equals("java.sql.Date"))
+                            
+                            switch (config.getReturnType())
                             {
-                                value = new java.sql.Date(value.getTime());
-                            }
-                            else if (dataTypeClass.equals("java.sql.Time"))
-                            {
-                                value = new java.sql.Time(value.getTime());
-                            }
-                            else if (dataTypeClass.equals("java.sql.Timestamp"))
-                            {
-                                value = new java.sql.Timestamp(value.getTime());
-                            }
+                                case SQL_DATE:
+                                    value = new java.sql.Date(value.getTime());
+                                    break;
+                                case SQL_TIME:
+                                    value = new java.sql.Time(value.getTime());
+                                    break;
+                                case SQL_TIMESTAMP:
+                                    value = new java.sql.Timestamp(value.getTime());
+                                    break;
 
+                                default:
+                                    break;
+                            }
+                           
                         }
                         _baseValue.setValue(value);
                     }
