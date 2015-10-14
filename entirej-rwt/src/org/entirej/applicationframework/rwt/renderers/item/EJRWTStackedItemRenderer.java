@@ -806,7 +806,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         if (_actionControl.getData("data.ExpandV") == null)
                             _actionControl.setData("data.ExpandV", data.grabExcessVerticalSpace);
                         if (_actionControl.getData("data.VA") == null)
-                            _actionControl.setData("data.VA", data.horizontalAlignment);
+                            _actionControl.setData("data.VA", data.verticalAlignment);
                         data.grabExcessVerticalSpace = _baseValue.getConfig().getExpandVertically();
 
                         data.verticalAlignment = data.grabExcessVerticalSpace?  SWT.FILL :SWT.TOP;
@@ -844,7 +844,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         {
 
                             data.grabExcessVerticalSpace = (Boolean) _actionControl.getData("data.ExpandV");
-                            data.horizontalAlignment = (Integer) _actionControl.getData("data.VA");
+                            data.verticalAlignment = (Integer) _actionControl.getData("data.VA");
                             _actionControl.setData("data.ExpandV", null);
                             _actionControl.setData("data.VA", null);
                         }
@@ -1165,7 +1165,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     {
 
                         data.grabExcessVerticalSpace = (Boolean) _actionControl.getData("data.ExpandV");
-                        data.horizontalAlignment = (Integer) _actionControl.getData("data.VA");
+                        data.verticalAlignment = (Integer) _actionControl.getData("data.VA");
                         _actionControl.setData("data.ExpandV", null);
                         _actionControl.setData("data.VA", null);
                     }
