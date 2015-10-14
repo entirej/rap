@@ -754,7 +754,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
                 stackedPane.showPane(_baseValue.getConfig().getType().name());
 
-                if (_baseValue.getConfig().isExpandHorizontally())
+                if (_baseValue.getConfig().getExpandHorizontally()!=null)
                 {
                     Object layoutData = _actionControl.getLayoutData();
                     if (layoutData instanceof GridData)
@@ -768,8 +768,8 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         if (_actionControl.getData("data.HA") == null)
                             _actionControl.setData("data.HA", data.horizontalAlignment);
 
-                        data.grabExcessHorizontalSpace = _baseValue.getConfig().isExpandHorizontally();
-                        data.horizontalAlignment = SWT.FILL;
+                        data.grabExcessHorizontalSpace = _baseValue.getConfig().getExpandHorizontally();
+                        data.horizontalAlignment =  data.grabExcessHorizontalSpace?  SWT.FILL :SWT.BEGINNING;
 
                     }
                 }
@@ -794,7 +794,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     }
                 }
 
-                if (_baseValue.getConfig().isExpandVertically())
+                if (_baseValue.getConfig().getExpandVertically()!=null)
                 {
                     Object layoutData = _actionControl.getLayoutData();
                     if (layoutData instanceof GridData)
@@ -807,9 +807,9 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                             _actionControl.setData("data.ExpandV", data.grabExcessVerticalSpace);
                         if (_actionControl.getData("data.VA") == null)
                             _actionControl.setData("data.VA", data.horizontalAlignment);
-                        data.grabExcessVerticalSpace = _baseValue.getConfig().isExpandVertically();
+                        data.grabExcessVerticalSpace = _baseValue.getConfig().getExpandVertically();
 
-                        data.verticalAlignment = SWT.FILL;
+                        data.verticalAlignment = data.grabExcessVerticalSpace?  SWT.FILL :SWT.TOP;
 
                         
                         

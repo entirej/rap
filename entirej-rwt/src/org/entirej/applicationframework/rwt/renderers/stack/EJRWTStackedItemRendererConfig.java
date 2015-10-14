@@ -22,8 +22,8 @@ public class EJRWTStackedItemRendererConfig
     private int     width  = DEFUALT;
     private int     height = DEFUALT;
 
-    private boolean expandHorizontally;
-    private boolean expandVertically;
+    private Boolean expandHorizontally = null;
+    private Boolean expandVertically = null;
 
     public EJRWTStackedItemRendererType getType()
     {
@@ -90,22 +90,22 @@ public class EJRWTStackedItemRendererConfig
         this.ySpan = ySpan;
     }
 
-    public boolean isExpandHorizontally()
+    public Boolean getExpandHorizontally()
     {
         return expandHorizontally;
     }
 
-    public void setExpandHorizontally(boolean expandHorizontally)
+    public void setExpandHorizontally(Boolean expandHorizontally)
     {
         this.expandHorizontally = expandHorizontally;
     }
 
-    public boolean isExpandVertically()
+    public Boolean getExpandVertically()
     {
         return expandVertically;
     }
 
-    public void setExpandVertically(boolean expandVertically)
+    public void setExpandVertically(Boolean expandVertically)
     {
         this.expandVertically = expandVertically;
     }
