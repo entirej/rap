@@ -46,6 +46,8 @@ public class EJRWTCKEditor extends Composite
 
     private String                 text             = "";
     private final RemoteObject     remoteObject;
+    
+    
 
     private final OperationHandler operationHandler = new AbstractOperationHandler()
                                                     {
@@ -60,7 +62,7 @@ public class EJRWTCKEditor extends Composite
                                                         }
                                                     };
 
-    public EJRWTCKEditor(Composite parent, int style,boolean inline,String profile)
+    public EJRWTCKEditor(Composite parent, int style,boolean inline,String profile,boolean removeToolbar)
     {
         super(parent, style);
        
@@ -72,6 +74,7 @@ public class EJRWTCKEditor extends Composite
         remoteObject.setHandler(operationHandler);
         remoteObject.set("parent", WidgetUtil.getId(this));
         remoteObject.set("inline", inline);
+        remoteObject.set("removeToolbar", removeToolbar);
         remoteObject.set("profile", profile==null ? "Standard":profile);
         
     }
@@ -214,7 +217,7 @@ public class EJRWTCKEditor extends Composite
 
     public boolean getEditable()
     {
-        return true;
+        return isEnabled();
     }
 
     public void setEditable(boolean editAllowed)

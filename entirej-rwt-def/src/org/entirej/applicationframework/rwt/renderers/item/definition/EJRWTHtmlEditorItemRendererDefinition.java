@@ -45,6 +45,8 @@ public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererD
     public static final String PROPERTY_PROFILE_STANDARD = "Standard";
     public static final String PROPERTY_PROFILE_FULL     = "Full";
 
+    public static final String PROPERTY_REMOVE_TOOLBAR_KEY = "REMOVE_TOOLBAR";
+
     public EJRWTHtmlEditorItemRendererDefinition()
     {
     }
@@ -86,6 +88,11 @@ public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererD
         inlineMode.setDescription("Indicates if this item should edit with inline toolbar");
         inlineMode.setDefaultValue("false");
         mainGroup.addPropertyDefinition(inlineMode);
+        
+        EJDevPropertyDefinition removeToolbar = new EJDevPropertyDefinition(PROPERTY_REMOVE_TOOLBAR_KEY, EJPropertyDefinitionType.BOOLEAN);
+        removeToolbar.setLabel("Hide toolbar when disabled");
+        removeToolbar.setDefaultValue("false");
+        mainGroup.addPropertyDefinition(removeToolbar);
 
         EJDevPropertyDefinition profile = new EJDevPropertyDefinition(PROPERTY_PROFILE_KEY, EJPropertyDefinitionType.STRING);
         profile.setLabel("Toolbar Profile");

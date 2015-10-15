@@ -59,6 +59,7 @@ import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
 public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusListener, Serializable
 {
     public static final String PROPERTY_INLINE_KEY = "INLINE";
+    public static final String PROPERTY_REMOVE_TOOLBAR_KEY = "REMOVE_TOOLBAR";
     
     public static final String PROPERTY_PROFILE_KEY      = "PROFILE";
     public static final String PROPERTY_PROFILE_BASIC    = "Basic";
@@ -568,7 +569,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
             composite.setData(EJ_RWT.CUSTOM_VARIANT, "html");
             _textField = new EJRWTCKEditor(composite, SWT.NONE,_rendererProps.getBooleanProperty(PROPERTY_INLINE_KEY, false),
                     
-                    _rendererProps.getStringProperty(PROPERTY_PROFILE_KEY));
+                    _rendererProps.getStringProperty(PROPERTY_PROFILE_KEY),_rendererProps.getBooleanProperty(PROPERTY_REMOVE_TOOLBAR_KEY, false));
             _textField.setData(EJ_RWT.CUSTOM_VARIANT, "html");
             _textField.setData(EJ_RWT.CUSTOM_VARIANT, getCSSKey());
             String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
