@@ -99,6 +99,28 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         
         if(target && target.hasAttribute && target.hasAttribute('recid'))
     	{
+        	
+       	 var elemsnts= this.element.getElementsByClassName("rowindi");
+         if(elemsnts)
+     	{
+         	
+         	for(var i =0;i<elemsnts.length;i++)
+         	{
+         		var elm = elemsnts[i];
+         		if(elm.parentNode == target)
+         			{
+         			elm.style.visibility = "visible";
+         			}
+         		else
+         			elm.style.visibility = "hidden";
+         	}
+     	}
+        
+    	
+    	
+    	
+
+        	
         	var remoteObject = rap.getRemoteObject(this);
         	var args = {};
         	args['0']=target.getAttribute('recid');

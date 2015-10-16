@@ -82,6 +82,10 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
     public static final String HEADER_VA              = "HEADER_VA";
     public static final String ROW_ODD_VA             = "ROW_ODD_VA";
     public static final String ROW_EVEN_VA            = "ROW_EVEN_VA";
+    
+    public static final String ROW_SELECTION          = "ROW_SELECTION";
+    public static final String ROW_SELECTION_VA       = "ROW_SELECTION_VA";
+
 
     public EJRWTHtmlTableBlockRendererDefinition()
     {
@@ -144,7 +148,13 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         rowEvenVA.setDescription("Specifies visual attribute for table even row");
 
         
-       
+        EJDevPropertyDefinition rowSelection = new EJDevPropertyDefinition(ROW_SELECTION, EJPropertyDefinitionType.BOOLEAN);
+        rowSelection.setLabel("Row Selection Indicator");
+        rowSelection.setDefaultValue("false");
+        EJDevPropertyDefinition rowSelectionVA = new EJDevPropertyDefinition(ROW_SELECTION_VA, EJPropertyDefinitionType.VISUAL_ATTRIBUTE);
+        rowSelectionVA.setLabel("Row Selection Indicator VA");
+
+
         
         mainGroup.addPropertyDefinitionList(list);
         mainGroup.addPropertyDefinition(filter);
@@ -153,7 +163,8 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         mainGroup.addPropertyDefinition(rowOddVA);
         mainGroup.addPropertyDefinition(rowEvenVA);
         mainGroup.addPropertyDefinition(cellSpacing);
-        mainGroup.addPropertyDefinition(cellPadding);
+        mainGroup.addPropertyDefinition(rowSelection);
+        mainGroup.addPropertyDefinition(rowSelectionVA);
 
         return mainGroup;
     }
