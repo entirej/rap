@@ -569,7 +569,18 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 @Override
                                 public void action(String method, JsonObject parameters)
                                 {
-                                    if ("eaction".equals(method))
+                                    if ("eselect".equals(method))
+                                    {
+                                        final Object arg1 = parameters.get("0").asString();
+                                        if (arg1 instanceof String)
+                                        {
+                                            currentRec = getRecordAt(Integer.valueOf((String) arg1));
+                                            if (currentRec != null)
+                                                _block.newRecordInstance(currentRec);
+                                        }
+                                    }
+                                    
+                                    else if ("eaction".equals(method))
                                     {
                                         final Object arg1 = parameters.get("0").asString();
                                         Object arg2 = parameters.get("1").asString();
@@ -620,7 +631,18 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                         @Override
                         public void action(String method, JsonObject parameters)
                         {
-                            if ("eaction".equals(method))
+                            if ("eselect".equals(method))
+                            {
+                                final Object arg1 = parameters.get("0").asString();
+                                if (arg1 instanceof String)
+                                {
+                                    currentRec = getRecordAt(Integer.valueOf((String) arg1));
+                                    if (currentRec != null)
+                                        _block.newRecordInstance(currentRec);
+                                }
+                            }
+                            
+                            else if ("eaction".equals(method))
                             {
                                 final Object arg1 = parameters.get("0").asString();
                                 Object arg2 = parameters.get("1").asString();
@@ -686,7 +708,18 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 @Override
                                 public void action(String method, JsonObject parameters)
                                 {
-                                    if ("eaction".equals(method))
+                                    if ("eselect".equals(method))
+                                    {
+                                        final Object arg1 = parameters.get("0").asString();
+                                        if (arg1 instanceof String)
+                                        {
+                                            currentRec = getRecordAt(Integer.valueOf((String) arg1));
+                                            if (currentRec != null)
+                                                _block.newRecordInstance(currentRec);
+                                        }
+                                    }
+                                    
+                                    else if ("eaction".equals(method))
                                     {
                                         final Object arg1 = parameters.get("0").asString();
                                         Object arg2 = parameters.get("1").asString();
@@ -742,7 +775,18 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                         @Override
                         public void action(String method, JsonObject parameters)
                         {
-                            if ("eaction".equals(method))
+                            if ("eselect".equals(method))
+                            {
+                                final Object arg1 = parameters.get("0").asString();
+                                if (arg1 instanceof String)
+                                {
+                                    currentRec = getRecordAt(Integer.valueOf((String) arg1));
+                                    if (currentRec != null)
+                                        _block.newRecordInstance(currentRec);
+                                }
+                            }
+                            
+                            else  if ("eaction".equals(method))
                             {
                                 final Object arg1 = parameters.get("0").asString();
                                 Object arg2 = parameters.get("1").asString();
@@ -812,7 +856,18 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             @Override
                             public void action(String method, JsonObject parameters)
                             {
-                                if ("eaction".equals(method))
+                                if ("eselect".equals(method))
+                                {
+                                    final Object arg1 = parameters.get("0").asString();
+                                    if (arg1 instanceof String)
+                                    {
+                                        currentRec = getRecordAt(Integer.valueOf((String) arg1));
+                                        if (currentRec != null)
+                                            _block.newRecordInstance(currentRec);
+                                    }
+                                }
+                                
+                                else if ("eaction".equals(method))
                                 {
                                     final Object arg1 = parameters.get("0").asString();
                                     Object arg2 = parameters.get("1").asString();
@@ -867,7 +922,18 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                     public void action(String method, JsonObject parameters)
                     {
 
-                        if ("eaction".equals(method))
+                        if ("eselect".equals(method))
+                        {
+                            final Object arg1 = parameters.get("0").asString();
+                            if (arg1 instanceof String)
+                            {
+                                currentRec = getRecordAt(Integer.valueOf((String) arg1));
+                                if (currentRec != null)
+                                    _block.newRecordInstance(currentRec);
+                            }
+                        }
+                        
+                        else  if ("eaction".equals(method))
                         {
                             final Object arg1 = parameters.get("0").asString();
                             Object arg2 = parameters.get("1").asString();
@@ -1372,7 +1438,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                     builder.append(createVACSSUrl());
                     builder.append("\">");
                     int charHeight = EJRWTImageRetriever.getGraphicsProvider().getCharHeight(Display.getDefault().getSystemFont());
-                    String trDef = String.format("<tr style=\"height: %spx\">", String.valueOf(charHeight));
+                   
 
                     if (_headerTag != null)
                     {
@@ -1401,7 +1467,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                     builder.append("<tbody>");
                     if (records.size() > 0)
                     {
-
+                       
                         records = sortedRecords(records);
                         int lastRowSpan = 0;
 
@@ -1420,6 +1486,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                         int rowid = 0;
                         for (EJDataRecord record : records)
                         {
+                            String trDef = String.format("<tr style=\"height: %spx\" recid=\"%s\" >", String.valueOf(charHeight),String.valueOf(getDisplayedRecordNumber(record)));
                             rowid++;
                             if (lastRowSpan > 1)
                             {
@@ -1563,6 +1630,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                     }
                     else
                     {
+                        String trDef = String.format("<tr style=\"height: %spx\"  >", String.valueOf(charHeight));
                         builder.append(trDef);
                         for (EJCoreMainScreenItemProperties item : _items)
                         {
