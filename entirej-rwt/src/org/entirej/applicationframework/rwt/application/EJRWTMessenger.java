@@ -196,12 +196,18 @@ public class EJRWTMessenger implements EJMessenger
     {
         if (exception instanceof EJApplicationException && showUserMessage)
         {
+
+            EJApplicationException ejApplicationException = (EJApplicationException) exception;
+            if(ejApplicationException.stopProcessing() && ejApplicationException.getFrameworkMessage()==null)
+            {
+                return;
+            }
             // If the EJApplicationException is created with no parameters, the
             // user is using it to halt application processing, therefore there
             // is not need to handler the exception
             logger.error(exception.getMessage(), exception);
-            EJMessage frameworkMessage = ((EJApplicationException) exception).getFrameworkMessage();
-            if (frameworkMessage.getMessage() != null)
+            EJMessage frameworkMessage = ejApplicationException.getFrameworkMessage();
+            if (frameworkMessage !=null && frameworkMessage.getMessage() != null)
             {
                 handleMessage(frameworkMessage);
             }
