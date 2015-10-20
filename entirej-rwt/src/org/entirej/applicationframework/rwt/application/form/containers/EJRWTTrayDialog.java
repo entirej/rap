@@ -171,7 +171,8 @@ public abstract class EJRWTTrayDialog extends Dialog
     {
         if (getTray() == null)
         {
-            throw new IllegalStateException("Tray was not open"); //$NON-NLS-1$
+           // throw new IllegalStateException("Tray was not open"); //$NON-NLS-1$
+            return;
         }
         Shell shell = getShell();
         Control focusControl = shell.getDisplay().getFocusControl();

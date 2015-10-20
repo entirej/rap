@@ -21,8 +21,11 @@
  */
 package org.entirej.applicationframework.rwt.renderers.item;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -36,7 +39,9 @@ import java.util.Map;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
@@ -50,8 +55,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionList;
@@ -93,17 +100,17 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     protected EJScreenItemProperties          _screenItemProperties;
     protected EJItemProperties                _itemProperties;
     protected String                          _registeredItemName;
-    protected EJRWTAbstractActionList        _actionControl;
-    protected org.eclipse.swt.widgets.List                           _listField;
+    protected EJRWTAbstractActionList         _actionControl;
+    protected org.eclipse.swt.widgets.List    _listField;
     protected boolean                         _activeEvent      = true;
     protected Label                           _label;
-    protected boolean                         _isValid         = true;
+    protected boolean                         _isValid          = true;
     protected boolean                         _mandatory;
     protected int                             _maxLength;
     protected boolean                         _valueChanged;
 
-    private Map<Object, ListBoxValue>        _listValues     = new HashMap<Object, ListBoxValue>();
-    private List<Object>                      _listKays       = new ArrayList<Object>();
+    private Map<Object, ListBoxValue>         _listValues       = new HashMap<Object, ListBoxValue>();
+    private List<Object>                      _listKays         = new ArrayList<Object>();
 
     private EJRWTItemRendererVisualContext    _visualContext;
 
@@ -116,6 +123,8 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
     protected boolean                         _lovActivated;
     protected boolean                         _lovInitialied;
+
+    public static final String                COLUMN_IMAGE_ITEM = "IMAGE_ITEM";
 
     protected boolean controlState(Control control)
     {
@@ -137,7 +146,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
             _activeEvent = false;
             if (controlState(_listField))
             {
-                _listField.setSelection(new String[]{});
+                _listField.setSelection(new String[] {});
             }
 
         }
@@ -269,8 +278,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
         }
         else
         {
-            EJMessage message = new EJMessage("No LovDefinition item has been chosen for the ListBox renderer properties on item: "
-                    + _itemProperties.getName());
+            EJMessage message = new EJMessage("No LovDefinition item has been chosen for the ListBox renderer properties on item: " + _itemProperties.getName());
             _item.getForm().getFrameworkManager().getApplicationManager().getApplicationMessenger().handleMessage(message);
             return;
         }
@@ -292,10 +300,8 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
         }
         try
         {
-            lovController.executeQuery(new EJItemLovController(_item.getBlock().getBlockController().getFormController(),
-                    _item, ((EJCoreItemProperties)_itemProperties).getLovMappingPropertiesOnUpdate()));
-
-
+            lovController.executeQuery(new EJItemLovController(_item.getBlock().getBlockController().getFormController(), _item,
+                    ((EJCoreItemProperties) _itemProperties).getLovMappingPropertiesOnUpdate()));
 
             Collection<EJDataRecord> records = lovController.getRecords();
             for (EJDataRecord ejDataRecord : records)
@@ -371,12 +377,11 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     @Override
     public void refreshItemRendererProperty(String propertyName)
     {
-        
-        if(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
+
+        if (EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
         {
 
-            
-            if(controlState(_label) && _rendererProps!=null)
+            if (controlState(_label) && _rendererProps != null)
             {
                 String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
@@ -389,11 +394,11 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     _label.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXTAREA);
                 }
             }
-           
-            if(controlState(_listField) && _rendererProps!=null)
+
+            if (controlState(_listField) && _rendererProps != null)
             {
                 String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
-                
+
                 if (customCSSKey != null && customCSSKey.trim().length() > 0)
                 {
                     _listField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
@@ -403,7 +408,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     _listField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_LIST);
                 }
             }
-            
+
         }
     }
 
@@ -517,12 +522,12 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                         {
                             if (value.equals(boxValue.getItemValue()))
                             {
-                                _listField.setSelection(new String[]{boxValue.getItemValueAsString()});
+                                _listField.setSelection(new String[] { boxValue.getItemValueAsString() });
 
                             }
                             else if (boxValue.getItemValue() == null)
                             {
-                                _listField.setSelection(new String[]{});
+                                _listField.setSelection(new String[] {});
                             }
                         }
                     }
@@ -530,7 +535,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 }
                 else
                 {
-                    _listField.setSelection(new String[]{});
+                    _listField.setSelection(new String[] {});
                 }
             }
             finally
@@ -685,15 +690,20 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     alignmentProperty = _rendererProps.getStringProperty("ALLIGNMENT");
                 }
                 String hint = _screenItemProperties.getHint();
-                int style = SWT.READ_ONLY|SWT.SINGLE|SWT.BORDER;
+                int style = SWT.READ_ONLY | SWT.SINGLE | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL;
                 style = getComponentStyle(alignmentProperty, style);
                 _listField = new org.eclipse.swt.widgets.List(parent, style);
-                _listField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LIST);
+                _listField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_LIST);
                 String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+                String imageItem = _rendererProps.getStringProperty(COLUMN_IMAGE_ITEM);
 
                 if (customCSSKey != null && customCSSKey.trim().length() > 0)
                 {
                     _listField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
+                if (imageItem != null && imageItem.trim().length() > 0)
+                {
+                    _listField.setData(EJ_RWT.MARKUP_ENABLED, true);
                 }
                 if (hint != null && hint.trim().length() > 0)
                 {
@@ -868,7 +878,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     public void createLable(Composite composite)
     {
         _label = new Label(composite, SWT.NONE);
-        _label.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LIST);
+        _label.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_LIST);
         String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
         if (customCSSKey != null && customCSSKey.trim().length() > 0)
@@ -925,7 +935,57 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 return;
             }
 
+            final String imageItem = _rendererProps.getStringProperty(COLUMN_IMAGE_ITEM);
+
             StringBuffer buffer = new StringBuffer();
+
+            if (imageItem != null && imageItem.trim().length() > 0 && record != null)
+            {
+                Object val = record.getValue(imageItem);
+                if (val != null)
+                {
+                    Image _currentImage = null;
+                    if (val instanceof String)
+                    {
+                        URL resource = EJRWTImageRetriever.class.getClassLoader().getResource((String) val);
+                        if (resource != null)
+                        {
+                            _currentImage = ImageDescriptor.createFromURL(resource).createImage();
+                        }
+                        else
+                        {
+                            try
+                            {
+                                _currentImage = ImageDescriptor.createFromURL((new URL((String) val))).createImage();
+                            }
+                            catch (MalformedURLException e)
+                            {
+                                EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM,
+                                        _item.getName(), "String should follow URL Spec or Need to be In Classpath", (String) val);
+                                throw new IllegalArgumentException(message.getMessage());
+                            }
+                        }
+                    }
+                    else if (val instanceof URL)
+                    {
+                        _currentImage = ImageDescriptor.createFromURL((URL) val).createImage();
+                    }
+                    else if (val instanceof byte[])
+                    {
+                        _currentImage = new Image(Display.getDefault(), new ByteArrayInputStream((byte[]) val));
+                    }
+
+                    if (_currentImage != null)
+                    {
+                        String src = ImageFactory.getImagePath(_currentImage);
+                        
+                      
+                        buffer.append("<img width='14' height='14' src='" + src + "'/>  ");
+                    }
+
+                }
+            }
+
             boolean multi = false;
             for (EJFrameworkExtensionPropertyListEntry entry : propertyList.getAllListEntries())
             {

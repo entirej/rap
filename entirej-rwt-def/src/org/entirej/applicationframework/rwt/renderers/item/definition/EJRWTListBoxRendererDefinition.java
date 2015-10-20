@@ -47,6 +47,7 @@ public class EJRWTListBoxRendererDefinition implements EJDevItemRendererDefiniti
     public static final String COLUMN_FORMAT       = "FORMAT";
     public static final String COLUMN_DISPLAYED    = "DISPLAYED";
     public static final String COLUMN_RETURN_ITEM  = "RETURN_ITEM";
+    public static final String COLUMN_IMAGE_ITEM   = "IMAGE_ITEM";
     public static final String INITIALIES_LOV      = "INITIALIES_LOV";
     public static final String CSS_KEY             = "CSS_KEY";
 
@@ -66,7 +67,7 @@ public class EJRWTListBoxRendererDefinition implements EJDevItemRendererDefiniti
 
     public void loadValidValuesForProperty(EJFrameworkExtensionProperties frameworkExtensionProperties, EJPropertyDefinition propertyDefinition)
     {
-        if (COLUMN_NAME.equals(propertyDefinition.getName()))
+        if (COLUMN_NAME.equals(propertyDefinition.getName()) || COLUMN_IMAGE_ITEM.equals(propertyDefinition.getName()))
         {
             String lovDefItemName = frameworkExtensionProperties.getStringProperty(LOV_DEFINITION_NAME);
 
@@ -126,7 +127,11 @@ public class EJRWTListBoxRendererDefinition implements EJDevItemRendererDefiniti
         EJDevPropertyDefinition returnItem = new EJDevPropertyDefinition(COLUMN_RETURN_ITEM, EJPropertyDefinitionType.BLOCK_ITEM);
         returnItem.setLabel("Return Item");
         returnItem.setDescription("This value will be set to the given value of the specified item when the user chooses a value from the List Box");
-
+       
+        
+        EJDevPropertyDefinition imageItem = new EJDevPropertyDefinition(COLUMN_IMAGE_ITEM, EJPropertyDefinitionType.STRING);
+        imageItem.setLabel("Image Item");
+        imageItem.setLoadValidValuesDynamically(true);
         list.addPropertyDefinition(lovItemName);
         list.addPropertyDefinition(lovDisplayItem);
         list.addPropertyDefinition(returnItem);
@@ -137,15 +142,14 @@ public class EJRWTListBoxRendererDefinition implements EJDevItemRendererDefiniti
         initialiseLov
                 .setDescription("Because List Boxes are based upon lov definitions, they need to make a query to be created. Thsi could take time dependin on how many list boxes you are displaying. You can set the Populate On Creation to false to delay the population of the List Box until either the items gets set to a value in the action processor or you request that the item renderer be refreshed");
         initialiseLov.setDefaultValue("true");
-        
-        
+
         EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(CSS_KEY, EJPropertyDefinitionType.STRING);
         customCSSKey.setLabel("Custom CSS Key");
-        customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
-
-
+        customCSSKey
+                .setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
 
         mainGroup.addPropertyDefinition(lovDefName);
+        mainGroup.addPropertyDefinition(imageItem);
         mainGroup.addPropertyDefinition(initialiseLov);
         mainGroup.addPropertyDefinition(customCSSKey);
         mainGroup.addPropertyDefinitionList(list);
