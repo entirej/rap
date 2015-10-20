@@ -29,6 +29,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.entirej.applicationframework.rwt.notifications.EJRWTNotifierDialog;
 import org.entirej.framework.core.EJApplicationException;
@@ -192,7 +193,7 @@ public class EJRWTMessenger implements EJMessenger
     }
 
     @Override
-    public void handleException(Exception exception, boolean showUserMessage)
+    public void handleException(final Exception exception, boolean showUserMessage)
     {
         if (exception instanceof EJApplicationException && showUserMessage)
         {
@@ -206,21 +207,50 @@ public class EJRWTMessenger implements EJMessenger
             // user is using it to halt application processing, therefore there
             // is not need to handler the exception
             logger.error(exception.getMessage(), exception);
-            EJMessage frameworkMessage = ejApplicationException.getFrameworkMessage();
-            if (frameworkMessage !=null && frameworkMessage.getMessage() != null)
+           final  EJMessage frameworkMessage = ejApplicationException.getFrameworkMessage();
+            Display current = Display.getCurrent();
+            if(current!=null)
             {
-                handleMessage(frameworkMessage);
+                current.asyncExec(new Runnable()
+                {
+                    
+                    @Override
+                    public void run()
+                   {
+                        if (frameworkMessage !=null && frameworkMessage.getMessage() != null)
+                        {
+                            handleMessage(frameworkMessage);
+                        }
+                        else
+                        {
+                            handleMessage(new EJMessage(exception.getMessage()));
+                        }
+                        
+                    }
+                });
             }
-            else
-            {
-                handleMessage(new EJMessage(exception.getMessage()));
-            }
+            
+           
         }
         else if (showUserMessage)
         {
             logger.error(exception.getMessage(), exception);
-            Status status = new Status(IStatus.ERROR, "rwt.ej", exception.getMessage());
-            ErrorDialog.openError(manager.getShell(), "Error", "Internal Error", status);
+            Display current = Display.getCurrent();
+            if(current!=null)
+            {
+                current.asyncExec(new Runnable()
+                {
+                    
+                    @Override
+                    public void run()
+                    {
+                        Status status = new Status(IStatus.ERROR, "rwt.ej", exception.getMessage());
+                        ErrorDialog.openError(manager.getShell(), "Error", "Internal Error", status);
+                        
+                    }
+                });
+            }
+           
         }
     }
 

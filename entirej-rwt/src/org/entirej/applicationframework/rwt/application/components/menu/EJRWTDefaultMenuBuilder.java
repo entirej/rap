@@ -37,6 +37,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
@@ -63,9 +64,8 @@ public class EJRWTDefaultMenuBuilder implements Serializable
         this._applicationManager = appManager;
         this._parent = parent;
     }
-    
-    
-    public static void createApplicationMenu(EJApplicationManager applicationManager, Shell shell,EJRWTMenuTreeRoot root)
+
+    public static void createApplicationMenu(EJApplicationManager applicationManager, Shell shell, EJRWTMenuTreeRoot root)
     {
         EJMenuActionProcessor actionProcessor = null;
         if (root.getActionProcessorClassName() != null && root.getActionProcessorClassName().length() > 0)
@@ -104,64 +104,69 @@ public class EJRWTDefaultMenuBuilder implements Serializable
             }
         }
         Menu appMenuBar = shell.getDisplay().getMenuBar();
-        if (appMenuBar == null) {
-                appMenuBar = new Menu(shell, SWT.BAR);
-                shell.setMenuBar(appMenuBar);
+        if (appMenuBar == null)
+        {
+            appMenuBar = new Menu(shell, SWT.BAR);
+            shell.setMenuBar(appMenuBar);
         }
-        createMenu(applicationManager,appMenuBar,root,actionProcessor);
-        
+        createMenu(applicationManager, appMenuBar, root, actionProcessor);
+
     }
 
-
-    public static void createMenu(final EJApplicationManager applicationManager,Menu parent,EJRWTMenuTreeElement root, final EJMenuActionProcessor menuActionProcessor)
+    public static void createMenu(final EJApplicationManager applicationManager, Menu parent, EJRWTMenuTreeElement root,
+            final EJMenuActionProcessor menuActionProcessor)
     {
         List<EJRWTMenuTreeElement> treeElements = root.getTreeElements();
         for (final EJRWTMenuTreeElement treeElement : treeElements)
         {
-            switch(treeElement.getType())
+            switch (treeElement.getType())
             {
-                case ACTION: 
+                case ACTION:
                 {
                     MenuItem action = new MenuItem(parent, SWT.PUSH);
                     action.setText(treeElement.getText());
                     action.setImage(treeElement.getImage());
-                    if(menuActionProcessor!=null)
+                    if (menuActionProcessor != null)
                     {
-                        action.addSelectionListener(new SelectionAdapter() {
-                                @Override
-                                public void widgetSelected(SelectionEvent evnt) {
-                                    try
-                                    {
-                                        menuActionProcessor.executeActionCommand(treeElement.getActionCommand());
-                                    }
-                                    catch (EJActionProcessorException e)
-                                    {
-                                        applicationManager.getApplicationMessenger().handleException(e, true);
-                                    }
+                        action.addSelectionListener(new SelectionAdapter()
+                        {
+                            @Override
+                            public void widgetSelected(SelectionEvent evnt)
+                            {
+                                try
+                                {
+                                    menuActionProcessor.executeActionCommand(treeElement.getActionCommand());
                                 }
+                                catch (EJActionProcessorException e)
+                                {
+                                    applicationManager.getApplicationMessenger().handleException(e, true);
+                                }
+                            }
                         });
                     }
                     break;
                 }
-                case FORM: 
+                case FORM:
                 {
                     MenuItem form = new MenuItem(parent, SWT.PUSH);
                     form.setText(treeElement.getText());
                     form.setImage(treeElement.getImage());
-                    form.addSelectionListener(new SelectionAdapter() {
-                            @Override
-                            public void widgetSelected(SelectionEvent e) {
-                                applicationManager.getFrameworkManager().openForm(treeElement.getActionCommand(), null, false);
-                            }
+                    form.addSelectionListener(new SelectionAdapter()
+                    {
+                        @Override
+                        public void widgetSelected(SelectionEvent e)
+                        {
+                            applicationManager.getFrameworkManager().openForm(treeElement.getActionCommand(), null, false);
+                        }
                     });
                     break;
                 }
-                case SEPARATOR: 
+                case SEPARATOR:
                 {
                     new MenuItem(parent, SWT.SEPARATOR);
                     break;
                 }
-                case SUB: 
+                case SUB:
                 {
                     MenuItem sub = new MenuItem(parent, SWT.CASCADE);
                     sub.setText(treeElement.getText());
@@ -169,7 +174,7 @@ public class EJRWTDefaultMenuBuilder implements Serializable
                     Menu subMenu = new Menu(parent);
                     sub.setMenu(subMenu);
                     createMenu(applicationManager, subMenu, treeElement, menuActionProcessor);
-                    
+
                     break;
                 }
             }
@@ -294,25 +299,42 @@ public class EJRWTDefaultMenuBuilder implements Serializable
                 ISelection selection = _menuTree.getSelection();
                 if (selection instanceof IStructuredSelection)
                 {
-                    IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+                    final IStructuredSelection structuredSelection = (IStructuredSelection) selection;
                     if (structuredSelection.getFirstElement() instanceof EJRWTMenuTreeElement)
                     {
-                        EJRWTMenuTreeElement element = (EJRWTMenuTreeElement) structuredSelection.getFirstElement();
-                        if (element.getType() == Type.FORM)
+
+                        Display.getCurrent().asyncExec(new Runnable()
                         {
-                            _applicationManager.getFrameworkManager().openForm(element.getActionCommand(), null, false);
-                        }
-                        else if (element.getType() == Type.ACTION && menuActionProcessor != null)
-                        {
-                            try
+
+                            @Override
+                            public void run()
                             {
-                                menuActionProcessor.executeActionCommand(element.getActionCommand());
+                                try
+                                {
+                                    EJRWTMenuTreeElement element = (EJRWTMenuTreeElement) structuredSelection.getFirstElement();
+                                    if (element.getType() == Type.FORM)
+                                    {
+                                        _applicationManager.getFrameworkManager().openForm(element.getActionCommand(), null, false);
+                                    }
+                                    else if (element.getType() == Type.ACTION && menuActionProcessor != null)
+                                    {
+                                        try
+                                        {
+                                            menuActionProcessor.executeActionCommand(element.getActionCommand());
+                                        }
+                                        catch (EJActionProcessorException e)
+                                        {
+                                            _applicationManager.getApplicationMessenger().handleException(e, true);
+                                        }
+                                    }
+                                }
+                                catch (EJApplicationException e)
+                                {
+                                    _applicationManager.handleException(e);
+                                }
+
                             }
-                            catch (EJActionProcessorException e)
-                            {
-                                _applicationManager.getApplicationMessenger().handleException(e, true);
-                            }
-                        }
+                        });
 
                     }
                 }
