@@ -308,7 +308,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 		setText : function(text) {
 			if (this.ready) {
 				this.editor.setData(text);
-				if(this.removeToolbar && this.editor.isReadOnly())
+				if(this.removeToolbar && this.editor.isReadOnly && this.editor.isReadOnly())
 				{
 					this.elementReadonly.innerHTML = (this.editor.document.getBody().getHtml());
 				}

@@ -150,22 +150,37 @@ public class EJRWTMessenger implements EJMessenger
      *            The question to be asked
      */
     @Override
-    public void askQuestion(EJQuestion question)
+    public void askQuestion(final EJQuestion question)
     {
-        EJQuestionButton[] optionsButtons = getOptions(question);
+       final  EJQuestionButton[] optionsButtons = getOptions(question);
         String[] options = new String[optionsButtons.length];
         for (int i = 0; i < optionsButtons.length; i++)
         {
             options[i] = question.getButtonText(optionsButtons[i]);
         }
-        MessageDialog dialog = new MessageDialog(manager.getShell(), question.getTitle(), null, question.getMessageText(), MessageDialog.QUESTION, options, 2);
-        int answer = dialog.open();
-
-        if (answer > -1)
+        MessageDialog dialog = new MessageDialog(manager.getShell(), question.getTitle(), null, question.getMessageText(), MessageDialog.QUESTION, options, 2)
         {
-            question.setAnswer(optionsButtons[answer]);
-            question.getActionProcessor().questionAnswered(question);
-        }
+            
+            @Override
+            public boolean close()
+            {
+                boolean close = super.close();
+                
+                int answer = getReturnCode();
+
+                if (answer > -1)
+                {
+                    question.setAnswer(optionsButtons[answer]);
+                    question.getActionProcessor().questionAnswered(question);
+                }
+                
+                return close;
+            }
+            
+        };
+        dialog.setBlockOnOpen(false);
+      
+        dialog.open();
     }
 
     private EJQuestionButton[] getOptions(EJQuestion question)
@@ -414,9 +429,9 @@ public class EJRWTMessenger implements EJMessenger
          * @return <code>true</code> if the user presses the OK button,
          *         <code>false</code> otherwise
          */
-        public static boolean openConfirm(Shell parent, String title, String message)
+        public static void openConfirm(Shell parent, String title, String message)
         {
-            return open(MessageDialog .CONFIRM, parent, title, message, SWT.NONE);
+             open(MessageDialog .CONFIRM, parent, title, message, SWT.NONE);
         }
 
         /**
@@ -464,9 +479,9 @@ public class EJRWTMessenger implements EJMessenger
          * @return <code>true</code> if the user presses the Yes button,
          *         <code>false</code> otherwise
          */
-        public static boolean openQuestion(Shell parent, String title, String message)
+        public static void openQuestion(Shell parent, String title, String message)
         {
-            return open(MessageDialog.QUESTION, parent, title, message, SWT.NONE);
+             open(MessageDialog.QUESTION, parent, title, message, SWT.NONE);
         }
 
         /**
@@ -485,7 +500,7 @@ public class EJRWTMessenger implements EJMessenger
             open(MessageDialog.WARNING, parent, title, message, SWT.NONE);
         }
 
-        public static boolean open(int kind, Shell parent, String title, String message, int style)
+        public static void open(int kind, Shell parent, String title, String message, int style)
         {
             
         
@@ -501,8 +516,8 @@ public class EJRWTMessenger implements EJMessenger
                     return createMessageArea;
                 }
             };
-           
-            return dialog.open() == 0;
+            dialog.setBlockOnOpen(false);
+            dialog.open();
 
         }
 
