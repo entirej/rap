@@ -419,11 +419,25 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
     }
 
     @Override
-    public void recordSelected(EJDataRecord record)
+    public void recordSelected(final EJDataRecord record)
     {
         if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
         {
             _tableViewer.setSelection(record != null ? new StructuredSelection(record) : new StructuredSelection(), true);
+            if(record!=null)
+            {
+                Display.getCurrent().asyncExec(new Runnable()
+                {
+                    
+                    @Override
+                    public void run()
+                    {
+                        _tableViewer.reveal(record);
+                        
+                    }
+                });
+            }
+           
         }
     }
 

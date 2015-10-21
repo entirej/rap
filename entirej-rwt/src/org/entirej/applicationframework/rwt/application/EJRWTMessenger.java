@@ -152,7 +152,7 @@ public class EJRWTMessenger implements EJMessenger
     @Override
     public void askQuestion(final EJQuestion question)
     {
-       final  EJQuestionButton[] optionsButtons = getOptions(question);
+        final EJQuestionButton[] optionsButtons = getOptions(question);
         String[] options = new String[optionsButtons.length];
         for (int i = 0; i < optionsButtons.length; i++)
         {
@@ -160,12 +160,12 @@ public class EJRWTMessenger implements EJMessenger
         }
         MessageDialog dialog = new MessageDialog(manager.getShell(), question.getTitle(), null, question.getMessageText(), MessageDialog.QUESTION, options, 2)
         {
-            
+
             @Override
             public boolean close()
             {
                 boolean close = super.close();
-                
+
                 int answer = getReturnCode();
 
                 if (answer > -1)
@@ -173,13 +173,13 @@ public class EJRWTMessenger implements EJMessenger
                     question.setAnswer(optionsButtons[answer]);
                     question.getActionProcessor().questionAnswered(question);
                 }
-                
+
                 return close;
             }
-            
+
         };
         dialog.setBlockOnOpen(false);
-      
+
         dialog.open();
     }
 
@@ -214,7 +214,7 @@ public class EJRWTMessenger implements EJMessenger
         {
 
             EJApplicationException ejApplicationException = (EJApplicationException) exception;
-            if(ejApplicationException.stopProcessing() && ejApplicationException.getFrameworkMessage()==null)
+            if (ejApplicationException.stopProcessing() && ejApplicationException.getFrameworkMessage() == null)
             {
                 return;
             }
@@ -222,17 +222,17 @@ public class EJRWTMessenger implements EJMessenger
             // user is using it to halt application processing, therefore there
             // is not need to handler the exception
             logger.error(exception.getMessage(), exception);
-           final  EJMessage frameworkMessage = ejApplicationException.getFrameworkMessage();
+            final EJMessage frameworkMessage = ejApplicationException.getFrameworkMessage();
             Display current = Display.getCurrent();
-            if(current!=null)
+            if (current != null)
             {
                 current.asyncExec(new Runnable()
                 {
-                    
+
                     @Override
                     public void run()
-                   {
-                        if (frameworkMessage !=null && frameworkMessage.getMessage() != null)
+                    {
+                        if (frameworkMessage != null && frameworkMessage.getMessage() != null)
                         {
                             handleMessage(frameworkMessage);
                         }
@@ -240,32 +240,35 @@ public class EJRWTMessenger implements EJMessenger
                         {
                             handleMessage(new EJMessage(exception.getMessage()));
                         }
-                        
+
                     }
                 });
             }
-            
-           
+
         }
         else if (showUserMessage)
         {
             logger.error(exception.getMessage(), exception);
             Display current = Display.getCurrent();
-            if(current!=null)
+            if (current != null)
             {
                 current.asyncExec(new Runnable()
                 {
-                    
+
                     @Override
                     public void run()
                     {
                         Status status = new Status(IStatus.ERROR, "rwt.ej", exception.getMessage());
-                        ErrorDialog.openError(manager.getShell(), "Error", "Internal Error", status);
-                        
+
+                        ErrorDialog dialog = new ErrorDialog(manager.getShell(), "Error", "Internal Error", status, IStatus.OK | IStatus.INFO | IStatus.WARNING
+                                | IStatus.ERROR);
+                        dialog.setBlockOnOpen(false);
+                        dialog.open();
+
                     }
                 });
             }
-           
+
         }
     }
 
@@ -412,9 +415,8 @@ public class EJRWTMessenger implements EJMessenger
         }
     }
 
-    static class EJMessageDialog 
+    static class EJMessageDialog
     {
-
 
         /**
          * Convenience method to open a simple confirm (OK/Cancel) dialog.
@@ -431,7 +433,7 @@ public class EJRWTMessenger implements EJMessenger
          */
         public static void openConfirm(Shell parent, String title, String message)
         {
-             open(MessageDialog .CONFIRM, parent, title, message, SWT.NONE);
+            open(MessageDialog.CONFIRM, parent, title, message, SWT.NONE);
         }
 
         /**
@@ -481,7 +483,7 @@ public class EJRWTMessenger implements EJMessenger
          */
         public static void openQuestion(Shell parent, String title, String message)
         {
-             open(MessageDialog.QUESTION, parent, title, message, SWT.NONE);
+            open(MessageDialog.QUESTION, parent, title, message, SWT.NONE);
         }
 
         /**
@@ -502,17 +504,15 @@ public class EJRWTMessenger implements EJMessenger
 
         public static void open(int kind, Shell parent, String title, String message, int style)
         {
-            
-        
+
             MessageDialog dialog = new MessageDialog(parent, title, null, message, kind, getButtonLabels(kind), 0)
             {
-                
-                
+
                 @Override
                 protected Control createMessageArea(Composite composite)
                 {
                     Control createMessageArea = super.createMessageArea(composite);
-                    messageLabel.setData(EJ_RWT.MARKUP_ENABLED,true);
+                    messageLabel.setData(EJ_RWT.MARKUP_ENABLED, true);
                     return createMessageArea;
                 }
             };
@@ -521,7 +521,7 @@ public class EJRWTMessenger implements EJMessenger
 
         }
 
-        private  static String[] getButtonLabels(int kind)
+        private static String[] getButtonLabels(int kind)
         {
             String[] dialogButtonLabels;
             switch (kind)
@@ -530,12 +530,12 @@ public class EJRWTMessenger implements EJMessenger
                 case MessageDialog.INFORMATION:
                 case MessageDialog.WARNING:
                 {
-                    dialogButtonLabels = new String[] { "OK"};
+                    dialogButtonLabels = new String[] { "OK" };
                     break;
                 }
                 case MessageDialog.CONFIRM:
                 {
-                    dialogButtonLabels = new String[] { "OK", "Cancel"};
+                    dialogButtonLabels = new String[] { "OK", "Cancel" };
                     break;
                 }
                 case MessageDialog.QUESTION:
@@ -545,7 +545,7 @@ public class EJRWTMessenger implements EJMessenger
                 }
                 case MessageDialog.QUESTION_WITH_CANCEL:
                 {
-                    dialogButtonLabels = new String[] { "Yes", "No",  "Cancel" };
+                    dialogButtonLabels = new String[] { "Yes", "No", "Cancel" };
                     break;
                 }
                 default:

@@ -92,9 +92,15 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     {
         return "EJ Loading...";
     }
+    /**
+     * Changes the runtim mode of RAP @link http://download.eclipse.org/rt/rap/doc/2.1/guide/reference/api/org/eclipse/rap/rwt/application/Application.OperationMode.html
+     * 
+     * OperationMode
+     * @return OperationMode
+     */
     protected OperationMode getOperationMode()
     {
-        return OperationMode.JEE_COMPATIBILITY;
+        return OperationMode.SWT_COMPATIBILITY;
     }
 
     protected String getBaseThemeCSSLocation()
