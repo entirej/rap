@@ -92,6 +92,10 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     {
         return "EJ Loading...";
     }
+    protected OperationMode getOperationMode()
+    {
+        return OperationMode.JEE_COMPATIBILITY;
+    }
 
     protected String getBaseThemeCSSLocation()
     {
@@ -160,7 +164,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     public void createEntryPoint(final Application configuration)
     {
 
-        configuration.setOperationMode(OperationMode.SWT_COMPATIBILITY);
+        configuration.setOperationMode(getOperationMode());
         Map<String, String> properties = new HashMap<String, String>();
         if (this.getClass().getClassLoader().getResource("application.ejprop") != null)
         {

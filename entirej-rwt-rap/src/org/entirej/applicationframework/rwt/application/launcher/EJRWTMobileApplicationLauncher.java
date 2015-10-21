@@ -80,7 +80,7 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
     public void createEntryPoint(final Application configuration)
     {
 
-        configuration.setOperationMode(OperationMode.SWT_COMPATIBILITY);
+        configuration.setOperationMode(getOperationMode());
         Map<String, String> properties = new HashMap<String, String>();
         if (this.getClass().getClassLoader().getResource("application.ejprop") != null)
         {
