@@ -52,11 +52,9 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
     ej_action : function(event) {
     	
     	var target;
-        if( rwt.client.Client.isMshtml() ) {
-          target = window.event.srcElement;
-        } else {
+       
           target = event.target;
-        }
+        
         
         if(target && target.hasAttribute && target.hasAttribute('em'))
     	{
@@ -79,11 +77,9 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
     ej_select : function(event) {
     	
     	var target;
-        if( rwt.client.Client.isMshtml() ) {
-          target = window.event.srcElement;
-        } else {
+       
           target = event.target;
-        }
+        
         
         while(true) {
           if(target.parentNode == null) {

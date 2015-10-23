@@ -142,9 +142,9 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     protected void addOtherResources(final Application configuration)
     {
         // Add FORMS UI configs
-        configuration.addThemableWidget(Hyperlink.class);
-        configuration.addThemableWidget(FormText.class);
-        configuration.addThemableWidget(ToggleHyperlink.class);
+        configuration.addThemeableWidget(Hyperlink.class);
+        configuration.addThemeableWidget(FormText.class);
+        configuration.addThemeableWidget(ToggleHyperlink.class);
         addResource(configuration, new org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit.ToggleHyperlinkResource());
         addResource(configuration, new org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit.ToggleHyperlinkAdapterResource());
         addResource(configuration, new org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkResource());
@@ -382,10 +382,10 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     }
 
     @SuppressWarnings("deprecation")
-    public static int openShell(Display display, Shell shell)
+    public  int openShell(Display display, Shell shell)
     {
         shell.open();
-        if (RWT.getLifeCycle() instanceof RWTLifeCycle)
+        if (getOperationMode()==OperationMode.SWT_COMPATIBILITY)
         {
             while (!shell.isDisposed())
             {
