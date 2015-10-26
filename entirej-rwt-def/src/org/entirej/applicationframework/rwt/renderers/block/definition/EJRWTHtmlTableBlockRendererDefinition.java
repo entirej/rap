@@ -85,6 +85,8 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
     
     public static final String ROW_SELECTION          = "ROW_SELECTION";
     public static final String ROW_SELECTION_VA       = "ROW_SELECTION_VA";
+    
+    
 
 
     public EJRWTHtmlTableBlockRendererDefinition()
@@ -163,6 +165,7 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         mainGroup.addPropertyDefinition(rowOddVA);
         mainGroup.addPropertyDefinition(rowEvenVA);
         mainGroup.addPropertyDefinition(cellSpacing);
+        mainGroup.addPropertyDefinition(cellPadding);
         mainGroup.addPropertyDefinition(rowSelection);
         mainGroup.addPropertyDefinition(rowSelectionVA);
 
