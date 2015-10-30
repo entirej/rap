@@ -54,6 +54,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
@@ -610,100 +611,160 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             @Override
             public void mouseUp(MouseEvent arg0)
             {
-                Shell shell = ((EJRWTApplicationManager) _item.getForm().getFrameworkManager().getApplicationManager()).getShell();
-                final Shell abstractDialog = new Shell(shell, SWT.ON_TOP | SWT.APPLICATION_MODAL | SWT.TITLE | SWT.CLOSE);
-                abstractDialog.setLayout(new GridLayout(2, false));
-                final DateTime calendar = new DateTime(abstractDialog, SWT.CALENDAR | SWT.BORDER);
+               
 
-                Date currentDate = getValue();
-                if (currentDate != null)
                 {
-                    String dateText = format.format(currentDate);
-                    String[] split = dateText.split("/");
-                    if (split.length == 3)
-                    {
-                        calendar.setYear(Integer.parseInt(split[0]));
-                        calendar.setMonth(Integer.parseInt(split[1])-1);//month index from 0 
-                        calendar.setDay(Integer.parseInt(split[2]));
-                    }
-                }
+                    
+                    Shell shell = ((EJRWTApplicationManager) _item.getForm().getFrameworkManager().getApplicationManager()).getShell();
+                    final Shell abstractDialog = new Shell(shell, SWT.ON_TOP | SWT.APPLICATION_MODAL | SWT.TITLE);
+                    abstractDialog.setLayout(new GridLayout(3, false));
 
-                calendar.addMouseListener(new MouseAdapter()
-                {
-                    @Override
-                    public void mouseDoubleClick(MouseEvent e)
+                    GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL);
+                    new Label(abstractDialog, SWT.NONE).setLayoutData(gridData);
+                    Link today = new Link(abstractDialog, SWT.PUSH);
+                    today.setText("<A>Today</A>");
+                    today.addSelectionListener(new SelectionAdapter()
                     {
-                        if (e.y >= 40)
+                        @Override
+                        public void widgetSelected(SelectionEvent e)
                         {
-                            selectDate(abstractDialog, calendar);
+                            try
+                            {
+                                setValue(format.parse(format.format(new Date())));
+                                _item.itemValueChaged();
+                            }
+                            catch (ParseException e1)
+                            {
+                                // ignore
+                            }
+                            if (!abstractDialog.isDisposed())
+                            {
+                                abstractDialog.close();
+                                abstractDialog.dispose();
+                            }
+                            _item.gainFocus();
                         }
-                    }
-                });
-
-                String[] keys = new String[] { "ENTER", "RETURN", "CR" };
-                calendar.setData(EJ_RWT.ACTIVE_KEYS, keys);
-                calendar.addKeyListener(new KeyAdapter()
-                {
-                    @Override
-                    public void keyReleased(KeyEvent e)
+                    });
+                    Link clear = new Link(abstractDialog, SWT.PUSH);
+                    clear.setText("<A>Clear</A>");
+                    clear.addSelectionListener(new SelectionAdapter()
                     {
-
-                    }
-                });
-                GridData gridData = new GridData();
-                gridData.horizontalSpan = 2;
-                calendar.setLayoutData(gridData);
-
-                Button today = new Button(abstractDialog, SWT.PUSH);
-                today.setText("Today");
-                today.addSelectionListener(new SelectionAdapter()
-                {
-                    @Override
-                    public void widgetSelected(SelectionEvent e)
-                    {
-                        try
+                        @Override
+                        public void widgetSelected(SelectionEvent e)
                         {
-                            setValue(format.parse(format.format(new Date())));
+
+                            setValue(null);
                             _item.itemValueChaged();
+
+                            if (!abstractDialog.isDisposed())
+                            {
+                                abstractDialog.close();
+                                abstractDialog.dispose();
+                            }
+                            _item.gainFocus();
                         }
-                        catch (ParseException e1)
-                        {
-                            // ignore
-                        }
-                        if (!abstractDialog.isDisposed())
-                        {
-                            abstractDialog.close();
-                            abstractDialog.dispose();
-                        }
-                        _item.gainFocus();
-                    }
-                });
-                Button clear = new Button(abstractDialog, SWT.PUSH);
-                clear.setText("Clear");
-                clear.addSelectionListener(new SelectionAdapter()
-                {
-                    @Override
-                    public void widgetSelected(SelectionEvent e)
+                    });
+
+                    final DateTime calendar = new DateTime(abstractDialog, SWT.CALENDAR | SWT.BORDER);
+
+                    if (_baseValue != null && _baseValue instanceof Date)
                     {
-
-                        setValue(null);
-                        _item.itemValueChaged();
-
-                        if (!abstractDialog.isDisposed())
+                        Date currentDate = (Date) _baseValue;
+                        if (currentDate != null)
                         {
-                            abstractDialog.close();
-                            abstractDialog.dispose();
+                            String dateText = format.format(currentDate);
+                            String[] split = dateText.split("/");
+                            if (split.length == 3)
+                            {
+                                calendar.setYear(Integer.parseInt(split[0]));
+                                calendar.setMonth(Integer.parseInt(split[1]) - 1);// month
+                                                                                  // index
+                                                                                  // from
+                                                                                  // 0
+                                calendar.setDay(Integer.parseInt(split[2]));
+                            }
                         }
-                        _item.gainFocus();
-                    }
-                });
 
-                abstractDialog.pack();
-                Rectangle shellBounds = shell.getBounds();
-                Point dialogSize = abstractDialog.getSize();
-                abstractDialog.setLocation(shellBounds.x + (shellBounds.width - dialogSize.x) / 2, shellBounds.y + (shellBounds.height - dialogSize.y) / 2);
-                abstractDialog.setText("Date Selection");
-                abstractDialog.open();
+                    }
+
+                    calendar.addMouseListener(new MouseAdapter()
+                    {
+                        @Override
+                        public void mouseDoubleClick(MouseEvent e)
+                        {
+                            if (e.y >= 40)
+                            {
+                                selectDate(abstractDialog, calendar);
+                            }
+                        }
+                    });
+
+                    String[] keys = new String[] { "ENTER", "RETURN", "CR" };
+                    calendar.setData(EJ_RWT.ACTIVE_KEYS, keys);
+                    calendar.addKeyListener(new KeyAdapter()
+                    {
+                        @Override
+                        public void keyReleased(KeyEvent e)
+                        {
+
+                        }
+                    });
+                    gridData = new GridData();
+                    gridData.horizontalSpan = 3;
+                    calendar.setLayoutData(gridData);
+
+                    gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL);
+                    new Label(abstractDialog, SWT.NONE).setLayoutData(gridData);
+                    Button ok = new Button(abstractDialog, SWT.PUSH);
+
+                    ok.setText("OK");
+                    ok.addSelectionListener(new SelectionAdapter()
+                    {
+                        @Override
+                        public void widgetSelected(SelectionEvent e)
+                        {
+                            try
+                            {
+                                setValue(format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay())));
+                                _item.itemValueChaged();
+                            }
+                            catch (ParseException e1)
+                            {
+                                // ignore
+                            }
+                            if (!abstractDialog.isDisposed())
+                            {
+                                abstractDialog.close();
+                                abstractDialog.dispose();
+                            }
+                            _item.gainFocus();
+                        }
+                    });
+                    Button close = new Button(abstractDialog, SWT.PUSH);
+                    close.setText("Cancel");
+                    close.addSelectionListener(new SelectionAdapter()
+                    {
+                        @Override
+                        public void widgetSelected(SelectionEvent e)
+                        {
+
+                            if (!abstractDialog.isDisposed())
+                            {
+                                abstractDialog.close();
+                                abstractDialog.dispose();
+                            }
+                            _item.gainFocus();
+                        }
+                    });
+
+                    abstractDialog.pack();
+                    Rectangle shellBounds = shell.getBounds();
+                    Point dialogSize = abstractDialog.getSize();
+                    abstractDialog.setLocation(shellBounds.x + (shellBounds.width - dialogSize.x) / 2, shellBounds.y + (shellBounds.height - dialogSize.y) / 2);
+                    abstractDialog.setText("Date Selection");
+                    abstractDialog.open();
+                    
+                }
             }
 
             @Override
