@@ -1317,33 +1317,41 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         StringBuilder builder = new StringBuilder();
         // builder.append("<style type=\"text/css\">");
         {
-            builder.append("*{");
+//            builder.append("*{");
+//            
+//            builder.append("}");
+            builder.append("td{");
             builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("}");
-
             builder.append("u.default {");
+            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("padding: 1px 2px 1px 0px;");
             builder.append("}");
 
             builder.append("u.default_link {");
+            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("padding: 1px 2px 1px 0px;");
             builder.append("text-shadow: none;");
             builder.append("}");
 
             builder.append("u.default_link:hover {");
+            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("cursor: pointer; cursor: hand;");
             builder.append("}");
 
             builder.append("u.default_link_fg {");
+            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("padding: 1px 2px 1px 0px;");
             builder.append("color: #416693;text-shadow: none;");
             builder.append("}");
 
             builder.append("u.default_link_fg:hover {");
+            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("cursor: pointer; cursor: hand;");
             builder.append("}");
 
             builder.append(".default_all {");
+            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("padding: 0px 0px 0px 0px;");
             Font font = Display.getDefault().getSystemFont();
 
@@ -1378,6 +1386,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                     builder.append(";");
 
+                }
+                else
+                {
+                    builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
                 }
 
                 Color backgroundColor = va.getBackgroundColor();
