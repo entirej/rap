@@ -67,7 +67,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
 {
     private Map<String, RadioButtonValue>     _radioButtons;
     private Composite                         _radioGroup;
-    private boolean                           _displayFrame         = true;
+    private boolean                           _displayFrame         = false;
     protected EJFrameworkExtensionProperties  _rendererProps;
     protected EJScreenItemController          _item;
     protected EJScreenItemProperties          _screenItemProperties;
@@ -186,7 +186,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
 
         _radioButtons = new HashMap<String, RadioButtonValue>();
 
-        _displayFrame = _rendererProps.getBooleanProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_SHOW_BORDER, true);
+        _displayFrame = _rendererProps.getBooleanProperty(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_SHOW_BORDER, false);
 
     }
 
