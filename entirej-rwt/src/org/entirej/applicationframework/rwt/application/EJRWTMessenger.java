@@ -136,10 +136,47 @@ public class EJRWTMessenger implements EJMessenger
      *            The question to be asked
      */
     @Override
-    public void askInternalQuestion(EJInternalQuestion question)
+    public void askInternalQuestion(final EJInternalQuestion question)
     {
-        askQuestion(question);
-        question.getForm().internalQuestionAnswered(question);
+        final EJQuestionButton[] optionsButtons = getOptions(question);
+        String[] options = new String[optionsButtons.length];
+        for (int i = 0; i < optionsButtons.length; i++)
+        {
+            options[i] = question.getButtonText(optionsButtons[i]);
+        }
+        MessageDialog dialog = new MessageDialog(manager.getShell(), question.getTitle(), null, question.getMessageText(), MessageDialog.QUESTION, options, 2)
+        {
+
+            @Override
+            public boolean close()
+            {
+                boolean close = super.close();
+
+                int answer = getReturnCode();
+
+                try
+                {
+                    
+                    if (answer > -1)
+                    {
+                        question.setAnswer(optionsButtons[answer]);
+                        question.getActionProcessor().questionAnswered(question);
+                        
+                    }
+                    question.getForm().internalQuestionAnswered(question);
+                }
+                catch (EJApplicationException e)
+                {
+                    handleException(e);
+                }
+                return close;
+            }
+
+        };
+        dialog.setBlockOnOpen(false);
+
+        dialog.open();
+       
     }
 
     /**
@@ -168,10 +205,20 @@ public class EJRWTMessenger implements EJMessenger
 
                 int answer = getReturnCode();
 
-                if (answer > -1)
+                try
                 {
-                    question.setAnswer(optionsButtons[answer]);
-                    question.getActionProcessor().questionAnswered(question);
+                    
+                    if (answer > -1)
+                    {
+                        question.setAnswer(optionsButtons[answer]);
+                        question.getActionProcessor().questionAnswered(question);
+                        
+                    }
+                    
+                }
+                catch (EJApplicationException e)
+                {
+                    handleException(e);
                 }
 
                 return close;
