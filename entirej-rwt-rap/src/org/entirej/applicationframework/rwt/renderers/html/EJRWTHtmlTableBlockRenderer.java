@@ -1642,7 +1642,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                                 if (actionDef != null && text != null && text.length() > 0)
                                 {
-                                    builder.append(String.format("<ejl><u %s class=\"%s, %s\"  ", "style=\"line-height: 100%\"",
+                                    builder.append(String.format("<ejl><u %s class=\"%s, %s\"  ", "style=\"line-height: 100%;cursor: pointer; cursor: hand;\"",
                                             ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
                                     builder.append(actionDef).append(">");
                                 }
