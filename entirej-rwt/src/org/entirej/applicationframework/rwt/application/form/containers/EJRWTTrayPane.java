@@ -36,15 +36,7 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane
      */
     private Control         trayControl;
 
-    /*
-     * The separator to the left of the sash.
-     */
-    private Label           leftSeparator;
-
-    /*
-     * The separator to the right of the sash.
-     */
-    private Label           rightSeparator;
+  
 
     /*
      * The sash that allows the user to resize the tray.
@@ -81,10 +73,7 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane
         trayControl.dispose();
         trayControl = null;
         tray = null;
-        leftSeparator.dispose();
-        leftSeparator = null;
-        rightSeparator.dispose();
-        rightSeparator = null;
+
         sash.dispose();
         sash = null;
         layout(true);
@@ -156,21 +145,14 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane
         {
             case BOTTOM:
             case TOP:
-                leftSeparator = new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL);
-                leftSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+                
                 sash = new Sash(this, SWT.HORIZONTAL);
                 sash.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-                rightSeparator = new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL);
-                rightSeparator.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
                 break;
 
             default:
-                leftSeparator = new Label(this, SWT.SEPARATOR | SWT.VERTICAL);
-                leftSeparator.setLayoutData(new GridData(GridData.FILL_VERTICAL));
                 sash = new Sash(this, SWT.VERTICAL);
                 sash.setLayoutData(new GridData(GridData.FILL_VERTICAL));
-                rightSeparator = new Label(this, SWT.SEPARATOR | SWT.VERTICAL);
-                rightSeparator.setLayoutData(new GridData(GridData.FILL_VERTICAL));
                 break;
         }
 
@@ -209,8 +191,8 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane
         switch (location)
         {
             case TOP:
-                base.moveBelow(rightSeparator);
-                trayControl.moveAbove(leftSeparator);
+                base.moveBelow(sash);
+                trayControl.moveAbove(sash);
             case BOTTOM:
                 this.setBounds(bounds.x, bounds.y, bounds.width, bounds.height + +size + 10);
                 Rectangle rectangle = Display.getCurrent().getBounds();
@@ -227,8 +209,8 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane
 
                 break;
             case LEFT:
-                base.moveBelow(rightSeparator);
-                trayControl.moveAbove(leftSeparator);
+                base.moveBelow(sash);
+                trayControl.moveAbove(sash);
                 this.setBounds(bounds.x, bounds.y, bounds.width + size + 10, bounds.height);
                 break;
             default:
@@ -251,7 +233,7 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane
                     {
                         case TOP:
                         {
-                            int newHeight = clientArea.height - event.y - (sash.getSize().y + rightSeparator.getSize().y);
+                            int newHeight = clientArea.height - event.y - (sash.getSize().y );
                             newHeight = clientArea.height - (newHeight + 20);
                             if (newHeight != data.heightHint)
                             {
@@ -262,7 +244,7 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane
                             break;
                         case BOTTOM:
                         {
-                            int newHeight = clientArea.height - event.y - (sash.getSize().y + rightSeparator.getSize().y);
+                            int newHeight = clientArea.height - event.y - (sash.getSize().y );
                             if (newHeight != data.heightHint)
                             {
                                 data.heightHint = newHeight;
@@ -272,7 +254,7 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane
                             break;
 
                         default:
-                            int newWidth = clientArea.width - event.x - (sash.getSize().x + rightSeparator.getSize().x);
+                            int newWidth = clientArea.width - event.x - (sash.getSize().x );
                             if (newWidth != data.widthHint)
                             {
                                 data.widthHint = newWidth;
