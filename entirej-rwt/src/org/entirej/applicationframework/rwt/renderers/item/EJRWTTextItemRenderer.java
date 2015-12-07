@@ -518,6 +518,11 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
             _label.setVisible(visible);
         }
+        if (controlState(_actionControl))
+        {
+            _actionControl.setVisible(visible);
+        }
+        
     }
 
     @Override

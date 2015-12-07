@@ -1878,3 +1878,21 @@ Link.itemlabel {
 	background-color: transparent;
 }
 
+
+Label-SeparatorLine.separator{
+	background-image: none;
+	background-color: transparent;
+	border: 1px solid #bdbdbd;
+	border-radius: 0px;
+	width: 1px;
+}
+
+Label-SeparatorLine[SHADOW_IN].separator  {
+	
+}
+
+Label-SeparatorLine[SHADOW_OUT].separator  {
+	
+}
+
+

@@ -1403,6 +1403,11 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             {
                 _label.setVisible(visible);
             }
+            
+            if (controlState(_actionControl))
+            {
+                _actionControl.setVisible(visible);
+            }
         }
 
     }

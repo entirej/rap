@@ -705,6 +705,11 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         {
             _label.setVisible(visible);
         }
+        
+        if (controlState(_actionControl))
+        {
+            _actionControl.setVisible(visible);
+        }
     }
 
     @Override

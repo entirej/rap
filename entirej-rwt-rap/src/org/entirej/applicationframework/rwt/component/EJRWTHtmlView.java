@@ -32,6 +32,7 @@ import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.widgets.WidgetUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Layout;
 
 public class EJRWTHtmlView extends Composite
@@ -56,9 +57,18 @@ public class EJRWTHtmlView extends Composite
 
 														
 														@Override
-                                                        public void handleCall(String method, JsonObject parameters)
+                                                        public void handleCall(final String method,final JsonObject parameters)
                                                         {
-                                                            action(method, parameters);
+                                                            Display.getCurrent().asyncExec(new Runnable()
+                                                            {
+                                                                
+                                                                @Override
+                                                                public void run()
+                                                                {
+                                                                    action(method, parameters);
+                                                                    
+                                                                }
+                                                            });
                                                         }
                                                     };
 

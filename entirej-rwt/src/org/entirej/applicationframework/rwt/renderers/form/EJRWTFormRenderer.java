@@ -423,9 +423,38 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 break;
             case POPUP:
                 buildPopupCanvas(canvasProperties, canvasController);
+                break;
+            case SEPARATOR:
+                createSeparatorCanvas(parent, canvasProperties);
+                break;
         }
     }
 
+    
+    protected void createSeparatorCanvas(Composite parent, EJCanvasProperties component)
+    {
+        
+        int style = SWT.SEPARATOR;
+        
+        if(component.getSplitOrientation()==EJCanvasSplitOrientation.HORIZONTAL)
+        {
+            style = style| SWT.HORIZONTAL;
+        }
+        else
+        {
+            style = style| SWT.VERTICAL;
+        }
+                    
+        
+        Label layoutBody = new Label(parent, style);
+        layoutBody.setLayoutData(createCanvasGridData(component));
+        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT,"separator");
+      
+        
+        
+    }
+    
+    
     private void createStackedCanvas( Composite parent, final EJCanvasProperties canvasProperties, EJCanvasController canvasController)
     {
         final String name = canvasProperties.getName();
@@ -1028,6 +1057,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     case FORM:
                         createFormCanvas(groupPane, containedCanvas, canvasController);
                         break;
+                    case SEPARATOR:
+                        createSeparatorCanvas(parent, canvasProperties);
+                        break;    
                     case SPLIT:
                         createSplitCanvas(groupPane, containedCanvas, canvasController);
                         break;
@@ -1180,6 +1212,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     case FORM:
                         createFormCanvas(layoutBody, containedCanvas, canvasController);
                         break;
+                        
+                    case SEPARATOR:
+                        createSeparatorCanvas(parent, canvasProperties);
+                        break;    
                     case SPLIT:
                         createSplitCanvas(layoutBody, containedCanvas, canvasController);
                         break;
