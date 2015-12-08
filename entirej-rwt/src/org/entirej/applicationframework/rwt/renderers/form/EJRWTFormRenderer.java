@@ -448,7 +448,26 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         
         Label layoutBody = new Label(parent, style);
         layoutBody.setLayoutData(createCanvasGridData(component));
-        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT,"separator");
+        
+        switch (component.getLineStyle())
+        {
+            case DASHED:
+                layoutBody.setData(EJ_RWT.CUSTOM_VARIANT,"separator_dashed");
+                break;
+            case DOTTED:
+                layoutBody.setData(EJ_RWT.CUSTOM_VARIANT,"separator_dotted");
+                break;
+            case DOUBLE:
+                layoutBody.setData(EJ_RWT.CUSTOM_VARIANT,"separator_double");
+                break;
+
+            default:
+                layoutBody.setData(EJ_RWT.CUSTOM_VARIANT,"separator");
+                break;
+        }
+        
+        
+        
       
         
         
