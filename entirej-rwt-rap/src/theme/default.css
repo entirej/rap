@@ -1888,11 +1888,11 @@ Label-SeparatorLine.separator{
 }
 
 Label-SeparatorLine[SHADOW_IN].separator  {
-	border:  = none;
+	border:   none;
 }
 
 Label-SeparatorLine[SHADOW_OUT].separator  {
-	border:  = none;
+	border:   none;
 }
 
 
@@ -1923,11 +1923,11 @@ Label-SeparatorLine.separator_dotted{
 }
 
 Label-SeparatorLine[SHADOW_IN].separator_dotted  {
-	border:  = none;
+	border:   none;
 }
 
 Label-SeparatorLine[SHADOW_OUT].separator_dotted  {
-	border:  = none;
+	border:   none;
 }
 
 Label-SeparatorLine.separator_double{
@@ -1939,11 +1939,11 @@ Label-SeparatorLine.separator_double{
 }
 
 Label-SeparatorLine[SHADOW_IN].separator_double  {
-	border:  = none;
+	border:   none;
 }
 
 Label-SeparatorLine[SHADOW_OUT].separator_double  {
-	border:  = none;
+	border:   none;
 }
 
 
