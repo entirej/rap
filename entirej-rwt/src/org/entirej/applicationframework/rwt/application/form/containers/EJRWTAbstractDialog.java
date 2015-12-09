@@ -115,6 +115,26 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
             button.setEnabled(enabled);
         }
     }
+    public void setButtonVisible(final int buttonId, boolean enabled)
+    {
+        Button button = getButton(buttonId);
+        
+        if (button != null && !button.isDisposed())
+        {
+            button.setVisible(enabled);
+            
+        }
+    }
+    public void setButtonLabel(final int buttonId, String label)
+    {
+        Button button = getButton(buttonId);
+        
+        if (button != null && !button.isDisposed())
+        {
+            button.setText(label==null?"":label);
+            
+        }
+    }
     
     
 

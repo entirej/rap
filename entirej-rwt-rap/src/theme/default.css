@@ -381,11 +381,11 @@ Label-SeparatorLine {
 }
 
 Label-SeparatorLine[SHADOW_IN] {
-	border: 1px inset;
+	
 }
 
 Label-SeparatorLine[SHADOW_OUT] {
-	border: 1px outset;
+	
 }
 
 /* Link default theme */
@@ -1887,13 +1887,7 @@ Label-SeparatorLine.separator{
 	width: 1px;
 }
 
-Label-SeparatorLine[SHADOW_IN].separator  {
-	border:   none;
-}
 
-Label-SeparatorLine[SHADOW_OUT].separator  {
-	border:   none;
-}
 
 
 Label-SeparatorLine.separator_dashed{
@@ -1904,13 +1898,6 @@ Label-SeparatorLine.separator_dashed{
 	width: 1px;
 }
 
-Label-SeparatorLine[SHADOW_IN].separator_dashed  {
-	border:  = none;
-}
-
-Label-SeparatorLine[SHADOW_OUT].separator_dashed  {
-	border:  = none;
-}
 
 
 
@@ -1922,13 +1909,7 @@ Label-SeparatorLine.separator_dotted{
 	width: 1px;
 }
 
-Label-SeparatorLine[SHADOW_IN].separator_dotted  {
-	border:   none;
-}
 
-Label-SeparatorLine[SHADOW_OUT].separator_dotted  {
-	border:   none;
-}
 
 Label-SeparatorLine.separator_double{
 	background-image: none;
@@ -1938,13 +1919,7 @@ Label-SeparatorLine.separator_double{
 	width: 1px;
 }
 
-Label-SeparatorLine[SHADOW_IN].separator_double  {
-	border:   none;
-}
 
-Label-SeparatorLine[SHADOW_OUT].separator_double  {
-	border:   none;
-}
 
 
 
