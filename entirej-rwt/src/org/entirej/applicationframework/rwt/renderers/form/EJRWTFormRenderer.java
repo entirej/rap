@@ -94,7 +94,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     private Map<String, EJTabFolder>             _tabFolders   = new HashMap<String, EJTabFolder>();
     private Map<String, EJRWTEntireJStackedPane> _stackedPanes = new HashMap<String, EJRWTEntireJStackedPane>();
     private Map<String, Composite>               _formPanes    = new HashMap<String, Composite>();
-
+    private Map<String, String>                 _tabFoldersCache   = new HashMap<String, String>();
+    private Map<String, String>                 _stackedPanesCache = new HashMap<String, String>();
     @Override
     public void formCleared()
     {
@@ -171,6 +172,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             if (cardPane != null && !cardPane.isDisposed())
             {
                 cardPane.showPane(pageName);
+            }
+            else
+            {
+                _stackedPanesCache.put(canvasName, pageName);
             }
         }
     }
@@ -250,6 +255,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             if (tabPane != null)
             {
                 tabPane.showPage(pageName);
+            }
+            else
+            {
+                _tabFoldersCache.put(canvasName, pageName);
             }
         }
     }
@@ -609,7 +618,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             stackedPane.showPane(canvasProperties.getInitialStackedPageName());
         }
-
+        if(_stackedPanesCache.containsKey(name))
+        {
+            stackedPane.showPane(_stackedPanesCache.get(name));
+            _stackedPanesCache.remove(name);
+        }
         _canvasesIds.add(name);
     }
 
@@ -873,6 +886,12 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
             tabFolder.put(page.getName(), tab);
 
+        }
+        
+        if(_tabFoldersCache.containsKey(name))
+        {
+            tabFolder.showPage(_tabFoldersCache.get(name));
+            _tabFoldersCache.remove(name);
         }
 
         _canvasesIds.add(name);
