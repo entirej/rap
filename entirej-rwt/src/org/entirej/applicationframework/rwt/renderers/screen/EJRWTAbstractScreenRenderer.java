@@ -20,6 +20,7 @@ package org.entirej.applicationframework.rwt.renderers.screen;
 
 import java.util.Collection;
 
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -32,6 +33,7 @@ import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.framework.core.enumerations.EJScreenType;
+import org.entirej.framework.core.enumerations.EJSeparatorOrientation;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.internal.EJInternalBlock;
 import org.entirej.framework.core.properties.EJCoreProperties;
@@ -73,6 +75,44 @@ public abstract class EJRWTAbstractScreenRenderer implements EJRenderer
 
     private void createItemGroup(Composite parent, EJItemGroupProperties groupProperties, EJScreenType screenType)
     {
+        
+        if(groupProperties.isSeparator())
+        {
+            
+                int style = SWT.SEPARATOR;
+
+                if (groupProperties.getSeparatorOrientation() == EJSeparatorOrientation.HORIZONTAL)
+                {
+                    style = style | SWT.HORIZONTAL;
+                }
+                else
+                {
+                    style = style | SWT.VERTICAL;
+                }
+
+                Label layoutBody = new Label(parent, style);
+                layoutBody.setLayoutData(createItemGroupGridData(groupProperties));
+
+                switch (groupProperties.getSeparatorLineStyle())
+                {
+                    case DASHED:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_dashed");
+                        break;
+                    case DOTTED:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_dotted");
+                        break;
+                    case DOUBLE:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_double");
+                        break;
+
+                    default:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator");
+                        break;
+                }
+                return;
+            
+        }
+        
         EJRWTEntireJGridPane groupPane;
         String frameTitle = groupProperties.getFrameTitle();
         boolean hasGroup = groupProperties.dispayGroupFrame() && frameTitle != null && frameTitle.length() > 0;
@@ -285,6 +325,42 @@ public abstract class EJRWTAbstractScreenRenderer implements EJRenderer
         EJFrameworkExtensionProperties itemRendererPropertiesForItem = getItemRendererPropertiesForItem(itemProps);
         if (itemProps.isSpacerItem())
         {
+            
+            if(itemProps.isSeparator())
+            {
+                int style = SWT.SEPARATOR;
+
+                if (itemProps.getSeparatorOrientation() == EJSeparatorOrientation.HORIZONTAL)
+                {
+                    style = style | SWT.HORIZONTAL;
+                }
+                else
+                {
+                    style = style | SWT.VERTICAL;
+                }
+
+                Label layoutBody = new Label(parent, style);
+                layoutBody.setLayoutData(createBlockItemGridData(null, itemRendererPropertiesForItem, layoutBody));
+
+                switch (itemProps.getSeparatorLineStyle())
+                {
+                    case DASHED:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_dashed");
+                        break;
+                    case DOTTED:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_dotted");
+                        break;
+                    case DOUBLE:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_double");
+                        break;
+
+                    default:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator");
+                        break;
+                }
+                return;
+            }
+            
             Label label = new Label(parent, SWT.NONE);
             label.setLayoutData(createBlockItemGridData(null, itemRendererPropertiesForItem, label));
             return;

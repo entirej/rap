@@ -75,10 +75,12 @@ import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.data.controllers.EJEditableBlockController;
 import org.entirej.framework.core.data.controllers.EJQuestion;
+import org.entirej.framework.core.enumerations.EJCanvasSplitOrientation;
 import org.entirej.framework.core.enumerations.EJManagedBlockProperty;
 import org.entirej.framework.core.enumerations.EJManagedScreenProperty;
 import org.entirej.framework.core.enumerations.EJQuestionButton;
 import org.entirej.framework.core.enumerations.EJScreenType;
+import org.entirej.framework.core.enumerations.EJSeparatorOrientation;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.internal.EJInternalEditableBlock;
 import org.entirej.framework.core.properties.EJCoreMainScreenItemProperties;
@@ -872,8 +874,48 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     private void createItemGroup(Composite parent, EJItemGroupProperties groupProperties)
     {
         EJRWTEntireJGridPane groupPane;
+        
+        if(groupProperties.isSeparator())
+        {
+            
+                int style = SWT.SEPARATOR;
+
+                if (groupProperties.getSeparatorOrientation() == EJSeparatorOrientation.HORIZONTAL)
+                {
+                    style = style | SWT.HORIZONTAL;
+                }
+                else
+                {
+                    style = style | SWT.VERTICAL;
+                }
+
+                Label layoutBody = new Label(parent, style);
+                layoutBody.setLayoutData(createItemGroupGridData(groupProperties));
+
+                switch (groupProperties.getSeparatorLineStyle())
+                {
+                    case DASHED:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_dashed");
+                        break;
+                    case DOTTED:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_dotted");
+                        break;
+                    case DOUBLE:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_double");
+                        break;
+
+                    default:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator");
+                        break;
+                }
+                return;
+            
+        }
         String frameTitle = groupProperties.getFrameTitle();
         EJFrameworkExtensionProperties rendererProperties = groupProperties.getRendererProperties();
+        
+        
+        
         boolean hasGroup = groupProperties.dispayGroupFrame() && frameTitle != null && frameTitle.length() > 0;
         if (hasGroup)
         {
@@ -1005,12 +1047,17 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     group = new Composite(parent,groupProperties.dispayGroupFrame()?SWT.BORDER: SWT.NONE);
                 }
                 group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
-                String customCSSKey = rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY);
-
-                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                String customCSSKey = null;
+                if(rendererProperties!=null)
                 {
-                    group.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                     customCSSKey = rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY);
+
+                    if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                    {
+                        group.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                    }
                 }
+                
                 group.setLayout(new FillLayout());
                 group.setLayoutData(createItemGroupGridData(groupProperties));
                
@@ -1265,6 +1312,41 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     {
         if (itemProps.isSpacerItem())
         {
+            if(itemProps.isSeparator())
+            {
+                int style = SWT.SEPARATOR;
+
+                if (itemProps.getSeparatorOrientation() == EJSeparatorOrientation.HORIZONTAL)
+                {
+                    style = style | SWT.HORIZONTAL;
+                }
+                else
+                {
+                    style = style | SWT.VERTICAL;
+                }
+
+                Label layoutBody = new Label(parent, style);
+                layoutBody.setLayoutData(createBlockItemGridData(null, itemProps.getBlockRendererRequiredProperties(), layoutBody));
+
+                switch (itemProps.getSeparatorLineStyle())
+                {
+                    case DASHED:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_dashed");
+                        break;
+                    case DOTTED:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_dotted");
+                        break;
+                    case DOUBLE:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_double");
+                        break;
+
+                    default:
+                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator");
+                        break;
+                }
+                return;
+            }
+            
             Label label = new Label(parent, SWT.NONE);
             label.setLayoutData(createBlockItemGridData(null, itemProps.getBlockRendererRequiredProperties(), label));
             return;

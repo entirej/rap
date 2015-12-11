@@ -472,7 +472,6 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator");
                 break;
         }
-        layoutBody.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLUE));
 
     }
 
