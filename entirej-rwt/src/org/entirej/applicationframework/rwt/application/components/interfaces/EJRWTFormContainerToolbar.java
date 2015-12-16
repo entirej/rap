@@ -28,10 +28,10 @@ import org.entirej.framework.core.internal.EJInternalForm;
 import org.entirej.framework.core.renderers.eventhandlers.EJBlockFocusedListener;
 import org.entirej.framework.core.renderers.eventhandlers.EJFormEventListener;
 import org.entirej.framework.core.renderers.eventhandlers.EJItemFocusListener;
-import org.entirej.framework.core.renderers.eventhandlers.EJItemValueChangedListener;
 import org.entirej.framework.core.renderers.eventhandlers.EJNewRecordFocusedListener;
+import org.entirej.framework.core.renderers.eventhandlers.EJScreenItemValueChangedListener;
 
-public interface EJRWTFormContainerToolbar extends EJBlockFocusedListener, EJItemValueChangedListener, EJItemFocusListener, EJNewRecordFocusedListener,
+public interface EJRWTFormContainerToolbar extends EJBlockFocusedListener, EJScreenItemValueChangedListener, EJItemFocusListener, EJNewRecordFocusedListener,
         EJFormEventListener, Serializable
 {
     /**

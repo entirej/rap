@@ -33,7 +33,6 @@ import org.entirej.applicationframework.rwt.renderers.item.EJRWTItemTextChangeNo
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTItemTextChangeNotifier.ChangeListener;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.interfaces.EJRWTScreenRendererDefinitionProperties;
 import org.entirej.framework.core.EJApplicationException;
-import org.entirej.framework.core.EJBlock;
 import org.entirej.framework.core.EJFrameworkManager;
 import org.entirej.framework.core.EJLovBlock;
 import org.entirej.framework.core.EJQueryBlock;
@@ -52,7 +51,7 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkE
 import org.entirej.framework.core.properties.interfaces.EJBlockProperties;
 import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
 import org.entirej.framework.core.renderers.EJManagedItemRendererWrapper;
-import org.entirej.framework.core.renderers.eventhandlers.EJItemValueChangedListener;
+import org.entirej.framework.core.renderers.eventhandlers.EJScreenItemValueChangedListener;
 import org.entirej.framework.core.renderers.interfaces.EJItemRenderer;
 import org.entirej.framework.core.renderers.interfaces.EJQueryScreenRenderer;
 import org.entirej.framework.core.renderers.registry.EJBlockItemRendererRegister;
@@ -62,7 +61,7 @@ import org.entirej.framework.core.service.EJRestrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implements EJQueryScreenRenderer, EJItemValueChangedListener
+public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implements EJQueryScreenRenderer, EJScreenItemValueChangedListener
 {
     private final int                         QUERY_OK_ACTION_COMMAND     = 0;
     private final int                         QUERY_CANCEL_ACTION_COMMAND = 2;
@@ -82,7 +81,7 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
     }
 
     @Override
-    public EJBlockItemRendererRegister getItemRegister()
+    public EJQueryScreenItemRendererRegister getItemRegister()
     {
         return _itemRegister;
     }
@@ -403,7 +402,7 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
     }
 
     @Override
-    public void valueChanged(EJScreenItemController arg0, EJItemRenderer arg1)
+    public void screenItemValueChanged(EJScreenItemController arg0, EJItemRenderer arg1)
     {
         if (_queryDialog != null)
         {

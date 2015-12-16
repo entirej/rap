@@ -94,7 +94,8 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkE
 import org.entirej.framework.core.properties.interfaces.EJItemProperties;
 import org.entirej.framework.core.properties.interfaces.EJLovDefinitionProperties;
 import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
-import org.entirej.framework.core.renderers.eventhandlers.EJItemValueChangedListener;
+import org.entirej.framework.core.renderers.eventhandlers.EJDataItemValueChangedListener;
+import org.entirej.framework.core.renderers.eventhandlers.EJScreenItemValueChangedListener;
 import org.entirej.framework.core.renderers.interfaces.EJItemRenderer;
 import org.entirej.framework.core.renderers.registry.EJBlockItemRendererRegister;
 import org.slf4j.Logger;
@@ -352,35 +353,47 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
             }
             else if ("BLOCK_ITEM".equals(paramTypeCode))
             {
-                String blockName = paramValue.substring(0, paramValue.indexOf('.'));
+                final String blockName = paramValue.substring(0, paramValue.indexOf('.'));
                 String itemName = paramValue.substring(paramValue.indexOf('.') + 1);
                 
                 
                 EJInternalEditableBlock block = form.getBlock(blockName);
                 if (block != null)
                 {
-                    Collection<String> screenItemNames = block.getScreenItemNames(_item.getScreenType());
-                    if(screenItemNames.contains(itemName))
+                    final String itemBlock = _item.getBlock().getProperties().getName();
+                    _lovInitialiedOnValueSet  = true;
+                    block.addDataItemValueChangedListener(itemName, new EJDataItemValueChangedListener()
                     {
-                        EJScreenItemController screenItem = block.getScreenItem(_item.getScreenType(), itemName);
-                        if(screenItem!=null)
+                        
+                        @Override
+                        public void dataItemValueChanged(String itemName, EJDataRecord changedRecord, EJScreenType screenType)
                         {
-                            _lovInitialiedOnValueSet  = true;
-                            screenItem.addItemValueChangedListener(new EJItemValueChangedListener()
+                            
+                          
+                            if(blockName.equals(itemBlock) )
                             {
-                                
-                                @Override
-                                public void valueChanged(EJScreenItemController item, EJItemRenderer changedRenderer)
+                                if( screenType == _item.getScreenType())
                                 {
-
-                                    logger.debug( "BLOCK_ITEM.valueChanged %s.%s", _item.getBlock().getProperties().getName(),_item.getName());
+                                    logger.debug(String.format( "BLOCK_ITEM.valueChanged %s.%s", blockName,itemName));
+                                    loadComboBoxValues();
+                                    refreshCombo(); 
+                                }
+                            }
+                            else
+                                
+                            {
+                                if( screenType == EJScreenType.MAIN)
+                                {
+                                    logger.debug(String.format( "BLOCK_ITEM.valueChanged %s.%s", blockName,itemName));
                                     loadComboBoxValues();
                                     refreshCombo();
-                                    
                                 }
-                            });
+                            }
+                            
+                            
                         }
-                    }
+                    });
+                    
                     
                 }
             }
