@@ -95,6 +95,7 @@ import org.entirej.framework.core.properties.interfaces.EJItemProperties;
 import org.entirej.framework.core.properties.interfaces.EJLovDefinitionProperties;
 import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
 import org.entirej.framework.core.renderers.eventhandlers.EJDataItemValueChangedListener;
+import org.entirej.framework.core.renderers.eventhandlers.EJNewRecordFocusedListener;
 import org.entirej.framework.core.renderers.eventhandlers.EJScreenItemValueChangedListener;
 import org.entirej.framework.core.renderers.interfaces.EJItemRenderer;
 import org.entirej.framework.core.renderers.registry.EJBlockItemRendererRegister;
@@ -361,7 +362,24 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 if (block != null)
                 {
                     final String itemBlock = _item.getBlock().getProperties().getName();
+                   
+                  
                     _lovInitialiedOnValueSet  = true;
+                    if(!itemBlock.equals(blockName) || _item.getScreenType()==EJScreenType.MAIN)
+                    {
+                        block.getBlockController().addNewRecordFocusedListener(new EJNewRecordFocusedListener()
+                        {
+                            
+                            @Override
+                            public void focusedGained(EJDataRecord focusedRecord)
+                            {
+                                logger.debug(String.format( "BLOCK RECORD Changed %s", blockName));
+                                loadComboBoxValues();
+                                refreshCombo(); 
+                                
+                            }
+                        });
+                    }
                     block.addDataItemValueChangedListener(itemName, new EJDataItemValueChangedListener()
                     {
                         
