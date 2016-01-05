@@ -33,7 +33,6 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDe
 import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionGroup;
 
-
 public class EJRWTApplicationDefinition implements EJApplicationDefinition
 {
 
@@ -56,6 +55,11 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
 
     public static final String APP_MSG_NOTIFICATION_AUTOHIDE = "APP_MSG_NOTIFICATION_AUTOHIDE";
 
+    public static final String SPRING_SECURITY               = "SPRING_SECURITY";
+    public static final String SPRING_SECURITY_AUTH          = "SPRING_SECURITY_AUTH";
+
+    public static final String SPRING_SECURITY_CONFIG        = "SPRING_SECURITY_CONFIG";
+
     @Override
     public String getApplicationManagerClassName()
     {
@@ -68,19 +72,40 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("RWTAPP");
         mainGroup.setLabel("RWT Application");
 
+        
+        {//Spring support
+            
+            try
+            {
+                Class<?> support = Class.forName("org.entirej.applicationframework.rwt.spring.EJSpringSupport");
+                if(support!=null)
+                {
+                    EJDevPropertyDefinitionGroup springGroup = new EJDevPropertyDefinitionGroup(SPRING_SECURITY, "Spring Security Support");
+                    mainGroup.addSubGroup(springGroup);
+                }
+            }
+            catch (ClassNotFoundException e)
+            {
+                //ignore
+            }
+            
+        }
+        
         EJDevPropertyDefinition applicationMenu = new EJDevPropertyDefinition(APPLICATION_MENU, EJPropertyDefinitionType.MENU_GROUP);
         applicationMenu.setLabel("Application Menu");
-        applicationMenu.setDescription("The Application Menu is the standard drop down menu displayed at the top of the screen. The menu is created using the <a href=\"http://docs.entirej.com/display/EJ1/Application+Menu\">EntireJ Menu Editor</a>");
+        applicationMenu
+                .setDescription("The Application Menu is the standard drop down menu displayed at the top of the screen. The menu is created using the <a href=\"http://docs.entirej.com/display/EJ1/Application+Menu\">EntireJ Menu Editor</a>");
 
         mainGroup.addPropertyDefinition(applicationMenu);
         EJDevPropertyDefinition displayTabBorder = new EJDevPropertyDefinition(DISPLAY_TAB_BORDER, EJPropertyDefinitionType.BOOLEAN);
         displayTabBorder.setLabel("Display border on tabs");
-        displayTabBorder.setDescription("Indicates if borders should be used to surround tab canvases. Displaying borders on tabs can lead to many unwanted frames displayed on your application.");
-        
+        displayTabBorder
+                .setDescription("Indicates if borders should be used to surround tab canvases. Displaying borders on tabs can lead to many unwanted frames displayed on your application.");
+
         mainGroup.addPropertyDefinition(displayTabBorder);
 
         EJDevPropertyDefinitionGroup actionGroup = new EJDevPropertyDefinitionGroup(EJRWTSingleRecordBlockDefinitionProperties.ACTION_GROUP, "Shortcuts");
-        mainGroup.addSubGroup(actionGroup);        
+        mainGroup.addSubGroup(actionGroup);
 
         EJDevPropertyDefinition queryAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_QUERY_KEY,
                 EJPropertyDefinitionType.STRING);
@@ -123,7 +148,8 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
         // Application message settings
 
         EJDevPropertyDefinitionGroup messageGroup = new EJDevPropertyDefinitionGroup(APP_MESSAGING, "Application Messaging");
-        messageGroup.setDescription("EntireJ gives you the possibility to have application messages displayed either in standard popup message boxes or in notifications that rise up from the bottom of the application. You can decide which option you would prefer or have a  combination of both");
+        messageGroup
+                .setDescription("EntireJ gives you the possibility to have application messages displayed either in standard popup message boxes or in notifications that rise up from the bottom of the application. You can decide which option you would prefer or have a  combination of both");
         // add error message settings
         {
             EJDevPropertyDefinitionGroup errorMsgGroup = new EJDevPropertyDefinitionGroup(APP_MSG_ERROR, "Error Message");
@@ -138,7 +164,8 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
 
             EJDevPropertyDefinition notificationAutoHide = new EJDevPropertyDefinition(APP_MSG_NOTIFICATION_AUTOHIDE, EJPropertyDefinitionType.BOOLEAN);
             notificationAutoHide.setLabel("Auto Hide Notification");
-            notificationAutoHide.setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
+            notificationAutoHide
+                    .setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
 
             EJDevPropertyDefinition width = new EJDevPropertyDefinition(APP_MSG_WIDTH, EJPropertyDefinitionType.INTEGER);
             width.setLabel("Width");
@@ -168,7 +195,8 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
 
             EJDevPropertyDefinition notificationAutoHide = new EJDevPropertyDefinition(APP_MSG_NOTIFICATION_AUTOHIDE, EJPropertyDefinitionType.BOOLEAN);
             notificationAutoHide.setLabel("Auto Hide Notification");
-            notificationAutoHide.setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
+            notificationAutoHide
+                    .setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
 
             EJDevPropertyDefinition width = new EJDevPropertyDefinition(APP_MSG_WIDTH, EJPropertyDefinitionType.INTEGER);
             width.setLabel("Width");
@@ -198,8 +226,9 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
 
             EJDevPropertyDefinition notificationAutoHide = new EJDevPropertyDefinition(APP_MSG_NOTIFICATION_AUTOHIDE, EJPropertyDefinitionType.BOOLEAN);
             notificationAutoHide.setLabel("Notification Auto Hide");
-            notificationAutoHide.setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
-            
+            notificationAutoHide
+                    .setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
+
             notificationAutoHide.setDefaultValue("true");
             EJDevPropertyDefinition width = new EJDevPropertyDefinition(APP_MSG_WIDTH, EJPropertyDefinitionType.INTEGER);
             width.setLabel("Width");
@@ -221,7 +250,8 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
 
             EJDevPropertyDefinition notificationAutoHide = new EJDevPropertyDefinition(APP_MSG_NOTIFICATION_AUTOHIDE, EJPropertyDefinitionType.BOOLEAN);
             notificationAutoHide.setLabel("Auto Hide Notification");
-            notificationAutoHide.setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
+            notificationAutoHide
+                    .setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
             notificationAutoHide.setDefaultValue("true");
 
             EJDevPropertyDefinition width = new EJDevPropertyDefinition(APP_MSG_WIDTH, EJPropertyDefinitionType.INTEGER);
@@ -254,7 +284,7 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
         // no impl
 
     }
-    
+
     @Override
     public TYPE[] getSupportedLayoutTypes()
     {
