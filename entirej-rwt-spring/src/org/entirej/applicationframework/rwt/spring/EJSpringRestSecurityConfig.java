@@ -11,14 +11,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableWebSecurity
-public class RestSecurityConfig extends WebSecurityConfigurerAdapter
+public class EJSpringRestSecurityConfig extends WebSecurityConfigurerAdapter
 {
     
     public static final String             SPRING_SECURITY      = "SPRING_SECURITY";
-    public static final String             SPRING_SECURITY_AUTH = "SPRING_SECURITY_AUTH";
+    public static final String             SPRING_SECURITY_AUTH = "SPRING_SECURITY_CONFIG";
     private EJSpringSecurityConfigProvider provider;
 
-    public  RestSecurityConfig()
+    public  EJSpringRestSecurityConfig()
     {
         EJCoreProperties instance = EJCoreProperties.getInstance();
         EJFrameworkExtensionProperties definedProperties = instance.getApplicationDefinedProperties();

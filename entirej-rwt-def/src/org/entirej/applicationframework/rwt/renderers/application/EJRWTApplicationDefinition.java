@@ -23,6 +23,7 @@ package org.entirej.applicationframework.rwt.renderers.application;
 
 import org.eclipse.jface.fieldassist.AutoCompleteField;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
+
 import org.entirej.framework.core.application.definition.interfaces.EJApplicationDefinition;
 import org.entirej.framework.core.properties.EJCoreLayoutItem.TYPE;
 import org.entirej.framework.core.properties.definitions.EJPropertyDefinitionType;
@@ -82,6 +83,23 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
                 {
                     EJDevPropertyDefinitionGroup springGroup = new EJDevPropertyDefinitionGroup(SPRING_SECURITY, "Spring Security Support");
                     mainGroup.addSubGroup(springGroup);
+                    
+                    {//Config
+                        
+                        EJDevPropertyDefinition type = new EJDevPropertyDefinition(SPRING_SECURITY_CONFIG, EJPropertyDefinitionType.PROJECT_CLASS_FILE);
+                        type.setLabel("Security Config Provider");
+                        type.setClassParent("org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityConfigProvider");
+                        springGroup.addPropertyDefinition(type);
+                        
+                    }
+                    {//Auth
+                        
+                        EJDevPropertyDefinition type = new EJDevPropertyDefinition(SPRING_SECURITY_AUTH, EJPropertyDefinitionType.PROJECT_CLASS_FILE);
+                        type.setLabel("Authentication Provider");
+                        type.setClassParent("org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityAuthenticationProvider");
+                        springGroup.addPropertyDefinition(type);
+                        
+                    }
                 }
             }
             catch (ClassNotFoundException e)

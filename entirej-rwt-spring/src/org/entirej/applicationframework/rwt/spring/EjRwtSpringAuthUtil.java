@@ -8,10 +8,11 @@ import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public class SpringAuthUtil
+public class EjRwtSpringAuthUtil
 {
     public static void logout(String contextpath)
     {
@@ -45,6 +46,17 @@ public class SpringAuthUtil
             return context.getAuthentication().getName();
         }
 
+        return null;
+    }
+    public static Authentication getAuthentication()
+    {
+        
+        SecurityContext context = getSecurityContext();
+        if (context != null)
+        {
+            return context.getAuthentication();
+        }
+        
         return null;
     }
 

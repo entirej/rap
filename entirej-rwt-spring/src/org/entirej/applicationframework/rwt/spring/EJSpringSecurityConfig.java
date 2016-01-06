@@ -9,13 +9,13 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @EnableWebSecurity
-public class SecurityConfig
+public class EJSpringSecurityConfig
 {
     public static final String SPRING_SECURITY = "SPRING_SECURITY";
-    public static final String SPRING_SECURITY_CONFIG = "SPRING_SECURITY_CONFIG";
+    public static final String SPRING_SECURITY_CONFIG = "SPRING_SECURITY_AUTH";
     private EJSpringSecurityAuthenticationProvider provider;
 
-    public SecurityConfig()
+    public EJSpringSecurityConfig()
     {
         EJCoreProperties instance = EJCoreProperties.getInstance();
         EJFrameworkExtensionProperties definedProperties = instance.getApplicationDefinedProperties();
