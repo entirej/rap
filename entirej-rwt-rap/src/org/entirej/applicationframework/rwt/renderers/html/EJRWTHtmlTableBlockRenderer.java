@@ -1327,6 +1327,11 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
             builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("padding: 1px 2px 1px 0px;");
             builder.append("}");
+            
+            builder.append("p{");
+            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+            builder.append("padding: 0px 0px 0px 0px;margin-top: 0px; margin-bottom: 0px;");
+            builder.append("}");
 
             builder.append("u.default_link {");
             builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
