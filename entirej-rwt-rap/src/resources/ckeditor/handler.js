@@ -362,7 +362,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 				}
 				
 				this.element.parentNode.removeChild(this.element);
-				if(this.removeToolbar)
+				if(this.removeToolbar && this.element.parentNode)
 					this.element.parentNode.removeChild(this.elementReadonly);
 			}
 		},

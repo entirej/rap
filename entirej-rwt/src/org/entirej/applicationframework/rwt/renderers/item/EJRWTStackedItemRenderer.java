@@ -504,34 +504,39 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
     }
 
-    private static NUMBER_TYPE getNumberType(Object object)
+    private static NUMBER_TYPE getNumberType(EJRWTStackedItemRendererValue object)
     {
-        if (object == null)
+        if (object == null || object.getConfig().getType()!=EJRWTStackedItemRendererType.NUMBER)
             return NUMBER_TYPE.NUMBER;
-        final String datatypeClassName = object.getClass().getName();
-        NUMBER_TYPE numberType;
-        if (datatypeClassName.equals(Integer.class.getName()))
-        {
-            numberType = NUMBER_TYPE.INTEGER;
-        }
-        else if (datatypeClassName.equals(Float.class.getName()))
-        {
-            numberType = NUMBER_TYPE.FLOAT;
-        }
-        else if (datatypeClassName.endsWith(Long.class.getName()))
-        {
-            numberType = NUMBER_TYPE.LONG;
-        }
-        else if (datatypeClassName.endsWith(Double.class.getName()))
-        {
-            numberType = NUMBER_TYPE.DOUBLE;
-        }
-        else
-        {
-
-            numberType = NUMBER_TYPE.BIG_DECIMAL;
-        }
-        return numberType;
+        
+        
+        
+        EJRWTStackedItemRendererConfig.Number config = (EJRWTStackedItemRendererConfig.Number) object.getConfig();
+        
+//        final String datatypeClassName = object.getValue().getClass().getName();
+//        NUMBER_TYPE numberType;
+//        if (datatypeClassName.equals(Integer.class.getName()))
+//        {
+//            numberType = NUMBER_TYPE.INTEGER;
+//        }
+//        else if (datatypeClassName.equals(Float.class.getName()))
+//        {
+//            numberType = NUMBER_TYPE.FLOAT;
+//        }
+//        else if (datatypeClassName.endsWith(Long.class.getName()))
+//        {
+//            numberType = NUMBER_TYPE.LONG;
+//        }
+//        else if (datatypeClassName.endsWith(Double.class.getName()))
+//        {
+//            numberType = NUMBER_TYPE.DOUBLE;
+//        }
+//        else
+//        {
+//
+//            numberType = NUMBER_TYPE.BIG_DECIMAL;
+//        }
+        return NUMBER_TYPE.valueOf(config.getDataType().name());
     }
 
     @Override
@@ -1320,7 +1325,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 {
                     EJRWTStackedItemRendererConfig.Number config = (EJRWTStackedItemRendererConfig.Number) _baseValue.getConfig();
 
-                    _numberType = getNumberType(value);
+                    _numberType = getNumberType(_baseValue);
                     _decimalFormatter = createFormatter(_numberType, config.getFormat());
                     if (value != null && !Number.class.isAssignableFrom(value.getClass()))
                     {
@@ -1381,7 +1386,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     createDateFormat();
                     break;
                 case NUMBER:
-                    _numberType = getNumberType(new Double(0));
+                    _numberType = getNumberType(_baseValue);
                     _decimalFormatter = createFormatter(_numberType, ((EJRWTStackedItemRendererConfig.Number) _baseValue.getConfig()).getFormat());
                     break;
             }
@@ -1805,7 +1810,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             alignmentProperty = _rendererProps.getStringProperty("ALLIGNMENT");
         }
 
-        _numberType = getNumberType(_baseValue != null ? _baseValue.getValue() : null);
+        _numberType = getNumberType(_baseValue);
         _decimalFormatter = createFormatter(_numberType, null);
         _dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.SHORT, _item.getForm().getFrameworkManager().getCurrentLocale()));
 
@@ -2673,7 +2678,40 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         if (value instanceof Number)
         {
 
-            NUMBER_TYPE numberType = getNumberType(value);
+            NUMBER_TYPE numberType = NUMBER_TYPE.NUMBER;
+            if(value!=null )
+            {
+               
+                
+                
+                
+                
+                
+                final String datatypeClassName = value.getClass().getName();
+                
+                if (datatypeClassName.equals(Integer.class.getName()))
+                {
+                    numberType = NUMBER_TYPE.INTEGER;
+                }
+                else if (datatypeClassName.equals(Float.class.getName()))
+                {
+                    numberType = NUMBER_TYPE.FLOAT;
+                }
+                else if (datatypeClassName.endsWith(Long.class.getName()))
+                {
+                    numberType = NUMBER_TYPE.LONG;
+                }
+                else if (datatypeClassName.endsWith(Double.class.getName()))
+                {
+                    numberType = NUMBER_TYPE.DOUBLE;
+                }
+                else
+                {
+        
+                    numberType = NUMBER_TYPE.BIG_DECIMAL;
+                }
+                
+            }
             DecimalFormat decimalFormat = createFormatter(numberType, format);
 
             return decimalFormat.format(value);

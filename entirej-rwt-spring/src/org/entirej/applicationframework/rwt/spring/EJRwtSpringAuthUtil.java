@@ -12,7 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-public class EjRwtSpringAuthUtil
+public class EJRwtSpringAuthUtil
 {
     public static void logout(String contextpath)
     {

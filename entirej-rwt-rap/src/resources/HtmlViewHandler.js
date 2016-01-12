@@ -163,7 +163,12 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
     },
 
     destroy : function() {
-      this.element.parentNode.removeChild( this.element);
+    	if(this.element.parentNode)
+		{
+    		this.element.parentNode.removeChild( this.element);
+		}
+    	
+      
     },
 
     layout : function() {

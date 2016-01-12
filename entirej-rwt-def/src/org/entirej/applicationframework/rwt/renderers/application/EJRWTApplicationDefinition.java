@@ -71,7 +71,7 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
     public EJPropertyDefinitionGroup getApplicationPropertyDefinitionGroup()
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("RWTAPP");
-        mainGroup.setLabel("RWT Application");
+        mainGroup.setLabel("Eclipse RAP Application Framework");
 
         
         {//Spring support
@@ -81,6 +81,7 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
                 Class<?> support = Class.forName("org.entirej.applicationframework.rwt.spring.EJSpringSupport");
                 if(support!=null)
                 {
+                    mainGroup.setLabel("Eclipse RAP Application Framework with Spring Security");
                     EJDevPropertyDefinitionGroup springGroup = new EJDevPropertyDefinitionGroup(SPRING_SECURITY, "Spring Security Support");
                     mainGroup.addSubGroup(springGroup);
                     

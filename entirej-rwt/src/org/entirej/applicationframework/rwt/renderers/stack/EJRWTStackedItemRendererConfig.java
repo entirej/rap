@@ -228,9 +228,17 @@ public class EJRWTStackedItemRendererConfig
 
     public static class Number extends LOVSupportConfig
     {
-        public Number()
+        public enum DataType
+        {
+            NUMBER, INTEGER, FLOAT, BIG_DECIMAL, DOUBLE, LONG
+        };
+        
+        DataType numberType; 
+        
+        public Number(DataType numberType)
         {
             super(EJRWTStackedItemRendererType.NUMBER);
+            this.numberType = numberType;
         }
 
         private String format;
@@ -244,6 +252,14 @@ public class EJRWTStackedItemRendererConfig
         {
             this.format = format;
         }
+        
+        public DataType getDataType()
+        {
+            return numberType;
+        }
+        
+        
+        
     }
 
     public static class Combo extends LOVSupportConfig
