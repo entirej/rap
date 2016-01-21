@@ -27,6 +27,8 @@ import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
@@ -450,6 +452,15 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                     labelField.setImage(EJRWTImageRetriever.get(pictureName));
                 }
             }
+            
+            labelField.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseUp(MouseEvent e)
+                {
+                    _item.executeActionCommand();
+                }
+            });
 
             _labelField = new SWTComponentAdapter()
             {

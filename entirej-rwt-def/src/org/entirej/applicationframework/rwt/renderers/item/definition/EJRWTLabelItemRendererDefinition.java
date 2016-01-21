@@ -46,7 +46,6 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
     public static final String PROPERTY_ALIGNMENT_LEFT       = "LEFT";
     public static final String PROPERTY_ALIGNMENT_RIGHT      = "RIGHT";
     public static final String PROPERTY_ALIGNMENT_CENTER     = "CENTER";
-    public static final String PROPERTY_PICTURE              = "PICTURE";
     public static final String PROPERTY_DISPLAY_AS_HYPERLINK = "DISPLAY_AS_HYPERLINK";
     public static final String PROPERTY_TEXT_WRAP            = "WRAP";
     public static final String PROPERTY_CSS_KEY              = "CSS_KEY";
@@ -112,10 +111,10 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
         htmlFormat.setLabel("XHTML Formatting");
         htmlFormat.setDescription("If this property is set, the Label formats certain XHTML tags ");
 
-        EJDevPropertyDefinition pic = new EJDevPropertyDefinition(PROPERTY_PICTURE, EJPropertyDefinitionType.PROJECT_FILE);
-        pic.setLabel("Picture");
-        pic.setDescription("It is possible to display an image in a label renderer. See also: Image Item Renderer");
-        
+//        EJDevPropertyDefinition pic = new EJDevPropertyDefinition(PROPERTY_PICTURE, EJPropertyDefinitionType.PROJECT_FILE);
+//        pic.setLabel("Picture");
+//        pic.setDescription("It is possible to display an image in a label renderer. See also: Image Item Renderer");
+//        
         EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(PROPERTY_CSS_KEY, EJPropertyDefinitionType.STRING);
         customCSSKey.setLabel("Custom CSS Key");
         customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
@@ -127,7 +126,7 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
         mainGroup.addPropertyDefinition(textAlignment);
         mainGroup.addPropertyDefinition(textWrap);
         mainGroup.addPropertyDefinition(htmlFormat);
-        mainGroup.addPropertyDefinition(pic);
+     //   mainGroup.addPropertyDefinition(pic);
         mainGroup.addPropertyDefinition(customCSSKey);
 
         return mainGroup;
