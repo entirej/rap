@@ -434,6 +434,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     {
         currentRec = arg0;
 
+        if (_browser != null && !_browser.isDisposed() && currentRec!=null)
+        {
+            _browser.setSelection(String.valueOf(getDisplayedRecordNumber(currentRec)));
+        }
     }
 
     @Override

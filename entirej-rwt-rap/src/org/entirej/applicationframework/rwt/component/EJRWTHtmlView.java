@@ -181,6 +181,14 @@ public class EJRWTHtmlView extends Composite
 
         remoteObject.set("scroll", pos);
     }
+    
+    
+    public void setSelection(String id)
+    {
+        checkWidget();
+
+        remoteObject.set("selection",  id);
+    }
 
     public int getScroll()
     {

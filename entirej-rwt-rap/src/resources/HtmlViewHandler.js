@@ -10,7 +10,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
 
     destructor : "destroy",
 
-    properties : [ "text",'scroll' ]
+    properties : [ "text",'scroll','selection' ]
 
   } );
 
@@ -182,6 +182,53 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         }
        
     },
+    
+  
+    
+    setSelection : function(id) {
+    	var elemsnts= this.element.getElementsByTagName("tr");
+        if(elemsnts)
+    	{
+        	
+        	for(var i =0;i<elemsnts.length;i++)
+        	{
+        		var el = elemsnts[i];
+        		if(el.getAttribute('recid') == id)
+        		{
+	                 var tr = el;
+        			 var _y = 0;
+	    			    while( el &&  !isNaN( el.offsetTop ) ) {
+	    			       
+	    			        _y += el.offsetTop - el.scrollTop;
+	    			        el = el.offsetParent;
+	    			    }
+	    			    
+	    			    this.scrolDiv.scrollTop = _y;
+	    			    
+	    			    var indelemsnts= this.element.getElementsByClassName("rowindi");
+	    			    if(indelemsnts)
+	    		     	{
+	    		         	
+	    		         	for(var j =0;j<indelemsnts.length;j++)
+	    		         	{
+	    		         		var elm = indelemsnts[j];
+	    		         		if(elm.parentNode == tr)
+	    		         			{
+	    		         				elm.style.visibility = "visible";
+	    		         			}
+	    		         		else
+	    		         			elm.style.visibility = "hidden";
+	    		         	}
+	    		     	}
+        			
+        			break;
+        		}
+        	}
+    	}
+    	
+      
+    },
+    
 
     destroy : function() {
     	if(this.element.parentNode)
