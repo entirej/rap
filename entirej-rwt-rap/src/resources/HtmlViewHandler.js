@@ -10,7 +10,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
 
     destructor : "destroy",
 
-    properties : [ "text" ]
+    properties : [ "text",'scroll' ]
 
   } );
 
@@ -19,7 +19,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
   }
 
   entirej.HtmlView = function( properties ) {
-    bindAll( this, [ "layout", "onRender","ej_action","ej_select" ] );
+    bindAll( this, [ "layout", "onRender","ej_action","ej_select",'ej_scroll' ] );
     this.parent = rap.getObject( properties.parent );
     this.document = document;
     this.element = document.createElement( "div" );
@@ -125,7 +125,20 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
     	}
     },
     
+    ej_scroll : function() {
+    	var remoteObject = rap.getRemoteObject(this);
+    	
+    	var pos = this.scrolDiv.scrollTop;
+    	
+    	var arg = {}
+    	arg['vpos'] = pos;
+    	remoteObject.set('scroll',arg);
+        
+    },
     
+    setScroll : function(pos) {
+    	this.scrolDiv.scrollTop = pos;
+    },
    
     setText : function( text ) {
       
@@ -159,6 +172,14 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         		elemsnts[i].onclick =  func;
         	}
     	}
+        
+        
+        var divs = this.element.getElementsByTagName("div");
+        if(divs && divs[0])
+        {
+        	this.scrolDiv = divs[0];
+        	this.scrolDiv.onscroll = this.ej_scroll;
+        }
        
     },
 

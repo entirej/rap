@@ -287,7 +287,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         }
         if (_item.getBlock().getProperties().isReferenceBlock())
         {
-            defName = String.format("%s.%s", _item.getBlock().getProperties().getReferencedBlockName(), defName);
+            defName = String.format("%s.%s", _item.getBlock().getProperties().getName(), defName);
         }
         
         
@@ -453,7 +453,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         }
         if (_item.getBlock().getProperties().isReferenceBlock())
         {
-            defName = String.format("%s.%s", _item.getBlock().getProperties().getReferencedBlockName(), defName);
+            defName = String.format("%s.%s", _item.getBlock().getProperties().getName(), defName);
         }
         EJLovDefinitionProperties lovDef = _item.getForm().getProperties().getLovDefinitionProperties(defName);
 

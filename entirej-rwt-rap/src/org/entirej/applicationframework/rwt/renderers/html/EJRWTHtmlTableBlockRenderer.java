@@ -311,16 +311,32 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public void recordDeleted(int arg0)
     {
-        clearFilter();
+        int pos = 0;
+        if (_browser != null && !_browser.isDisposed())
+        {
+           pos =_browser.getScroll(); 
+        }
         createHTML();
+        if(pos>0)
+        {
+            _browser.setScroll(pos);
+        }
 
     }
 
     @Override
     public void recordInserted(EJDataRecord arg0)
     {
-        clearFilter();
+        int pos = 0;
+        if (_browser != null && !_browser.isDisposed())
+        {
+           pos =_browser.getScroll(); 
+        }
         createHTML();
+        if(pos>0)
+        {
+            _browser.setScroll(pos);
+        }
 
     }
 
@@ -429,7 +445,16 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public void refreshAfterChange(EJDataRecord arg0)
     {
+        int pos = 0;
+        if (_browser != null && !_browser.isDisposed())
+        {
+           pos =_browser.getScroll(); 
+        }
         createHTML();
+        if(pos>0)
+        {
+            _browser.setScroll(pos);
+        }
 
     }
 

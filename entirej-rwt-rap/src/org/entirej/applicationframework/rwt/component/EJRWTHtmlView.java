@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
@@ -50,23 +51,32 @@ public class EJRWTHtmlView extends Composite
 
     private String                 text             = "";
     private final RemoteObject     remoteObject;
+    private int                    scrollPos;
 
     private final OperationHandler operationHandler = new AbstractOperationHandler()
                                                     {
-														private static final long serialVersionUID = 1L;
+                                                        private static final long serialVersionUID = 1L;
 
-														
-														@Override
-                                                        public void handleCall(final String method,final JsonObject parameters)
+                                                        public void handleSet(JsonObject properties)
+                                                        {
+                                                            JsonValue textValue = properties.get("scroll");
+                                                            if (textValue != null)
+                                                            {
+                                                                scrollPos = textValue.asObject().get("vpos").asInt();
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void handleCall(final String method, final JsonObject parameters)
                                                         {
                                                             Display.getCurrent().asyncExec(new Runnable()
                                                             {
-                                                                
+
                                                                 @Override
                                                                 public void run()
                                                                 {
                                                                     action(method, parameters);
-                                                                    
+
                                                                 }
                                                             });
                                                         }
@@ -74,9 +84,9 @@ public class EJRWTHtmlView extends Composite
 
     public void action(String method, JsonObject parameters)
     {
-        
+
     }
-                                                    
+
     public EJRWTHtmlView(Composite parent, int style)
     {
         super(parent, style);
@@ -163,6 +173,18 @@ public class EJRWTHtmlView extends Composite
     {
         checkWidget();
         return text;
+    }
+
+    public void setScroll(int pos)
+    {
+        checkWidget();
+
+        remoteObject.set("scroll", pos);
+    }
+
+    public int getScroll()
+    {
+        return scrollPos;
     }
 
 }
