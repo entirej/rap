@@ -135,9 +135,20 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
     	remoteObject.set('scroll',arg);
         
     },
+    ej_scroll_main : function() {
+    	var remoteObject = rap.getRemoteObject(this);
+    	
+    	var pos = this.element.scrollTop;
+    	
+    	var arg = {}
+    	arg['vpos'] = pos;
+    	remoteObject.set('scroll',arg);
+    	
+    },
     
     setScroll : function(pos) {
     	this.scrolDiv.scrollTop = pos;
+    	this.element.scrollTop = pos;
     },
    
     setText : function( text ) {
@@ -175,6 +186,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         
         
         var divs = this.element.getElementsByTagName("div");
+        this.element.onscroll = this.ej_scroll_main;
         if(divs && divs[0])
         {
         	this.scrolDiv = divs[0];
@@ -195,31 +207,24 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         		var el = elemsnts[i];
         		if(el.getAttribute('recid') == id)
         		{
-	                 var tr = el;
-        			 var _y = 0;
-	    			    while( el &&  !isNaN( el.offsetTop ) ) {
-	    			       
-	    			        _y += el.offsetTop - el.scrollTop;
-	    			        el = el.offsetParent;
-	    			    }
-	    			    
-	    			    this.scrolDiv.scrollTop = _y;
-	    			    
-	    			    var indelemsnts= this.element.getElementsByClassName("rowindi");
-	    			    if(indelemsnts)
-	    		     	{
-	    		         	
-	    		         	for(var j =0;j<indelemsnts.length;j++)
-	    		         	{
-	    		         		var elm = indelemsnts[j];
-	    		         		if(elm.parentNode == tr)
-	    		         			{
-	    		         				elm.style.visibility = "visible";
-	    		         			}
-	    		         		else
-	    		         			elm.style.visibility = "hidden";
-	    		         	}
-	    		     	}
+    			    this.scrolDiv.scrollTop =  el.offsetTop;
+    			    this.element.scrollTop =  el.offsetTop;
+    			    
+    			    var indelemsnts= this.element.getElementsByClassName("rowindi");
+    			    if(indelemsnts)
+    		     	{
+    		         	
+    		         	for(var j =0;j<indelemsnts.length;j++)
+    		         	{
+    		         		var elm = indelemsnts[j];
+    		         		if(elm.parentNode == el)
+    		         			{
+    		         				elm.style.visibility = "visible";
+    		         			}
+    		         		else
+    		         			elm.style.visibility = "hidden";
+    		         	}
+    		     	}
         			
         			break;
         		}
