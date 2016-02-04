@@ -71,6 +71,10 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 			// TODO [tb] : on IE 7/8 the iframe and body has to be made
 			// transparent explicitly
 			this.ready = true;
+			var area = this.parent.getClientArea();
+			
+			
+			this.editor.resize(area[2], area[3]);
 			this.layout();
 			if (this._text) {
 				this.setText(this._text);
@@ -80,6 +84,8 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 				this.setFont(this._font);
 				delete this._font;
 			}
+			
+			
 			if (this._enable != undefined) {
 				this.setEnable(this._enable);
 				delete this._enable;
@@ -90,6 +96,23 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 
 			if (this.element.parentNode) {
 				rap.off("render", this.onRender);
+				
+				if(this.removeToolbar )
+				{
+					if (this._text && (this._enable != undefined && !this._enable))
+					{
+						this.elementReadonly.innerHTML = this._text;
+						
+						async(this, function() { // Needed by IE for some reason
+							
+							this.elementReadonly.style.font= font;
+						});
+						this.elementReadonly.style.visibility = "visible";
+					}
+					
+					
+				}
+				
 				var toolbarGroupsProfile = [];
 				var removeButtonsProfile = '';
 
@@ -252,7 +275,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 				}
 
 				
-
+				this.element.style.visibility = "hidden";
 				if (this.inline) {
 					this.editor = CKEDITOR
 							.inline(
@@ -290,9 +313,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 				
 				
 				this.editor.on("instanceReady", this.onReady);
-				this.editor.on('instanceReady', function(e) {
-					$(e.editor.element.$).removeAttr("title");
-				});
+				
 				rap.on("send", this.onSend);
 			}
 		},
@@ -322,7 +343,8 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 			if (this.ready) {
 				async(this, function() { // Needed by IE for some reason
 					this.editor.document.getBody().setStyle("font", font);
-					this.Readonly.document.getBody().setStyle("font", font);
+					if(this.removeToolbar)
+						this.elementReadonly.style.font= font;
 				});
 			} else {
 				this._font = font;
@@ -345,6 +367,10 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 						this.elementReadonly.style.visibility = "visible";
 	
 					}	
+				}
+				else
+				{
+					this.element.style.visibility = "visible";
 				}
 				
 
