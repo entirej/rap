@@ -145,6 +145,8 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                     // ignore
                     return null;
                 }
+                
+                
 
                 @Override
                 public void removeFormSelectedListener(EJRWTFormSelectedListener selectionListener)
@@ -266,6 +268,15 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                     _popupDialog.centreLocation();
                     _popupDialog.open();
                     return form;
+                }
+
+
+
+                @Override
+                public void updateFormTitle(EJInternalForm form)
+                {
+                    // TODO Auto-generated method stub
+                    
                 }
             };
         }
@@ -750,5 +761,20 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                 parent = parent.getParent();
             }
         }
+    }
+
+    public void updateFormTitle(EJInternalForm form)
+    {
+        if (_formContainer != null)
+        {
+            _formContainer.updateFormTitle(form);
+        }
+        
+    }
+
+    public Collection<EJInternalForm> getOpenForms()
+    {
+        
+        return new ArrayList<EJInternalForm>(_formContainer.getAllForms());
     }
 }

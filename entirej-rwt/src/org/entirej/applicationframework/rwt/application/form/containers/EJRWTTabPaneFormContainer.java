@@ -224,6 +224,16 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
             tabItem.dispose();
         }
     }
+    
+    @Override
+    public void updateFormTitle(EJInternalForm form)
+    {
+        CTabItem tabItem = _tabPages.get(form);
+        if (tabItem != null)
+        {
+            tabItem.setText(form.getProperties().getTitle());
+        }
+    }
 
     public boolean closeAllForms()
     {

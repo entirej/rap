@@ -230,4 +230,11 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
         }
         return null;
     }
+
+    @Override
+    public void updateFormTitle(EJInternalForm form)
+    {
+       //ignore
+        
+    }
 }

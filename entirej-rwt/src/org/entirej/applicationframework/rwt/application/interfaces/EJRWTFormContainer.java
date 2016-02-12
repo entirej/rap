@@ -114,4 +114,6 @@ public interface EJRWTFormContainer extends Serializable
     public void removeFormSelectedListener(EJRWTFormSelectedListener selectionListener);
 
     public EJInternalForm switchToForm(String key);
+
+    public void updateFormTitle(EJInternalForm form);
 }

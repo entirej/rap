@@ -21,6 +21,7 @@ package org.entirej.applicationframework.rwt.application;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -239,6 +240,28 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         }
 
         _applicationContainer.remove(form);
+    }
+    
+    @Override
+    public void updateFormTitle(EJInternalForm form)
+    {
+        if (_applicationContainer == null)
+        {
+            return;
+        }
+
+        _applicationContainer.updateFormTitle(form);
+        
+    }
+    
+    @Override
+    public Collection<EJInternalForm> getOpenForms()
+    {
+        if (_applicationContainer == null)
+        {
+            Collections.emptyList();
+        }
+        return _applicationContainer.getOpenForms();
     }
 
 
