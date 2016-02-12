@@ -255,7 +255,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     }
     
     @Override
-    public Collection<EJInternalForm> getOpenForms()
+    public Collection<EJInternalForm> getOpenedForms()
     {
         if (_applicationContainer == null)
         {
