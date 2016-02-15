@@ -7,5 +7,5 @@ public interface EJSpringSecurityConfigProvider
 {
   
     
-    void configure(HttpSecurity http) throws Exception;;
+    void configure(HttpSecurity http,EJSpringSecurityContext context) throws Exception;;
 }

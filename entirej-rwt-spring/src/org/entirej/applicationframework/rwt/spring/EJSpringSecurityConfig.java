@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @EnableWebSecurity
-public class EJSpringSecurityConfig
+public class EJSpringSecurityConfig 
 {
     public static final String SPRING_SECURITY = "SPRING_SECURITY";
     public static final String SPRING_SECURITY_CONFIG = "SPRING_SECURITY_AUTH";
