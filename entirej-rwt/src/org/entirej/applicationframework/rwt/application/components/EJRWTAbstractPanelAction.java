@@ -54,6 +54,7 @@ public abstract class EJRWTAbstractPanelAction extends Composite implements Seri
         panelControl = createPanel(this);
 
         GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gridData.heightHint = 23;
         panelControl.setLayoutData(gridData);
         super.setFont(panelControl.getFont());
         actionCustomControl = createCustomLabelButtonControl(this);

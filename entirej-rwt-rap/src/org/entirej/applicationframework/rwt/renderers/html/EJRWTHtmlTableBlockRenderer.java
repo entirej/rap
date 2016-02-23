@@ -55,6 +55,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -570,7 +571,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 hookKeyListener(group);
                 scrollComposite.setContent(group);
-                group.setLayout(new FillLayout());
+                group.setLayout(new GridLayout());
                 scrollComposite.setLayoutData(gridData);
 
                 if (frameTitle != null && frameTitle.length() > 0)
