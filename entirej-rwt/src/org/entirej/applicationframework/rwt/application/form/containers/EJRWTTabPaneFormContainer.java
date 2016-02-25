@@ -217,6 +217,14 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
     @Override
     public void closeForm(EJInternalForm form)
     {
+        if(_formPopup!=null && _formPopup.getPopupController().getPopupForm().equals(form))
+        {
+            
+            _formPopup.close();
+            _formPopup = null;
+            return;
+        }
+        
         CTabItem tabItem = _tabPages.get(form);
         if (tabItem != null)
         {

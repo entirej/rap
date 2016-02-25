@@ -262,7 +262,7 @@ public class EJRWTStackedItemRendererConfig
         
     }
 
-    public static class Combo extends LOVSupportConfig
+    public static class Combo extends LOVSupportConfig  implements ActionSupportConfig 
     {
 
         private List<Column> entries = new ArrayList<Column>();
@@ -276,6 +276,19 @@ public class EJRWTStackedItemRendererConfig
 
         private String lovDefinition;
         private String itemName;
+        
+        
+        private String actionCommand;
+
+        public String getActionCommand()
+        {
+            return actionCommand;
+        }
+
+        public void setActionCommand(String actionCommand)
+        {
+            this.actionCommand = actionCommand;
+        }
 
         public String getLovDefinition()
         {
@@ -369,7 +382,7 @@ public class EJRWTStackedItemRendererConfig
 
     }
 
-    public static class CheckBox extends ActionSupportConfig
+    public static class CheckBox extends EJRWTStackedItemRendererConfig implements ActionSupportConfig 
     {
         public CheckBox()
         {
@@ -398,9 +411,21 @@ public class EJRWTStackedItemRendererConfig
         {
             this.checkBoxUnCheckedValue = checkBoxUnCheckedValue;
         }
+        
+        private String actionCommand;
+
+        public String getActionCommand()
+        {
+            return actionCommand;
+        }
+
+        public void setActionCommand(String actionCommand)
+        {
+            this.actionCommand = actionCommand;
+        }
     }
 
-    public static class Button extends ActionSupportConfig
+    public static class Button extends EJRWTStackedItemRendererConfig implements ActionSupportConfig 
     {
         public Button()
         {
@@ -418,18 +443,7 @@ public class EJRWTStackedItemRendererConfig
         {
             this.image = image;
         }
-
-    }
-
-    public static class ActionSupportConfig extends EJRWTStackedItemRendererConfig
-    {
-
-        private ActionSupportConfig(EJRWTStackedItemRendererType type)
-        {
-            super(type);
-
-        }
-
+        
         private String actionCommand;
 
         public String getActionCommand()
@@ -441,6 +455,19 @@ public class EJRWTStackedItemRendererConfig
         {
             this.actionCommand = actionCommand;
         }
+
+    }
+
+    public static interface ActionSupportConfig 
+    {
+
+      
+        public String getActionCommand();
+
+        public void setActionCommand(String actionCommand);
+       
+
+       
     }
 
 }

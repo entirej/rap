@@ -136,6 +136,8 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     protected final TextModifyListener        _modifyListener  = new TextModifyListener();
 
     protected boolean                         _lovActivated;
+    
+
 
     protected EJCoreVisualAttributeProperties _visualAttributeProperties;
     protected EJCoreVisualAttributeProperties _initialVAProperties;
@@ -225,7 +227,28 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     @Override
     public void refreshItemRenderer()
     {
-
+        
+        if (_baseValue != null && controlState(stackedPane))
+        {
+            switch (_baseValue.getConfig().getType())
+            {  
+                case COMBO:
+                {
+                    Combo control = (Combo) stackedPane.getControl(_baseValue.getConfig().getType().name());
+                    EJRWTStackedItemRendererConfig.Combo config = (EJRWTStackedItemRendererConfig.Combo) control.getData("CONFIG");
+                   if(config!=null)
+                   {
+                       ComboViewer _vViewer = (ComboViewer) control.getData("VIEW");
+                       List<ComboBoxValue> loadComboBoxValues = loadComboBoxValues(config);
+                       
+                       _vViewer.setInput(loadComboBoxValues);
+                      
+                   }
+                }
+                break;
+                
+             }
+        }
     }
 
     @Override
@@ -737,15 +760,19 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 if (_baseValue.getConfig().getType() == EJRWTStackedItemRendererType.COMBO)
                 {
                     EJRWTStackedItemRendererConfig.Combo config = (EJRWTStackedItemRendererConfig.Combo) _baseValue.getConfig();
-
-                    List<ComboBoxValue> loadComboBoxValues = loadComboBoxValues(config);
                     Combo control = (Combo) stackedPane.getControl(_baseValue.getConfig().getType().name());
-                    ((ComboViewer) control.getData("VIEW")).setInput(loadComboBoxValues);
-
-                    if (config.getVisibleItemCount() > 5)
+                    if(control.getData("CONFIG")!=config)
                     {
-                        control.setVisibleItemCount(config.getVisibleItemCount());
+                        List<ComboBoxValue> loadComboBoxValues = loadComboBoxValues(config);
+                        
+                        ((ComboViewer) control.getData("VIEW")).setInput(loadComboBoxValues);
+                        control.setData("CONFIG", config);
+                        if (config.getVisibleItemCount() > 5)
+                        {
+                            control.setVisibleItemCount(config.getVisibleItemCount());
+                        }
                     }
+                    
                 }
 
                 if (_baseValue.getConfig().getTooltip() != null)
@@ -1258,11 +1285,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     // check_box/combo
                 }
             }
-        }
-        finally
-        {
-            _modifyListener.enable = true;
-        }
+        
         if (value != null)
         {
             switch (_baseValue.getConfig().getType())
@@ -1391,6 +1414,11 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     break;
             }
 
+        }
+        }
+        finally
+        {
+            _modifyListener.enable = true;
         }
     }
 
@@ -2103,6 +2131,11 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 public void selectionChanged(SelectionChangedEvent event)
                 {
 
+                    if(!_modifyListener.enable)
+                    {
+                        return;
+                    }
+                    
                     if (isValid())
                     {
                         ComboBoxValue value = getComboBoxValue();

@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppFormRenderer;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
+import org.entirej.framework.core.renderers.EJManagedFormRendererWrapper;
 
 public class EJRWTFormPopUp
 {
@@ -41,12 +42,18 @@ public class EJRWTFormPopUp
         _popupController = popupController;
     }
 
+    
+    public EJPopupFormController getPopupController()
+    {
+        return _popupController;
+    }
+    
     public void showForm()
     {
         final int height = _popupController.getPopupForm().getProperties().getFormHeight();
         final int width = _popupController.getPopupForm().getProperties().getFormWidth();
-
-        final EJRWTAppFormRenderer formRenderer = (EJRWTAppFormRenderer) _popupController.getPopupForm().getManagedRenderer();
+        EJManagedFormRendererWrapper wrapper  = _popupController.getPopupForm().getManagedRenderer();
+        final EJRWTAppFormRenderer formRenderer = (EJRWTAppFormRenderer) wrapper.getUnmanagedRenderer();
         _popupDialog = new EJRWTAbstractDialog(_mainShell)
         {
             @Override
@@ -63,7 +70,7 @@ public class EJRWTFormPopUp
         };
         _popupDialog.create();
         _popupDialog.getShell().setText(_popupController.getPopupForm().getProperties().getTitle());
-        _popupDialog.getShell().setSize(width, height);
+        _popupDialog.getShell().setSize(width+50, height+70);//add offset  
         _popupDialog.open();
     }
 

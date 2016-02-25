@@ -174,6 +174,14 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
     @Override
     public void closeForm(EJInternalForm form)
     {
+        if(_formPopup!=null && _formPopup.getPopupController().getPopupForm().equals(form))
+        {
+            
+            _formPopup.close();
+            _formPopup = null;
+            return;
+        }
+        
         String tabItem = _stackedPages.get(form);
         if (tabItem != null)
         {

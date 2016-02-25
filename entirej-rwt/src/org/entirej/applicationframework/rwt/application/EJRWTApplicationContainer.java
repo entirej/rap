@@ -196,6 +196,14 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                 @Override
                 public void closeForm(EJInternalForm form)
                 {
+                    if(_formPopup!=null && _formPopup.getPopupController().getPopupForm().equals(form))
+                    {
+                        
+                        _formPopup.close();
+                        _formPopup = null;
+                        return;
+                    }
+                    
                     if (_popupDialog != null)
                     {
                         _popupDialog.close();
