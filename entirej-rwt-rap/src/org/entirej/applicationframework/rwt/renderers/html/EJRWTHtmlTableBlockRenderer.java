@@ -317,6 +317,12 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         {
            pos =_browser.getScroll(); 
         }
+        if (_filteredContentProvider != null)
+        {
+            String filter = _filteredContentProvider.getFilter();
+            clearFilter();
+            _filteredContentProvider.setFilter(filter);
+        }
         createHTML();
         if(pos>0)
         {
@@ -332,6 +338,12 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         if (_browser != null && !_browser.isDisposed())
         {
            pos =_browser.getScroll(); 
+        }
+        if (_filteredContentProvider != null)
+        {
+            String filter = _filteredContentProvider.getFilter();
+            clearFilter();
+            _filteredContentProvider.setFilter(filter);
         }
         createHTML();
         if(pos>0)
