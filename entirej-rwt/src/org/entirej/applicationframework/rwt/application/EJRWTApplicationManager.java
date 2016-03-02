@@ -480,8 +480,13 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         EJReportRunner reportRunner = reportManager.createReportRunner();
         String output = reportRunner.runReport(report);
 
+        String name = report.getName();
+        if(report.getOutputName()!=null &&!report.getOutputName().isEmpty())
+        {
+            name = report.getOutputName();
+        }
         EJRWTImageRetriever.getGraphicsProvider().open(output,
-                String.format("%s.%s", report.getName(), report.getProperties().getExportType().toString().toLowerCase()));
+                String.format("%s.%s", name, report.getProperties().getExportType().toString().toLowerCase()));
 
     }
 

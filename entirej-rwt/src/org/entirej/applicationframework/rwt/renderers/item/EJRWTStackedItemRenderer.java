@@ -688,7 +688,10 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     @Override
     public void setValue(Object value)
     {
-        setLabel("");
+        if(_baseValue==null)
+        {
+            setLabel("");
+        }
         if (controlState(stackedPane))
         {
             _errorDecoration.hide();
