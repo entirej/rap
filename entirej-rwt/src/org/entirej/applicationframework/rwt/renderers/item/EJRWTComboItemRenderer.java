@@ -792,7 +792,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public void validationErrorOccurred(boolean error)
     {
-        if (_errorDecoration != null && !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null  && controlState(_actionControl) && !_errorDecoration.getControl().isDisposed())
         {
             _errorDecoration.setDescriptionText("");
             if (error)

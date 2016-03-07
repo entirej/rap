@@ -850,7 +850,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                         @Override
                         protected TableViewer doCreateTableViewer(Composite parent, int style)
                         {
-                            return _tableViewer = new TableViewer(parent)
+                            return _tableViewer = new TableViewer(parent,style)
                             {
                                 private static final long serialVersionUID = 5803610958722645987L;
 
@@ -901,7 +901,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                         @Override
                         protected TableViewer doCreateTableViewer(Composite parent, int style)
                         {
-                            return _tableViewer = new TableViewer(parent)
+                            return _tableViewer = new TableViewer(parent,style)
                             {
                                 private static final long serialVersionUID = 5803610958722645987L;
 
@@ -953,7 +953,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                     @Override
                     protected TableViewer doCreateTableViewer(Composite parent, int style)
                     {
-                        return _tableViewer = new TableViewer(parent)
+                        return _tableViewer = new TableViewer(parent,style)
                         {
                             private static final long serialVersionUID = 5803610958722645987L;
 

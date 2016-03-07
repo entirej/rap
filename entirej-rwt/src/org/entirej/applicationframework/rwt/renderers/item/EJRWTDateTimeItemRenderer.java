@@ -431,7 +431,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
         {
             return;
         }
-        if (_errorDecoration != null && !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null && controlState(_actionControl) && !_errorDecoration.getControl().isDisposed())
         {
             _errorDecoration.setDescriptionText("");
             if (error)

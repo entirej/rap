@@ -25,7 +25,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.entirej.applicationframework.rwt.application.components.menu.EJRWTDefaultMenuBuilder;
 import org.entirej.applicationframework.rwt.application.components.menu.EJRWTDefaultMenuPropertiesBuilder;
@@ -489,6 +491,116 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                 String.format("%s.%s", name, report.getProperties().getExportType().toString().toLowerCase()));
 
     }
+    
+    
+    
+    @Override
+    public void runReportAsync(String reportName)
+    {
+        runReportAsync(reportName,null,null);
+        
+    }
+    @Override
+    public void runReportAsync(String reportName, EJMessage completedMessage)
+    {
+        runReportAsync(reportName,null,completedMessage);
+        
+    }
+    
+    @Override
+    public void runReportAsync(String reportName, EJParameterList parameterList)
+    {
+        runReportAsync(reportName,parameterList,null);
+        
+    }
+    
+    @Override
+    public void runReportAsync(final String reportName,final EJParameterList parameterList,final EJMessage completedMessage)
+    {
+        if (reportManager == null)
+        {
+            reportManager = EJReportFrameworkInitialiser.initialiseFramework("report.ejprop");
+        }
+       final  Display display = Display.getDefault();
+       
+       
+       final ServerPushSession pushSession = new ServerPushSession();
+       Runnable job = new Runnable()
+    {
+        
+        @Override
+        public void run()
+        {
+                try
+                {
+                    final EJReport report;
+                    if (parameterList == null)
+                    {
+                        report = reportManager.createReport(reportName);
+                    }
+                    else
+                    {
+
+                        EJReportParameterList list = new EJReportParameterList();
+
+                        Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
+                        for (EJFormParameter parameter : allParameters)
+                        {
+                            EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
+                            reportParameter.setValue(parameter.getValue());
+
+                            list.addParameter(reportParameter);
+                        }
+                        report = reportManager.createReport(reportName, list);
+                    }
+
+                    EJReportRunner reportRunner = reportManager.createReportRunner();
+                    final String output = reportRunner.runReport(report);
+
+                    if (!display.isDisposed())
+                    {
+                        display.asyncExec(new Runnable()
+                        {
+                            public void run()
+                            {
+                                String name = report.getName();
+                                if (report.getOutputName() != null && !report.getOutputName().isEmpty())
+                                {
+                                    name = report.getOutputName();
+                                }
+                                if (completedMessage != null)
+                                {
+                                    handleMessage(completedMessage);
+                                }
+
+                                EJRWTImageRetriever.getGraphicsProvider().open(output,
+                                        String.format("%s.%s", name, report.getProperties().getExportType().toString().toLowerCase()));
+
+                            }
+                        });
+                    }
+                }
+                finally
+                {
+                    display.asyncExec(new Runnable()
+                    {
+                        public void run()
+                        {
+                            pushSession.stop();
+                        }
+                    });
+                }
+        
+            
+        }
+    };
+    pushSession.start();
+    Thread bgThread = new Thread( job );
+    bgThread.setDaemon( true );
+    bgThread.start();
+        
+    }
+    
 
 
     public String generateReport(String reportName)

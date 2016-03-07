@@ -66,6 +66,7 @@ public class EJRWTMessenger implements EJMessenger
             case HINT:
                 EJRWTNotifierDialog.notify("Hint", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_INFO), contex.hintWidth,
                         contex.hintHeight, contex.hintNotificationAutoHide);
+                break;
             case MESSAGE:
 
                 switch (contex.infoType)

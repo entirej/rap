@@ -610,7 +610,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     @Override
     public void validationErrorOccurred(boolean error)
     {
-        if (_errorDecoration != null && !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null && controlState(_listField) && !_errorDecoration.getControl().isDisposed())
         {
             _errorDecoration.setDescriptionText("");
             if (error)
