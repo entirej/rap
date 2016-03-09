@@ -96,6 +96,12 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     {
 
     }
+    
+    public String getDisplayValue()
+    {
+        
+        return null;
+    }
 
     protected boolean controlState(Control control)
     {

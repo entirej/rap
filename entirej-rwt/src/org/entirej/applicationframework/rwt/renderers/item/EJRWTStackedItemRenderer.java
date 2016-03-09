@@ -1454,6 +1454,34 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         _mandatory = mandatory;
         setMandatoryBorder(mandatory);
     }
+    
+    public String getDisplayValue()
+    {
+       if(_baseValue!=null && controlState(stackedPane))
+       {
+           
+           Control control = stackedPane.getControl(_baseValue.getConfig().getType().name());
+           if (control != null && controlState(control))
+           {
+               if (control instanceof Label)
+               {
+                 return  ((Label) control).getText();
+               }
+               else if (control instanceof Text)
+               {
+                   return  ((Text) control).getText();
+               }
+               else if (control instanceof Combo)
+               {
+                   return  ((Combo) control).getText();
+               }
+              
+               // check_box/combo
+           }
+           
+       }
+        return null;
+    }
 
     @Override
     public boolean isMandatory()

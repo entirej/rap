@@ -807,6 +807,16 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
 
         fireTextChange();
     }
+    
+    
+    public String getDisplayValue()
+    {
+        if(controlState(_comboField))
+        {
+            return _comboField.getText();
+        }
+        return null;
+    }
 
     @Override
     public boolean valueEqualsTo(Object value)

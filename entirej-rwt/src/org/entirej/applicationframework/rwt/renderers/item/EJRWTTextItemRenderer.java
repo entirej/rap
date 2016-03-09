@@ -108,6 +108,15 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         return control != null && !control.isDisposed();
 
     }
+    
+    public String getDisplayValue()
+    {
+        if(controlState(_textField) )
+        {
+            return _textField.getText();
+        }
+        return null;
+    }
 
     public String getCSSKey()
     {

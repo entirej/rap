@@ -101,6 +101,14 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
     {
         return control != null && !control.isDisposed();
     }
+    
+    
+    
+    public String getDisplayValue()
+    {
+       
+        return null;
+    }
 
     private Date today()
     {

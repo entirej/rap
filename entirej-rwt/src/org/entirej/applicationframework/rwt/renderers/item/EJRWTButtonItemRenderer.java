@@ -64,6 +64,15 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
     private EJCoreVisualAttributeProperties   _visualAttributeProperties;
     protected EJCoreVisualAttributeProperties _initialVAProperties;
 
+    
+    
+   
+    public String getDisplayValue()
+    {
+       
+        return null;
+    }
+    
     @Override
     public void refreshItemRendererProperty(String propertyName)
     {

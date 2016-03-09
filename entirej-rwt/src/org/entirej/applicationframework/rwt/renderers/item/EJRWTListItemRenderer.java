@@ -625,6 +625,15 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
         fireTextChange();
     }
+    
+    public String getDisplayValue()
+    {
+        if(controlState(_listField) && _listField.getSelection().length>0)
+        {
+            return _listField.getSelection()[0];
+        }
+        return null;
+    }
 
     @Override
     public boolean valueEqualsTo(Object value)

@@ -87,6 +87,12 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
     {
         return false;
     }
+    
+    public String getDisplayValue()
+    {
+        
+        return null;
+    }
 
     @Override
     public void refreshItemRendererProperty(String propertyName)

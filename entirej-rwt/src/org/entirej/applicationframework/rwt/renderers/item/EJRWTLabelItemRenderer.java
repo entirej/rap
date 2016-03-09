@@ -84,6 +84,15 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     {
         return true;
     }
+    
+    public String getDisplayValue()
+    {
+        if(controlState(_labelField.getControl()))
+        {
+            return _labelField.getText();
+        }
+        return null;
+    }
 
     @Override
     public void refreshItemRendererProperty(String propertyName)

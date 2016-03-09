@@ -88,6 +88,12 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
         return control != null && !control.isDisposed();
 
     }
+    
+   
+    public String getDisplayValue()
+    {
+        return (String)getValue();
+    }
 
     public String getCSSKey()
     {
