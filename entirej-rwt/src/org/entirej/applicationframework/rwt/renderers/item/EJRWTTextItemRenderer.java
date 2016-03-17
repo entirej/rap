@@ -741,7 +741,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
     protected Label newVlaueLabel(Composite composite)
     {
-        return new Label(composite, SWT.NONE);
+        return new Label(composite, SWT.NONE|SWT.WRAP);
     }
 
     protected Text newTextField(Composite composite, int style)

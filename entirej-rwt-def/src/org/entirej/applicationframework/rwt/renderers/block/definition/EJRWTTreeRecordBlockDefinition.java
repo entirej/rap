@@ -167,15 +167,15 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
         
         
         EJDevPropertyDefinition parentItem = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.PARENT_ITEM, EJPropertyDefinitionType.BLOCK_ITEM);
-        parentItem.setLabel("Parent Item");
+        parentItem.setLabel("Child");
         parentItem.setMandatory(true);
-        parentItem.setDescription("A TreeRecord displays records in a tree hierarchy. The hierarchy is made by joining this item to a Relation Item. ");
+        parentItem.setDescription("A TreeRecord displays records in a tree hierarchy. The hierarchy is made by joining this item to a Parent Item. ");
 
         EJDevPropertyDefinition relationItem = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.RELATION_ITEM,
                 EJPropertyDefinitionType.BLOCK_ITEM);
-        relationItem.setLabel("Relation Item");
+        relationItem.setLabel("Parent");
         relationItem.setMandatory(true);
-        relationItem.setDescription("Use to join to the Parent Item to create the hierarchy for the data displayed within this block");
+        relationItem.setDescription("Use to join to the Child Item to create the hierarchy for the data displayed within this block");
 
         EJDevPropertyDefinition imageItem = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.NODE_IMAGE_ITEM, EJPropertyDefinitionType.BLOCK_ITEM);
         imageItem.setLabel("Image Item");
@@ -194,9 +194,9 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
         visualAttribute.setMandatory(false);
 
         mainGroup.addPropertyDefinition(visualAttribute);
-
-        mainGroup.addPropertyDefinition(parentItem);
         mainGroup.addPropertyDefinition(relationItem);
+        mainGroup.addPropertyDefinition(parentItem);
+      
         mainGroup.addPropertyDefinition(imageItem);
         mainGroup.addPropertyDefinition(expandLevel);
         mainGroup.addPropertyDefinition(doubleClickActionCommand);

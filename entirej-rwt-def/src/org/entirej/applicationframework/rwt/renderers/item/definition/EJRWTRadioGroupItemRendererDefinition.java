@@ -71,7 +71,7 @@ public class EJRWTRadioGroupItemRendererDefinition implements EJDevItemRendererD
     public EJDevItemRendererDefinitionControl getItemControl(EJDevScreenItemDisplayProperties itemDisplayProperties, Composite parent, FormToolkit toolkit)
     {
         String orientation = itemDisplayProperties.getBlockItemDisplayProperties().getItemRendererProperties().getStringProperty(ORIENTATION);
-        boolean showBorder = itemDisplayProperties.getBlockItemDisplayProperties().getItemRendererProperties().getBooleanProperty(SHOW_BORDER, true);
+        boolean showBorder = itemDisplayProperties.getBlockItemDisplayProperties().getItemRendererProperties().getBooleanProperty(SHOW_BORDER, false);
 
         final List<Button> buttons = new ArrayList<Button>();
 

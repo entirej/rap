@@ -173,13 +173,13 @@ public class EJRWTTreeTableRecordBlockDefinition implements EJDevBlockRendererDe
 
         EJDevPropertyDefinition parentItem = new EJDevPropertyDefinition(EJRWTTreeTableBlockDefinitionProperties.PARENT_ITEM,
                 EJPropertyDefinitionType.BLOCK_ITEM);
-        parentItem.setLabel("Parent Item");
+        parentItem.setLabel("Child ");
         parentItem.setMandatory(true);
-        parentItem.setDescription("Parent item is used to match with relation item that build tree hierarchy using records.");
+        parentItem.setDescription("Child item is used to match with Parent item that build tree hierarchy using records.");
 
         EJDevPropertyDefinition relationItem = new EJDevPropertyDefinition(EJRWTTreeTableBlockDefinitionProperties.RELATION_ITEM,
                 EJPropertyDefinitionType.BLOCK_ITEM);
-        relationItem.setLabel("Relation Item");
+        relationItem.setLabel("Parent ");
         relationItem.setMandatory(true);
         relationItem.setDescription("Relation item that build tree hierarchy using records.");
 
@@ -191,9 +191,9 @@ public class EJRWTTreeTableRecordBlockDefinition implements EJDevBlockRendererDe
                 EJPropertyDefinitionType.INTEGER);
         expandLevel.setLabel("Expand Level");
         // expandLevel.setDescription("item that provide node images [ url / byte array ].");
-
-        mainGroup.addPropertyDefinition(parentItem);
         mainGroup.addPropertyDefinition(relationItem);
+        mainGroup.addPropertyDefinition(parentItem);
+        
         mainGroup.addPropertyDefinition(imageItem);
         mainGroup.addPropertyDefinition(expandLevel);
         mainGroup.addPropertyDefinition(doubleClickActionCommand);

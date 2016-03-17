@@ -33,6 +33,8 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -407,6 +409,27 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             createCanvas(_mainPane, canvasProperties, canvasController);
         }
+        _mainPane.addDisposeListener(new DisposeListener()
+        {
+            
+            @Override
+            public void widgetDisposed(DisposeEvent event)
+            {
+                Collection<CanvasHandler> values = _canvases.values();
+                for (CanvasHandler canvasHandler : values)
+                {
+                    if(canvasHandler instanceof PopupCanvasHandler)
+                    {
+                        PopupCanvasHandler handler = (PopupCanvasHandler) canvasHandler;
+                        if(handler._popupDialog!=null && handler._popupDialog.getShell()!=null)
+                        {
+                            handler._popupDialog.getShell().dispose();
+                        }
+                    }
+                }
+                
+            }
+        });
 
     }
 
@@ -1444,7 +1467,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     public boolean close()
                     {
                         msgs = null;
-                        return super.close();
+                        getShell().setVisible(false);
+                        return true;
                     }
 
                     @Override
