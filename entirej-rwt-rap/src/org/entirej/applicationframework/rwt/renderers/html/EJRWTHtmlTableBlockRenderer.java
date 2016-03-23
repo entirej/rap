@@ -619,9 +619,14 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         final Object arg1 = parameters.get("0").asString();
                                         if (arg1 instanceof String)
                                         {
-                                            currentRec = getRecordAt(Integer.valueOf((String) arg1));
-                                            if (currentRec != null)
-                                                _block.newRecordInstance(currentRec);
+                                            EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
+                                            if(currentRec!=recordAt)
+                                            {
+                                                currentRec = recordAt;
+                                                if (currentRec != null)
+                                                    _block.newRecordInstance(currentRec);
+                                            }
+                                            
                                         }
                                     }
 
@@ -633,9 +638,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         {
                                             if (arg2 instanceof String)
                                             {
-                                                currentRec = getRecordAt(Integer.valueOf((String) arg2));
-                                                if (currentRec != null)
-                                                    _block.newRecordInstance(currentRec);
+                                                EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg2));
+                                                if(currentRec!=recordAt)
+                                                {
+                                                    currentRec = recordAt;
+                                                    if (currentRec != null)
+                                                        _block.newRecordInstance(currentRec);
+                                                }
                                             }
                                             Display.getDefault().asyncExec(new Runnable()
                                             {
@@ -681,9 +690,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 final Object arg1 = parameters.get("0").asString();
                                 if (arg1 instanceof String)
                                 {
-                                    currentRec = getRecordAt(Integer.valueOf((String) arg1));
-                                    if (currentRec != null)
-                                        _block.newRecordInstance(currentRec);
+                                    EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
+                                    if(currentRec!=recordAt)
+                                    {
+                                        currentRec = recordAt;
+                                        if (currentRec != null)
+                                            _block.newRecordInstance(currentRec);
+                                    }
                                 }
                             }
 
@@ -695,9 +708,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 {
                                     if (arg2 instanceof String)
                                     {
-                                        currentRec = getRecordAt(Integer.valueOf((String) arg2));
-                                        if (currentRec != null)
-                                            _block.newRecordInstance(currentRec);
+                                        EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg2));
+                                        if(currentRec!=recordAt)
+                                        {
+                                            currentRec = recordAt;
+                                            if (currentRec != null)
+                                                _block.newRecordInstance(currentRec);
+                                        }
                                     }
                                     Display.getDefault().asyncExec(new Runnable()
                                     {
@@ -758,9 +775,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         final Object arg1 = parameters.get("0").asString();
                                         if (arg1 instanceof String)
                                         {
-                                            currentRec = getRecordAt(Integer.valueOf((String) arg1));
-                                            if (currentRec != null)
-                                                _block.newRecordInstance(currentRec);
+                                            EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
+                                            if(currentRec!=recordAt)
+                                            {
+                                                currentRec = recordAt;
+                                                if (currentRec != null)
+                                                    _block.newRecordInstance(currentRec);
+                                            }
                                         }
                                     }
 
@@ -772,9 +793,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         {
                                             if (arg2 instanceof String)
                                             {
-                                                currentRec = getRecordAt(Integer.valueOf((String) arg2));
-                                                if (currentRec != null)
-                                                    _block.newRecordInstance(currentRec);
+                                                EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg2));
+                                                if(currentRec!=recordAt)
+                                                {
+                                                    currentRec = recordAt;
+                                                    if (currentRec != null)
+                                                        _block.newRecordInstance(currentRec);
+                                                }
                                             }
                                             Display.getDefault().asyncExec(new Runnable()
                                             {
@@ -825,9 +850,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 final Object arg1 = parameters.get("0").asString();
                                 if (arg1 instanceof String)
                                 {
-                                    currentRec = getRecordAt(Integer.valueOf((String) arg1));
-                                    if (currentRec != null)
-                                        _block.newRecordInstance(currentRec);
+                                    EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
+                                    if(currentRec!=recordAt)
+                                    {
+                                        currentRec = recordAt;
+                                        if (currentRec != null)
+                                            _block.newRecordInstance(currentRec);
+                                    }
                                 }
                             }
 
@@ -839,9 +868,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 {
                                     if (arg2 instanceof String)
                                     {
-                                        currentRec = getRecordAt(Integer.valueOf((String) arg2));
-                                        if (currentRec != null)
-                                            _block.newRecordInstance(currentRec);
+                                        EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg2));
+                                        if(currentRec!=recordAt)
+                                        {
+                                            currentRec = recordAt;
+                                            if (currentRec != null)
+                                                _block.newRecordInstance(currentRec);
+                                        }
                                     }
                                     Display.getDefault().asyncExec(new Runnable()
                                     {
@@ -906,9 +939,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                     final Object arg1 = parameters.get("0").asString();
                                     if (arg1 instanceof String)
                                     {
-                                        currentRec = getRecordAt(Integer.valueOf((String) arg1));
-                                        if (currentRec != null)
-                                            _block.newRecordInstance(currentRec);
+                                        EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
+                                        if(currentRec!=recordAt)
+                                        {
+                                            currentRec = recordAt;
+                                            if (currentRec != null)
+                                                _block.newRecordInstance(currentRec);
+                                        }
                                     }
                                 }
 
@@ -920,9 +957,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                     {
                                         if (arg2 instanceof String)
                                         {
-                                            currentRec = getRecordAt(Integer.valueOf((String) arg2));
-                                            if (currentRec != null)
-                                                _block.newRecordInstance(currentRec);
+                                            EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg2));
+                                            if(currentRec!=recordAt)
+                                            {
+                                                currentRec = recordAt;
+                                                if (currentRec != null)
+                                                    _block.newRecordInstance(currentRec);
+                                            }
                                         }
                                         Display.getDefault().asyncExec(new Runnable()
                                         {
@@ -972,9 +1013,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             final Object arg1 = parameters.get("0").asString();
                             if (arg1 instanceof String)
                             {
-                                currentRec = getRecordAt(Integer.valueOf((String) arg1));
-                                if (currentRec != null)
-                                    _block.newRecordInstance(currentRec);
+                                EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
+                                if(currentRec!=recordAt)
+                                {
+                                    currentRec = recordAt;
+                                    if (currentRec != null)
+                                        _block.newRecordInstance(currentRec);
+                                }
                             }
                         }
 
@@ -986,9 +1031,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             {
                                 if (arg2 instanceof String)
                                 {
-                                    currentRec = getRecordAt(Integer.valueOf((String) arg2));
-                                    if (currentRec != null)
-                                        _block.newRecordInstance(currentRec);
+                                    EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg2));
+                                    if(currentRec!=recordAt)
+                                    {
+                                        currentRec = recordAt;
+                                        if (currentRec != null)
+                                            _block.newRecordInstance(currentRec);
+                                    }
                                 }
                                 Display.getDefault().asyncExec(new Runnable()
                                 {
