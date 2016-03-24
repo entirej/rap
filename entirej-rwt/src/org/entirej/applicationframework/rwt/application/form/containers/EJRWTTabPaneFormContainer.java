@@ -282,4 +282,21 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         }
         return null;
     }
+    
+    @Override
+    public EJInternalForm switchToForm(EJInternalForm aform)
+    {
+        for (EJInternalForm form : _tabPages.keySet())
+        {
+            if (form.equals(aform))
+            {
+                EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
+
+                _folder.setSelection(_tabPages.get(form));
+                renderer.gainInitialFocus();
+                return form;
+            }
+        }
+        return null;
+    }
 }

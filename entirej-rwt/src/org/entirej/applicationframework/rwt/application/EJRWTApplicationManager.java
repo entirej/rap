@@ -287,6 +287,16 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
         return _applicationContainer.isFormOpened(formName);
     }
+    @Override
+    public boolean isFormOpened(EJInternalForm form)
+    {
+        if (_applicationContainer == null)
+        {
+            return false;
+        }
+
+        return _applicationContainer.isFormOpened(form);
+    }
 
 
     public void addFormToContainer(EJInternalForm form, boolean blocking)
@@ -344,6 +354,13 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     {
 
         return _applicationContainer.switchToForm(key);
+    }
+    
+    @Override
+    public void switchToForm(EJInternalForm form)
+    {
+        _applicationContainer.switchToForm(form);
+        
     }
 
 

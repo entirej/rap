@@ -238,6 +238,29 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
         }
         return null;
     }
+    
+    @Override
+    public EJInternalForm switchToForm(EJInternalForm aform)
+    {
+        for (EJInternalForm form : _stackedPages.keySet())
+        {
+            if (form.equals(aform))
+            {
+                EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
+
+                _stackPane.showPane(_stackedPages.get(form));
+                renderer.gainInitialFocus();
+
+                form.focusGained();
+                for (EJRWTFormSelectedListener listener : _formSelectedListeners)
+                {
+                    listener.fireFormSelected(form);
+                }
+                return form;
+            }
+        }
+        return null;
+    }
 
     @Override
     public void updateFormTitle(EJInternalForm form)

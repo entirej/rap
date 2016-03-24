@@ -147,6 +147,15 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                 }
                 
                 
+                @Override
+                public EJInternalForm switchToForm(EJInternalForm form)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+                
+                
+                
 
                 @Override
                 public void removeFormSelectedListener(EJRWTFormSelectedListener selectionListener)
@@ -360,6 +369,11 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
     {
 
         return getForm(formName) != null;
+    }
+    public boolean isFormOpened(EJInternalForm form)
+    {
+        
+        return getForm(form) != null;
     }
 
     protected void buildApplicationContainer()
@@ -716,6 +730,27 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
 
         return null;
     }
+    public EJInternalForm getForm(EJInternalForm form)
+    {
+        
+        for (EJRWTSingleFormContainer singleFormContainer : _singleFormContainers)
+        {
+            if (singleFormContainer.getForm() != null && form.equals(singleFormContainer.getForm()))
+            {
+                return singleFormContainer.getForm();
+            }
+        }
+        
+        for (EJInternalForm aform : getFormContainer().getAllForms())
+        {
+            if (form.equals(aform))
+            {
+                return form;
+            }
+        }
+        
+        return null;
+    }
 
     public EJInternalForm switchToForm(String key)
     {
@@ -736,6 +771,35 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
         for (EJRWTSingleFormContainer container : _singleFormContainers)
         {
             if (container.getForm() != null && key.equalsIgnoreCase(container.getForm().getProperties().getName()))
+            {
+                if (container instanceof EJApplicationComponentRenderer)
+                {
+                    switchTabs((Control) ((EJApplicationComponentRenderer) container).getGuiComponent());
+                }
+                return container.getForm();
+            }
+        }
+        return null;
+    }
+    public EJInternalForm switchToForm(EJInternalForm form)
+    {
+        EJRWTFormContainer formContainer = getFormContainer();
+        if (formContainer != null)
+        {
+            EJInternalForm switchToForm = formContainer.switchToForm(form);
+            if (switchToForm != null)
+            {
+                if (formContainer instanceof EJApplicationComponentRenderer)
+                {
+                    switchTabs((Control) ((EJApplicationComponentRenderer) formContainer).getGuiComponent());
+                }
+                
+                return switchToForm;
+            }
+        }
+        for (EJRWTSingleFormContainer container : _singleFormContainers)
+        {
+            if (container.getForm() != null && form.equals(container.getForm()))
             {
                 if (container instanceof EJApplicationComponentRenderer)
                 {
