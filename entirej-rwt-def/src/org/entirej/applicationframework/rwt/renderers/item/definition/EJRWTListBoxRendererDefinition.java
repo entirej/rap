@@ -26,6 +26,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTTreeBlockDefinitionProperties;
 import org.entirej.framework.core.properties.definitions.EJPropertyDefinitionType;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDefinition;
@@ -50,6 +51,7 @@ public class EJRWTListBoxRendererDefinition implements EJDevItemRendererDefiniti
     public static final String COLUMN_IMAGE_ITEM   = "IMAGE_ITEM";
     public static final String INITIALIES_LOV      = "INITIALIES_LOV";
     public static final String CSS_KEY             = "CSS_KEY";
+    public static final String FILTER             = "FILTER";
 
     public EJRWTListBoxRendererDefinition()
     {
@@ -114,6 +116,15 @@ public class EJRWTListBoxRendererDefinition implements EJDevItemRendererDefiniti
         lovItemName.setLoadValidValuesDynamically(true);
         lovItemName.setMandatory(true);
 
+        
+        
+        EJDevPropertyDefinition filter = new EJDevPropertyDefinition(FILTER, EJPropertyDefinitionType.BOOLEAN);
+        filter.setLabel("Add Filter");
+        filter.setDescription("If selected, the renderer will display a filter field above the item data. This filter can then be used by users to filter the item displayed data");
+        filter.setDefaultValue("false");
+        
+        filter.setDefaultValue("false");
+        
         EJDevPropertyDefinition lovDisplayItem = new EJDevPropertyDefinition(COLUMN_DISPLAYED, EJPropertyDefinitionType.BOOLEAN);
         lovDisplayItem.setLabel("Displayed");
         lovDisplayItem.setDescription("Indicates if the items value will displayed in the List list or just used for mapping of values");
@@ -149,6 +160,7 @@ public class EJRWTListBoxRendererDefinition implements EJDevItemRendererDefiniti
                 .setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
 
         mainGroup.addPropertyDefinition(lovDefName);
+        mainGroup.addPropertyDefinition(filter);
         mainGroup.addPropertyDefinition(imageItem);
         mainGroup.addPropertyDefinition(initialiseLov);
         mainGroup.addPropertyDefinition(customCSSKey);

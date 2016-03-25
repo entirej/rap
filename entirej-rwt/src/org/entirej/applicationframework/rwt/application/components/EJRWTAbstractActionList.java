@@ -19,25 +19,32 @@
 package org.entirej.applicationframework.rwt.application.components;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Text;
 
 public abstract class EJRWTAbstractActionList extends Composite implements Serializable
 {
-    private final List comboControl;
-    private Control     actionControl;
-    private int         actionWidthHint = 0;
+    private final List    comboControl;
+    private Control       actionControl;
+    protected Text        filter;
+    private int           actionWidthHint = 0;
+
+    private AtomicBoolean active          = new AtomicBoolean(true);
 
     public EJRWTAbstractActionList(Composite parent)
     {
@@ -47,14 +54,54 @@ public abstract class EJRWTAbstractActionList extends Composite implements Seria
 
         numColumns = 2;
 
-        GridLayoutFactory.swtDefaults().margins(0, 0).extendedMargins(1, 1, 1, 1).spacing(0, 2).numColumns(numColumns).applyTo(this);
+        GridLayoutFactory.swtDefaults().margins(0, 0).extendedMargins(1, 1, 1, 1).spacing(0, 0).numColumns(numColumns).applyTo(this);
 
-        comboControl = createList(this);
+        if (hasFilter())
+        {
 
-        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        comboControl.setLayoutData(gridData);
-        super.setFont(comboControl.getFont());
-        actionControl = createLabelButtonControl(this);
+            GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+            gridData.heightHint = 13;
+            filter = new Text(this, SWT.SEARCH | SWT.ICON_CANCEL);
+            filter.setLayoutData(gridData);
+            comboControl = createList(this);
+            comboControl.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+            super.setFont(comboControl.getFont());
+            actionControl = createLabelButtonControl(this);
+            comboControl.moveBelow(actionControl);
+
+            filter.addSelectionListener(new SelectionAdapter()
+            {
+                public void widgetDefaultSelected(SelectionEvent e)
+                {
+                    if (e.detail == SWT.CANCEL)
+                    {
+                        clearFilter();
+                        refreshData();
+                    }
+                }
+            });
+            filter.addModifyListener(new ModifyListener()
+            {
+
+                @Override
+                public void modifyText(ModifyEvent event)
+                {
+                    if (active.get())
+                        refreshData();
+
+                }
+            });
+        }
+        else
+        {
+            comboControl = createList(this);
+
+            GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+            comboControl.setLayoutData(gridData);
+            super.setFont(comboControl.getFont());
+            actionControl = createLabelButtonControl(this);
+        }
+
         setActionVisible(false);
     }
 
@@ -73,6 +120,8 @@ public abstract class EJRWTAbstractActionList extends Composite implements Seria
 
     public abstract Control createActionLabel(Composite parent);
 
+    public abstract void refreshData();
+
     private Control createLabelButtonControl(Composite parent)
     {
 
@@ -86,7 +135,37 @@ public abstract class EJRWTAbstractActionList extends Composite implements Seria
         return labelButton;
     }
 
- 
+    protected boolean hasFilter()
+    {
+        return false;
+    }
+
+    public String getFilterText()
+    {
+
+        if (filter != null && !filter.isDisposed())
+        {
+            return filter.getText();
+        }
+
+        return "";
+    }
+
+    public void clearFilter()
+    {
+        if (filter != null && !filter.isDisposed())
+        {
+            try
+            {
+                active.set(false);
+                filter.setText("");
+            }
+            finally
+            {
+                active.set(true);
+            }
+        }
+    }
 
     public List getListControl()
     {
@@ -103,7 +182,7 @@ public abstract class EJRWTAbstractActionList extends Composite implements Seria
         if (comboControl != null && !comboControl.isDisposed())
         {
             String[] selection = comboControl.getSelection();
-            return (selection!=null && selection.length >0)? selection[0] : "";
+            return (selection != null && selection.length > 0) ? selection[0] : "";
         }
         return "";
     }
@@ -112,7 +191,7 @@ public abstract class EJRWTAbstractActionList extends Composite implements Seria
     {
         if (comboControl != null && !comboControl.isDisposed())
         {
-            comboControl.setSelection(new String[]{text});
+            comboControl.setSelection(new String[] { text });
         }
     }
 

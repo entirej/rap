@@ -125,6 +125,8 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     protected boolean                         _lovInitialied;
 
     public static final String                COLUMN_IMAGE_ITEM = "IMAGE_ITEM";
+    
+    public static final String FILTER             = "FILTER";
 
     protected boolean controlState(Control control)
     {
@@ -140,6 +142,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     @Override
     public void clearValue()
     {
+        _actionControl.clearFilter();
         _baseValue = null;
         try
         {
@@ -691,6 +694,19 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
             private static final long serialVersionUID = 2592484612013403481L;
 
             @Override
+            protected boolean hasFilter()
+            {
+                return _rendererProps.getBooleanProperty(FILTER, false);
+            }
+            
+            @Override
+            public void refreshData()
+            {
+               refreshList();
+                
+            }
+            
+            @Override
             public org.eclipse.swt.widgets.List createList(Composite parent)
             {
                 String alignmentProperty = _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_ALIGNMENT);
@@ -844,9 +860,13 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 _activeEvent = false;
                 _listField.removeAll();
 
+                String filterText = _actionControl.getFilterText();
+                
                 for (Object item : _listKays)
                 {
-                    _listField.add(item.toString());
+                    String string = item.toString();
+                    if(filterText.isEmpty() || string.toLowerCase().contains(filterText.toLowerCase()))
+                        _listField.add(string);
                 }
                 setValue(_baseValue);
             }
