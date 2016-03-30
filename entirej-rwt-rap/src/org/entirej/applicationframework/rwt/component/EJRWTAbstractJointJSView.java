@@ -34,7 +34,7 @@ public abstract class EJRWTAbstractJointJSView extends Composite
     private static final String[] RESOURCE_FILES = { "jquery.min.js", "lodash.min.js", "backbone-min.js", "joint.min.js", "joint.min.css" };
     private static final String   REMOTE_TYPE    = "eclipsesource.JointJS";
 
-    private final RemoteObject    remoteObject;
+    protected final RemoteObject    remoteObject;
 
     protected OperationHandler getOperationHandler()
     {

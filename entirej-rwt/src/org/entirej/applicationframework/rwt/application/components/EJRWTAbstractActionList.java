@@ -59,7 +59,7 @@ public abstract class EJRWTAbstractActionList extends Composite implements Seria
         if (hasFilter())
         {
 
-            GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+            GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, false);
             gridData.heightHint = 13;
             filter = new Text(this, SWT.SEARCH | SWT.ICON_CANCEL);
             filter.setLayoutData(gridData);
