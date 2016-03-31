@@ -105,7 +105,13 @@ public class EJRWTEntireJStackedPane extends Composite
         {
             _stackLayout.topControl = control;
         }
+       
         layout(true);
+        
+        if(control instanceof Composite)
+        {
+            ((Composite)control).layout(true);
+        }
     }
 
     public void remove(String key)

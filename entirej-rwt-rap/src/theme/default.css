@@ -330,7 +330,7 @@ CTabFolder-DropDownButton-Icon:hover {
 
 /* Group default theme */
 Group {
-	font: 10px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+	font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 	color: #4a4a4a;
 	background-color: #ffffff;
 	border: none;
@@ -375,9 +375,9 @@ Label[BORDER] {
 Label-SeparatorLine {
 	background-image: none;
 	background-color: transparent;
-	border: 1px solid #a4a4a4;
+	border-top: 1px solid #a4a4a4;
 	border-radius: 0px;
-	width: 2px;
+	width: 1px;
 }
 
 Label-SeparatorLine[SHADOW_IN] {
@@ -1882,9 +1882,10 @@ Link.itemlabel {
 Label-SeparatorLine.separator{
 	background-image: none;
 	background-color: transparent;
-	border: 1px solid #bdbdbd;
+	border-top: 1px solid #bdbdbd;
 	border-radius: 0px;
 	width: 1px;
+    
 }
 
 
@@ -1893,7 +1894,7 @@ Label-SeparatorLine.separator{
 Label-SeparatorLine.separator_dashed{
 	background-image: none;
 	background-color: transparent;
-	border: 1px dashed #bdbdbd;
+	border-top: 1px dashed #bdbdbd;
 	border-radius: 0px;
 	width: 1px;
 }
@@ -1904,7 +1905,7 @@ Label-SeparatorLine.separator_dashed{
 Label-SeparatorLine.separator_dotted{
 	background-image: none;
 	background-color: transparent;
-	border: 1px dotted #bdbdbd;
+	border-top: 1px dotted #bdbdbd;
 	border-radius: 0px;
 	width: 1px;
 }
@@ -1914,7 +1915,7 @@ Label-SeparatorLine.separator_dotted{
 Label-SeparatorLine.separator_double{
 	background-image: none;
 	background-color: transparent;
-	border: 1px double #bdbdbd;
+	border-top: 1px double #bdbdbd;
 	border-radius: 0px;
 	width: 1px;
 }

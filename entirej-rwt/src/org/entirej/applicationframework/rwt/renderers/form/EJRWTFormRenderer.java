@@ -166,20 +166,30 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     }
 
     @Override
-    public void showStackedPage(String canvasName, String pageName)
+    public void showStackedPage(final String canvasName,final  String pageName)
     {
-        if (canvasName != null && pageName != null)
+        Display.getDefault().asyncExec(new Runnable()
         {
-            EJRWTEntireJStackedPane cardPane = _stackedPanes.get(canvasName);
-            if (cardPane != null && !cardPane.isDisposed())
+            
+            @Override
+            public void run()
             {
-                cardPane.showPane(pageName);
+                if (canvasName != null && pageName != null)
+                {
+                    EJRWTEntireJStackedPane cardPane = _stackedPanes.get(canvasName);
+                    if (cardPane != null && !cardPane.isDisposed())
+                    {
+                        cardPane.showPane(pageName);
+                    }
+                    else
+                    {
+                        _stackedPanesCache.put(canvasName, pageName);
+                    }
+                }
+                
             }
-            else
-            {
-                _stackedPanesCache.put(canvasName, pageName);
-            }
-        }
+        });
+        
     }
 
     @Override
@@ -1467,6 +1477,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     public boolean close()
                     {
                         msgs = null;
+                        if (getTray() != null)
+                        {
+                            closeTray();
+                        }
                         getShell().setVisible(false);
                         return true;
                     }
