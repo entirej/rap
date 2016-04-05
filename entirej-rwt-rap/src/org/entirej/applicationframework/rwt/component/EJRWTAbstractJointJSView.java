@@ -31,7 +31,7 @@ public abstract class EJRWTAbstractJointJSView extends Composite
     private static final String   RESOURCES_PATH = "resources/jointjs/";
     private static final String   REGISTER_PATH  = "jointjs/";
 
-    private static final String[] RESOURCE_FILES = { "jquery.min.js", "lodash.min.js", "backbone-min.js", "joint.min.js", "joint.min.css" };
+    private static final String[] RESOURCE_FILES = { "jquery.min.js", "lodash.min.js", "backbone-min.js", "joint.min.js","joint.ui.paperScroller.js", "joint.min.css","joint.ui.paperScroller.css" };
     private static final String   REMOTE_TYPE    = "eclipsesource.JointJS";
 
     protected final RemoteObject    remoteObject;
@@ -106,6 +106,7 @@ public abstract class EJRWTAbstractJointJSView extends Composite
         jsLoader.require(resourceManager.getLocation(REGISTER_PATH + "lodash.min.js"));
         jsLoader.require(resourceManager.getLocation(REGISTER_PATH + "backbone-min.js"));
         jsLoader.require(resourceManager.getLocation(REGISTER_PATH + "joint.min.js"));
+        jsLoader.require(resourceManager.getLocation(REGISTER_PATH + "joint.ui.paperScroller.js"));
         // jsLoader.require(resourceManager.getLocation(REGISTER_PATH +
         // "config.js"));
 
