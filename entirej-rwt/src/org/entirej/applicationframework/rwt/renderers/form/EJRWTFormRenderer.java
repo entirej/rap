@@ -39,19 +39,14 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
-import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
@@ -74,14 +69,12 @@ import org.entirej.framework.core.internal.EJInternalBlock;
 import org.entirej.framework.core.internal.EJInternalEditableBlock;
 import org.entirej.framework.core.internal.EJInternalForm;
 import org.entirej.framework.core.properties.EJCoreCanvasProperties;
-import org.entirej.framework.core.properties.EJCoreMainScreenItemProperties;
 import org.entirej.framework.core.properties.EJCoreMainScreenProperties;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.containers.interfaces.EJCanvasPropertiesContainer;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.core.properties.interfaces.EJCanvasProperties;
 import org.entirej.framework.core.properties.interfaces.EJFormProperties;
-import org.entirej.framework.core.properties.interfaces.EJMainScreenProperties;
 import org.entirej.framework.core.properties.interfaces.EJStackedPageProperties;
 import org.entirej.framework.core.properties.interfaces.EJTabPageProperties;
 
@@ -2186,5 +2179,19 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
     }
+
+    @Override
+    public String promptFileUpload(String title)
+    {
+        return EJRWTImageRetriever.getGraphicsProvider().promptFileUpload(title);
+    }
+
+    @Override
+    public List<String> promptMultipleFileUpload(String title)
+    {
+        return EJRWTImageRetriever.getGraphicsProvider().promptMultipleFileUpload(title);
+    }
+    
+    
 
 }

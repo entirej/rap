@@ -24,7 +24,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
@@ -59,6 +62,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.EJRWTGraphicsProvider;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.file.EJRWTFileDownload;
+import org.entirej.applicationframework.rwt.file.EJRWTFileUpload;
 import org.entirej.applicationframework.rwt.renderers.html.EJRWTHtmlTableBlockRenderer.VACSSServiceHandler;
 import org.entirej.framework.core.EJFrameworkHelper;
 import org.entirej.framework.core.EJFrameworkInitialiser;
@@ -240,6 +244,19 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
                         {
 
+                            @Override
+                            public String promptFileUpload(String title)
+                            {
+                                return EJRWTFileUpload.promptFileUpload(title);
+                            }
+                            @Override
+                            public List<String> promptMultipleFileUpload(String title)
+                            
+                            {
+                                String[] promptMultipleFileUpload = EJRWTFileUpload.promptMultipleFileUpload(title);
+                                return (List<String>) (promptMultipleFileUpload!=null ? Arrays.asList(promptMultipleFileUpload):Collections.emptyList());
+                            }
+                            
                             public Image getImage(String name, ClassLoader loader)
                             {
                                 return RWTUtils.getImage(name, loader);

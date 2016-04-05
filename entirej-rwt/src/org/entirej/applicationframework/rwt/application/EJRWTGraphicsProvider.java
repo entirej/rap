@@ -18,6 +18,8 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.application;
 
+import java.util.List;
+
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.widgets.Section;
@@ -34,4 +36,11 @@ public interface EJRWTGraphicsProvider
 
     
     void open(String output,String name);
+    
+    
+ 
+    public String promptFileUpload(String title);
+
+ 
+    public List<String> promptMultipleFileUpload(String title);
 }
