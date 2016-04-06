@@ -34,7 +34,8 @@ public class EJRWTFileUpload
         FileDialog fileDialog = new FileDialog(Display.getDefault().getActiveShell(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | SWT.SINGLE);
         fileDialog.setText(title);
         fileDialog.open();
-        return fileDialog.getFileName();
+        String fileName = fileDialog.getFileName();
+        return fileName!=null && fileName.isEmpty()? null :fileName;
     }
 
     public static String[] promptMultipleFileUpload(String title)
@@ -43,6 +44,7 @@ public class EJRWTFileUpload
         FileDialog fileDialog = new FileDialog(Display.getDefault().getActiveShell(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | SWT.MULTI);
         fileDialog.setText(title);
         fileDialog.open();
-        return fileDialog.getFileNames();
+        String[] fileNames = fileDialog.getFileNames();
+        return fileNames!=null && fileNames.length==0?null:fileNames;
     }
 }
