@@ -1466,20 +1466,31 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         control.addKeyListener(this);
     }
 
-    public void askToDeleteRecord(EJDataRecord recordToDelete, String msg)
+    public void askToDeleteRecord(final EJDataRecord recordToDelete, String msg)
     {
         if (msg == null)
         {
             msg = "Are you sure you want to delete the current record?";
         }
         EJMessage message = new EJMessage(msg);
-        EJQuestion question = new EJQuestion(new EJForm(_block.getForm()), "DELETE_RECORD", "Delete", message, "Yes", "No");
+        EJQuestion question = new EJQuestion(new EJForm(_block.getForm()), "DELETE_RECORD", "Delete", message, "Yes", "No"){
+            
+            @Override
+            public void setAnswer(EJQuestionButton answerButton)
+            {
+                
+                super.setAnswer(answerButton);
+                
+                if (EJQuestionButton.ONE == answerButton)
+                {
+                    _block.getBlock().deleteRecord(recordToDelete);
+                }
+                _block.setRendererFocus(true);
+            }
+            
+        };
         _block.getForm().getMessenger().askQuestion(question);
-        if (EJQuestionButton.ONE == (question.getAnswer()))
-        {
-            _block.getBlock().deleteRecord(recordToDelete);
-        }
-        _block.setRendererFocus(true);
+       
 
     }
 }
