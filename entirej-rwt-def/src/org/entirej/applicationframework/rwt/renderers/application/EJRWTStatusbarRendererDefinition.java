@@ -51,7 +51,7 @@ public class EJRWTStatusbarRendererDefinition implements EJDevAppComponentRender
         EJDevPropertyDefinitionList list = new EJDevPropertyDefinitionList(SECTIONS, "Sections");
         // TODO: write Section description
 
-        EJDevPropertyDefinition paramater = new EJDevPropertyDefinition(PARAMETER, EJPropertyDefinitionType.STRING);// TODO:
+        EJDevPropertyDefinition paramater = new EJDevPropertyDefinition(PARAMETER, EJPropertyDefinitionType.APPLICATION_PARAMETER);// TODO:
                                                                                                                     // add
                                                                                                                     // parameter
                                                                                                                     // selection

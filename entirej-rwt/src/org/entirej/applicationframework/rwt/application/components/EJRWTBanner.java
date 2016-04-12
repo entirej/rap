@@ -27,12 +27,15 @@ import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTAppComponentRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
+import org.entirej.framework.core.data.controllers.EJApplicationLevelParameter;
+import org.entirej.framework.core.data.controllers.EJApplicationLevelParameter.ParameterChangedListener;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 
 public class EJRWTBanner implements EJRWTAppComponentRenderer
 {
 
     public static final String IMAGE_PATH                = "IMAGE_PATH";
+    public static final String IMAGE_PARAM                = "IMAGE_PARAM";
     public static final String PROPERTY_ALIGNMENT        = "ALIGNMENT";
     public static final String PROPERTY_ALIGNMENT_LEFT   = "LEFT";
     public static final String PROPERTY_ALIGNMENT_RIGHT  = "RIGHT";
@@ -66,21 +69,76 @@ public class EJRWTBanner implements EJRWTAppComponentRenderer
     }
 
     @Override
-    public void createContainer(EJRWTApplicationManager manager, Composite parent, EJFrameworkExtensionProperties rendererprop)
+    public void createContainer(final EJRWTApplicationManager manager, Composite parent, final EJFrameworkExtensionProperties rendererprop)
     {
         canvas = new Label(parent, getComponentStyle(rendererprop.getStringProperty(PROPERTY_ALIGNMENT), SWT.NONE));
         String imagePath = null;
         if (rendererprop != null)
         {
-            imagePath = rendererprop.getStringProperty(IMAGE_PATH);
+            
+            String paramName = rendererprop.getStringProperty(IMAGE_PARAM);
+            if(paramName!=null && paramName.length()>0)
+            {
+                
+                final EJApplicationLevelParameter applicationLevelParameter = manager.getApplicationLevelParameter(paramName);
+                if(applicationLevelParameter!=null)
+                {
+                    Object value = applicationLevelParameter.getValue();
+                    imagePath = (String) value;
+                    if(imagePath!=null)
+                    {
+                         updateImage(manager, imagePath);
+                    }
+                    else
+                    {
+                        imagePath = rendererprop.getStringProperty(IMAGE_PATH);
+                        updateImage(manager, imagePath);
+                    }
+                   
+                    applicationLevelParameter.addParameterChangedListener(new ParameterChangedListener()
+                    {
+                        
+                        @Override
+                        public void parameterChanged(String parameterName, Object oldValue, Object newValue)
+                        {
+                            
+                            
+                            if(newValue!=null)
+                            {
+                                 updateImage(manager,(String) newValue);
+                            }
+                            else
+                            {
+                               
+                                updateImage(manager, rendererprop.getStringProperty(IMAGE_PATH));
+                            }
+                            
+                        }
+                    });
+                }
+                else
+                {
+                    imagePath = rendererprop.getStringProperty(IMAGE_PATH);
+                    updateImage(manager, imagePath);
+                }
+                
+            }
+            
+            
+           
         }
 
-        if (imagePath != null)
+        
+    }
+
+    private void updateImage(EJRWTApplicationManager manager, String imagePath)
+    {
+        if (imagePath != null && !imagePath.isEmpty())
         {
             try
             {
                 final Image image = EJRWTImageRetriever.get(imagePath);
-                if (image != null)
+                if (image != null && !canvas.isDisposed())
                 {
                     canvas.setImage(image);
                 }
@@ -93,6 +151,10 @@ public class EJRWTBanner implements EJRWTAppComponentRenderer
             {
                 manager.getFrameworkManager().handleException(e);
             }
+        }
+        else
+        {
+            canvas.setImage(null);
         }
     }
 }

@@ -30,6 +30,7 @@ import org.entirej.framework.dev.renderer.definition.interfaces.EJDevAppComponen
 public class EJRWTBannerRendererDefinition implements EJDevAppComponentRendererDefinition
 {
 
+    public static final String IMAGE_PARAM                = "IMAGE_PARAM";
     public static final String IMAGE_PATH                = "IMAGE_PATH";
     public static final String PROPERTY_ALIGNMENT        = "ALIGNMENT";
     public static final String PROPERTY_ALIGNMENT_LEFT   = "LEFT";
@@ -42,6 +43,9 @@ public class EJRWTBannerRendererDefinition implements EJDevAppComponentRendererD
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("IMAGECONFIG");
         mainGroup.setLabel("Image Configuration");
 
+        EJDevPropertyDefinition imageParam = new EJDevPropertyDefinition(IMAGE_PARAM, EJPropertyDefinitionType.APPLICATION_PARAMETER);
+        imageParam.setLabel("Image Paraameter");
+        imageParam.setDescription("The Paraameter value  that will be displayed within the banner");
         EJDevPropertyDefinition imagePath = new EJDevPropertyDefinition(IMAGE_PATH, EJPropertyDefinitionType.PROJECT_FILE);
         imagePath.setLabel("Image");
         imagePath.setDescription("The image that will be displayed within the banner");
@@ -54,6 +58,7 @@ public class EJRWTBannerRendererDefinition implements EJDevAppComponentRendererD
         imageAlignment.addValidValue(PROPERTY_ALIGNMENT_CENTER, "Center");
         imageAlignment.setDefaultValue(PROPERTY_ALIGNMENT_LEFT);
 
+        mainGroup.addPropertyDefinition(imageParam);
         mainGroup.addPropertyDefinition(imagePath);
         mainGroup.addPropertyDefinition(imageAlignment);
         return mainGroup;

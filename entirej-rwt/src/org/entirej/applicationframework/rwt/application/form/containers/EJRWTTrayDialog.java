@@ -240,7 +240,7 @@ public abstract class EJRWTTrayDialog extends Dialog
      * 
      * @see org.eclipse.jface.window.Window#handleShellCloseEvent()
      */
-    protected void handleShellCloseEvent()
+    public void handleShellCloseEvent()
     {
         /*
          * Close the tray to ensure that those dialogs that remember their size
@@ -253,6 +253,10 @@ public abstract class EJRWTTrayDialog extends Dialog
 
         super.handleShellCloseEvent();
     }
+    
+    
+
+   
 
     /*
      * (non-Javadoc)
