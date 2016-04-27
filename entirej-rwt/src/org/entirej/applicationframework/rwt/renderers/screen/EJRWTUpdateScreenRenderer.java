@@ -152,6 +152,7 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
             _updateDialog.getShell().setMaximized(_maximize);
         }
         _updateDialog.open();
+        _updateDialog.getShell().forceFocus();
     }
 
     @Override

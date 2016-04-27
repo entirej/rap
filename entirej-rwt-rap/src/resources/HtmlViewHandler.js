@@ -207,8 +207,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         		var el = elemsnts[i];
         		if(el.getAttribute('recid') == id)
         		{
-    			    this.scrolDiv.scrollTop =  el.offsetTop;
-    			    this.element.scrollTop =  el.offsetTop;
+        			el.scrollIntoView(false);
     			    
     			    var indelemsnts= this.element.getElementsByClassName("rowindi");
     			    if(indelemsnts)

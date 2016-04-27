@@ -1522,6 +1522,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 _popupDialog.getShell().setSize(width + 80, height + 100);
                 _popupDialog.centreLocation();
                 _popupDialog.open();
+                _popupDialog.getShell().forceFocus();
                 if (msgs != null && msgs.size() > 0)
                 {
                     if (_popupDialog.getTray() == null)

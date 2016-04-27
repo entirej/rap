@@ -149,6 +149,7 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
             _insertDialog.getShell().setMaximized(_maximize);
         }
         _insertDialog.open();
+        _insertDialog.getShell().forceFocus();
     }
 
     @Override

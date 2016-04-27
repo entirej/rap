@@ -123,6 +123,11 @@ public class EJRWTBanner implements EJRWTAppComponentRenderer
                 }
                 
             }
+            else
+            {
+                imagePath = rendererprop.getStringProperty(IMAGE_PATH);
+                updateImage(manager, imagePath);
+            }
             
             
            

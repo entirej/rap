@@ -166,6 +166,7 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
             _queryDialog.getShell().setMaximized(_maximize);
         }
         _queryDialog.open();
+        _queryDialog.getShell().forceFocus();
     }
 
     @Override
