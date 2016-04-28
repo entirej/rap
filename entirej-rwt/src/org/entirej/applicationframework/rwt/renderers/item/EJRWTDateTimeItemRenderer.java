@@ -457,7 +457,8 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
 
     public void valueChanged()
     {
-        _item.itemValueChaged();
+        Object old =_baseValue;
+        _item.itemValueChaged(old,getValue());
         setMandatoryBorder(_mandatory);
     }
 

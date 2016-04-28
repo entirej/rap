@@ -927,16 +927,17 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                     public void selectionChanged(SelectionChangedEvent event)
                     {
                         if(!_activeEvent)return;
+                        Object old = _baseValue;
                         if (isValid())
                         {
                             ComboBoxValue value = getComboBoxValue();
-                            if (value != null )
-                            {
-                                value.populateReturnItems(_item.getBlock().getBlockController(), _item.getScreenType());
-                            }
                             
-                                _item.itemValueChaged();
                             
+                                _item.itemValueChaged(old,value.getItemValue());
+                                if (value != null )
+                                {
+                                    value.populateReturnItems(_item.getBlock().getBlockController(), _item.getScreenType());
+                                }
                             setMandatoryBorder(_mandatory);
                         }
                         else

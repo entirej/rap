@@ -133,6 +133,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     protected boolean                         _mandatory;
 
     protected boolean                         _valueChanged;
+    protected Object                          _oldvalue;
     protected final TextModifyListener        _modifyListener  = new TextModifyListener();
 
     protected boolean                         _lovActivated;
@@ -697,6 +698,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             _errorDecoration.hide();
         }
         _valueChanged = false;
+        _oldvalue=null;
         try
         {
             _modifyListener.enable = false;
@@ -1517,7 +1519,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
     public void valueChanged()
     {
-        Object base = _intbaseValue;
+        Object base = _intbaseValue!=null ? _intbaseValue.getValue():null;
         Object value = getValue();
 
         Control activeControl = stackedPane.getActiveControl();
@@ -1525,11 +1527,16 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         {
 
             if (_valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base))))
-                _item.itemValueChaged();
+                _item.itemValueChaged(base,value);
             _valueChanged = false;
+            _oldvalue=null;
         }
         else
         {
+            if(_oldvalue==null)
+            {
+                _oldvalue = base;
+            }
             _valueChanged = _valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base)));
         }
         setMandatoryBorder(_mandatory);
@@ -1571,7 +1578,9 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 if (_valueChanged)
                 {
                     _valueChanged = false;
-                    _item.itemValueChaged();
+                    
+                    _item.itemValueChaged(_oldvalue,getValue());
+                    _oldvalue = null;
                     setMandatoryBorder(_mandatory);
 
                 }
@@ -1678,8 +1687,10 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             {
                 try
                 {
-                    setValue(format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay())));
-                    _item.itemValueChaged();
+                    Object old = _baseValue.getValue();
+                    Date newVal = format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay()));
+                    setValue(newVal);
+                    _item.itemValueChaged(old,newVal);
                 }
                 catch (ParseException e1)
                 {
@@ -1708,8 +1719,10 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     {
                         try
                         {
-                            setValue(format.parse(format.format(new Date())));
-                            _item.itemValueChaged();
+                            Object old = _baseValue.getValue();
+                            Date newval = format.parse(format.format(new Date()));
+                            setValue(newval);
+                            _item.itemValueChaged(old,newval);
                         }
                         catch (ParseException e1)
                         {
@@ -1730,9 +1743,9 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     @Override
                     public void widgetSelected(SelectionEvent e)
                     {
-
+                        Object old = _baseValue.getValue();
                         setValue(null);
-                        _item.itemValueChaged();
+                        _item.itemValueChaged(old,null);
 
                         if (!abstractDialog.isDisposed())
                         {
@@ -1803,8 +1816,10 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     {
                         try
                         {
-                            setValue(format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay())));
-                            _item.itemValueChaged();
+                            Object old = _baseValue.getValue();
+                            Date newVal = format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay()));
+                            setValue(newVal);
+                            _item.itemValueChaged(old,newVal);
                         }
                         catch (ParseException e1)
                         {
@@ -2024,7 +2039,8 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     if (_valueChanged)
                     {
                         _valueChanged = false;
-                        _item.itemValueChaged();
+                        _item.itemValueChaged(_oldvalue,getValue());
+                        _oldvalue = null;
                         setMandatoryBorder(_mandatory);
                     }
                 }
@@ -2060,16 +2076,28 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         }
         {
             int style = SWT.NONE;
-            Button _button = new Button(stackedPane, style = style | SWT.CHECK);
+           final  Button _button = new Button(stackedPane, style = style | SWT.CHECK);
 
             _button.addListener(SWT.Selection, new Listener()
             {
                 @Override
                 public void handleEvent(Event e)
                 {
-
+                    Object old = null;
+                    Object newVal = null;
+                    EJRWTStackedItemRendererConfig.CheckBox config = (CheckBox) _baseValue.getConfig();
+                    if (_button.getSelection())
+                    {
+                        old = config.getCheckBoxUnCheckedValue();
+                        newVal =  config.getCheckBoxCheckedValue();
+                    }
+                    else
+                    {
+                        old = config.getCheckBoxCheckedValue();
+                        newVal =  config.getCheckBoxUnCheckedValue();
+                    }
                     _item.executeActionCommand();
-                    _item.itemValueChaged();
+                    _item.itemValueChaged(old,newVal);
                 }
 
             });
@@ -2169,13 +2197,14 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     
                     if (isValid())
                     {
+                        Object old = _baseValue.getValue();
                         ComboBoxValue value = getComboBoxValue();
                         if (value != null)
                         {
                             value.populateReturnItems(_item.getBlock().getBlockController(), _item.getScreenType());
                         }
 
-                        _item.itemValueChaged();
+                        _item.itemValueChaged(old,value.getItemValue());
 
                         setMandatoryBorder(_mandatory);
                     }

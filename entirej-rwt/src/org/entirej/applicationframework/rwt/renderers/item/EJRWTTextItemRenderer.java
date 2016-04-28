@@ -90,6 +90,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     protected boolean                         _displayValueAsLabel;
     protected boolean                         _displayValueAsProtected;
     protected boolean                         _valueChanged;
+    protected Object                          _oldvalue;
     protected final TextModifyListener        _modifyListener  = new TextModifyListener();
     protected VALUE_CASE                      _valueCase       = VALUE_CASE.DEFAULT;
 
@@ -461,6 +462,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     {
         _baseValue = value;
         _valueChanged = false;
+        _oldvalue = null;
         try
         {
             _modifyListener.enable = false;
@@ -585,11 +587,16 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
 
             if (_valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base))))
-                _item.itemValueChaged();
+                _item.itemValueChaged(base,value);
             _valueChanged = false;
+            _oldvalue = null;
         }
         else
         {
+            if(_oldvalue==null)
+            {
+                _oldvalue = base;
+            }
             _valueChanged = _valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base)));
         }
         setMandatoryBorder(_mandatory);
@@ -635,7 +642,8 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 if (_valueChanged)
                 {
                     _valueChanged = false;
-                    _item.itemValueChaged();
+                    _item.itemValueChaged(_oldvalue,getValue());
+                    _oldvalue = null;
                     setMandatoryBorder(_mandatory);
 
                 }
@@ -894,7 +902,8 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                                 if (_valueChanged)
                                 {
                                     _valueChanged = false;
-                                    _item.itemValueChaged();
+                                    _item.itemValueChaged(_oldvalue,getValue());
+                                    _oldvalue=null;
                                     setMandatoryBorder(_mandatory);
                                 }
                             }

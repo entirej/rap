@@ -596,8 +596,10 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             {
                 try
                 {
-                    setValue(format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay())));
-                    _item.itemValueChaged();
+                    Object old =_baseValue;
+                    Date newValue = format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay()));
+                    setValue(newValue);
+                    _item.itemValueChaged(old,newValue);
                 }
                 catch (ParseException e1)
                 {
@@ -630,8 +632,10 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                         {
                             try
                             {
-                                setValue(format.parse(format.format(new Date())));
-                                _item.itemValueChaged();
+                                Object old =_baseValue;
+                                Date newValue = format.parse(format.format(new Date()));
+                                setValue(newValue);
+                                _item.itemValueChaged(old,newValue);
                             }
                             catch (ParseException e1)
                             {
@@ -652,9 +656,9 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                         @Override
                         public void widgetSelected(SelectionEvent e)
                         {
-
+                            Object old =_baseValue;
                             setValue(null);
-                            _item.itemValueChaged();
+                            _item.itemValueChaged(old,null);
 
                             if (!abstractDialog.isDisposed())
                             {
@@ -725,8 +729,11 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                         {
                             try
                             {
-                                setValue(format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay())));
-                                _item.itemValueChaged();
+                                Date newValue = format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay()));
+                                Object old = _baseValue;
+                                
+                                setValue(newValue);
+                                _item.itemValueChaged(_baseValue,newValue);
                             }
                             catch (ParseException e1)
                             {

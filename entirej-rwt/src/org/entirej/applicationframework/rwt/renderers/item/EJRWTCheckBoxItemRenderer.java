@@ -305,8 +305,21 @@ public class EJRWTCheckBoxItemRenderer extends EJRWTButtonItemRenderer
                             _button.setGrayed(false);
                         }
                     }
+                    Object old = null;
+                    Object newVal = null;
+                    if (_button.getSelection())
+                    {
+                        old = _uncheckedValue;
+                        newVal =  _checkedValue;
+                    }
+                    else
+                    {
+                        old = _checkedValue;
+                        newVal =  _uncheckedValue;
+                    }
+                    _item.itemValueChaged(old,newVal);
                     _item.executeActionCommand();
-                    _item.itemValueChaged();
+                   
                 }
             }
         });

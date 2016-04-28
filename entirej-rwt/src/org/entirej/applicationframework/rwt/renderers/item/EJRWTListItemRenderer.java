@@ -107,7 +107,6 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     protected boolean                         _isValid          = true;
     protected boolean                         _mandatory;
     protected int                             _maxLength;
-    protected boolean                         _valueChanged;
 
     private Map<Object, ListBoxValue>         _listValues       = new HashMap<Object, ListBoxValue>();
     private List<Object>                      _listKays         = new ArrayList<Object>();
@@ -744,6 +743,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     {
                         if (isValid())
                         {
+                            Object old = _baseValue;
                             ListBoxValue value = getListBoxValue();
                             if (value != null && _activeEvent)
                             {
@@ -751,7 +751,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                             }
                             if (_activeEvent)
                             {
-                                _item.itemValueChaged();
+                                _item.itemValueChaged(old,value.getItemValue());
                             }
                             setMandatoryBorder(_mandatory);
                         }
@@ -1160,18 +1160,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
         }
     }
 
-    public void valuedChanged()
-    {
-        if (!_listField.isFocusControl())
-        {
-            _item.itemValueChaged();
-        }
-        else
-        {
-            _valueChanged = true;
-        }
-        setMandatoryBorder(_mandatory);
-    }
+  
 
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)

@@ -413,7 +413,7 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
     }
 
     @Override
-    public void screenItemValueChanged(EJScreenItemController arg0, EJItemRenderer arg1)
+    public void screenItemValueChanged(EJScreenItemController item, EJItemRenderer changedRenderer, Object oldValue, Object newValue)
     {
         if (_updateDialog != null)
         {

@@ -120,10 +120,12 @@ public class EJRWTDefaultFormContainerToolbar implements EJRWTFormContainerToolb
 
     }
 
+    
     @Override
-    public void screenItemValueChanged(EJScreenItemController item, EJItemRenderer changedRenderer)
+    public void screenItemValueChanged(EJScreenItemController item, EJItemRenderer changedRenderer, Object oldValue, Object newValue)
     {
         synchronize(item.getBlock().getBlockController());
+        
     }
 
     @Override
