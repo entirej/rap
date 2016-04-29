@@ -379,10 +379,10 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
             }
 
             @Override
-            public boolean canceled()
+            public void canceled()
             {
                 _lovController.lovCompleted(_itemToValidate, null);
-               return  true;
+               close();
             }
 
             @Override

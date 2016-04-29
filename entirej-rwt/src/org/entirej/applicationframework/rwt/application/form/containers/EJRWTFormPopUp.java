@@ -67,6 +67,12 @@ public class EJRWTFormPopUp
                 scrollComposite.setExpandVertical(true);
                 scrollComposite.setMinSize(width, height);
             }
+            
+            @Override
+            public void canceled()
+            {
+                _popupController.getPopupForm().close();
+            }
         };
         _popupDialog.create();
         _popupDialog.getShell().setText(_popupController.getPopupForm().getProperties().getTitle());

@@ -174,25 +174,27 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
 
     }
 
-    public boolean canceled()
+    public void canceled()
     {
-            return true;
+        close();
+    }
+    
+    @Override
+    protected boolean canHandleShellCloseEvent()
+    {
+        return true;
+    }
+    
+    @Override
+    public void handleShellCloseEvent()
+    {
+        canceled();
     }
 
     @Override
     public void create()
     {
         super.create();
-        getShell().addShellListener(new ShellAdapter()
-        {
-            @Override
-            public void shellClosed(ShellEvent event)
-            {
-                if (_selectedButtonId == -1)
-                {
-                    event.doit =    canceled();
-                }
-            }
-        });
+        
     }
 }

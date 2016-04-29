@@ -310,11 +310,10 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
             }
 
             @Override
-            public boolean canceled()
+            public void canceled()
             {
                 _block.insertCancelled();
-                
-                return  true;
+                close();
             }
 
             @Override
@@ -348,7 +347,7 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
                         }
                         case INSERT_CANCEL_ACTION_COMMAND:
                         {
-                            _block.updateCancelled();
+                            _block.insertCancelled();
                             close();
                             break;
                         }

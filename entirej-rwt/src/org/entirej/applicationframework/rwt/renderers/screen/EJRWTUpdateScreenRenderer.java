@@ -327,10 +327,10 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
             }
 
             @Override
-            public boolean canceled()
+            public void canceled()
             {
                 _block.updateCancelled();
-                return  true;
+                close();
             }
 
             @Override

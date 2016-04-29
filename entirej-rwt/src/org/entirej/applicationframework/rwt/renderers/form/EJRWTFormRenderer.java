@@ -1431,10 +1431,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     }
 
                     @Override
-                    public boolean canceled()
+                    public void canceled()
                     {
                         canvasController.closePopupCanvas(name, EJPopupButton.UNDEFINED);
-                        return false;
+                        
                     }
 
                     @Override

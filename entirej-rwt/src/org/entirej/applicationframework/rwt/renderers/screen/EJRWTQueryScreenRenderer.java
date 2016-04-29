@@ -288,6 +288,13 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
                 createButton(parent, QUERY_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false);
             }
 
+            
+            @Override
+            public void canceled()
+            {
+                close();
+            }
+            
             @Override
             public boolean close()
             {
