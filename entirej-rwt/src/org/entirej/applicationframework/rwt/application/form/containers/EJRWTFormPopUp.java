@@ -72,7 +72,7 @@ public class EJRWTFormPopUp
         _popupDialog.getShell().setText(_popupController.getPopupForm().getProperties().getTitle());
         _popupDialog.getShell().setSize(width+50, height+70);//add offset  
         _popupDialog.open();
-        _popupDialog.getShell().forceFocus();
+        _popupDialog.activateDialog();
     }
 
     public void close()

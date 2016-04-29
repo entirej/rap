@@ -155,6 +155,8 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
                 _dialog = null;
                 return super.close();
             }
+            
+           
 
             @Override
             public void createBody(Composite parent)
@@ -494,7 +496,7 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
 
         _dialog.centreLocation();
         _dialog.open();
-        _dialog.getShell().forceFocus();
+        _dialog.activateDialog();
     }
 
     @Override

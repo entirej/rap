@@ -23,6 +23,7 @@ import java.io.Serializable;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TrayDialog;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ShellAdapter;
 import org.eclipse.swt.events.ShellEvent;
@@ -33,6 +34,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Serializable
@@ -44,7 +46,8 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
     {
         super(parent);
         _parent = parent;
-        setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
+        setShellStyle(getShellStyle() | SWT.RESIZE| SWT.MAX);
+       
         setBlockOnOpen(false);
     }
 
@@ -69,6 +72,34 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
     protected void createButtonsForButtonBar(final Composite parent)
     {
    
+    }
+    
+    
+    public void activateDialog()
+    {
+
+        
+        final ServerPushSession pushSession = new ServerPushSession();
+        pushSession.start();
+        final Display dp = Display.getDefault();
+        new java.util.Timer().schedule(new java.util.TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                dp.asyncExec(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        getShell().forceFocus();
+                        pushSession.stop();
+                    }
+                });
+
+            }
+        }, 100);
+        
     }
     
     protected Control createButtonBar(Composite parent) {
@@ -159,7 +190,7 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
             {
                 if (_selectedButtonId == -1)
                 {
-                    event.doit = canceled();
+                    event.doit =    canceled();
                 }
             }
         });
