@@ -158,6 +158,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
     protected EJRWTStackedItemRendererValue _baseValue;
     protected EJRWTStackedItemRendererValue _intbaseValue;
+    private EJMessage message;
 
     protected boolean controlState(Control control)
     {
@@ -1516,6 +1517,32 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
         fireTextChange();
     }
+    
+    
+    @Override
+    public void setMessage(EJMessage message)
+    {
+        this.message = message;
+        if (_errorDecoration != null  && controlState(stackedPane) && !_errorDecoration.getControl().isDisposed())
+        {
+            ControlDecorationSupport.handleMessage(_errorDecoration, message);
+        }
+        
+    }
+
+    @Override
+    public void clearMessage()
+    {
+        this.message = null;
+        if (_errorDecoration != null  && controlState(stackedPane) && !_errorDecoration.getControl().isDisposed())
+        {
+            _errorDecoration.setDescriptionText("");
+            {
+                _errorDecoration.hide();
+            }
+        }
+        
+    }
 
     public void valueChanged()
     {
@@ -1983,6 +2010,10 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             if (_isValid)
             {
                 _errorDecoration.hide();
+            }
+            if (message!=null)
+            {
+               setMessage(message);
             }
             _mandatoryDecoration.hide();
 

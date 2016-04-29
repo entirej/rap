@@ -135,6 +135,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     protected boolean                         _lovActivated;
     protected boolean                         _lovInitialied;
     protected boolean                         _lovInitialiedOnValueSet;
+    private EJMessage message;
 
     protected boolean controlState(Control control)
     {
@@ -797,6 +798,8 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
             _errorDecoration.setDescriptionText("");
             if (error)
             {
+
+                _errorDecoration.setImage(getDecorationImage(FieldDecorationRegistry.DEC_ERROR));
                 _errorDecoration.show();
             }
             else
@@ -806,6 +809,32 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         }
 
         fireTextChange();
+    }
+   
+    
+    @Override
+    public void setMessage(EJMessage message)
+    {
+        this.message = message;
+        if (_errorDecoration != null  && controlState(_actionControl) && !_errorDecoration.getControl().isDisposed())
+        {
+            ControlDecorationSupport.handleMessage(_errorDecoration, message);
+        }
+        
+    }
+
+    @Override
+    public void clearMessage()
+    {
+        this.message = null;
+        if (_errorDecoration != null  && controlState(_actionControl) && !_errorDecoration.getControl().isDisposed())
+        {
+            _errorDecoration.setDescriptionText("");
+            {
+                _errorDecoration.hide();
+            }
+        }
+        
     }
     
     
@@ -1021,15 +1050,23 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
 
         _mandatoryDecoration = new ControlDecoration(_actionControl, SWT.TOP | SWT.LEFT);
         _errorDecoration = new ControlDecoration(_actionControl, SWT.TOP | SWT.LEFT);
-        _errorDecoration.setImage(getDecorationImage(FieldDecorationRegistry.DEC_ERROR));
         _mandatoryDecoration.setImage(getDecorationImage(FieldDecorationRegistry.DEC_REQUIRED));
         _mandatoryDecoration.setShowHover(true);
         _mandatoryDecoration.setDescriptionText(_screenItemProperties.getLabel() == null || _screenItemProperties.getLabel().isEmpty() ? "Required Item"
                 : String.format("%s is required", _screenItemProperties.getLabel()));
+        
+        
         if (_isValid)
         {
             _errorDecoration.hide();
         }
+        
+        if(message!=null)
+        {
+            setMessage(message); 
+        }
+        
+        
         _mandatoryDecoration.hide();
 
         refreshCombo();

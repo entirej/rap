@@ -44,11 +44,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.component.EJRWTCKEditor;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderers.item.ControlDecorationSupport;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
+import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
@@ -82,6 +84,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
     private EJRWTItemRendererVisualContext    _visualContext;
 
     protected Object                          _baseValue;
+    private EJMessage message;
 
     protected boolean controlState(Control control)
     {
@@ -426,6 +429,31 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
         }
 
     }
+    
+    @Override
+    public void setMessage(EJMessage message)
+    {
+        this.message = message;
+        if (_errorDecoration != null  && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
+        {
+            ControlDecorationSupport.handleMessage(_errorDecoration, message);
+        }
+        
+    }
+
+    @Override
+    public void clearMessage()
+    {
+        this.message = null;
+        if (_errorDecoration != null  && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
+        {
+            _errorDecoration.setDescriptionText("");
+            {
+                _errorDecoration.hide();
+            }
+        }
+        
+    }
 
     public void valueChanged()
     {
@@ -606,6 +634,10 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
             if (_isValid)
             {
                 _errorDecoration.hide();
+            }
+            if (message!=null)
+            {
+                setMessage(message);
             }
             _mandatoryDecoration.hide();
 

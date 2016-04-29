@@ -48,6 +48,7 @@ import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
+import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
@@ -73,6 +74,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     private boolean                           _displayAsHyperlink = false;
 
     protected Object                          _baseValue;
+    private EJMessage message;
 
     protected boolean controlState(Control control)
     {
@@ -352,6 +354,31 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
             _errorDecoration.hide();
         }
     }
+    
+    @Override
+    public void setMessage(EJMessage message)
+    {
+        this.message = message;
+        if (_errorDecoration != null  &&  !_errorDecoration.getControl().isDisposed())
+        {
+            ControlDecorationSupport.handleMessage(_errorDecoration, message);
+        }
+        
+    }
+
+    @Override
+    public void clearMessage()
+    {
+        this.message = null;
+        if (_errorDecoration != null  &&  !_errorDecoration.getControl().isDisposed())
+        {
+            _errorDecoration.setDescriptionText("");
+            {
+                _errorDecoration.hide();
+            }
+        }
+        
+    }
 
     @Override
     public void focusGained(FocusEvent event)
@@ -591,6 +618,8 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 : String.format("%s is required", _screenItemProperties.getLabel()));
         _errorDecoration.hide();
         _mandatoryDecoration.hide();
+        
+        setMessage(message);
     }
 
     protected int getComponentStyle(String alignmentProperty, int style)

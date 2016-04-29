@@ -20,6 +20,7 @@ package org.entirej.applicationframework.rwt.renderers.item;
 
 import java.io.Serializable;
 
+import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
@@ -42,6 +43,7 @@ import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
+import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
@@ -63,7 +65,8 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
 
     private EJCoreVisualAttributeProperties   _visualAttributeProperties;
     protected EJCoreVisualAttributeProperties _initialVAProperties;
-
+    protected ControlDecoration               _errorDecoration;
+    protected EJMessage message;
     
     
    
@@ -427,6 +430,9 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
             }
         }
 
+        _errorDecoration = new ControlDecoration(_button, SWT.TOP | SWT.LEFT);
+        setMessage(message);
+        
         _visualContext = new EJRWTItemRendererVisualContext(_button.getBackground(), _button.getForeground(), _button.getFont());
     }
 
@@ -579,5 +585,30 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
     public boolean isReadOnly()
     {
         return true;
+    }
+
+    @Override
+    public void setMessage(EJMessage message)
+    {
+        this.message = message;
+        if (_errorDecoration != null  && controlState(_button) && !_errorDecoration.getControl().isDisposed())
+        {
+            ControlDecorationSupport.handleMessage(_errorDecoration, message);
+        }
+        
+    }
+
+    @Override
+    public void clearMessage()
+    {
+        this.message = null;
+        if (_errorDecoration != null  && controlState(_button) && !_errorDecoration.getControl().isDisposed())
+        {
+            _errorDecoration.setDescriptionText("");
+            {
+                _errorDecoration.hide();
+            }
+        }
+        
     }
 }

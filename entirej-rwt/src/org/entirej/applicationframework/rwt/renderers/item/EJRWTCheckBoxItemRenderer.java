@@ -65,7 +65,7 @@ public class EJRWTCheckBoxItemRenderer extends EJRWTButtonItemRenderer
 
     private EJCoreVisualAttributeProperties _visualAttributeProperties;
 
-    private ControlDecoration               _errorDecoration;
+   
     private ControlDecoration               _mandatoryDecoration;
     private String                          _defaultValue;
 
@@ -353,6 +353,10 @@ public class EJRWTCheckBoxItemRenderer extends EJRWTButtonItemRenderer
         if (_isValid)
         {
             _errorDecoration.hide();
+        }
+        if(message!=null)
+        {
+            setMessage(message);
         }
         _mandatoryDecoration.hide();
         setInitialValue(_baseValue);

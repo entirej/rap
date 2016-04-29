@@ -76,6 +76,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
     private transient Image                   _defaultImage;
     private transient Image                   _currentImage;
     protected Object                          _baseValue;
+    private EJMessage message;
 
     protected boolean controlState(Control control)
     {
@@ -368,6 +369,31 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
             _errorDecoration.hide();
         }
     }
+    
+    @Override
+    public void setMessage(EJMessage message)
+    {
+        this.message = message;
+        if (_errorDecoration != null  &&  !_errorDecoration.getControl().isDisposed())
+        {
+            ControlDecorationSupport.handleMessage(_errorDecoration, message);
+        }
+        
+    }
+
+    @Override
+    public void clearMessage()
+    {
+        this.message = null;
+        if (_errorDecoration != null   && !_errorDecoration.getControl().isDisposed())
+        {
+            _errorDecoration.setDescriptionText("");
+            {
+                _errorDecoration.hide();
+            }
+        }
+        
+    }
 
     @Override
     public void focusGained(FocusEvent event)
@@ -484,6 +510,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
        
         _labelField.setImage(_defaultImage );
         _mandatoryDecoration.hide();
+        setMessage(message);
     }
 
     protected int getComponentStyle(String alignmentProperty, int style)

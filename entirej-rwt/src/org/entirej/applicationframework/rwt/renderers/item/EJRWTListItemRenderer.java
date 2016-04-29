@@ -122,10 +122,11 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
     protected boolean                         _lovActivated;
     protected boolean                         _lovInitialied;
+    private EJMessage                         message;
 
     public static final String                COLUMN_IMAGE_ITEM = "IMAGE_ITEM";
-    
-    public static final String FILTER             = "FILTER";
+
+    public static final String                FILTER            = "FILTER";
 
     protected boolean controlState(Control control)
     {
@@ -627,10 +628,35 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
         fireTextChange();
     }
-    
+
+    @Override
+    public void setMessage(EJMessage message)
+    {
+        this.message = message;
+        if (_errorDecoration != null && controlState(_listField) && !_errorDecoration.getControl().isDisposed())
+        {
+            ControlDecorationSupport.handleMessage(_errorDecoration, message);
+        }
+
+    }
+
+    @Override
+    public void clearMessage()
+    {
+        this.message = null;
+        if (_errorDecoration != null && controlState(_listField) && !_errorDecoration.getControl().isDisposed())
+        {
+            _errorDecoration.setDescriptionText("");
+            {
+                _errorDecoration.hide();
+            }
+        }
+
+    }
+
     public String getDisplayValue()
     {
-        if(controlState(_listField) && _listField.getSelection().length>0)
+        if (controlState(_listField) && _listField.getSelection().length > 0)
         {
             return _listField.getSelection()[0];
         }
@@ -697,14 +723,14 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
             {
                 return _rendererProps.getBooleanProperty(FILTER, false);
             }
-            
+
             @Override
             public void refreshData()
             {
-               refreshList();
-                
+                refreshList();
+
             }
-            
+
             @Override
             public org.eclipse.swt.widgets.List createList(Composite parent)
             {
@@ -751,7 +777,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                             }
                             if (_activeEvent)
                             {
-                                _item.itemValueChaged(old,value.getItemValue());
+                                _item.itemValueChaged(old, value.getItemValue());
                             }
                             setMandatoryBorder(_mandatory);
                         }
@@ -845,6 +871,10 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
             _errorDecoration.hide();
         }
+        if (message != null)
+        {
+            setMessage(message);
+        }
         _mandatoryDecoration.hide();
 
         refreshList();
@@ -861,11 +891,11 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 _listField.removeAll();
 
                 String filterText = _actionControl.getFilterText();
-                
+
                 for (Object item : _listKays)
                 {
                     String string = item.toString();
-                    if(filterText.isEmpty() || string.toLowerCase().contains(filterText.toLowerCase()))
+                    if (filterText.isEmpty() || string.toLowerCase().contains(filterText.toLowerCase()))
                         _listField.add(string);
                 }
                 setValue(_baseValue);
@@ -1007,8 +1037,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     if (_currentImage != null)
                     {
                         String src = ImageFactory.getImagePath(_currentImage);
-                        
-                      
+
                         buffer.append("<img width='14' height='14' src='" + src + "'/>  ");
                     }
 
@@ -1159,8 +1188,6 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
             return value.toString();
         }
     }
-
-  
 
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)

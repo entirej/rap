@@ -103,6 +103,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     private EJRWTItemRendererVisualContext    _visualContext;
 
     protected Object                          _baseValue;
+    private EJMessage message;
 
     protected boolean controlState(Control control)
     {
@@ -577,6 +578,32 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
         fireTextChange();
     }
+    
+    
+    @Override
+    public void setMessage(EJMessage message)
+    {
+        this.message = message;
+        if (_errorDecoration != null  && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
+        {
+            ControlDecorationSupport.handleMessage(_errorDecoration, message);
+        }
+        
+    }
+
+    @Override
+    public void clearMessage()
+    {
+        this.message = null;
+        if (_errorDecoration != null  && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
+        {
+            _errorDecoration.setDescriptionText("");
+            {
+                _errorDecoration.hide();
+            }
+        }
+        
+    }
 
     public void valueChanged()
     {
@@ -943,6 +970,10 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             if (_isValid)
             {
                 _errorDecoration.hide();
+            }
+            if (message!=null)
+            {
+                setMessage(message);
             }
             _mandatoryDecoration.hide();
             _textField.addModifyListener(_modifyListener);

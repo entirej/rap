@@ -96,6 +96,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
     private EJRWTItemRendererVisualContext    _visualContext;
 
     protected Object                          _baseValue;
+    private EJMessage message;
 
     protected boolean controlState(Control control)
     {
@@ -454,6 +455,32 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
 
         fireTextChange();
     }
+    
+    
+    @Override
+    public void setMessage(EJMessage message)
+    {
+        this.message = message;
+        if (_errorDecoration != null  && controlState(_actionControl) && !_errorDecoration.getControl().isDisposed())
+        {
+            ControlDecorationSupport.handleMessage(_errorDecoration, message);
+        }
+        
+    }
+
+    @Override
+    public void clearMessage()
+    {
+        this.message = null;
+        if (_errorDecoration != null  && controlState(_actionControl) && !_errorDecoration.getControl().isDisposed())
+        {
+            _errorDecoration.setDescriptionText("");
+            {
+                _errorDecoration.hide();
+            }
+        }
+        
+    }
 
     public void valueChanged()
     {
@@ -768,6 +795,10 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
             if (_isValid)
             {
                 _errorDecoration.hide();
+            }
+            if (message!=null)
+            {
+                setMessage(message);
             }
             _mandatoryDecoration.hide();
             setInitialValue(_baseValue);

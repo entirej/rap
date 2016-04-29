@@ -54,6 +54,7 @@ import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJApplicationException;
+import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
@@ -84,6 +85,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     private EJRWTItemRendererVisualContext    _visualContext;
     protected Object                          _baseValue;
     protected String                          _defaultButtonId;
+    private EJMessage message;
 
     @Override
     public boolean useFontDimensions()
@@ -496,6 +498,32 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
             _errorDecoration.hide();
         }
     }
+    
+    
+    @Override
+    public void setMessage(EJMessage message)
+    {
+        this.message = message;
+        if (_errorDecoration != null  && controlState(_radioGroup) && !_errorDecoration.getControl().isDisposed())
+        {
+            ControlDecorationSupport.handleMessage(_errorDecoration, message);
+        }
+        
+    }
+
+    @Override
+    public void clearMessage()
+    {
+        this.message = null;
+        if (_errorDecoration != null  && controlState(_radioGroup) && !_errorDecoration.getControl().isDisposed())
+        {
+            _errorDecoration.setDescriptionText("");
+            {
+                _errorDecoration.hide();
+            }
+        }
+        
+    }
 
     @Override
     public boolean valueEqualsTo(Object value)
@@ -639,6 +667,10 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
         if (_isValid)
         {
             _errorDecoration.hide();
+        }
+        if (message!=null)
+        {
+           setMessage(message);
         }
         _mandatoryDecoration.hide();
         addListeners();
