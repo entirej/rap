@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -1886,6 +1887,16 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         }
 
+        public void setTabPageBadge(String tabPageName, String badge)
+        {
+            Tab cTabItem = tabPages.get(tabPageName);
+            if (cTabItem != null && cTabItem.item != null)
+            {
+                cTabItem.item.setData( RWT.BADGE, badge );
+            }
+            
+        }
+
     }
 
     private interface CanvasHandler
@@ -2192,6 +2203,25 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
         return EJRWTImageRetriever.getGraphicsProvider().promptMultipleFileUpload(title);
     }
+
+    @Override
+    public void setTabPageBadge(String canvasName, String tabPageName, String badge)
+    {
+        if (canvasName != null && tabPageName != null)
+        {
+            EJTabFolder tabPane = _tabFolders.get(canvasName);
+            if (tabPane != null)
+            {
+                tabPane.setTabPageBadge(tabPageName,badge);
+            }
+//            else
+//            {
+//                _tabFoldersCache.put(canvasName, tabPageName);
+//            }
+        }
+        
+    }
+    
     
     
 
