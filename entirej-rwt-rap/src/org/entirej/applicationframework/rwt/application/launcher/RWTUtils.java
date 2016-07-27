@@ -18,6 +18,8 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.application.launcher;
 
+import java.io.InputStream;
+
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -28,7 +30,12 @@ public class RWTUtils
 
     public static Image getImage(String name, ClassLoader loader)
     {
-        return new Image(Display.getDefault(), loader.getResourceAsStream(name));
+        InputStream resourceAsStream = loader.getResourceAsStream(name);
+        if(resourceAsStream==null)
+        {
+            return null;
+        }
+        return new Image(Display.getDefault(), resourceAsStream);
 
     }
 

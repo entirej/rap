@@ -413,11 +413,12 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
     }
 
     @Override
-    public void screenItemValueChanged(EJScreenItemController item, EJItemRenderer changedRenderer, Object oldValue, Object newValue)
+    public boolean screenItemValueChanged(EJScreenItemController item, EJItemRenderer changedRenderer, Object newValue)
     {
         if (_updateDialog != null)
         {
             _updateDialog.validate();
         }
+        return false;
     }
 }

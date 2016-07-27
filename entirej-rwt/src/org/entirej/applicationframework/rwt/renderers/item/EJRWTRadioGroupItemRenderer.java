@@ -815,7 +815,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     public void valueChanged()
     {
         Object old = _baseValue;
-        _item.itemValueChaged(old,getValue());
+        _item.itemValueChaged(getValue());
 
         _item.executeActionCommand();
         setMandatoryBorder(_mandatory);

@@ -614,7 +614,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
 
             if (_valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base))))
-                _item.itemValueChaged(base,value);
+                _item.itemValueChaged(value);
             _valueChanged = false;
             _oldvalue = null;
         }
@@ -669,7 +669,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 if (_valueChanged)
                 {
                     _valueChanged = false;
-                    _item.itemValueChaged(_oldvalue,getValue());
+                    _item.itemValueChaged(getValue());
                     _oldvalue = null;
                     setMandatoryBorder(_mandatory);
 
@@ -929,7 +929,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                                 if (_valueChanged)
                                 {
                                     _valueChanged = false;
-                                    _item.itemValueChaged(_oldvalue,getValue());
+                                    _item.itemValueChaged(getValue());
                                     _oldvalue=null;
                                     setMandatoryBorder(_mandatory);
                                 }

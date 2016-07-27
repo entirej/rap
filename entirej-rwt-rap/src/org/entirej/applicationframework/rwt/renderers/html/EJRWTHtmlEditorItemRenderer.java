@@ -461,7 +461,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
         Object value = getValue();
 
         if (((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base))))
-            _item.itemValueChaged(base,value);
+            _item.itemValueChaged(value);
         setMandatoryBorder(_mandatory);
     }
 
@@ -504,7 +504,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
             {
                 Object base = _baseValue;
                 Object value = getValue();
-                _item.itemValueChaged(base,value);
+                _item.itemValueChaged(value);
                 setMandatoryBorder(_mandatory);
 
                 _item.itemFocusLost();

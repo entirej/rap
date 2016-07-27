@@ -777,7 +777,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
                             }
                             if (_activeEvent)
                             {
-                                _item.itemValueChaged(old, value.getItemValue());
+                                _item.itemValueChaged(value.getItemValue());
                             }
                             setMandatoryBorder(_mandatory);
                         }

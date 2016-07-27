@@ -962,7 +962,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                             ComboBoxValue value = getComboBoxValue();
                             
                             
-                                _item.itemValueChaged(old,value.getItemValue());
+                                _item.itemValueChaged(value.getItemValue());
                                 if (value != null )
                                 {
                                     value.populateReturnItems(_item.getBlock().getBlockController(), _item.getScreenType());

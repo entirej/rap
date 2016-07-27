@@ -410,11 +410,12 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
     }
 
     @Override
-    public void screenItemValueChanged(EJScreenItemController item, EJItemRenderer changedRenderer, Object oldValue, Object newValue)
+    public boolean screenItemValueChanged(EJScreenItemController item, EJItemRenderer changedRenderer,  Object newValue)
     {
         if (_queryDialog != null)
         {
             _queryDialog.validate();
         }
+        return false;
     }
 }

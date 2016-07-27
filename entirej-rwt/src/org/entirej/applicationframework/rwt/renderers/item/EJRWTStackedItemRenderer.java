@@ -1554,7 +1554,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         {
 
             if (_valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base))))
-                _item.itemValueChaged(base,value);
+                _item.itemValueChaged(value);
             _valueChanged = false;
             _oldvalue=null;
         }
@@ -1606,7 +1606,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 {
                     _valueChanged = false;
                     
-                    _item.itemValueChaged(_oldvalue,getValue());
+                    _item.itemValueChaged(getValue());
                     _oldvalue = null;
                     setMandatoryBorder(_mandatory);
 
@@ -1716,8 +1716,24 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 {
                     Object old = _baseValue.getValue();
                     Date newVal = format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay()));
+                    if (newVal != null && !_itemProperties.getDataTypeClassName().equals(Date.class.getName()))
+                    {
+                        String dataTypeClass = _itemProperties.getDataTypeClassName();
+                        if (dataTypeClass.equals("java.sql.Date"))
+                        {
+                            newVal = new java.sql.Date(newVal.getTime());
+                        }
+                        else if (dataTypeClass.equals("java.sql.Time"))
+                        {
+                            newVal = new java.sql.Time(newVal.getTime());
+                        }
+                        else if (dataTypeClass.equals("java.sql.Timestamp"))
+                        {
+                            newVal = new java.sql.Timestamp(newVal.getTime());
+                        }
+                    }
                     setValue(newVal);
-                    _item.itemValueChaged(old,newVal);
+                    _item.itemValueChaged(newVal);
                 }
                 catch (ParseException e1)
                 {
@@ -1747,9 +1763,25 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         try
                         {
                             Object old = _baseValue.getValue();
-                            Date newval = format.parse(format.format(new Date()));
-                            setValue(newval);
-                            _item.itemValueChaged(old,newval);
+                            Date newVal = format.parse(format.format(new Date()));
+                            if (newVal != null && !_itemProperties.getDataTypeClassName().equals(Date.class.getName()))
+                            {
+                                String dataTypeClass = _itemProperties.getDataTypeClassName();
+                                if (dataTypeClass.equals("java.sql.Date"))
+                                {
+                                    newVal = new java.sql.Date(newVal.getTime());
+                                }
+                                else if (dataTypeClass.equals("java.sql.Time"))
+                                {
+                                    newVal = new java.sql.Time(newVal.getTime());
+                                }
+                                else if (dataTypeClass.equals("java.sql.Timestamp"))
+                                {
+                                    newVal = new java.sql.Timestamp(newVal.getTime());
+                                }
+                            }
+                            setValue(newVal);
+                            _item.itemValueChaged(newVal);
                         }
                         catch (ParseException e1)
                         {
@@ -1772,7 +1804,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     {
                         Object old = _baseValue.getValue();
                         setValue(null);
-                        _item.itemValueChaged(old,null);
+                        _item.itemValueChaged(null);
 
                         if (!abstractDialog.isDisposed())
                         {
@@ -1846,7 +1878,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                             Object old = _baseValue.getValue();
                             Date newVal = format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay()));
                             setValue(newVal);
-                            _item.itemValueChaged(old,newVal);
+                            _item.itemValueChaged(newVal);
                         }
                         catch (ParseException e1)
                         {
@@ -2070,7 +2102,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     if (_valueChanged)
                     {
                         _valueChanged = false;
-                        _item.itemValueChaged(_oldvalue,getValue());
+                        _item.itemValueChaged(getValue());
                         _oldvalue = null;
                         setMandatoryBorder(_mandatory);
                     }
@@ -2128,7 +2160,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         newVal =  config.getCheckBoxUnCheckedValue();
                     }
                     _item.executeActionCommand();
-                    _item.itemValueChaged(old,newVal);
+                    _item.itemValueChaged(newVal);
                 }
 
             });
@@ -2235,7 +2267,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                             value.populateReturnItems(_item.getBlock().getBlockController(), _item.getScreenType());
                         }
 
-                        _item.itemValueChaged(old,value.getItemValue());
+                        _item.itemValueChaged(value.getItemValue());
 
                         setMandatoryBorder(_mandatory);
                     }

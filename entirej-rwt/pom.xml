@@ -167,12 +167,12 @@
 			<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt.osgi</artifactId>
-			<version>3.0.1</version>
+			<version>3.1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt</artifactId>
-			<version>3.0.1</version>
+			<version>3.1.0</version>
 		</dependency>
 	</dependencies>
 

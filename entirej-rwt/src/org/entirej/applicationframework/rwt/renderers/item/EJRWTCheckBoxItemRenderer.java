@@ -317,7 +317,7 @@ public class EJRWTCheckBoxItemRenderer extends EJRWTButtonItemRenderer
                         old = _checkedValue;
                         newVal =  _uncheckedValue;
                     }
-                    _item.itemValueChaged(old,newVal);
+                    _item.itemValueChaged(newVal);
                     _item.executeActionCommand();
                    
                 }
