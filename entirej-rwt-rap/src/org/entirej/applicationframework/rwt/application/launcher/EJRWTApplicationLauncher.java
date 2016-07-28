@@ -210,6 +210,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             baseThemeCSSLocation = THEME_DEFAULT_CSS;
         }
         configuration.addStyleSheet(THEME_DEFAULT, baseThemeCSSLocation);
+        properties.put( WebClient.PAGE_OVERFLOW, "scrollY" );
         configuration.addResource(baseThemeCSSLocation, new FileResource());
         if (getThemeCSSLocation() != null)
         {
