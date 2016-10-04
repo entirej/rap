@@ -370,12 +370,26 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                         headerText.setData(RWT.CUSTOM_VARIANT, "drawerTitle");
                         getContext().getUISession().setAttribute("ej.applicationManager", applicationManager);
                         getContext().getUISession().setAttribute("ej.MobileMode", true);
-                        preApplicationBuild(applicationManager);
+                        try
+                        {
+                            preApplicationBuild(applicationManager);
+                        }
+                        finally
+                        {
+                            applicationManager.getConnection().close();
+                        }
 
                         createNavigator(applicationManager, nav);
 
                         createDrawerBody(applicationManager, appContainer, pageBody);
-                        postApplicationBuild(applicationManager);
+                        try
+                        {
+                            postApplicationBuild(applicationManager);
+                        }
+                        finally
+                        {
+                            applicationManager.getConnection().close();
+                        }
                         shell.layout();
                         shell.setMaximized(true);
 

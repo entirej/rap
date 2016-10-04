@@ -372,9 +372,23 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         if (display.isDisposed())
                             display = new Display();
                         Shell shell = new Shell(display, SWT.NO_TRIM);
-                        preApplicationBuild(applicationManager);
+                        try
+                        {
+                            preApplicationBuild(applicationManager);
+                        }
+                        finally
+                        {
+                            applicationManager.getConnection().close();
+                        }
                         applicationManager.buildApplication(appContainer, shell);
-                        postApplicationBuild(applicationManager);
+                        try
+                        {
+                            postApplicationBuild(applicationManager);
+                        }
+                        finally
+                        {
+                            applicationManager.getConnection().close();
+                        }
                         shell.layout();
                         shell.setMaximized(true);
                         // disable due to RWT bug
