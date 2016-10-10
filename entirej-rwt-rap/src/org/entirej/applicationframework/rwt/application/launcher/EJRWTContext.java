@@ -20,24 +20,31 @@ package org.entirej.applicationframework.rwt.application.launcher;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
 
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 
 public class EJRWTContext
 {
-    private static final String CONTEXT_ID = "ej.EJRWTContext";
 
-    public static void initContext()
+    EJRWTApplicationManager manager;
+
+    public void setManager(EJRWTApplicationManager manager)
     {
-        getContext().getUISession().setAttribute(CONTEXT_ID, new EJRWTContext());
+        this.manager = manager;
+    }
+
+    private EJRWTContext()
+    {
+        // keep private
     }
 
     public static EJRWTContext getPageContext()
     {
-        return (EJRWTContext) getContext().getUISession().getAttribute(CONTEXT_ID);
+        return SingletonUtil.getSessionInstance(EJRWTContext.class);
     }
 
-    public static EJRWTApplicationManager getEJRWTApplicationManager()
+    public EJRWTApplicationManager getEJRWTApplicationManager()
     {
-        return (EJRWTApplicationManager) getContext().getUISession().getAttribute("ej.applicationManager");
+        return manager != null ? manager : (EJRWTApplicationManager) getContext().getUISession().getAttribute("ej.applicationManager");
     }
 }

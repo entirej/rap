@@ -143,7 +143,6 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
 
                     public int createUI()
                     {
-                        EJRWTContext.initContext();
                         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
                         {
 
@@ -255,6 +254,7 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                         {
                             throw new RuntimeException("application.ejprop not found");
                         }
+                        EJRWTContext.getPageContext().setManager(applicationManager);
                         EJCoreLayoutContainer layoutContainer = EJCoreProperties.getInstance().getLayoutContainer();
                         // Now build the application container
                         EJRWTApplicationContainer appContainer = new EJRWTApplicationContainer(layoutContainer)
@@ -368,7 +368,7 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                         // pageBody.setData(RWT.CUSTOM_VARIANT, "applayout");
                         pageB.setData(RWT.CUSTOM_VARIANT, "drawerAction");
                         headerText.setData(RWT.CUSTOM_VARIANT, "drawerTitle");
-                        getContext().getUISession().setAttribute("ej.applicationManager", applicationManager);
+                        EJRWTContext.getPageContext().setManager(applicationManager);
                         getContext().getUISession().setAttribute("ej.MobileMode", true);
                         try
                         {

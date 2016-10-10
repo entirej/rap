@@ -241,7 +241,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                     public int createUI()
                     {
 
-                        EJRWTContext.initContext();
+                      
                         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
                         {
 
@@ -355,6 +355,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             throw new RuntimeException("application.ejprop not found");
                         }
 
+                        EJRWTContext.getPageContext().setManager(applicationManager);
+                        
                         getContext().getUISession().setAttribute("ej.applicationManager", applicationManager);
 
                         EJCoreLayoutContainer layoutContainer = EJCoreProperties.getInstance().getLayoutContainer();
