@@ -21,6 +21,7 @@ package org.entirej.applicationframework.rwt.application.launcher;
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
 
 import org.eclipse.rap.rwt.SingletonUtil;
+import org.eclipse.rap.rwt.internal.service.ServiceContext;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 
 public class EJRWTContext
@@ -43,8 +44,9 @@ public class EJRWTContext
         return SingletonUtil.getSessionInstance(EJRWTContext.class);
     }
 
-    public EJRWTApplicationManager getEJRWTApplicationManager()
+    public static EJRWTApplicationManager getEJRWTApplicationManager()
     {
-        return manager != null ? manager : (EJRWTApplicationManager) getContext().getUISession().getAttribute("ej.applicationManager");
+        EJRWTContext pageContext = getPageContext();
+        return pageContext.manager != null ? pageContext.manager : (EJRWTApplicationManager) getContext().getUISession().getAttribute("ej.applicationManager");
     }
 }
