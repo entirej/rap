@@ -97,7 +97,7 @@ public class EJRWTLookupFormLovRendererDefinition implements EJDevLovRendererDef
         EJDevPropertyDefinition quearyScreen = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.SHOW_QUERY_SCREEN,
                 EJPropertyDefinitionType.BOOLEAN);
         quearyScreen.setLabel("Auto show query screen");
-        quearyScreen.setDescription("Indicates if the lov need to suto show query screen.");
+        quearyScreen.setDescription("Indicates that the LOV needs to show the query screen automatically when the LOV is displayed.");
         quearyScreen.setDefaultValue("true");
 
         mainGroup.addPropertyDefinition(showTableBorder);
