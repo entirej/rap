@@ -1,6 +1,5 @@
 package org.entirej.applicationframework.rwt.spring.ext;
 
-import org.entirej.framework.core.EJConnectionHelper;
 import org.entirej.framework.core.EJFrameworkInitialiser;
 import org.entirej.framework.core.EJManagedFrameworkConnection;
 import org.entirej.framework.core.interfaces.EJApplicationManager;
@@ -19,8 +18,7 @@ public abstract class AbstractEJUserDetailsAuthenticationProvider extends Abstra
     public final EJManagedFrameworkConnection getConnection()
     {
         
-        
-        return EJConnectionHelper.getConnection();
+        return appManager.getConnection();
     }
     
     
