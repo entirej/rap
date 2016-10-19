@@ -1214,6 +1214,9 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 }
                             }
 
+                            
+                            
+                            
                             String functionDef = null;
                             if (sortInfo != null)
                             {
@@ -1237,6 +1240,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             if (paddingStyle != null)
                             {
                                 header.append(String.format(" style=\'%s\'", paddingStyle));
+                            }
+                            if(itemProps.getHint()!=null && !itemProps.getHint().isEmpty())
+                            {
+                                header.append(String.format(" title=\'%s\'", itemProps.getHint()));
                             }
                             header.append("> ");
 
@@ -1738,7 +1745,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 final String caseProperty = getComponentCase(rendererProperties.getStringProperty(PROPERTY_CASE));
 
                                 builder.append(String.format(" font style=\'%s\'", caseProperty));
-
+                                if(item.getHint()!=null && !item.getHint().isEmpty())
+                                {
+                                    builder.append(String.format(" title=\'%s\'", item.getHint()));
+                                }
                                 builder.append(">");
 
                                 String text = columnLabelProvider.getText(record);
