@@ -82,12 +82,11 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
     public static final String HEADER_VA              = "HEADER_VA";
     public static final String ROW_ODD_VA             = "ROW_ODD_VA";
     public static final String ROW_EVEN_VA            = "ROW_EVEN_VA";
-    
+
     public static final String ROW_SELECTION          = "ROW_SELECTION";
     public static final String ROW_SELECTION_VA       = "ROW_SELECTION_VA";
-    
-    
 
+    public static final String TEXT_SELECTION         = "TEXT_SELECTION";
 
     public EJRWTHtmlTableBlockRendererDefinition()
     {
@@ -122,12 +121,19 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         showTableHeader.setLabel("Show Headings");
         showTableHeader.setDescription("If selected, the cloumn headings of the block will be displayed");
         showTableHeader.setDefaultValue("true");
-        
+
+        EJDevPropertyDefinition textSelection = new EJDevPropertyDefinition(TEXT_SELECTION, EJPropertyDefinitionType.BOOLEAN);
+        textSelection.setLabel("Text Selection");
+        textSelection.setDefaultValue("false");
         
         EJDevPropertyDefinition filter = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.FILTER, EJPropertyDefinitionType.BOOLEAN);
         filter.setLabel("Add Filter");
         filter.setDescription("If selected, the renderer will display a filter field above the blocks data. This filter can then be used by users to filter the blocks displayed data");
         filter.setDefaultValue("false");
+        EJDevPropertyDefinition filterOnRefresh = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.FILTER_KEEP_ON_REFRESH, EJPropertyDefinitionType.BOOLEAN);
+        filterOnRefresh.setLabel("Keep Filter on Refresh");
+        filterOnRefresh.setDescription("If selected, the renderer will keep filter when  blocks data reloaded");
+        filterOnRefresh.setDefaultValue("false");
 
         EJDevPropertyDefinition cellSpacing = new EJDevPropertyDefinition(CELL_SPACING_PROPERTY, EJPropertyDefinitionType.INTEGER);
         cellSpacing.setLabel("Cell Spacing");
@@ -149,17 +155,16 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         rowEvenVA.setLabel("Row Even VA");
         rowEvenVA.setDescription("Specifies visual attribute for table even row");
 
-        
         EJDevPropertyDefinition rowSelection = new EJDevPropertyDefinition(ROW_SELECTION, EJPropertyDefinitionType.BOOLEAN);
         rowSelection.setLabel("Row Selection Indicator");
         rowSelection.setDefaultValue("false");
         EJDevPropertyDefinition rowSelectionVA = new EJDevPropertyDefinition(ROW_SELECTION_VA, EJPropertyDefinitionType.VISUAL_ATTRIBUTE);
         rowSelectionVA.setLabel("Row Selection Indicator VA");
 
-
-        
         mainGroup.addPropertyDefinitionList(list);
+        mainGroup.addPropertyDefinition(textSelection);
         mainGroup.addPropertyDefinition(filter);
+        mainGroup.addPropertyDefinition(filterOnRefresh);
         mainGroup.addPropertyDefinition(showTableHeader);
         mainGroup.addPropertyDefinition(headerVA);
         mainGroup.addPropertyDefinition(rowOddVA);
@@ -182,18 +187,14 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         displayWidth.setDescription("The width (in characters) of this items column within the blocks table");
 
         mainGroup.addPropertyDefinition(displayWidth);
-        
-        
-        
-        
-        EJDevPropertyDefinition allowColumnSorting = new EJDevPropertyDefinition(ALLOW_ROW_SORTING,
-                EJPropertyDefinitionType.BOOLEAN);
+
+        EJDevPropertyDefinition allowColumnSorting = new EJDevPropertyDefinition(ALLOW_ROW_SORTING, EJPropertyDefinitionType.BOOLEAN);
         allowColumnSorting.setLabel("Allow Column Sorting");
-        allowColumnSorting.setDescription("If selected, the user will be able to re-order the data within the block by clicking on the column header. Only block contents will be sorted, no new data will be retreived from the datasource");
+        allowColumnSorting
+                .setDescription("If selected, the user will be able to re-order the data within the block by clicking on the column header. Only block contents will be sorted, no new data will be retreived from the datasource");
         allowColumnSorting.setDefaultValue("true");
-        
+
         mainGroup.addPropertyDefinition(allowColumnSorting);
-        
 
         EJDevPropertyDefinition cellActionCommand = new EJDevPropertyDefinition(CELL_ACTION_COMMAND, EJPropertyDefinitionType.ACTION_COMMAND);
         cellActionCommand.setLabel("Cell Action Command");
@@ -201,9 +202,9 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
                 .setDescription("If entered, the value in this column will be displayed as a URL and when the user clicks on the url, the action command will be passed to the forms action processor for execution.");
 
         mainGroup.addPropertyDefinition(cellActionCommand);
-        
-        
-        EJDevPropertyDefinition htmlFormat = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, EJPropertyDefinitionType.BOOLEAN);
+
+        EJDevPropertyDefinition htmlFormat = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP,
+                EJPropertyDefinitionType.BOOLEAN);
         htmlFormat.setLabel("HTML Formatting");
         htmlFormat.setDescription("If this property is set, the Table formats  HTML tags in column values");
         mainGroup.addPropertyDefinition(htmlFormat);
@@ -263,22 +264,20 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
 
         layoutBody.setLayout(new FillLayout());
 
-      
-        if(System.getProperty("os.name").toLowerCase().indexOf("win")>-1)
+        if (System.getProperty("os.name").toLowerCase().indexOf("win") > -1)
         {
-            Label  label = new Label(layoutBody, SWT.NONE);
+            Label label = new Label(layoutBody, SWT.NONE);
             label.setText("HTML Table Block");
             return new EJDevBlockRendererDefinitionControl(blockDisplayProperties, Collections.<EJDevItemRendererDefinitionControl> emptyList());
         }
-        
+
         EJDevItemGroupDisplayProperties displayProperties = null;
         if (blockDisplayProperties.getMainScreenItemGroupDisplayContainer().getAllItemGroupDisplayProperties().size() > 0)
         {
             displayProperties = blockDisplayProperties.getMainScreenItemGroupDisplayContainer().getAllItemGroupDisplayProperties().iterator().next();
 
         }
-        
-        
+
         EJFrameworkExtensionProperties blockRendererProperties = mainScreenProperties.getBlockProperties().getBlockRendererProperties();
         boolean addHeader = true;
         StringBuilder header = new StringBuilder();
@@ -352,8 +351,7 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
             }
 
             final Browser browser = new Browser(layoutBody, SWT.NONE);
-            
-            
+
             StringBuilder builder = new StringBuilder();
             {
                 builder.append("<html>");

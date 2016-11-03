@@ -29,7 +29,7 @@ public interface EJRWTTreeBlockDefinitionProperties
     public static final String NODE_EXPAND_LEVEL           = "NODE_EXPAND_LEVEL";
 
     public static final String DOUBLE_CLICK_ACTION_COMMAND = "DOUBLE_CLICK_ACTION_COMMAND";
-    
+
     public static final String CLICK_ACTION_COMMAND        = "CLICK_ACTION_COMMAND";
     public static final String HIDE_SELECTION              = "HIDE_SELECTION";
 
@@ -37,5 +37,7 @@ public interface EJRWTTreeBlockDefinitionProperties
     public static final String ITEM_SUFFIX                 = "SUFFIX";
     public static final String VISUAL_ATTRIBUTE_PROPERTY   = "VISUAL_ATTRIBUTE";
 
-    public static final String FILTER                     = "FILTER";
+    public static final String FILTER                      = "FILTER";
+
+    public static final String FILTER_KEEP_ON_REFRESH      = "FILTER_KEEP_ON_REFRESH";
 }

@@ -36,4 +36,6 @@ public interface EJRWTTreeBlockDefinitionProperties
     public static final String ITEM_SUFFIX                 = "SUFFIX";
     public static final String VISUAL_ATTRIBUTE_PROPERTY   = "VISUAL_ATTRIBUTE";
     public static final String FILTER                      = "FILTER";
+    public static final String FILTER_KEEP_ON_REFRESH      = "FILTER_KEEP_ON_REFRESH";
+
 }

@@ -19,11 +19,12 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
   }
 
   entirej.HtmlView = function( properties ) {
-    bindAll( this, [ "layout", "onRender","ej_action","ej_select",'ej_scroll' ] );
+    bindAll( this, [ "layout", "onRender","ej_action","ej_select",'ej_scroll','ej_text_select' ] );
     this.parent = rap.getObject( properties.parent );
     this.document = document;
+    this.window = window;
     this.element = document.createElement( "div" );
-
+    this.textSelect = properties.textSelect;
     this.element.style.height = '100%';
     this.element.style.overflow = 'auto';
     this.element.style.position = 'absolute';
@@ -125,6 +126,32 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
     	}
     },
     
+    
+    ej_text_select : function selectText(e) {   
+    	 e = e || window.event;
+         var obj = e.target || e.srcElement;
+        if (this.document.selection) {
+            var range = this.document.body.createTextRange();
+            if(obj.firstChild==null || obj.firstChild.nodeType!=3)
+        	{
+        		return;
+        	}
+            range.moveToElementText(obj.firstChild);
+            range.select();
+        }
+        else if (this.window.getSelection) {
+            var range = this.document.createRange();
+            if(obj.firstChild ==null || obj.firstChild.nodeType!=3)
+            	{
+            		return;
+            	}
+            range.selectNode(obj.firstChild);
+            this.window.getSelection().removeAllRanges();
+            this.window.getSelection().addRange(range);
+        }
+    },
+    
+    
     ej_scroll : function() {
     	var remoteObject = rap.getRemoteObject(this);
     	
@@ -181,6 +208,21 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         		
         		var func = this.ej_select;
         		elemsnts[i].onclick =  func;
+        	}
+    	}
+        
+        if(this.textSelect)
+    	{
+        	var elemsnts= this.element.getElementsByTagName("td");
+            if(elemsnts)
+        	{
+            	
+            	for(var i =0;i<elemsnts.length;i++)
+            	{
+            		
+            		var func = this.ej_text_select;
+            		elemsnts[i].onclick =  func;
+            	}
         	}
     	}
         

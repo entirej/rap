@@ -47,22 +47,22 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
     private Composite   _parent;
     private Composite   _treeComposite;
 
-    public EJRWTAbstractFilteredHtml(Composite parent, int treeStyle)
+    public EJRWTAbstractFilteredHtml(Composite parent, int treeStyle,boolean textSelect)
     {
         super(parent, SWT.NONE);
         setData(EJ_RWT.CUSTOM_VARIANT, "itemgroupclear");
         
         this._parent = parent;
-        init(treeStyle);
+        init(treeStyle,textSelect);
     }
 
-    protected void init(int treeStyle)
+    protected void init(int treeStyle,boolean textSelect)
     {
-        createControl(_parent, treeStyle);
+        createControl(_parent, treeStyle,textSelect);
         setFont(_parent.getFont());
     }
 
-    protected void createControl(Composite parent, int treeStyle)
+    protected void createControl(Composite parent, int treeStyle,boolean textSelect)
     {
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
@@ -89,7 +89,7 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
         _treeComposite.setLayout(treeCompositeLayout);
         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
         _treeComposite.setLayoutData(data);
-        createHtmlViewControl(_treeComposite, treeStyle);
+        createHtmlViewControl(_treeComposite, treeStyle,textSelect);
     }
 
     protected Composite createFilterControls(Composite parent)
@@ -98,18 +98,18 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
         return parent;
     }
 
-    protected Control createHtmlViewControl(Composite parent, int style)
+    protected Control createHtmlViewControl(Composite parent, int style,boolean textSelect)
     {
-        _tableViewer = doCreateTableViewer(parent, style);
+        _tableViewer = doCreateTableViewer(parent, style,textSelect);
         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
         _tableViewer.setLayoutData(data);
 
         return _tableViewer;
     }
 
-    protected EJRWTHtmlView doCreateTableViewer(Composite parent, int style)
+    protected EJRWTHtmlView doCreateTableViewer(Composite parent, int style,boolean textSelect)
     {
-        return new EJRWTHtmlView(parent, style);
+        return new EJRWTHtmlView(parent, style,textSelect);
     }
 
     protected void createFilterText(Composite parent)

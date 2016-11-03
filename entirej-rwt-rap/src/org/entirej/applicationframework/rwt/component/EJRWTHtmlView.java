@@ -87,7 +87,7 @@ public class EJRWTHtmlView extends Composite
 
     }
 
-    public EJRWTHtmlView(Composite parent, int style)
+    public EJRWTHtmlView(Composite parent, int style,boolean textSelection)
     {
         super(parent, style);
         registerResources();
@@ -96,6 +96,7 @@ public class EJRWTHtmlView extends Composite
         remoteObject = connection.createRemoteObject(REMOTE_TYPE);
         remoteObject.setHandler(operationHandler);
         remoteObject.set("parent", WidgetUtil.getId(this));
+        remoteObject.set("textSelect", textSelection);
     }
 
     private void registerResources()
