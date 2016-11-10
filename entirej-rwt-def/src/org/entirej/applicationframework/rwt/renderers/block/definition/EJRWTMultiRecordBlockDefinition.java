@@ -148,11 +148,6 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         showTableHeader.setDescription("If selected, the cloumn headings of the block will be displayed");
         showTableHeader.setDefaultValue("true");
 
-        EJDevPropertyDefinition allowRowSelection = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.ROW_SELECTION_PROPERTY,
-                EJPropertyDefinitionType.BOOLEAN);
-        allowRowSelection.setLabel("Allow Row Selection");
-        allowRowSelection.setDescription("Indicates if row selection is allowed for this block");
-        allowRowSelection.setDefaultValue("true");
 
         EJDevPropertyDefinition filter = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.FILTER, EJPropertyDefinitionType.BOOLEAN);
         filter.setLabel("Add Filter");
@@ -183,7 +178,6 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         mainGroup.addPropertyDefinition(doubleClickActionCommand);
         mainGroup.addPropertyDefinition(showTableBorder);
         mainGroup.addPropertyDefinition(showTableHeader);
-        mainGroup.addPropertyDefinition(allowRowSelection);
         mainGroup.addPropertyDefinition(filter);
         mainGroup.addPropertyDefinition(showVerticalLines);
         mainGroup.addPropertyDefinition(isFixedInTable);

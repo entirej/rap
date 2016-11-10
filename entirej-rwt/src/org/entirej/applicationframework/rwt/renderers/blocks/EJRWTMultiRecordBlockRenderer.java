@@ -802,18 +802,10 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
             style = style | SWT.BORDER;
         }
 
-        if (rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ROW_SELECTION_PROPERTY, true))
-        {
-            style = style | SWT.FULL_SELECTION;
-        }
-        else
-        {
-            style = style | SWT.HIDE_SELECTION;
-        }
+       
         Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN)
                 .getAllItemGroupProperties();
         final Table table;
-        final boolean hideSelection = (style & SWT.HIDE_SELECTION) != 0;
         final EJRWTAbstractFilteredTable filterTree;
         if (rendererProp.getBooleanProperty(EJRWTTreeBlockDefinitionProperties.FILTER, false))
         {
@@ -850,30 +842,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                         @Override
                         protected TableViewer doCreateTableViewer(Composite parent, int style)
                         {
-                            return _tableViewer = new TableViewer(parent,style)
-                            {
-                                private static final long serialVersionUID = 5803610958722645987L;
-
-                                @Override
-                                public void setSelection(ISelection selection)
-                                {
-                                    if (hideSelection)
-                                    {
-                                        selection = new StructuredSelection();
-                                    }
-                                    super.setSelection(selection);
-                                }
-
-                                @Override
-                                public void setSelection(ISelection selection, boolean reveal)
-                                {
-                                    if (hideSelection)
-                                    {
-                                        selection = new StructuredSelection();
-                                    }
-                                    super.setSelection(selection, reveal);
-                                }
-                            };
+                            return _tableViewer = new TableViewer(parent,style);
                         }
                     };
                 }
@@ -901,30 +870,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                         @Override
                         protected TableViewer doCreateTableViewer(Composite parent, int style)
                         {
-                            return _tableViewer = new TableViewer(parent,style)
-                            {
-                                private static final long serialVersionUID = 5803610958722645987L;
-
-                                @Override
-                                public void setSelection(ISelection selection)
-                                {
-                                    if (hideSelection)
-                                    {
-                                        selection = new StructuredSelection();
-                                    }
-                                    super.setSelection(selection);
-                                }
-
-                                @Override
-                                public void setSelection(ISelection selection, boolean reveal)
-                                {
-                                    if (hideSelection)
-                                    {
-                                        selection = new StructuredSelection();
-                                    }
-                                    super.setSelection(selection, reveal);
-                                }
-                            };
+                            return _tableViewer = new TableViewer(parent,style);
                         }
                     };
                     filterTree.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
@@ -953,30 +899,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                     @Override
                     protected TableViewer doCreateTableViewer(Composite parent, int style)
                     {
-                        return _tableViewer = new TableViewer(parent,style)
-                        {
-                            private static final long serialVersionUID = 5803610958722645987L;
-
-                            @Override
-                            public void setSelection(ISelection selection)
-                            {
-                                if (hideSelection)
-                                {
-                                    selection = new StructuredSelection();
-                                }
-                                super.setSelection(selection);
-                            }
-
-                            @Override
-                            public void setSelection(ISelection selection, boolean reveal)
-                            {
-                                if (hideSelection)
-                                {
-                                    selection = new StructuredSelection();
-                                }
-                                super.setSelection(selection, reveal);
-                            }
-                        };
+                        return _tableViewer = new TableViewer(parent,style);
                     }
                 };
 
@@ -1011,28 +934,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 table.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
             }
 
-            _tableViewer = new TableViewer(table)
-            {
-                @Override
-                public void setSelection(ISelection selection)
-                {
-                    if (hideSelection)
-                    {
-                        selection = new StructuredSelection();
-                    }
-                    super.setSelection(selection);
-                }
-
-                @Override
-                public void setSelection(ISelection selection, boolean reveal)
-                {
-                    if (hideSelection)
-                    {
-                        selection = new StructuredSelection();
-                    }
-                    super.setSelection(selection, reveal);
-                }
-            };
+            _tableViewer = new TableViewer(table);
         }
 
         table.setLinesVisible(rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.SHOW_VERTICAL_LINES, true));

@@ -179,14 +179,7 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
                     style = style | SWT.BORDER;
                 }
 
-                if (rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ROW_SELECTION_PROPERTY, true))
-                {
-                    style = style | SWT.FULL_SELECTION;
-                }
-                else
-                {
-                    style = style | SWT.HIDE_SELECTION;
-                }
+               
                 final EJRWTAbstractFilteredTable filterTree;
                 Table table;
 

@@ -29,7 +29,6 @@ public interface EJRWTMultiRecordBlockDefinitionProperties
     public static final String COLORING_EFFECT             = "COLORING_EFFECT";
     public static final String ENABLE_MARKUP               = "ENABLE_MARKUP";
     public static final String SHOW_HORIZONTAL_LINES       = "SHOW_VERTICAL_LINES";
-    public static final String ROW_SELECTION_PROPERTY      = "ROW_SELECTION";
     public static final String USE_STANDARD_HEADING        = "STANDARD_HEADING";
     public static final String ALLOW_COLUMN_RESIZE         = "ALLOW_COLUMN_RESIZE";
     public static final String ALLOW_COLUMN_REORDER        = "ALLOW_COLUMN_REORDER";

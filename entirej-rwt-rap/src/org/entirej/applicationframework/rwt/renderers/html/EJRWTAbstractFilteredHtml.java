@@ -230,6 +230,7 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
             setFilterText("");
         }
     }
+   
 
     protected void setFilterText(String string)
     {
@@ -258,7 +259,6 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
     public void setInitialText(String text)
     {
         setFilterText(text);
-        textChanged();
     }
 
     protected void selectAll()

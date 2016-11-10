@@ -81,11 +81,7 @@ public class EJRWTLookupFormLovRendererDefinition implements EJDevLovRendererDef
         showTableHeader.setDescription("If selected, column headings will be displayed");
         showTableHeader.setDefaultValue("true");
 
-        EJDevPropertyDefinition allowRowSelection = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.ROW_SELECTION_PROPERTY,
-                EJPropertyDefinitionType.BOOLEAN);
-        allowRowSelection.setLabel("Allow Row Selection");
-        allowRowSelection.setDescription("Indicates if row selection is allowed for this lov");
-        allowRowSelection.setDefaultValue("true");
+       
 
         EJDevPropertyDefinition showVerticalLines = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.SHOW_VERTICAL_LINES,
                 EJPropertyDefinitionType.BOOLEAN);
@@ -102,7 +98,6 @@ public class EJRWTLookupFormLovRendererDefinition implements EJDevLovRendererDef
 
         mainGroup.addPropertyDefinition(showTableBorder);
         mainGroup.addPropertyDefinition(showTableHeader);
-        mainGroup.addPropertyDefinition(allowRowSelection);
         mainGroup.addPropertyDefinition(showVerticalLines);
         mainGroup.addPropertyDefinition(quearyScreen);
 

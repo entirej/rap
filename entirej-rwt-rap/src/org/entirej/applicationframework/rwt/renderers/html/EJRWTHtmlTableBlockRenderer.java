@@ -173,9 +173,11 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
     private boolean filterKeepOnRefresh;
 
+    private EJRWTAbstractFilteredHtml filterHtml;
+
     protected void clearFilter()
     {
-        if (_filteredContentProvider != null)
+        if (_filteredContentProvider != null )
         {
             _filteredContentProvider.setFilter(null);
         }
@@ -212,7 +214,8 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public void blockCleared()
     {
-        clearFilter();
+        if(!filterKeepOnRefresh)
+            clearFilter();
         createHTML();
 
     }
@@ -321,7 +324,30 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         currentRec = null;
 
         activeSortColumn = null;
-        clearFilter();
+        String filter = null;
+        if(filterKeepOnRefresh)
+        {
+            if (filterHtml != null)
+            {
+                filter =  filterHtml.getFilterString();
+
+               
+            }
+        }
+        
+            clearFilter();
+        
+        if (_filteredContentProvider != null && filterKeepOnRefresh)
+        {
+          
+            if (filterHtml != null)
+            {
+                filterHtml.setInitialText(filter);
+
+               
+            }
+            _filteredContentProvider.setFilter(filter);
+        } 
         createHTML();
 
     }
@@ -337,7 +363,8 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         if (_filteredContentProvider != null)
         {
             String filter = _filteredContentProvider.getFilter();
-            clearFilter();
+            
+                clearFilter();
             _filteredContentProvider.setFilter(filter);
         }
         createHTML();
@@ -592,7 +619,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         boolean filtered = blockRendererProperties.getBooleanProperty(EJRWTTreeBlockDefinitionProperties.FILTER, false);
         this.filterKeepOnRefresh = blockRendererProperties.getBooleanProperty(EJRWTTreeBlockDefinitionProperties.FILTER_KEEP_ON_REFRESH, false);
         this.textSelection = blockRendererProperties.getBooleanProperty(TEXT_SELECTION, false);
-        EJRWTAbstractFilteredHtml filterHtml = null;
+        
         if (mainScreenProperties.getDisplayFrame())
         {
             String frameTitle = mainScreenProperties.getFrameTitle();
@@ -1338,6 +1365,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 }
                 else
                 {
+                   
                     for (EJDataRecord record : _block.getBlock().getRecords())
                     {
                         if (matchItem(record))
