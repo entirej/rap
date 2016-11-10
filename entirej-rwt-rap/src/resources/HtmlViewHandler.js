@@ -249,7 +249,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         		var el = elemsnts[i];
         		if(el.getAttribute('recid') == id)
         		{
-        			el.scrollIntoView(false);
+        			el.scrollIntoView(true);
     			    
     			    var indelemsnts= this.element.getElementsByClassName("rowindi");
     			    if(indelemsnts)
