@@ -1733,7 +1733,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         }
                     }
                     setValue(newVal);
-                    _item.itemValueChaged(newVal);
+                    _item.itemValueChaged(getValue());
                 }
                 catch (ParseException e1)
                 {
@@ -1781,7 +1781,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                                 }
                             }
                             setValue(newVal);
-                            _item.itemValueChaged(newVal);
+                            _item.itemValueChaged(getValue());
                         }
                         catch (ParseException e1)
                         {
@@ -1878,7 +1878,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                             Object old = _baseValue.getValue();
                             Date newVal = format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay()));
                             setValue(newVal);
-                            _item.itemValueChaged(newVal);
+                            _item.itemValueChaged(getValue());
                         }
                         catch (ParseException e1)
                         {
@@ -2160,7 +2160,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         newVal =  config.getCheckBoxUnCheckedValue();
                     }
                     _item.executeActionCommand();
-                    _item.itemValueChaged(newVal);
+                    _item.itemValueChaged(getValue());
                 }
 
             });
@@ -2267,7 +2267,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                             value.populateReturnItems(_item.getBlock().getBlockController(), _item.getScreenType());
                         }
 
-                        _item.itemValueChaged(value.getItemValue());
+                        _item.itemValueChaged(getValue());
 
                         setMandatoryBorder(_mandatory);
                     }
