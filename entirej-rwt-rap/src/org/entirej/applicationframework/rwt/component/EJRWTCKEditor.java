@@ -134,7 +134,13 @@ public class EJRWTCKEditor extends Composite
                                                               JsonValue textValue = properties.get("text");
                                                               if (textValue != null)
                                                               {
-                                                                  text = textValue.asString();
+                                                                  String asString = textValue.asString();
+                                                                boolean changed = text!=null && !text.equals(asString);
+                                                                text = asString;
+                                                                if(changed)
+                                                                {
+                                                                    textValueChanged();
+                                                                }
                                                               }
                                                           }
                                                       };
@@ -153,6 +159,12 @@ public class EJRWTCKEditor extends Composite
         remoteObject.set("removeToolbar", removeToolbar);
         remoteObject.set("profile", profile == null ? "Standard" : profile);
 
+    }
+
+    protected void textValueChanged()
+    {
+       //ignore
+        
     }
 
     private void registerResources()
