@@ -20,6 +20,7 @@ package org.entirej.applicationframework.rwt.renderers.form;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -600,6 +601,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
+        if(!canvasProperties.getCloseableMessagePane())
+        {
+            canvasHandler.setCanvasMessages(Collections.<EJMessage>emptyList());
+        }
         for (EJStackedPageProperties page : canvasProperties.getStackedPageContainer().getAllStackedPageProperties())
         {
 
@@ -752,6 +757,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
+        if(!canvasProperties.getCloseableMessagePane())
+        {
+            canvasHandler.setCanvasMessages(Collections.<EJMessage>emptyList());
+        }
 
         if (canvasProperties.getReferredFormId() != null && canvasProperties.getReferredFormId().length() > 0)
         {
@@ -893,6 +902,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
+        if(!canvasProperties.getCloseableMessagePane())
+        {
+            canvasHandler.setCanvasMessages(Collections.<EJMessage>emptyList());
+        }
 
         _tabFolders.put(name, tabFolder);
         folder.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
@@ -1092,6 +1105,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             canvasHandler.add(block);
         }
+        if(!canvasProperties.getCloseableMessagePane())
+        {
+            canvasHandler.setCanvasMessages(Collections.<EJMessage>emptyList());
+        }
         if (canvasProperties.getType() == EJCanvasType.GROUP)
         {
             for (EJCanvasProperties containedCanvas : canvasProperties.getGroupCanvasContainer().getAllCanvasProperties())
@@ -1220,6 +1237,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
+        if(!canvasProperties.getCloseableMessagePane())
+        {
+            canvasHandler.setCanvasMessages(Collections.<EJMessage>emptyList());
+        }
         layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         if (canvasProperties.getType() == EJCanvasType.SPLIT)
         {
@@ -1524,7 +1545,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 _popupDialog.centreLocation();
                 _popupDialog.open();
                 _popupDialog.activateDialog();
-                if (msgs != null && msgs.size() > 0)
+                if(!canvasProperties.getCloseableMessagePane() &&  msgs==null)
+                {
+                    msgs = Collections.emptyList();
+                }
+                if ((msgs != null && msgs.size() > 0)|| !canvasProperties.getCloseableMessagePane())
                 {
                     if (_popupDialog.getTray() == null)
                     {
