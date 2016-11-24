@@ -1909,6 +1909,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     {
                         createCanvas(pageCanvas, pageProperties, canvasController);
                     } 
+                    pageCanvas.layout(true);
                 }
                 else{
                     
