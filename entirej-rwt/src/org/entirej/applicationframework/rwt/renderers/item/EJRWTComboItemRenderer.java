@@ -58,6 +58,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionCombo;
@@ -171,8 +172,18 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public void refreshItemRenderer()
     {
-        loadComboBoxValues();
-        refreshCombo();
+        Display.getDefault().asyncExec(new Runnable()
+        {
+            
+            @Override
+            public void run()
+            {
+               _loadComboBoxValues();
+                refreshCombo();
+                
+            }
+        });
+        
     }
 
     @Override
@@ -248,7 +259,17 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         
         if (_rendererProps.getBooleanProperty(EJRWTComboBoxRendererDefinitionProperties.INITIALIES_LOV, true))
         {
-            loadComboBoxValues();
+            Display.getDefault().asyncExec(new Runnable()
+            {
+                
+                @Override
+                public void run()
+                {
+                   _loadComboBoxValues();
+                    refreshCombo();
+                    
+                }
+            });
         }
     }
 
@@ -256,8 +277,17 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     {
         if (!_lovInitialied)
         {
-            loadComboBoxValues();
-            refreshCombo();
+            Display.getDefault().asyncExec(new Runnable()
+            {
+                
+                @Override
+                public void run()
+                {
+                   _loadComboBoxValues();
+                    refreshCombo();
+                    
+                }
+            });
         }
     }
 
@@ -327,8 +357,17 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                         {
                             
                             logger.debug( "APP_PARAMETER:parameterChanged %s.%s", _item.getBlock().getProperties().getName(),_item.getName());
-                            loadComboBoxValues();
-                            refreshCombo();
+                            Display.getDefault().asyncExec(new Runnable()
+                            {
+                                
+                                @Override
+                                public void run()
+                                {
+                                   _loadComboBoxValues();
+                                    refreshCombo();
+                                    
+                                }
+                            });
                             
                         }
                     });
@@ -346,8 +385,17 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                         public void parameterChanged(String parameterName, Object oldValue, Object newValue)
                         {
                             logger.debug( "FORM_PARAMETER.parameterChanged %s.%s", _item.getBlock().getProperties().getName(),_item.getName());
-                            loadComboBoxValues();
-                            refreshCombo();
+                            Display.getDefault().asyncExec(new Runnable()
+                            {
+                                
+                                @Override
+                                public void run()
+                                {
+                                   _loadComboBoxValues();
+                                    refreshCombo();
+                                    
+                                }
+                            });
                             
                         }
                     });
@@ -375,8 +423,17 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                             public void focusedGained(EJDataRecord focusedRecord)
                             {
                                 logger.debug(String.format( "BLOCK RECORD Changed %s", blockName));
-                                loadComboBoxValues();
-                                refreshCombo(); 
+                                Display.getDefault().asyncExec(new Runnable()
+                                {
+                                    
+                                    @Override
+                                    public void run()
+                                    {
+                                       _loadComboBoxValues();
+                                        refreshCombo();
+                                        
+                                    }
+                                });
                                 
                             }
                         });
@@ -394,8 +451,17 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                                 if( screenType == _item.getScreenType())
                                 {
                                     logger.debug(String.format( "BLOCK_ITEM.valueChanged %s.%s", blockName,itemName));
-                                    loadComboBoxValues();
-                                    refreshCombo(); 
+                                    Display.getDefault().asyncExec(new Runnable()
+                                    {
+                                        
+                                        @Override
+                                        public void run()
+                                        {
+                                           _loadComboBoxValues();
+                                            refreshCombo();
+                                            
+                                        }
+                                    });
                                 }
                             }
                             else
@@ -404,8 +470,17 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                                 if( screenType == EJScreenType.MAIN)
                                 {
                                     logger.debug(String.format( "BLOCK_ITEM.valueChanged %s.%s", blockName,itemName));
-                                    loadComboBoxValues();
-                                    refreshCombo();
+                                    Display.getDefault().asyncExec(new Runnable()
+                                    {
+                                        
+                                        @Override
+                                        public void run()
+                                        {
+                                           _loadComboBoxValues();
+                                            refreshCombo();
+                                            
+                                        }
+                                    });
                                 }
                             }
                             
@@ -425,7 +500,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         }
     }
     
-    private void loadComboBoxValues()
+    private void _loadComboBoxValues()
     {
         // Initialise both the field and the values.
         _lovInitialied = true;
@@ -621,8 +696,17 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     {
         if(  !_lovInitialied)
         {
-            loadComboBoxValues();
-            refreshCombo();
+            Display.getDefault().asyncExec(new Runnable()
+            {
+                
+                @Override
+                public void run()
+                {
+                   _loadComboBoxValues();
+                    refreshCombo();
+                    
+                }
+            });
         }
        
         
@@ -1329,7 +1413,17 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     {
         if (!_lovInitialied)
         {
-            loadComboBoxValues();
+            Display.getDefault().asyncExec(new Runnable()
+            {
+                
+                @Override
+                public void run()
+                {
+                   _loadComboBoxValues();
+                    refreshCombo();
+                    
+                }
+            });
         }
         ColumnLabelProvider provider = new ColumnLabelProvider()
         {
