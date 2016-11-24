@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rwt.EJ_RWT;
@@ -41,6 +42,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -918,7 +920,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             EJTabFolder.Tab tab = tabFolder.newTab(page);
             if (page.isVisible())
             {
-                tab.create();
+                
+                    tab.create(index==0);
             }
             tab.index = index;
             index++;
@@ -1789,7 +1792,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             @Override
                             public void run()
                             {
-                                cTabItem.create();
+                                cTabItem.create(true);
 
                             }
                         });
@@ -1886,20 +1889,57 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 item = null;
             }
 
-            void create()
+            void create(boolean innerBuild)
             {
 
-                CTabItem tabItem = (index == -1 || folder.getItemCount() < index) ? new CTabItem(folder, SWT.NONE) : new CTabItem(folder, SWT.NONE, index);
+               final  CTabItem tabItem = (index == -1 || folder.getItemCount() < index) ? new CTabItem(folder, SWT.NONE) : new CTabItem(folder, SWT.NONE, index);
                 tabItem.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
                 tabItem.setData("TAB_KEY", page.getName());
-                EJRWTEntireJGridPane pageCanvas = new EJRWTEntireJGridPane(folder, page.getNumCols());
+                final EJRWTEntireJGridPane pageCanvas = new EJRWTEntireJGridPane(folder, page.getNumCols());
                 pageCanvas.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
                 tabItem.setText(page.getPageTitle() != null && page.getPageTitle().length() > 0 ? page.getPageTitle() : page.getName());
                 tabItem.setControl(pageCanvas);
-                EJCanvasPropertiesContainer containedCanvases = page.getContainedCanvases();
-                for (EJCanvasProperties pageProperties : containedCanvases.getAllCanvasProperties())
+                final EJCanvasPropertiesContainer containedCanvases = page.getContainedCanvases();
+                
+                final AtomicBoolean init = new AtomicBoolean(innerBuild||folder.getSelection()==null);
+               
+                if(init.get())
                 {
-                    createCanvas(pageCanvas, pageProperties, canvasController);
+                    for (EJCanvasProperties pageProperties : containedCanvases.getAllCanvasProperties())
+                    {
+                        createCanvas(pageCanvas, pageProperties, canvasController);
+                    } 
+                }
+                else{
+                    
+                    folder.addSelectionListener(new SelectionListener()
+                    {
+                        
+                        @Override
+                        public void widgetSelected(SelectionEvent e)
+                        {
+                            if(folder.getSelection()!=tabItem)
+                                return;
+                                
+                            if(!init.get())
+                            {
+                                init.set(true);
+                                for (EJCanvasProperties pageProperties : containedCanvases.getAllCanvasProperties())
+                                {
+                                    createCanvas(pageCanvas, pageProperties, canvasController);
+                                } 
+                            }
+                            pageCanvas.layout(true);
+                            folder.removeSelectionListener(this);
+                        }
+                        
+                        @Override
+                        public void widgetDefaultSelected(SelectionEvent e)
+                        {
+                            widgetSelected(e);
+                            
+                        }
+                    });
                 }
                 if (folder.getSelection() == null)
                 {
