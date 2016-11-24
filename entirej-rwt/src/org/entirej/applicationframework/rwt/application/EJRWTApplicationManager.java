@@ -359,7 +359,11 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     @Override
     public void switchToForm(EJInternalForm form)
     {
-        _applicationContainer.switchToForm(form);
+        EJInternalForm toForm = _applicationContainer.switchToForm(form);
+        if(toForm!=null)
+        {
+            toForm.focusGained();
+        }
         
     }
 
