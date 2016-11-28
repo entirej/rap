@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +74,7 @@ import org.entirej.framework.core.internal.EJInternalBlock;
 import org.entirej.framework.core.internal.EJInternalEditableBlock;
 import org.entirej.framework.core.internal.EJInternalForm;
 import org.entirej.framework.core.properties.EJCoreCanvasProperties;
+import org.entirej.framework.core.properties.EJCoreFormProperties;
 import org.entirej.framework.core.properties.EJCoreMainScreenProperties;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.containers.interfaces.EJCanvasPropertiesContainer;
@@ -412,6 +414,19 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
         _mainPane = new EJRWTEntireJGridPane(parent, formProperties.getNumCols());
         _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
+        
+        //build all form canvases 
+        Collection<EJCanvasProperties> allFormCanvases = EJRWTCanvasRetriever.retriveAllFormCanvases((EJCoreFormProperties) formProperties);
+        for (EJCanvasProperties formCanvas : allFormCanvases)
+        {
+            if (formCanvas.getReferredFormId() != null && formCanvas.getReferredFormId().length() > 0 )
+            {
+                final String name = formCanvas.getName();
+                _form.addEmbeddedForm(formCanvas.getReferredFormId(), name, null);
+            }
+        }
+        
+        
         for (EJCanvasProperties canvasProperties : formProperties.getCanvasContainer().getAllCanvasProperties())
         {
             createCanvas(_mainPane, canvasProperties, canvasController);
@@ -764,7 +779,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             canvasHandler.setCanvasMessages(Collections.<EJMessage>emptyList());
         }
 
-        if (canvasProperties.getReferredFormId() != null && canvasProperties.getReferredFormId().length() > 0)
+        if (canvasProperties.getReferredFormId() != null && canvasProperties.getReferredFormId().length() > 0 )
         {
             _form.openEmbeddedForm(canvasProperties.getReferredFormId(), name, null);
         }
@@ -921,7 +936,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             if (page.isVisible())
             {
                 
-                tab.create(true); // tab.create(index==0);
+                tab.create(index==0);
             }
             tab.index = index;
             index++;
@@ -1912,6 +1927,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     pageCanvas.layout(true);
                 }
                 else{
+
+                   
                     
                     folder.addSelectionListener(new SelectionListener()
                     {
