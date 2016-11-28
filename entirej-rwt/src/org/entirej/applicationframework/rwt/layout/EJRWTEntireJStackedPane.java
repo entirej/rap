@@ -38,8 +38,9 @@ public class EJRWTEntireJStackedPane extends Composite
 {
     private String                     _name;
     private final StackLayout          _stackLayout;
-    private final Map<String, Control> _panes = new HashMap<String, Control>();
-    private final List<Control>        _pages = new ArrayList<Control>();
+    private final Map<String, StackedPage> _panes = new HashMap<String, StackedPage>();
+    private final List<StackedPage>        _pages = new ArrayList<StackedPage>();
+    private String active;
 
     public EJRWTEntireJStackedPane(Composite parent)
     {
@@ -83,27 +84,29 @@ public class EJRWTEntireJStackedPane extends Composite
         _name = name;
     }
 
-    public void add(String key, Control control)
+    public void add(String key, StackedPage control)
     {
         if (_stackLayout.topControl == null)
         {
-            _stackLayout.topControl = control;
+            _stackLayout.topControl = control.getControl();
+            active = key;
         }
         _panes.put(key, control);
         _pages.add(control);
     }
 
-    public Control getControl(String key)
+    public StackedPage getControl(String key)
     {
         return _panes.get(key);
     }
     
     public void showPane(String pane)
     {
-        Control control = _panes.get(pane);
+        StackedPage control = _panes.get(pane);
         if (control != null)
         {
-            _stackLayout.topControl = control;
+            _stackLayout.topControl = control.getControl();
+            active = pane;
         }
        
         layout(true);
@@ -116,22 +119,24 @@ public class EJRWTEntireJStackedPane extends Composite
 
     public void remove(String key)
     {
-        Control control = _panes.get(key);
+        StackedPage control = _panes.get(key);
         if (control != null)
         {
             int indexOf = _pages.indexOf(control) - 1;
             _panes.remove(key);
             _pages.remove(control);
 
-            control.dispose();
+            control.getControl().dispose();
             if (indexOf > 0 && indexOf < _pages.size())
             {
-                _stackLayout.topControl = _pages.get(indexOf);
+                _stackLayout.topControl = _pages.get(indexOf).getControl();
+                active = _pages.get(indexOf).getKey();
                 layout(true);
             }
             else if (_pages.size() > 0)
             {
-                _stackLayout.topControl = _pages.get(0);
+                _stackLayout.topControl = _pages.get(0).getControl();
+                active =   _pages.get(0).getKey();
                 layout(true);
             }
         }
@@ -139,19 +144,21 @@ public class EJRWTEntireJStackedPane extends Composite
 
     public String getActiveControlKey()
     {
-        Set<Entry<String, Control>> entrySet = _panes.entrySet();
-        for (Entry<String, Control> entry : entrySet)
-        {
-            if (entry.getValue() != null && entry.getValue().equals(_stackLayout.topControl))
-            {
-                return entry.getKey();
-            }
-        }
-        return null;
+
+        return active;
     }
 
     public Control getActiveControl()
     {
         return _stackLayout.topControl;
+    }
+    
+    
+    public interface StackedPage{
+        
+        Control getControl();
+        
+        String getKey();
+        
     }
 }

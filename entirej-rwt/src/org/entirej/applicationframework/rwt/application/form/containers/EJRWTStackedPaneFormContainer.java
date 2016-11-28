@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTAppComponentRenderer;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormContainer;
@@ -92,7 +93,7 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
     @Override
     public EJInternalForm addForm(EJInternalForm form)
     {
-        String name = form.getFormController().getEJForm().getName();
+        final String name = form.getFormController().getEJForm().getName();
         EJInternalForm formByPage = getFormByPage(name);
         if (formByPage != null)
         {
@@ -109,9 +110,21 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
         }
         _stackedPages.put(form, name);
 
-        EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
+        final EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
         renderer.createControl(_stackPane);
-        _stackPane.add(name, renderer.getGuiComponent());
+        _stackPane.add(name, new EJRWTEntireJStackedPane.StackedPage()
+        {
+            @Override
+            public String getKey()
+            {
+                return name;
+            }
+           
+            public Control getControl()
+            {
+                return renderer.getGuiComponent();
+            }
+        });
         _stackPane.showPane(name);
         renderer.gainInitialFocus();
 

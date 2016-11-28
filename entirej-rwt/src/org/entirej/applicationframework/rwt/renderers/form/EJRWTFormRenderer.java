@@ -520,14 +520,14 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
     }
 
-    private void createStackedCanvas(Composite parent, final EJCanvasProperties canvasProperties, EJCanvasController canvasController)
+    private void createStackedCanvas(Composite parent, final EJCanvasProperties canvasProperties, final EJCanvasController canvasController)
     {
         final String name = canvasProperties.getName();
 
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
         parent = trayPane;
-        EJRWTEntireJStackedPane stackedPane = new EJRWTEntireJStackedPane(parent);
+        final EJRWTEntireJStackedPane stackedPane = new EJRWTEntireJStackedPane(parent);
         trayPane.initBase(stackedPane);
         stackedPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         stackedPane.setLayoutData(createCanvasGridData(canvasProperties));
@@ -622,44 +622,70 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             canvasHandler.setCanvasMessages(Collections.<EJMessage>emptyList());
         }
-        for (EJStackedPageProperties page : canvasProperties.getStackedPageContainer().getAllStackedPageProperties())
+        for (final EJStackedPageProperties page : canvasProperties.getStackedPageContainer().getAllStackedPageProperties())
         {
 
-            final ScrolledComposite scrollComposite = new ScrolledComposite(stackedPane, SWT.V_SCROLL | SWT.H_SCROLL);
-            final EJRWTEntireJGridPane pagePane = new EJRWTEntireJGridPane(scrollComposite, page.getNumCols());
-            pagePane.cleanLayout();
-            stackedPane.add(page.getName(), scrollComposite);
-            int width = 0;
-            int height = 0;
-            for (EJCanvasProperties properties : page.getContainedCanvases().getAllCanvasProperties())
+            
+            stackedPane.add(page.getName(), new EJRWTEntireJStackedPane.StackedPage()
             {
-                createCanvas(pagePane, properties, canvasController);
-
-                int width2 = properties.getWidth();
-
-                int height2 = properties.getHeight();
-
-                if (properties.getBlockProperties() != null)
+                Control control ;
+                @Override
+                public String getKey()
                 {
-                    width2 = properties.getBlockProperties().getMainScreenProperties().getWidth();
-                    height2 = properties.getBlockProperties().getMainScreenProperties().getHeight();
+                    return page.getName();
                 }
-
-                if (width < width2)
+                
+                @Override
+                public Control getControl()
                 {
-                    width = width2;
-                }
-                if (height < height2)
-                {
-                    height = height2;
-                }
-            }
-            scrollComposite.setContent(pagePane);
-            scrollComposite.setMinSize(width, height);
+                    
+                    if(control!=null && !control.isDisposed())
+                    {
+                       return control; 
+                    }
+                    
+                    final ScrolledComposite scrollComposite = new ScrolledComposite(stackedPane, SWT.V_SCROLL | SWT.H_SCROLL);
+                    control = scrollComposite;
+                    final EJRWTEntireJGridPane pagePane = new EJRWTEntireJGridPane(scrollComposite, page.getNumCols());
+                    pagePane.cleanLayout();
+                    int width = 0;
+                    int height = 0;
+                    for (EJCanvasProperties properties : page.getContainedCanvases().getAllCanvasProperties())
+                    {
+                        createCanvas(pagePane, properties, canvasController);
 
-            scrollComposite.setExpandHorizontal(true);
-            scrollComposite.setExpandVertical(true);
-            scrollComposite.setContent(pagePane);
+                        int width2 = properties.getWidth();
+
+                        int height2 = properties.getHeight();
+
+                        if (properties.getBlockProperties() != null)
+                        {
+                            width2 = properties.getBlockProperties().getMainScreenProperties().getWidth();
+                            height2 = properties.getBlockProperties().getMainScreenProperties().getHeight();
+                        }
+
+                        if (width < width2)
+                        {
+                            width = width2;
+                        }
+                        if (height < height2)
+                        {
+                            height = height2;
+                        }
+                    }
+                    scrollComposite.setContent(pagePane);
+                    scrollComposite.setMinSize(width, height);
+
+                    scrollComposite.setExpandHorizontal(true);
+                    scrollComposite.setExpandVertical(true);
+                    scrollComposite.setContent(pagePane);
+                    stackedPane.layout();
+                    return control;
+                }
+            });
+            
+            
+            
         }
 
         if (canvasProperties.getInitialStackedPageName() != null)
