@@ -95,9 +95,9 @@ public class EJRWTEntireJStackedPane extends Composite
         _pages.add(control);
     }
 
-    public StackedPage getControl(String key)
+    public Control getControl(String key)
     {
-        return _panes.get(key);
+        return _panes.get(key).getControl();
     }
     
     public void showPane(String pane)

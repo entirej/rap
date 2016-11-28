@@ -199,7 +199,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 EJRWTStackedItemRendererType[] values = EJRWTStackedItemRendererType.values();
                 for (EJRWTStackedItemRendererType type : values)
                 {
-                    Control control = stackedPane.getControl(type.name()).getControl();
+                    Control control = stackedPane.getControl(type.name());
                     if (control != null && controlState(control))
                     {
                         if (customCSSKey != null && customCSSKey.trim().length() > 0)
@@ -324,7 +324,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             EJRWTStackedItemRendererType[] values = EJRWTStackedItemRendererType.values();
             for (EJRWTStackedItemRendererType type : values)
             {
-                Control control = stackedPane.getControl(type.name()).getControl();
+                Control control = stackedPane.getControl(type.name());
                 if (control != null && controlState(control))
                 {
                     if (control instanceof Label)
@@ -571,7 +571,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         EJRWTStackedItemRendererType[] values = EJRWTStackedItemRendererType.values();
         for (EJRWTStackedItemRendererType type : values)
         {
-            Control control = stackedPane.getControl(type.name()).getControl();
+            Control control = stackedPane.getControl(type.name());
             if (control != null && controlState(control))
             {
                 if (control instanceof Button)
@@ -651,7 +651,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         EJRWTStackedItemRendererType[] values = EJRWTStackedItemRendererType.values();
         for (EJRWTStackedItemRendererType type : values)
         {
-            Control control = stackedPane.getControl(type.name()).getControl();
+            Control control = stackedPane.getControl(type.name());
             if (control != null && controlState(control))
             {
                 if (control instanceof Button)
@@ -987,7 +987,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
                         // add padding
                         
-                        Control control = stackedPane.getControl(_baseValue.getConfig().getType().name()).getControl();
+                        Control control = stackedPane.getControl(_baseValue.getConfig().getType().name());
 
                         float avgCharHeight = EJRWTImageRetriever.getGraphicsProvider().getAvgCharWidth(control.getFont());
 
@@ -1026,7 +1026,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     {
                         GridData data = (GridData) layoutData;
                         EJRWTStackedItemRendererConfig.TextArea config = (TextArea) _baseValue.getConfig();
-                        Control control = stackedPane.getControl(_baseValue.getConfig().getType().name()).getControl();
+                        Control control = stackedPane.getControl(_baseValue.getConfig().getType().name());
 
                         float avgCharHeight = EJRWTImageRetriever.getGraphicsProvider().getCharHeight(control.getFont());
 
@@ -1069,7 +1069,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
                         // add padding
                         
-                        Control control = stackedPane.getControl(_baseValue.getConfig().getType().name()).getControl();
+                        Control control = stackedPane.getControl(_baseValue.getConfig().getType().name());
 
                         float avgCharHeight = EJRWTImageRetriever.getGraphicsProvider().getCharHeight(control.getFont());
 
@@ -1255,7 +1255,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             EJRWTStackedItemRendererType[] values = EJRWTStackedItemRendererType.values();
             for (EJRWTStackedItemRendererType type : values)
             {
-                Control control = stackedPane.getControl(type.name()).getControl();
+                Control control = stackedPane.getControl(type.name());
                 if (control != null && controlState(control))
                 {
                     if (control instanceof Label)
@@ -1390,7 +1390,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 case CHECKBOX:
                 {
                     setLabel("");
-                    Control control = stackedPane.getControl(_baseValue.getConfig().getType().name()).getControl();
+                    Control control = stackedPane.getControl(_baseValue.getConfig().getType().name());
                     EJRWTStackedItemRendererConfig.CheckBox config = ((EJRWTStackedItemRendererConfig.CheckBox) _baseValue.getConfig());
 
                     ((Button) control).setSelection(config.getCheckBoxCheckedValue() == value
@@ -1464,7 +1464,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
        if(_baseValue!=null && controlState(stackedPane))
        {
            
-           Control control = stackedPane.getControl(_baseValue.getConfig().getType().name()).getControl();
+           Control control = stackedPane.getControl(_baseValue.getConfig().getType().name());
            if (control != null && controlState(control))
            {
                if (control instanceof Label)
@@ -1642,7 +1642,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         EJRWTStackedItemRendererType[] values = EJRWTStackedItemRendererType.values();
         for (EJRWTStackedItemRendererType type : values)
         {
-            Control control = stackedPane.getControl(type.name()).getControl();
+            Control control = stackedPane.getControl(type.name());
 
             if (control != null && controlState(control))
             {
@@ -1661,7 +1661,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         EJRWTStackedItemRendererType[] values = EJRWTStackedItemRendererType.values();
         for (EJRWTStackedItemRendererType type : values)
         {
-            Control control = stackedPane.getControl(type.name()).getControl();
+            Control control = stackedPane.getControl(type.name());
             if (control != null && controlState(control))
             {
                 EJRWTItemRendererVisualContext _visualContext = (EJRWTItemRendererVisualContext) control.getData("EJRWTItemRendererVisualContext");
@@ -1677,7 +1677,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         EJRWTStackedItemRendererType[] values = EJRWTStackedItemRendererType.values();
         for (EJRWTStackedItemRendererType type : values)
         {
-            Control control = stackedPane.getControl(type.name()).getControl();
+            Control control = stackedPane.getControl(type.name());
             if (control != null && controlState(control))
             {
                 EJRWTItemRendererVisualContext _visualContext = (EJRWTItemRendererVisualContext) control.getData("EJRWTItemRendererVisualContext");
@@ -2059,7 +2059,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         EJRWTStackedItemRendererType[] values = EJRWTStackedItemRendererType.values();
         for (EJRWTStackedItemRendererType type : values)
         {
-            Control control = stackedPane.getControl(type.name()).getControl();
+            Control control = stackedPane.getControl(type.name());
             if (control != null && controlState(control))
             {
                 control.setToolTipText(hint == null ? "" : hint);

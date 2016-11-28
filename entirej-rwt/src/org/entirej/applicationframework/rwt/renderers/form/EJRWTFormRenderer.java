@@ -1808,6 +1808,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             Tab cTabItem = tabPages.get(pageName);
             if (cTabItem != null && cTabItem.item != null)
             {
+                cTabItem.createTabData();
                 folder.setSelection(cTabItem.item);
             }
 
@@ -1911,9 +1912,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         class Tab
         {
+            final AtomicBoolean init = new AtomicBoolean(true);
             CTabItem                  item;
             int                       index = -1;
-
+            EJRWTEntireJGridPane pageCanvas;
             final EJTabPageProperties page;
 
             public Tab(EJTabPageProperties page)
@@ -1932,17 +1934,17 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
             void create(boolean innerBuild)
             {
-
+               
                final  CTabItem tabItem = (index == -1 || folder.getItemCount() < index) ? new CTabItem(folder, SWT.NONE) : new CTabItem(folder, SWT.NONE, index);
                 tabItem.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
                 tabItem.setData("TAB_KEY", page.getName());
-                final EJRWTEntireJGridPane pageCanvas = new EJRWTEntireJGridPane(folder, page.getNumCols());
+                  pageCanvas = new EJRWTEntireJGridPane(folder, page.getNumCols());
                 pageCanvas.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
                 tabItem.setText(page.getPageTitle() != null && page.getPageTitle().length() > 0 ? page.getPageTitle() : page.getName());
                 tabItem.setControl(pageCanvas);
                 final EJCanvasPropertiesContainer containedCanvases = page.getContainedCanvases();
                 
-                final AtomicBoolean init = new AtomicBoolean(innerBuild||folder.getSelection()==null);
+                init.set(innerBuild||folder.getSelection()==null);
                
                 if(init.get())
                 {
@@ -1965,17 +1967,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             if(folder.getSelection()!=tabItem)
                                 return;
                                 
-                            if(!init.get())
-                            {
-                                init.set(true);
-                                for (EJCanvasProperties pageProperties : containedCanvases.getAllCanvasProperties())
-                                {
-                                    createCanvas(pageCanvas, pageProperties, canvasController);
-                                } 
-                            }
-                            pageCanvas.layout(true);
+                            createTabData();
                             folder.removeSelectionListener(this);
                         }
+
+                        
                         
                         @Override
                         public void widgetDefaultSelected(SelectionEvent e)
@@ -1994,7 +1990,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 tabItem.getControl().setEnabled(page.isEnabled());
 
             }
+            private void createTabData()
+            {
+                if(!init.get())
+                {
+                    init.set(true);
+
+                    final EJCanvasPropertiesContainer containedCanvases = page.getContainedCanvases();
+                    for (EJCanvasProperties pageProperties : containedCanvases.getAllCanvasProperties())
+                    {
+                        createCanvas(pageCanvas, pageProperties, canvasController);
+                    } 
+                    pageCanvas.layout(true);
+                }
+                
+            }
         }
+        
+       
 
         public void setTabPageBadge(String tabPageName, String badge)
         {
