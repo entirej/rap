@@ -57,6 +57,7 @@ import org.entirej.framework.report.EJReportFrameworkInitialiser;
 import org.entirej.framework.report.EJReportFrameworkManager;
 import org.entirej.framework.report.EJReportParameterList;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
+import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportRunner;
 
 public class EJRWTApplicationManager implements EJApplicationManager, Serializable
@@ -504,12 +505,31 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         String output = reportRunner.runReport(report);
 
         String name = report.getName();
-        if(report.getOutputName()!=null &&!report.getOutputName().isEmpty())
+        
+        
+        EJReportParameter reportParameter = report.getReportParameter("REPORT_NAME");
+
+        if (reportParameter != null && reportParameter.getValue() != null && !((String) reportParameter.getValue()).isEmpty())
         {
-            name = report.getOutputName();
+            name = (String) reportParameter.getValue();
+        }
+        else
+        {
+            if (report.getOutputName() != null && !report.getOutputName().isEmpty())
+            {
+                name = report.getOutputName();
+            }  
+        }
+        
+        String ext = report.getProperties().getExportType().toString().toLowerCase();
+        report.getProperties().getExportType();
+        if (report.getProperties().getExportType() == EJReportExportType.XLSX_LARGE)
+        {
+           
+            ext = EJReportExportType.XLSX.toString().toLowerCase();
         }
         EJRWTImageRetriever.getGraphicsProvider().open(output,
-                String.format("%s.%s", name, report.getProperties().getExportType().toString().toLowerCase()));
+                String.format("%s.%s", name, ext));
 
     }
     
@@ -585,17 +605,36 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                             public void run()
                             {
                                 String name = report.getName();
-                                if (report.getOutputName() != null && !report.getOutputName().isEmpty())
+                                
+                                
+                                EJReportParameter reportParameter = report.getReportParameter("REPORT_NAME");
+
+                                if (reportParameter != null && reportParameter.getValue() != null && !((String) reportParameter.getValue()).isEmpty())
                                 {
-                                    name = report.getOutputName();
+                                    name = (String) reportParameter.getValue();
                                 }
+                                else
+                                {
+                                    if (report.getOutputName() != null && !report.getOutputName().isEmpty())
+                                    {
+                                        name = report.getOutputName();
+                                    }  
+                                }
+                                
+                                
                                 if (completedMessage != null)
                                 {
                                     handleMessage(completedMessage);
                                 }
-
+                                String ext = report.getProperties().getExportType().toString().toLowerCase();
+                                report.getProperties().getExportType();
+                                if (report.getProperties().getExportType() == EJReportExportType.XLSX_LARGE)
+                                {
+                                   
+                                    ext = EJReportExportType.XLSX.toString().toLowerCase();
+                                }
                                 EJRWTImageRetriever.getGraphicsProvider().open(output,
-                                        String.format("%s.%s", name, report.getProperties().getExportType().toString().toLowerCase()));
+                                        String.format("%s.%s", name, ext));
 
                             }
                         });
