@@ -129,6 +129,16 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
         EJParameterChecker.checkNotNull(form, "initialiseForm", "formController");
         _form = form;
+        // build all form canvases
+        Collection<EJCanvasProperties> allFormCanvases = EJRWTCanvasRetriever.retriveAllFormCanvases( _form.getProperties());
+        for (EJCanvasProperties formCanvas : allFormCanvases)
+        {
+            if (formCanvas.getReferredFormId() != null && formCanvas.getReferredFormId().length() > 0)
+            {
+                final String name = formCanvas.getName();
+                _form.addEmbeddedForm(formCanvas.getReferredFormId(), name, null);
+            }
+        }
 
     }
 
@@ -416,16 +426,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         _mainPane = new EJRWTEntireJGridPane(parent, formProperties.getNumCols());
         _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
 
-        // build all form canvases
-        Collection<EJCanvasProperties> allFormCanvases = EJRWTCanvasRetriever.retriveAllFormCanvases((EJCoreFormProperties) formProperties);
-        for (EJCanvasProperties formCanvas : allFormCanvases)
-        {
-            if (formCanvas.getReferredFormId() != null && formCanvas.getReferredFormId().length() > 0)
-            {
-                final String name = formCanvas.getName();
-                _form.addEmbeddedForm(formCanvas.getReferredFormId(), name, null);
-            }
-        }
+       
 
         for (EJCanvasProperties canvasProperties : formProperties.getCanvasContainer().getAllCanvasProperties())
         {
