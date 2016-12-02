@@ -79,6 +79,20 @@ public class EJRWTCanvasRetriever
         }
         return false;
     }
+    public static EJCanvasProperties getCanvas(EJCoreFormProperties formProperties, String name)
+    {
+        ArrayList<EJCanvasProperties> canvasList = new ArrayList<EJCanvasProperties>();
+        addCanvasesFromContainer(formProperties, formProperties.getCanvasContainer(), canvasList);
+        
+        for (EJCanvasProperties canvas : canvasList)
+        {
+            if (canvas.getName().equals(name))
+            {
+                return canvas;
+            }
+        }
+        return null;
+    }
 
     private static void addCanvasesFromContainer(EJCoreFormProperties formProperties, EJCanvasPropertiesContainer container, ArrayList<EJCanvasProperties> canvasList)
     {

@@ -130,7 +130,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         EJParameterChecker.checkNotNull(form, "initialiseForm", "formController");
         _form = form;
         // build all form canvases
-        Collection<EJCanvasProperties> allFormCanvases = EJRWTCanvasRetriever.retriveAllFormCanvases( _form.getProperties());
+        Collection<EJCanvasProperties> allFormCanvases = EJRWTCanvasRetriever.retriveAllFormCanvases(_form.getProperties());
         for (EJCanvasProperties formCanvas : allFormCanvases)
         {
             if (formCanvas.getReferredFormId() != null && formCanvas.getReferredFormId().length() > 0)
@@ -230,14 +230,13 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 scrollComposite.setContent(renderer.getGuiComponent());
                 scrollComposite.setExpandHorizontal(true);
                 scrollComposite.setExpandVertical(true);
-                scrollComposite.setMinSize(formController.getEmbeddedForm().getProperties().getFormWidth(), formController.getEmbeddedForm().getProperties()
-                        .getFormHeight());
+                scrollComposite.setMinSize(formController.getEmbeddedForm().getProperties().getFormWidth(), formController.getEmbeddedForm().getProperties().getFormHeight());
                 composite.layout(true);
                 composite.redraw();
             }
             else
             {
-                _formPanesCache.put(formController.getCanvasName(),formController);
+                _formPanesCache.put(formController.getCanvasName(), formController);
             }
         }
     }
@@ -425,8 +424,6 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
         _mainPane = new EJRWTEntireJGridPane(parent, formProperties.getNumCols());
         _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
-
-       
 
         for (EJCanvasProperties canvasProperties : formProperties.getCanvasContainer().getAllCanvasProperties())
         {
@@ -808,7 +805,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             _form.openEmbeddedForm(canvasProperties.getReferredFormId(), name, null);
         }
-        if(_formPanesCache.containsKey(name))
+        if (_formPanesCache.containsKey(name))
         {
             openEmbeddedForm(_formPanesCache.get(name));
             _formPanesCache.remove(name);
@@ -2034,6 +2031,27 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             return stackedPane.getActiveControlKey();
         }
+        else
+        {
+            if (_stackedPanesCache.containsKey(key))
+            {
+                return _stackedPanesCache.get(key);
+            }
+            // use the prop
+            EJCanvasProperties properties = EJRWTCanvasRetriever.getCanvas(_form.getProperties(), key);
+            if (properties != null && properties.getType() == EJCanvasType.STACKED)
+            {
+                if (properties.getInitialStackedPageName() != null || !properties.getInitialStackedPageName().isEmpty())
+                {
+                    return properties.getInitialStackedPageName();
+                }
+                Collection<EJStackedPageProperties> allTabPageProperties = properties.getStackedPageContainer().getAllStackedPageProperties();
+                for (EJStackedPageProperties ejTabPageProperties : allTabPageProperties)
+                {
+                    return ejTabPageProperties.getName();
+                }
+            }
+        }
 
         return null;
     }
@@ -2045,6 +2063,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         if (tabFolder != null)
         {
             return tabFolder.getActiveKey();
+        }
+        else
+        {
+            if (_tabFoldersCache.containsKey(key))
+            {
+                return _tabFoldersCache.get(key);
+            }
+            // use the prop
+            EJCanvasProperties properties = EJRWTCanvasRetriever.getCanvas(_form.getProperties(), key);
+            if (properties != null && properties.getType() == EJCanvasType.TAB)
+            {
+                Collection<EJTabPageProperties> allTabPageProperties = properties.getTabPageContainer().getAllTabPageProperties();
+                for (EJTabPageProperties ejTabPageProperties : allTabPageProperties)
+                {
+                    return ejTabPageProperties.getName();
+                }
+            }
         }
         return null;
     }
