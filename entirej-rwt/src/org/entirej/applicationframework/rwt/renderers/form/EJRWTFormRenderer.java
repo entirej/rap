@@ -25,13 +25,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
-import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.ControlEvent;
@@ -42,7 +39,6 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -67,6 +63,7 @@ import org.entirej.framework.core.common.utils.EJParameterChecker;
 import org.entirej.framework.core.data.controllers.EJCanvasController;
 import org.entirej.framework.core.data.controllers.EJEmbeddedFormController;
 import org.entirej.framework.core.enumerations.EJCanvasSplitOrientation;
+import org.entirej.framework.core.enumerations.EJCanvasTabPosition;
 import org.entirej.framework.core.enumerations.EJCanvasType;
 import org.entirej.framework.core.enumerations.EJPopupButton;
 import org.entirej.framework.core.internal.EJInternalBlock;
@@ -91,7 +88,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     private LinkedList<String>                    _canvasesIds       = new LinkedList<String>();
     private Map<String, CanvasHandler>            _canvases          = new HashMap<String, CanvasHandler>();
     private Map<String, EJInternalBlock>          _blocks            = new HashMap<String, EJInternalBlock>();
-    private Map<String, EJTabFolder>              _tabFolders        = new HashMap<String, EJTabFolder>();
+    private Map<String, ITabFolder>              _tabFolders        = new HashMap<String, ITabFolder>();
     private Map<String, EJRWTEntireJStackedPane>  _stackedPanes      = new HashMap<String, EJRWTEntireJStackedPane>();
     private Map<String, Composite>                _formPanes         = new HashMap<String, Composite>();
     private Map<String, String>                   _tabFoldersCache   = new HashMap<String, String>();
@@ -107,7 +104,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     @Override
     public void formClosed()
     {
-
+        _mainPane.dispose();
     }
 
     @Override
@@ -272,7 +269,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
         if (canvasName != null && pageName != null)
         {
-            EJTabFolder tabPane = _tabFolders.get(canvasName);
+            ITabFolder tabPane = _tabFolders.get(canvasName);
             if (tabPane != null)
             {
                 tabPane.showPage(pageName);
@@ -289,7 +286,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
         if (canvasName != null && pageName != null)
         {
-            EJTabFolder tabPane = _tabFolders.get(canvasName);
+            ITabFolder tabPane = _tabFolders.get(canvasName);
             if (tabPane != null)
             {
                 tabPane.setTabPageVisible(pageName, visible);
@@ -453,7 +450,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
     }
 
-    private void createCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
+    void createCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
     {
         switch (canvasProperties.getType())
         {
@@ -846,19 +843,40 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
         parent = trayPane;
-        final CTabFolder folder = new CTabFolder(parent, style);
-
-        folder.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
-        EJTabFolder tabFolder = new EJTabFolder(folder, canvasController);
-        trayPane.initBase(tabFolder.getFolder());
-        folder.addSelectionListener(new SelectionAdapter()
+        
+        ITabFolder folder=null;
+        if(canvasProperties.getTabPosition()==EJCanvasTabPosition.BOTTOM|| canvasProperties.getTabPosition()==EJCanvasTabPosition.TOP)
         {
-            @Override
-            public void widgetSelected(SelectionEvent e)
+            CTabFolder cfolder = new CTabFolder(parent, style);
+
+            cfolder.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
+            final EJTabFolder tabFolder = new EJTabFolder(this, cfolder, canvasController);
+            trayPane.initBase(tabFolder.getFolder());
+            cfolder.addSelectionListener(new SelectionAdapter()
             {
-                canvasController.tabPageChanged(name, (String) folder.getSelection().getData("TAB_KEY"));
-            }
-        });
+                @Override
+                public void widgetSelected(SelectionEvent e)
+                {
+                    canvasController.tabPageChanged(name, tabFolder.getActiveKey() );
+                }
+            });
+           folder =  tabFolder ; 
+        }
+        else
+        {
+            EJDrawerFolder drawerFolder = new EJDrawerFolder(this,canvasController,parent, style){
+                
+                protected void selection(String page) {
+                    
+                    canvasController.tabPageChanged(name, page );
+                };
+            }; 
+            trayPane.initBase(drawerFolder);
+            folder =  drawerFolder ; 
+        }
+        
+        
+         
 
         CanvasHandler canvasHandler = new CanvasHandler()
         {
@@ -951,30 +969,30 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
         }
 
-        _tabFolders.put(name, tabFolder);
-        folder.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+        _tabFolders.put(name, folder);
+        folder.getFolder().setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
 
         Collection<EJTabPageProperties> allTabPageProperties = canvasProperties.getTabPageContainer().getAllTabPageProperties();
         int index = 0;
         for (EJTabPageProperties page : allTabPageProperties)
         {
 
-            EJTabFolder.Tab tab = tabFolder.newTab(page);
+            ITabFolder.ITab tab = folder.newTab(page);
             if (page.isVisible())
             {
 
                 tab.create(index == 0);
             }
-            tab.index = index;
+            tab.setIndex(index);
             index++;
 
-            tabFolder.put(page.getName(), tab);
+            folder.put(page.getName(), tab);
 
         }
 
         if (_tabFoldersCache.containsKey(name))
         {
-            tabFolder.showPage(_tabFoldersCache.get(name));
+            folder.showPage(_tabFoldersCache.get(name));
             _tabFoldersCache.remove(name);
         }
 
@@ -1785,233 +1803,6 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
     }
 
-    class EJTabFolder
-    {
-        final CTabFolder         folder;
-        final EJCanvasController canvasController;
-        final Map<String, Tab>   tabPages = new HashMap<String, Tab>();
-
-        EJTabFolder(CTabFolder folder, EJCanvasController canvasController)
-        {
-            super();
-            this.folder = folder;
-            this.canvasController = canvasController;
-        }
-
-        public void showPage(String pageName)
-        {
-            Tab cTabItem = tabPages.get(pageName);
-            if (cTabItem != null && cTabItem.item != null)
-            {
-                cTabItem.createTabData();
-                folder.setSelection(cTabItem.item);
-            }
-
-        }
-
-        public CTabFolder getFolder()
-        {
-            return folder;
-        }
-
-        public void setTabPageVisible(String pageName, boolean visible)
-        {
-            final Tab cTabItem = tabPages.get(pageName);
-            if (cTabItem != null)
-            {
-                if (visible)
-                {
-                    if (cTabItem.item == null)
-                    {
-                        Display.getDefault().asyncExec(new Runnable()
-                        {
-
-                            @Override
-                            public void run()
-                            {
-                                cTabItem.create(true);
-
-                            }
-                        });
-                    }
-                }
-                else
-                {
-                    if (cTabItem.item != null)
-                    {
-                        CTabItem[] items = folder.getItems();
-                        int index = 0;
-                        for (CTabItem cTabItem2 : items)
-                        {
-                            if (cTabItem2 == cTabItem.item)
-                            {
-                                cTabItem.index = index;
-                                break;
-                            }
-                            index++;
-                        }
-                        Display.getDefault().asyncExec(new Runnable()
-                        {
-
-                            @Override
-                            public void run()
-                            {
-                                cTabItem.remove();
-                            }
-                        });
-                    }
-                }
-            }
-
-        }
-
-        Tab newTab(EJTabPageProperties page)
-        {
-            return new EJTabFolder.Tab(page);
-        }
-
-        void clear()
-        {
-            tabPages.clear();
-        }
-
-        boolean containsKey(String key)
-        {
-            return tabPages.containsKey(key);
-        }
-
-        CTabItem get(String key)
-        {
-            return tabPages.get(key).item;
-        }
-
-        void put(String key, Tab value)
-        {
-            tabPages.put(key, value);
-        }
-
-        void remove(String key)
-        {
-            tabPages.remove(key);
-        }
-
-        public String getActiveKey()
-        {
-            CTabItem selection = folder.getSelection();
-            if (selection != null)
-            {
-                return (String) selection.getData("TAB_KEY");
-            }
-            return null;
-        }
-
-        class Tab
-        {
-            final AtomicBoolean       init  = new AtomicBoolean(true);
-            CTabItem                  item;
-            int                       index = -1;
-            EJRWTEntireJGridPane      pageCanvas;
-            final EJTabPageProperties page;
-
-            public Tab(EJTabPageProperties page)
-            {
-                this.page = page;
-            }
-
-            void remove()
-            {
-                if (item != null && !item.isDisposed())
-                {
-                    item.dispose();
-                }
-                item = null;
-            }
-
-            void create(boolean innerBuild)
-            {
-
-                final CTabItem tabItem = (index == -1 || folder.getItemCount() < index) ? new CTabItem(folder, SWT.NONE) : new CTabItem(folder, SWT.NONE, index);
-                tabItem.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
-                tabItem.setData("TAB_KEY", page.getName());
-                pageCanvas = new EJRWTEntireJGridPane(folder, page.getNumCols());
-                pageCanvas.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
-                tabItem.setText(page.getPageTitle() != null && page.getPageTitle().length() > 0 ? page.getPageTitle() : page.getName());
-                tabItem.setControl(pageCanvas);
-                final EJCanvasPropertiesContainer containedCanvases = page.getContainedCanvases();
-
-                init.set(innerBuild || folder.getSelection() == null);
-
-                if (init.get())
-                {
-                    for (EJCanvasProperties pageProperties : containedCanvases.getAllCanvasProperties())
-                    {
-                        createCanvas(pageCanvas, pageProperties, canvasController);
-                    }
-                    pageCanvas.layout(true);
-                }
-                else
-                {
-
-                    folder.addSelectionListener(new SelectionListener()
-                    {
-
-                        @Override
-                        public void widgetSelected(SelectionEvent e)
-                        {
-                            if (folder.getSelection() != tabItem)
-                                return;
-
-                            createTabData();
-                            folder.removeSelectionListener(this);
-                        }
-
-                        @Override
-                        public void widgetDefaultSelected(SelectionEvent e)
-                        {
-                            widgetSelected(e);
-
-                        }
-                    });
-                }
-                if (folder.getSelection() == null)
-                {
-                    folder.setSelection(tabItem);
-                }
-
-                item = tabItem;
-                tabItem.getControl().setEnabled(page.isEnabled());
-
-            }
-
-            private void createTabData()
-            {
-                if (!init.get())
-                {
-                    init.set(true);
-
-                    final EJCanvasPropertiesContainer containedCanvases = page.getContainedCanvases();
-                    for (EJCanvasProperties pageProperties : containedCanvases.getAllCanvasProperties())
-                    {
-                        createCanvas(pageCanvas, pageProperties, canvasController);
-                    }
-                    pageCanvas.layout(true);
-                }
-
-            }
-        }
-
-        public void setTabPageBadge(String tabPageName, String badge)
-        {
-            Tab cTabItem = tabPages.get(tabPageName);
-            if (cTabItem != null && cTabItem.item != null)
-            {
-                cTabItem.item.setData(RWT.BADGE, badge);
-            }
-
-        }
-
-    }
-
     private interface CanvasHandler
     {
         EJCanvasType getType();
@@ -2059,7 +1850,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     @Override
     public String getDisplayedTabPage(String key)
     {
-        EJTabFolder tabFolder = _tabFolders.get(key);
+        ITabFolder tabFolder = _tabFolders.get(key);
         if (tabFolder != null)
         {
             return tabFolder.getActiveKey();
@@ -2360,7 +2151,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
         if (canvasName != null && tabPageName != null)
         {
-            EJTabFolder tabPane = _tabFolders.get(canvasName);
+            ITabFolder tabPane = _tabFolders.get(canvasName);
             if (tabPane != null)
             {
                 tabPane.setTabPageBadge(tabPageName, badge);
