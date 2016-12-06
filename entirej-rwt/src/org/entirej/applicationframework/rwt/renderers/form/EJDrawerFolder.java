@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.framework.core.data.controllers.EJCanvasController;
+import org.entirej.framework.core.enumerations.EJCanvasDrawerPosition;
 import org.entirej.framework.core.properties.containers.interfaces.EJCanvasPropertiesContainer;
 import org.entirej.framework.core.properties.interfaces.EJCanvasProperties;
 import org.entirej.framework.core.properties.interfaces.EJDrawerPageProperties;
@@ -38,6 +39,8 @@ public class EJDrawerFolder extends Composite
 
     private DrawerTab          active;
     EJRWTFormRenderer ejrwtFormRenderer;
+    
+    private EJCanvasDrawerPosition position = EJCanvasDrawerPosition.LEFT; 
 
     final EJCanvasController canvasController;
     final Map<String, DrawerTab> tabPages = new HashMap<String, DrawerTab>();
@@ -56,6 +59,11 @@ public class EJDrawerFolder extends Composite
         layout(true);
     }
 
+    
+    public void setPosition(EJCanvasDrawerPosition position)
+    {
+        this.position = position;
+    }
     
     protected void selection(String page)
     {
@@ -320,7 +328,10 @@ public class EJDrawerFolder extends Composite
                 Point point = EJDrawerFolder.this.toDisplay(0, 0);
                 Rectangle bounds = EJDrawerFolder.this.getBounds();
 
-                shell.setLocation(point.x + bounds.width, point.y);
+                if(position==EJCanvasDrawerPosition.LEFT)
+                    shell.setLocation(point.x + bounds.width, point.y);
+                if(position==EJCanvasDrawerPosition.RIGHT)
+                    shell.setLocation(point.x -page.getDrawerWidth(), point.y);
                 shell.setSize(page.getDrawerWidth(), bounds.height);
                 shell.open();
             }

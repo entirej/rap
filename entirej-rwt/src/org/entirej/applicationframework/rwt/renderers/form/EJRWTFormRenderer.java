@@ -1043,6 +1043,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 canvasController.drawerPageChanged(name, page);
             }
         };
+        tabFolder.setPosition(canvasProperties.getDrawerPosition());
         tabFolder.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         trayPane.initBase(tabFolder.getFolder());
         
