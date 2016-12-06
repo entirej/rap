@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -57,25 +56,25 @@ import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJStackedPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppFormRenderer;
+import org.entirej.applicationframework.rwt.renderers.form.EJDrawerFolder.DrawerTab;
 import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.common.utils.EJParameterChecker;
 import org.entirej.framework.core.data.controllers.EJCanvasController;
 import org.entirej.framework.core.data.controllers.EJEmbeddedFormController;
 import org.entirej.framework.core.enumerations.EJCanvasSplitOrientation;
-import org.entirej.framework.core.enumerations.EJCanvasTabPosition;
 import org.entirej.framework.core.enumerations.EJCanvasType;
 import org.entirej.framework.core.enumerations.EJPopupButton;
 import org.entirej.framework.core.internal.EJInternalBlock;
 import org.entirej.framework.core.internal.EJInternalEditableBlock;
 import org.entirej.framework.core.internal.EJInternalForm;
 import org.entirej.framework.core.properties.EJCoreCanvasProperties;
-import org.entirej.framework.core.properties.EJCoreFormProperties;
 import org.entirej.framework.core.properties.EJCoreMainScreenProperties;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.containers.interfaces.EJCanvasPropertiesContainer;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.core.properties.interfaces.EJCanvasProperties;
+import org.entirej.framework.core.properties.interfaces.EJDrawerPageProperties;
 import org.entirej.framework.core.properties.interfaces.EJFormProperties;
 import org.entirej.framework.core.properties.interfaces.EJStackedPageProperties;
 import org.entirej.framework.core.properties.interfaces.EJTabPageProperties;
@@ -85,15 +84,17 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
     private EJInternalForm                        _form;
     private EJRWTEntireJGridPane                  _mainPane;
-    private LinkedList<String>                    _canvasesIds       = new LinkedList<String>();
-    private Map<String, CanvasHandler>            _canvases          = new HashMap<String, CanvasHandler>();
-    private Map<String, EJInternalBlock>          _blocks            = new HashMap<String, EJInternalBlock>();
-    private Map<String, ITabFolder>              _tabFolders        = new HashMap<String, ITabFolder>();
-    private Map<String, EJRWTEntireJStackedPane>  _stackedPanes      = new HashMap<String, EJRWTEntireJStackedPane>();
-    private Map<String, Composite>                _formPanes         = new HashMap<String, Composite>();
-    private Map<String, String>                   _tabFoldersCache   = new HashMap<String, String>();
-    private Map<String, String>                   _stackedPanesCache = new HashMap<String, String>();
-    private Map<String, EJEmbeddedFormController> _formPanesCache    = new HashMap<String, EJEmbeddedFormController>();
+    private LinkedList<String>                    _canvasesIds        = new LinkedList<String>();
+    private Map<String, CanvasHandler>            _canvases           = new HashMap<String, CanvasHandler>();
+    private Map<String, EJInternalBlock>          _blocks             = new HashMap<String, EJInternalBlock>();
+    private Map<String, ITabFolder>               _tabFolders         = new HashMap<String, ITabFolder>();
+    private Map<String, EJDrawerFolder>               _drawerFolders      = new HashMap<String, EJDrawerFolder>();
+    private Map<String, EJRWTEntireJStackedPane>  _stackedPanes       = new HashMap<String, EJRWTEntireJStackedPane>();
+    private Map<String, Composite>                _formPanes          = new HashMap<String, Composite>();
+    private Map<String, String>                   _tabFoldersCache    = new HashMap<String, String>();
+    private Map<String, String>                   _drawerFoldersCache = new HashMap<String, String>();
+    private Map<String, String>                   _stackedPanesCache  = new HashMap<String, String>();
+    private Map<String, EJEmbeddedFormController> _formPanesCache     = new HashMap<String, EJEmbeddedFormController>();
 
     @Override
     public void formCleared()
@@ -282,6 +283,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     }
 
     @Override
+    public void showDrawerPage(String canvasName, String pageName)
+    {
+        if (canvasName != null && pageName != null)
+        {
+            EJDrawerFolder tabPane = _drawerFolders.get(canvasName);
+            if (tabPane != null)
+            {
+                tabPane.showPage(pageName);
+            }
+            else
+            {
+                _drawerFoldersCache.put(canvasName, pageName);
+            }
+        }
+
+    }
+
+    @Override
     public void setTabPageVisible(String canvasName, String pageName, boolean visible)
     {
         if (canvasName != null && pageName != null)
@@ -293,6 +312,20 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         }
 
+    }
+    
+    @Override
+    public void setDrawerPageVisible(String canvasName, String pageName, boolean visible)
+    {
+        if (canvasName != null && pageName != null)
+        {
+            EJDrawerFolder tabPane = _drawerFolders.get(canvasName);
+            if (tabPane != null)
+            {
+                tabPane.setTabPageVisible(pageName, visible);
+            }
+        }
+        
     }
 
     @Override
@@ -469,6 +502,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 break;
             case TAB:
                 createTabCanvas(parent, canvasProperties, canvasController);
+                break;
+            case DRAWER:
+                createDrawerCanvas(parent, canvasProperties, canvasController);
                 break;
             case POPUP:
                 buildPopupCanvas(canvasProperties, canvasController);
@@ -843,10 +879,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
         parent = trayPane;
+
+        ITabFolder folder = null;
         
-        ITabFolder folder=null;
-        if(canvasProperties.getTabPosition()==EJCanvasTabPosition.BOTTOM|| canvasProperties.getTabPosition()==EJCanvasTabPosition.TOP)
-        {
             CTabFolder cfolder = new CTabFolder(parent, style);
 
             cfolder.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
@@ -857,26 +892,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 @Override
                 public void widgetSelected(SelectionEvent e)
                 {
-                    canvasController.tabPageChanged(name, tabFolder.getActiveKey() );
+                    canvasController.tabPageChanged(name, tabFolder.getActiveKey());
                 }
             });
-           folder =  tabFolder ; 
-        }
-        else
-        {
-            EJDrawerFolder drawerFolder = new EJDrawerFolder(this,canvasController,parent, style){
-                
-                protected void selection(String page) {
-                    
-                    canvasController.tabPageChanged(name, page );
-                };
-            }; 
-            trayPane.initBase(drawerFolder);
-            folder =  drawerFolder ; 
-        }
-        
-        
-         
+            folder = tabFolder;
+       
 
         CanvasHandler canvasHandler = new CanvasHandler()
         {
@@ -996,6 +1016,157 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             _tabFoldersCache.remove(name);
         }
 
+        _canvasesIds.add(name);
+    }
+    private void createDrawerCanvas(Composite parent, final EJCanvasProperties canvasProperties, final EJCanvasController canvasController)
+    {
+        int style = SWT.NONE;
+        
+       
+        
+       
+        final String name = canvasProperties.getName();
+        
+        final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
+        trayPane.setLayoutData(createCanvasGridData(canvasProperties));
+        parent = trayPane;
+        
+        EJDrawerFolder folder = null;
+        
+        
+        
+        final EJDrawerFolder tabFolder = new EJDrawerFolder(this,  canvasController,parent,style){
+            
+            @Override
+            protected void selection(String page)
+            {
+                canvasController.drawerPageChanged(name, page);
+            }
+        };
+        tabFolder.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
+        trayPane.initBase(tabFolder.getFolder());
+        
+        folder = tabFolder;
+        
+        
+        CanvasHandler canvasHandler = new CanvasHandler()
+        {
+            
+            private Collection<EJMessage> msgs;
+            
+            @Override
+            public void clearCanvasMessages()
+            {
+                this.msgs = null;
+                if (trayPane != null && !trayPane.isDisposed())
+                {
+                    trayPane.closeTray();
+                }
+                
+            }
+            
+            @Override
+            public void setCanvasMessages(Collection<EJMessage> messages)
+            {
+                this.msgs = messages;
+                if (trayPane != null && !trayPane.isDisposed())
+                {
+                    
+                    if (trayPane.getTray() != null)
+                    {
+                        trayPane.closeTray();
+                    }
+                    
+                    {
+                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        {
+                            
+                            @Override
+                            void close()
+                            {
+                                if (trayPane != null && !trayPane.isDisposed())
+                                {
+                                    trayPane.closeTray();
+                                }
+                                
+                            }
+                            
+                        };
+                        messageTray.setMessages(msgs);
+                        
+                        TrayLocation location = TrayLocation.RIGHT;
+                        
+                        switch (canvasProperties.getMessagePosition())
+                        {
+                            case BOTTOM:
+                                location = TrayLocation.BOTTOM;
+                                break;
+                            case LEFT:
+                                location = TrayLocation.LEFT;
+                                break;
+                            case RIGHT:
+                                location = TrayLocation.RIGHT;
+                                break;
+                            case TOP:
+                                location = TrayLocation.TOP;
+                                break;
+                                
+                            default:
+                                break;
+                        }
+                        
+                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneSize());
+                    }
+                    
+                }
+                
+            }
+            
+            @Override
+            public void add(EJInternalBlock block)
+            {
+                
+            }
+            
+            @Override
+            public EJCanvasType getType()
+            {
+                return EJCanvasType.TAB;
+            }
+        };
+        _canvases.put(canvasProperties.getName(), canvasHandler);
+        if (!canvasProperties.getCloseableMessagePane())
+        {
+            canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
+        }
+        
+        _drawerFolders.put(name, folder);
+        folder.getFolder().setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
+        
+        Collection<EJDrawerPageProperties> allTabPageProperties = canvasProperties.getDrawerPageContainer().getAllDrawerPageProperties();
+        int index = 0;
+        for (EJDrawerPageProperties page : allTabPageProperties)
+        {
+            
+            DrawerTab tab = folder.newTab(page);
+            if (page.isVisible())
+            {
+                
+                tab.create(index == 0);
+            }
+            tab.setIndex(index);
+            index++;
+            
+            folder.put(page.getName(), tab);
+            
+        }
+        
+        if (_drawerFoldersCache.containsKey(name))
+        {
+            folder.showPage(_drawerFoldersCache.get(name));
+            _drawerFoldersCache.remove(name);
+        }
+        
         _canvasesIds.add(name);
     }
 
@@ -1195,6 +1366,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     case TAB:
                         createTabCanvas(groupPane, containedCanvas, canvasController);
                         break;
+                    case DRAWER:
+                        createDrawerCanvas(groupPane, containedCanvas, canvasController);
+                        break;
                     case POPUP:
                         throw new AssertionError();
                 }
@@ -1346,6 +1520,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         break;
                     case TAB:
                         createTabCanvas(layoutBody, containedCanvas, canvasController);
+                        break;
+                    case DRAWER:
+                        createDrawerCanvas(layoutBody, containedCanvas, canvasController);
                         break;
                     case POPUP:
                         throw new AssertionError();
@@ -1874,6 +2051,35 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
         return null;
     }
+    
+    
+    @Override
+    public String getDisplayedDrawerPage(String key)
+    {
+        EJDrawerFolder tabFolder = _drawerFolders.get(key);
+        if (tabFolder != null)
+        {
+            return tabFolder.getActiveKey();
+        }
+        else
+        {
+            if (_drawerFoldersCache.containsKey(key))
+            {
+                return _drawerFoldersCache.get(key);
+            }
+            // use the prop
+            EJCanvasProperties properties = EJRWTCanvasRetriever.getCanvas(_form.getProperties(), key);
+            if (properties != null && properties.getType() == EJCanvasType.DRAWER)
+            {
+                Collection<EJTabPageProperties> allTabPageProperties = properties.getTabPageContainer().getAllTabPageProperties();
+                for (EJTabPageProperties ejTabPageProperties : allTabPageProperties)
+                {
+                    return ejTabPageProperties.getName();
+                }
+            }
+        }
+        return null;
+    }
 
     @Override
     public void clearCanvasMessages(String canvasName)
@@ -2163,5 +2369,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
     }
+    @Override
+    public void setDrawerPageBadge(String canvasName, String tabPageName, String badge)
+    {
+        if (canvasName != null && tabPageName != null)
+        {
+            EJDrawerFolder tabPane = _drawerFolders.get(canvasName);
+            if (tabPane != null)
+            {
+                tabPane.setDrawerPageBadge(tabPageName, badge);
+            }
+            // else
+            // {
+            // _tabFoldersCache.put(canvasName, tabPageName);
+            // }
+        }
+        
+    }
+    
+    
 
 }

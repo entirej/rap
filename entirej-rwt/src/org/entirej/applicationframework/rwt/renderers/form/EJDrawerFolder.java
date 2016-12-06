@@ -31,16 +31,16 @@ import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.framework.core.data.controllers.EJCanvasController;
 import org.entirej.framework.core.properties.containers.interfaces.EJCanvasPropertiesContainer;
 import org.entirej.framework.core.properties.interfaces.EJCanvasProperties;
-import org.entirej.framework.core.properties.interfaces.EJTabPageProperties;
+import org.entirej.framework.core.properties.interfaces.EJDrawerPageProperties;
 
-public class EJDrawerFolder extends Composite implements ITabFolder
+public class EJDrawerFolder extends Composite 
 {
 
-    private Tab          active;
+    private DrawerTab          active;
     EJRWTFormRenderer ejrwtFormRenderer;
 
     final EJCanvasController canvasController;
-    final Map<String, Tab> tabPages = new HashMap<String, Tab>();
+    final Map<String, DrawerTab> tabPages = new HashMap<String, DrawerTab>();
 
     EJDrawerFolder(EJRWTFormRenderer ejrwtFormRenderer,EJCanvasController canvasController,Composite parent, int style)
     {
@@ -63,10 +63,10 @@ public class EJDrawerFolder extends Composite implements ITabFolder
     }
     
     
-    @Override
+    
     public void dispose()
     {
-        for (Tab tab : tabPages.values())
+        for (DrawerTab tab : tabPages.values())
         {
             if( tab.shell!=null)
                 tab.shell.dispose();
@@ -166,20 +166,19 @@ public class EJDrawerFolder extends Composite implements ITabFolder
 
            
             
-            e.gc.drawString(text, (r.height / 2) * -1, ((rectangle.width / 2) * -1) + (p.y / 2));
+            e.gc.drawString(text, (r.height / 2) * -1, ((rectangle.width / 2) * -1) + (p.y / 2),true);
             if(selection)
             {
-                //TODO
 //                e.gc.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-//                e.gc.fillRectangle(0,0,5,e.width);
+//                e.gc.fillRectangle(0,0,r.height,r.width);
             }
         }
     }
 
-    @Override
+    
     public void showPage(String pageName)
     {
-        for (Tab tab : tabPages.values())
+        for (DrawerTab tab : tabPages.values())
         {
             if (tab.page.getName().equals(pageName))
             {
@@ -189,10 +188,10 @@ public class EJDrawerFolder extends Composite implements ITabFolder
 
     }
 
-    @Override
+    
     public void setTabPageVisible(String pageName, boolean visible)
     {
-        for (Tab tab : tabPages.values())
+        for (DrawerTab tab : tabPages.values())
         {
             if (tab.page.getName().equals(pageName))
             {
@@ -207,22 +206,22 @@ public class EJDrawerFolder extends Composite implements ITabFolder
 
     }
 
-    @Override
+    
     public Control getFolder()
     {
         return this;
     }
 
-    @Override
-    public ITab newTab(EJTabPageProperties page)
+    
+    public DrawerTab newTab(EJDrawerPageProperties page)
     {
-        return new Tab(page);
+        return new DrawerTab(page);
     }
 
-    @Override
+    
     public String getActiveKey()
     {
-        for (Tab tab : tabPages.values())
+        for (DrawerTab tab : tabPages.values())
         {
             if (tab.shell != null && tab.shell.isVisible())
             {
@@ -232,34 +231,34 @@ public class EJDrawerFolder extends Composite implements ITabFolder
         return null;
     }
 
-    @Override
-    public void setTabPageBadge(String tabPageName, String badge)
+    
+    public void setDrawerPageBadge(String tabPageName, String badge)
     {
         // TODO Auto-generated method stub
 
     }
 
-    @Override
-    public void put(String name, ITab tab)
+    
+    public void put(String name, DrawerTab tab)
     {
-        tabPages.put(name, (Tab) tab);
+        tabPages.put(name, (DrawerTab) tab);
 
     }
 
-    private class Tab implements ITab
+     class DrawerTab 
     {
-        EJTabPageProperties page;
+         EJDrawerPageProperties page;
         int                 index;
         Shell               shell;
         EJRWTEntireJGridPane           composite;
         final AtomicBoolean       init  = new AtomicBoolean(true);
         private TabButton rotatingButton;
-        Tab(EJTabPageProperties page)
+        DrawerTab(EJDrawerPageProperties page)
         {
             this.page = page;
         }
 
-        @Override
+        
         public void create(boolean b)
         {
 
@@ -280,7 +279,7 @@ public class EJDrawerFolder extends Composite implements ITabFolder
             rotatingButton.addListener(SWT.Selection, new Listener()
             {
 
-                @Override
+                
                 public void handleEvent(Event e)
                 {
                     if (init.getAndSet(false))
@@ -314,6 +313,7 @@ public class EJDrawerFolder extends Composite implements ITabFolder
             if (toggle && shell.isVisible())
             {
                 shell.setVisible(false);
+                selection(null);
             }
             else
             {
@@ -321,12 +321,12 @@ public class EJDrawerFolder extends Composite implements ITabFolder
                 Rectangle bounds = EJDrawerFolder.this.getBounds();
 
                 shell.setLocation(point.x + bounds.width, point.y);
-                shell.setSize(500, bounds.height);
+                shell.setSize(page.getDrawerWidth(), bounds.height);
                 shell.open();
             }
         }
 
-        @Override
+        
         public void setIndex(int index)
         {
             this.index = index;
