@@ -328,9 +328,9 @@ public class EJDrawerFolder extends Composite
                 Point point = EJDrawerFolder.this.toDisplay(0, 0);
                 Rectangle bounds = EJDrawerFolder.this.getBounds();
 
-                if(position==EJCanvasDrawerPosition.LEFT)
-                    shell.setLocation(point.x + bounds.width, point.y);
                 if(position==EJCanvasDrawerPosition.RIGHT)
+                    shell.setLocation(point.x + bounds.width, point.y);
+                if(position==EJCanvasDrawerPosition.LEFT)
                     shell.setLocation(point.x -page.getDrawerWidth(), point.y);
                 shell.setSize(page.getDrawerWidth(), bounds.height);
                 shell.open();
