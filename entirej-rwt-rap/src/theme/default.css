@@ -1854,6 +1854,14 @@ Shell.jface_contentProposalPopup, Shell.jface_infoPopupDialog {
 Composite.applayout {
 	background-color: #F5F5F5;
 }
+Composite.drawer {
+	
+}
+Composite.drawer_select {
+	background-image: gradient(linear, left top, left bottom, from(#d5d5d5),
+        to(#eaeaea));
+}
+
 
 Composite.notifierDialog {
 	border: 1px solid #bdbdbd;

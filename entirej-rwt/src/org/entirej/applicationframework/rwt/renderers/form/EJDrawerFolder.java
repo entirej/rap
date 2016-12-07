@@ -104,7 +104,7 @@ public class EJDrawerFolder extends Composite
                 public void mouseDown(MouseEvent e)
                 {
                     mouse = 2;
-                    
+
                 }
 
                 public void mouseUp(MouseEvent e)
@@ -114,7 +114,7 @@ public class EJDrawerFolder extends Composite
                     {
                         mouse = 0;
                     }
-                  
+
                     if (mouse == 1)
                         notifyListeners(SWT.Selection, new Event());
                 }
@@ -135,8 +135,10 @@ public class EJDrawerFolder extends Composite
         public void setSelection(boolean selection)
         {
             this.selection = selection;
-           redraw();
-           update();
+            if (selection)
+                setData(EJ_RWT.CUSTOM_VARIANT, "drawer_select");
+            else
+                setData(EJ_RWT.CUSTOM_VARIANT, "drawer");
         }
 
         public void setText(String string)
@@ -152,35 +154,38 @@ public class EJDrawerFolder extends Composite
 
         public void paint(PaintEvent e)
         {
-           
+
             e.gc.setAdvanced(true);
             Transform tr = null;
             tr = new Transform(e.display);
 
             Rectangle rectangle = getParent().getBounds();
             Rectangle r = getBounds();
-         
 
             // e.gc.setAntialias(SWT.ON);
             Point p = e.gc.stringExtent(text);
 
             tr.translate((rectangle.width / 2), (r.height / 2));
             if (position == EJCanvasDrawerPosition.LEFT)
+            {
                 tr.rotate(90F);
+                e.gc.setTransform(tr);
+                
+                //e.gc.drawString(text, (p.x / 2) * -1, 0, true);
+                e.gc.drawString(text,( (r.height / 2) * -1)+5, ((rectangle.width / 2) * -1) - (p.y ),true);
+            }
+               
             if (position == EJCanvasDrawerPosition.RIGHT)
+            {
                 tr.rotate(270F);
 
-            e.gc.setTransform(tr);
-//            if (selection)
-//            {
-//                e.gc.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-//                e.gc.fillRectangle((r.height / 2) * -1, (rectangle.width / 2) * -1, e.height, rectangle.width);
-//                
-//            }
-            e.gc.drawString(text,  (p.x / 2) * -1,0 ,true);
-//             e.gc.drawString(text, (r.height / 2) * -1, ((rectangle.width / 2)
-//             * -1) ,true);
-          
+                e.gc.setTransform(tr);
+                
+                //e.gc.drawString(text, (p.x / 2) * -1, 0, true);
+                e.gc.drawString(text, (r.height / 2) * -1, ((rectangle.width / 2) * -1) + (p.y / 2),true);
+            }
+           
+
         }
     }
 
@@ -315,6 +320,7 @@ public class EJDrawerFolder extends Composite
             {
                 shell.setVisible(false);
                 selection(null);
+                active.rotatingButton.setSelection(false);
             }
             else
             {
