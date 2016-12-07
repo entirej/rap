@@ -1857,6 +1857,11 @@ Composite.applayout {
 Composite.drawer {
 	
 }
+
+Composite.drawer_base {
+
+	background-color: #bdbdbd
+}
 Composite.drawer_select {
 	background-image: gradient(linear, left top, left bottom, from(#d5d5d5),
         to(#eaeaea));

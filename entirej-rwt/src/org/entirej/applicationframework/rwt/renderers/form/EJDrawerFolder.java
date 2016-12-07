@@ -4,8 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseAdapter;
@@ -18,6 +23,7 @@ import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -44,18 +50,35 @@ public class EJDrawerFolder extends Composite
 
     final EJCanvasController       canvasController;
     final Map<String, DrawerTab>   tabPages = new HashMap<String, DrawerTab>();
+    private GridData               lineData;
 
     EJDrawerFolder(EJRWTFormRenderer ejrwtFormRenderer, EJCanvasController canvasController, Composite parent, int style)
     {
-        super(parent, style);
+        super(parent, SWT.NONE);
         this.ejrwtFormRenderer = ejrwtFormRenderer;
         this.canvasController = canvasController;
-        setLayout(new GridLayout(1, false));
+        GridLayout layout = new GridLayout(2, false);
+        layout.marginBottom = 0;
+        layout.marginHeight = 0;
+        layout.marginLeft = 0;
+        layout.marginRight = 0;
+        layout.marginTop = 0;
+        layout.marginWidth = 0;
+        layout.horizontalSpacing = 0;
+        layout.verticalSpacing = 0;
+        setLayout(layout);
+       
+        lineData = new GridData(GridData.FILL_VERTICAL);
+        lineData.widthHint=1;
+        Composite composite = new Composite(this,SWT.NONE);
+        composite.setData(EJ_RWT.CUSTOM_VARIANT, "drawer_base");
+        composite.setLayoutData(lineData);
     }
 
     public void addSeperator()
     {
         new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL);
+        lineData.verticalSpan++;
         layout(true);
     }
 
@@ -89,7 +112,7 @@ public class EJDrawerFolder extends Composite
         public TabButton(Composite parent, int style)
         {
             super(parent, style);
-
+            setData(RWT.BADGE, "1");
             this.addPaintListener(new PaintListener()
             {
                 public void paintControl(PaintEvent e)
@@ -170,21 +193,20 @@ public class EJDrawerFolder extends Composite
             {
                 tr.rotate(90F);
                 e.gc.setTransform(tr);
-                
-                //e.gc.drawString(text, (p.x / 2) * -1, 0, true);
-                e.gc.drawString(text,( (r.height / 2) * -1)+5, ((rectangle.width / 2) * -1) - (p.y ),true);
+
+                // e.gc.drawString(text, (p.x / 2) * -1, 0, true);
+                e.gc.drawString(text, ((r.height / 2) * -1) + 5, ((rectangle.width / 2) * -1) - (p.y), true);
             }
-               
+
             if (position == EJCanvasDrawerPosition.RIGHT)
             {
                 tr.rotate(270F);
 
                 e.gc.setTransform(tr);
-                
-                //e.gc.drawString(text, (p.x / 2) * -1, 0, true);
-                e.gc.drawString(text, (r.height / 2) * -1, ((rectangle.width / 2) * -1) + (p.y / 2),true);
+
+                // e.gc.drawString(text, (p.x / 2) * -1, 0, true);
+                e.gc.drawString(text, (r.height / 2) * -1, ((rectangle.width / 2) * -1) + (p.y / 2), true);
             }
-           
 
         }
     }
@@ -276,13 +298,56 @@ public class EJDrawerFolder extends Composite
             shell = new Shell(current, SWT.NO_TRIM | SWT.ON_TOP);
 
             shell.setLayout(new FillLayout());
+            final ControlListener listener = new ControlListener()
+            {
+                
+                @Override
+                public void controlResized(ControlEvent e)
+                {
+                    update();
+                    
+                }
+                
+                @Override
+                public void controlMoved(ControlEvent e)
+                {
+                    update();
+                    
+                }
+                
+                void update()
+                {
+                    if(shell!=null && !shell.isDisposed()&& shell.isVisible() && !EJDrawerFolder.this.isDisposed())
+                    {
+                        Point point = EJDrawerFolder.this.toDisplay(0, 0);
+                        Rectangle bounds = EJDrawerFolder.this.getBounds();
+                        if (position == EJCanvasDrawerPosition.RIGHT)
+                            shell.setLocation(point.x + bounds.width, point.y);
+                        if (position == EJCanvasDrawerPosition.LEFT)
+                            shell.setLocation(point.x - page.getDrawerWidth(), point.y);
+                        shell.setSize(page.getDrawerWidth(), bounds.height);
+                    }
+                }
+            };
+            EJDrawerFolder.this.addControlListener(listener);
+            EJDrawerFolder.this.getShell().addControlListener(listener);
+            EJDrawerFolder.this.addDisposeListener(new DisposeListener()
+            {
+                
+                @Override
+                public void widgetDisposed(DisposeEvent event)
+                {
+                    EJDrawerFolder.this.getShell().removeControlListener(listener);
+                    
+                }
+            });
 
             composite = new EJRWTEntireJGridPane(shell, page.getNumCols(), SWT.BORDER);
 
             composite.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
             rotatingButton = new TabButton(EJDrawerFolder.this, SWT.None);
             rotatingButton.setText(page.getPageTitle() != null && page.getPageTitle().length() > 0 ? page.getPageTitle() : page.getName());
-
+            lineData.verticalSpan++;
             rotatingButton.addListener(SWT.Selection, new Listener()
             {
 
