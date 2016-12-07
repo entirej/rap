@@ -51,6 +51,7 @@ public class EJDrawerFolder extends Composite
     final EJCanvasController       canvasController;
     final Map<String, DrawerTab>   tabPages = new HashMap<String, DrawerTab>();
     private GridData               lineData;
+    private Composite seprator;
 
     EJDrawerFolder(EJRWTFormRenderer ejrwtFormRenderer, EJCanvasController canvasController, Composite parent, int style)
     {
@@ -70,9 +71,9 @@ public class EJDrawerFolder extends Composite
        
         lineData = new GridData(GridData.FILL_VERTICAL);
         lineData.widthHint=1;
-        Composite composite = new Composite(this,SWT.NONE);
-        composite.setData(EJ_RWT.CUSTOM_VARIANT, "drawer_base");
-        composite.setLayoutData(lineData);
+        seprator = new Composite(this,SWT.NONE);
+        seprator.setData(EJ_RWT.CUSTOM_VARIANT, "drawer_base");
+        seprator.setLayoutData(lineData);
     }
 
     public void addSeperator()
@@ -205,7 +206,7 @@ public class EJDrawerFolder extends Composite
                 e.gc.setTransform(tr);
 
                 // e.gc.drawString(text, (p.x / 2) * -1, 0, true);
-                e.gc.drawString(text, (r.height / 2) * -1, ((rectangle.width / 2) * -1) + (p.y / 2), true);
+                e.gc.drawString(text, ((r.height / 2) * -1)+5, ((rectangle.width / 2) * -1) + (p.y / 2), true);
             }
 
         }
@@ -322,9 +323,9 @@ public class EJDrawerFolder extends Composite
                         Point point = EJDrawerFolder.this.toDisplay(0, 0);
                         Rectangle bounds = EJDrawerFolder.this.getBounds();
                         if (position == EJCanvasDrawerPosition.RIGHT)
-                            shell.setLocation(point.x + bounds.width, point.y);
+                            shell.setLocation((point.x + bounds.width)-1, point.y);
                         if (position == EJCanvasDrawerPosition.LEFT)
-                            shell.setLocation(point.x - page.getDrawerWidth(), point.y);
+                            shell.setLocation((point.x - page.getDrawerWidth())+1, point.y);
                         shell.setSize(page.getDrawerWidth(), bounds.height);
                     }
                 }
@@ -345,7 +346,17 @@ public class EJDrawerFolder extends Composite
             composite = new EJRWTEntireJGridPane(shell, page.getNumCols(), SWT.BORDER);
 
             composite.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
+            
+            
             rotatingButton = new TabButton(EJDrawerFolder.this, SWT.None);
+            
+            if (position == EJCanvasDrawerPosition.RIGHT && tabPages.size()==0)
+            {
+//                seprator.dispose();
+//                seprator = new Composite(EJDrawerFolder.this,SWT.NONE);
+//                seprator.setData(EJ_RWT.CUSTOM_VARIANT, "drawer_base");
+//                seprator.setLayoutData(lineData);
+            }
             rotatingButton.setText(page.getPageTitle() != null && page.getPageTitle().length() > 0 ? page.getPageTitle() : page.getName());
             lineData.verticalSpan++;
             rotatingButton.addListener(SWT.Selection, new Listener()
@@ -393,9 +404,9 @@ public class EJDrawerFolder extends Composite
                 Rectangle bounds = EJDrawerFolder.this.getBounds();
 
                 if (position == EJCanvasDrawerPosition.RIGHT)
-                    shell.setLocation(point.x + bounds.width, point.y);
+                    shell.setLocation((point.x + bounds.width)-1, point.y);
                 if (position == EJCanvasDrawerPosition.LEFT)
-                    shell.setLocation(point.x - page.getDrawerWidth(), point.y);
+                    shell.setLocation((point.x - page.getDrawerWidth())+1, point.y);
                 shell.setSize(page.getDrawerWidth(), bounds.height);
                 shell.open();
             }
