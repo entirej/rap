@@ -34,18 +34,18 @@ import org.entirej.framework.core.properties.containers.interfaces.EJCanvasPrope
 import org.entirej.framework.core.properties.interfaces.EJCanvasProperties;
 import org.entirej.framework.core.properties.interfaces.EJDrawerPageProperties;
 
-public class EJDrawerFolder extends Composite 
+public class EJDrawerFolder extends Composite
 {
 
-    private DrawerTab          active;
-    EJRWTFormRenderer ejrwtFormRenderer;
-    
-    private EJCanvasDrawerPosition position = EJCanvasDrawerPosition.LEFT; 
+    private DrawerTab              active;
+    EJRWTFormRenderer              ejrwtFormRenderer;
 
-    final EJCanvasController canvasController;
-    final Map<String, DrawerTab> tabPages = new HashMap<String, DrawerTab>();
+    private EJCanvasDrawerPosition position = EJCanvasDrawerPosition.LEFT;
 
-    EJDrawerFolder(EJRWTFormRenderer ejrwtFormRenderer,EJCanvasController canvasController,Composite parent, int style)
+    final EJCanvasController       canvasController;
+    final Map<String, DrawerTab>   tabPages = new HashMap<String, DrawerTab>();
+
+    EJDrawerFolder(EJRWTFormRenderer ejrwtFormRenderer, EJCanvasController canvasController, Composite parent, int style)
     {
         super(parent, style);
         this.ejrwtFormRenderer = ejrwtFormRenderer;
@@ -59,36 +59,32 @@ public class EJDrawerFolder extends Composite
         layout(true);
     }
 
-    
     public void setPosition(EJCanvasDrawerPosition position)
     {
         this.position = position;
     }
-    
+
     protected void selection(String page)
     {
-        
+
     }
-    
-    
-    
+
     public void dispose()
     {
         for (DrawerTab tab : tabPages.values())
         {
-            if( tab.shell!=null)
+            if (tab.shell != null)
                 tab.shell.dispose();
         }
         super.dispose();
     }
-    
+
     class TabButton extends Canvas
     {
-        private int     mouse         = 0;
-        private boolean selection           = false;
-        private String  text          = "";
-        float           rotatingAngle = 270F;
-        int             index         = 0;
+        private int     mouse     = 0;
+        private boolean selection = false;
+        private String  text      = "";
+        int             index     = 0;
 
         public TabButton(Composite parent, int style)
         {
@@ -108,7 +104,7 @@ public class EJDrawerFolder extends Composite
                 public void mouseDown(MouseEvent e)
                 {
                     mouse = 2;
-                    redraw();
+                    
                 }
 
                 public void mouseUp(MouseEvent e)
@@ -118,7 +114,7 @@ public class EJDrawerFolder extends Composite
                     {
                         mouse = 0;
                     }
-                    redraw();
+                  
                     if (mouse == 1)
                         notifyListeners(SWT.Selection, new Event());
                 }
@@ -139,51 +135,55 @@ public class EJDrawerFolder extends Composite
         public void setSelection(boolean selection)
         {
             this.selection = selection;
-            redraw();
+           redraw();
+           update();
         }
-        
-        
+
         public void setText(String string)
         {
             this.text = string;
             GridData data = new GridData(GridData.FILL_HORIZONTAL);
-            data.heightHint = ((int) EJRWTImageRetriever.getGraphicsProvider().getAvgCharWidth(getFont()) * (string.length() + 4));
+            data.heightHint = ((int) EJRWTImageRetriever.getGraphicsProvider().getAvgCharWidth(getFont()) * (string.length() + 10));
             setLayoutData(data);
             getParent().layout(true);
             redraw();
+            update();
         }
 
         public void paint(PaintEvent e)
         {
-
+           
+            e.gc.setAdvanced(true);
             Transform tr = null;
             tr = new Transform(e.display);
-            
+
             Rectangle rectangle = getParent().getBounds();
             Rectangle r = getBounds();
-            e.width = rectangle.width;
-            
-            
-            
+         
+
             // e.gc.setAntialias(SWT.ON);
             Point p = e.gc.stringExtent(text);
-            
-            tr.translate((rectangle.width / 2), (r.height / 2));
-            tr.rotate(rotatingAngle);
-            e.gc.setTransform(tr);
 
-           
-            
-            e.gc.drawString(text, (r.height / 2) * -1, ((rectangle.width / 2) * -1) + (p.y / 2),true);
-            if(selection)
-            {
+            tr.translate((rectangle.width / 2), (r.height / 2));
+            if (position == EJCanvasDrawerPosition.LEFT)
+                tr.rotate(90F);
+            if (position == EJCanvasDrawerPosition.RIGHT)
+                tr.rotate(270F);
+
+            e.gc.setTransform(tr);
+//            if (selection)
+//            {
 //                e.gc.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_GRAY));
-//                e.gc.fillRectangle(0,0,r.height,r.width);
-            }
+//                e.gc.fillRectangle((r.height / 2) * -1, (rectangle.width / 2) * -1, e.height, rectangle.width);
+//                
+//            }
+            e.gc.drawString(text,  (p.x / 2) * -1,0 ,true);
+//             e.gc.drawString(text, (r.height / 2) * -1, ((rectangle.width / 2)
+//             * -1) ,true);
+          
         }
     }
 
-    
     public void showPage(String pageName)
     {
         for (DrawerTab tab : tabPages.values())
@@ -196,7 +196,6 @@ public class EJDrawerFolder extends Composite
 
     }
 
-    
     public void setTabPageVisible(String pageName, boolean visible)
     {
         for (DrawerTab tab : tabPages.values())
@@ -214,19 +213,16 @@ public class EJDrawerFolder extends Composite
 
     }
 
-    
     public Control getFolder()
     {
         return this;
     }
 
-    
     public DrawerTab newTab(EJDrawerPageProperties page)
     {
         return new DrawerTab(page);
     }
 
-    
     public String getActiveKey()
     {
         for (DrawerTab tab : tabPages.values())
@@ -239,55 +235,52 @@ public class EJDrawerFolder extends Composite
         return null;
     }
 
-    
     public void setDrawerPageBadge(String tabPageName, String badge)
     {
         // TODO Auto-generated method stub
 
     }
 
-    
     public void put(String name, DrawerTab tab)
     {
         tabPages.put(name, (DrawerTab) tab);
 
     }
 
-     class DrawerTab 
+    class DrawerTab
     {
-         EJDrawerPageProperties page;
-        int                 index;
-        Shell               shell;
-        EJRWTEntireJGridPane           composite;
-        final AtomicBoolean       init  = new AtomicBoolean(true);
-        private TabButton rotatingButton;
+        EJDrawerPageProperties page;
+        int                    index;
+        Shell                  shell;
+        EJRWTEntireJGridPane   composite;
+        final AtomicBoolean    init = new AtomicBoolean(true);
+        private TabButton      rotatingButton;
+
         DrawerTab(EJDrawerPageProperties page)
         {
             this.page = page;
         }
 
-        
         public void create(boolean b)
         {
 
-            if(tabPages.size()>0)
+            if (tabPages.size() > 0)
                 addSeperator();
-            
+
             Display current = Display.getCurrent();
             shell = new Shell(current, SWT.NO_TRIM | SWT.ON_TOP);
 
             shell.setLayout(new FillLayout());
 
-            composite = new EJRWTEntireJGridPane(shell, page.getNumCols(),SWT.BORDER);
+            composite = new EJRWTEntireJGridPane(shell, page.getNumCols(), SWT.BORDER);
 
             composite.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
-             rotatingButton = new TabButton(EJDrawerFolder.this, SWT.None);
+            rotatingButton = new TabButton(EJDrawerFolder.this, SWT.None);
             rotatingButton.setText(page.getPageTitle() != null && page.getPageTitle().length() > 0 ? page.getPageTitle() : page.getName());
 
             rotatingButton.addListener(SWT.Selection, new Listener()
             {
 
-                
                 public void handleEvent(Event e)
                 {
                     if (init.getAndSet(false))
@@ -328,16 +321,15 @@ public class EJDrawerFolder extends Composite
                 Point point = EJDrawerFolder.this.toDisplay(0, 0);
                 Rectangle bounds = EJDrawerFolder.this.getBounds();
 
-                if(position==EJCanvasDrawerPosition.RIGHT)
+                if (position == EJCanvasDrawerPosition.RIGHT)
                     shell.setLocation(point.x + bounds.width, point.y);
-                if(position==EJCanvasDrawerPosition.LEFT)
-                    shell.setLocation(point.x -page.getDrawerWidth(), point.y);
+                if (position == EJCanvasDrawerPosition.LEFT)
+                    shell.setLocation(point.x - page.getDrawerWidth(), point.y);
                 shell.setSize(page.getDrawerWidth(), bounds.height);
                 shell.open();
             }
         }
 
-        
         public void setIndex(int index)
         {
             this.index = index;
