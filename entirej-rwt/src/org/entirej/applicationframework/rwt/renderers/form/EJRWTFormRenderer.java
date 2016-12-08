@@ -1002,7 +1002,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             if (page.isVisible())
             {
 
-                tab.create(index == 0);
+                tab.create(true); //tab.create(index == 0);
             }
             tab.setIndex(index);
             index++;
