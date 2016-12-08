@@ -53,7 +53,6 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.internal.graphics.ImageFactory;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -64,6 +63,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.launcher.RWTUtils;
 import org.entirej.applicationframework.rwt.component.EJRWTHtmlView;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
+import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
@@ -611,7 +611,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         // if (gridData.grabExcessVerticalSpace)
         // gridData.minimumWidth = mainScreenProperties.getHeight();
         blockCanvas.setLayoutData(gridData);
-        scrollComposite = new ScrolledComposite(blockCanvas, SWT.V_SCROLL | SWT.H_SCROLL);
+        scrollComposite = new EJRWTScrolledComposite(blockCanvas, SWT.V_SCROLL | SWT.H_SCROLL);
         scrollComposite.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
         scrollComposite.setExpandHorizontal(true);
         scrollComposite.setExpandVertical(true);

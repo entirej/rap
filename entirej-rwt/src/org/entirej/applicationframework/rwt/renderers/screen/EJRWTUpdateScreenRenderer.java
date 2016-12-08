@@ -28,6 +28,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
+import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTComboItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTItemTextChangeNotifier;
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTItemTextChangeNotifier.ChangeListener;
@@ -48,7 +49,6 @@ import org.entirej.framework.core.renderers.EJManagedItemRendererWrapper;
 import org.entirej.framework.core.renderers.eventhandlers.EJScreenItemValueChangedListener;
 import org.entirej.framework.core.renderers.interfaces.EJItemRenderer;
 import org.entirej.framework.core.renderers.interfaces.EJUpdateScreenRenderer;
-import org.entirej.framework.core.renderers.registry.EJBlockItemRendererRegister;
 import org.entirej.framework.core.renderers.registry.EJUpdateScreenItemRendererRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -235,7 +235,7 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
             public void createBody(Composite parent)
             {
                 parent.setLayout(new FillLayout());
-                final ScrolledComposite scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+                final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 
                 EJRWTEntireJGridPane _mainPane = new EJRWTEntireJGridPane(scrollComposite, numCols);
                 _mainPane.cleanLayout();
