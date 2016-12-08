@@ -18,7 +18,6 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.blocks;
 
-import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,7 +27,6 @@ import java.util.Map;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -60,11 +58,11 @@ import org.entirej.applicationframework.rwt.application.components.actions.EJRWT
 import org.entirej.applicationframework.rwt.application.components.actions.EJRWTQueryAction;
 import org.entirej.applicationframework.rwt.application.components.actions.EJRWTUpdateAction;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
+import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTComboItemRenderer;
-import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTUpdateScreenRenderer;
@@ -75,7 +73,6 @@ import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.data.controllers.EJEditableBlockController;
 import org.entirej.framework.core.data.controllers.EJQuestion;
-import org.entirej.framework.core.enumerations.EJCanvasSplitOrientation;
 import org.entirej.framework.core.enumerations.EJManagedBlockProperty;
 import org.entirej.framework.core.enumerations.EJManagedScreenProperty;
 import org.entirej.framework.core.enumerations.EJQuestionButton;
@@ -689,7 +686,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                     group.setLayout(new FillLayout());
                     group.setLayoutData(gridData);
 
-                    scrollComposite = new ScrolledComposite(group, SWT.V_SCROLL | SWT.H_SCROLL);
+                    scrollComposite = new EJRWTScrolledComposite(group, SWT.V_SCROLL | SWT.H_SCROLL);
 
                     _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
                     group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
@@ -703,7 +700,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             {
                 Composite composite = new Composite(blockCanvas, mainScreenProperties.getDisplayFrame()?SWT.BORDER:SWT.NONE);
                 composite.setLayout(new FillLayout());
-                scrollComposite = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
+                scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
                 _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
 
@@ -784,7 +781,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                
                     group.setText(frameTitle);
                 
-                scrollComposite = new ScrolledComposite(group, SWT.V_SCROLL | SWT.H_SCROLL);
+                scrollComposite = new EJRWTScrolledComposite(group, SWT.V_SCROLL | SWT.H_SCROLL);
                 _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
 
             }
@@ -792,7 +789,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             {
                 Composite composite = new Composite(blockCanvas, mainScreenProperties.getDisplayFrame()?SWT.BORDER:SWT.NONE);
                 composite.setLayout(new FillLayout());
-                scrollComposite = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
+                scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
                 _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
                 _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
 

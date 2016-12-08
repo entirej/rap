@@ -54,6 +54,7 @@ import org.entirej.applicationframework.rwt.application.form.containers.EJRWTTra
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTTrayPane;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJStackedPane;
+import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppFormRenderer;
 import org.entirej.applicationframework.rwt.renderers.form.EJDrawerFolder.DrawerTab;
@@ -223,7 +224,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 }
 
                 EJRWTFormRenderer renderer = (EJRWTFormRenderer) formController.getEmbeddedForm().getRenderer();
-                final ScrolledComposite scrollComposite = new ScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
+                final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
                 renderer.createControl(scrollComposite);
                 scrollComposite.setContent(renderer.getGuiComponent());
                 scrollComposite.setExpandHorizontal(true);
@@ -675,7 +676,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         return control;
                     }
 
-                    final ScrolledComposite scrollComposite = new ScrolledComposite(stackedPane, SWT.V_SCROLL | SWT.H_SCROLL);
+                    final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(stackedPane, SWT.V_SCROLL | SWT.H_SCROLL);
                     control = scrollComposite;
                     final EJRWTEntireJGridPane pagePane = new EJRWTEntireJGridPane(scrollComposite, page.getNumCols());
                     pagePane.cleanLayout();
@@ -1661,7 +1662,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     public void createBody(Composite parent)
                     {
                         parent.setLayout(new FillLayout());
-                        final ScrolledComposite scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+                        final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 
                         EJRWTEntireJGridPane _mainPane = new EJRWTEntireJGridPane(scrollComposite, numCols);
                         _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
@@ -2223,7 +2224,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     composite.cleanLayout();
                 }
 
-                final ScrolledComposite scrollComposite = new ScrolledComposite(composite, SWT.V_SCROLL);
+                final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL);
 
                 shell = new EJRWTEntireJGridPane(scrollComposite, 2);
 

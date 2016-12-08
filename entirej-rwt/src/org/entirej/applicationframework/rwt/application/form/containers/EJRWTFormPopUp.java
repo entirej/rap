@@ -26,6 +26,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppFormRenderer;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
 import org.entirej.framework.core.renderers.EJManagedFormRendererWrapper;
@@ -60,7 +61,7 @@ public class EJRWTFormPopUp
             public void createBody(Composite parent)
             {
                 parent.setLayout(new FillLayout());
-                final ScrolledComposite scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+                final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
                 formRenderer.createControl(scrollComposite);
                 scrollComposite.setContent(formRenderer.getGuiComponent());
                 scrollComposite.setExpandHorizontal(true);

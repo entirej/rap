@@ -48,6 +48,7 @@ import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormClos
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormContainer;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormOpenedListener;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormSelectedListener;
+import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.applicationframework.rwt.renderers.form.EJRWTFormRenderer;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
 import org.entirej.framework.core.internal.EJInternalForm;
@@ -243,7 +244,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                         public void createBody(Composite parent)
                         {
                             parent.setLayout(new FillLayout());
-                            final ScrolledComposite scrollComposite = new ScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+                            final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
                             formRenderer.createControl(scrollComposite);
                             scrollComposite.setContent(formRenderer.getGuiComponent());
                             scrollComposite.setExpandHorizontal(true);

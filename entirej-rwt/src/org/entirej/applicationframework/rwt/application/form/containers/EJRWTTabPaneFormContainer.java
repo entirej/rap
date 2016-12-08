@@ -39,6 +39,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTAppComponentRenderer;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormContainer;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormSelectedListener;
+import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.applicationframework.rwt.renderers.form.EJRWTFormRenderer;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
 import org.entirej.framework.core.internal.EJInternalForm;
@@ -148,7 +149,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         tabItem.setData(form);
 
         EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
-        final ScrolledComposite scrollComposite = new ScrolledComposite(_folder, SWT.V_SCROLL | SWT.H_SCROLL);
+        final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(_folder, SWT.V_SCROLL | SWT.H_SCROLL);
         renderer.createControl(scrollComposite);
         scrollComposite.setContent(renderer.getGuiComponent());
         scrollComposite.setExpandHorizontal(true);
