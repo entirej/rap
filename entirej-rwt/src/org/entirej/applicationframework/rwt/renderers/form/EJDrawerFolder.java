@@ -292,8 +292,8 @@ public class EJDrawerFolder extends Composite
         public void create(boolean b)
         {
 
-            if (tabPages.size() > 0)
-                addSeperator();
+            
+               
 
             Display current = Display.getCurrent();
             shell = new Shell(current, SWT.NO_TRIM | SWT.ON_TOP);
@@ -349,7 +349,7 @@ public class EJDrawerFolder extends Composite
             
             
             rotatingButton = new TabButton(EJDrawerFolder.this, SWT.None);
-            
+            addSeperator();
             if (position == EJCanvasDrawerPosition.RIGHT && tabPages.size()==0)
             {
 //                seprator.dispose();
