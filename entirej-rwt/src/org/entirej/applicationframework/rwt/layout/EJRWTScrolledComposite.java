@@ -17,6 +17,6 @@ public class EJRWTScrolledComposite extends ScrolledComposite
     public Point getOrigin()
     {
 
-        return isDisposed() ? new Point(0, 0) : super.getOrigin();
+        return isDisposed() || (getContent() == null || getContent().isDisposed()) ? new Point(0, 0) : super.getOrigin();
     }
 }
