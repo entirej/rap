@@ -73,8 +73,14 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 			this.ready = true;
 			var area = this.parent.getClientArea();
 			
+			try
+			{
+				this.editor.resize(area[2], area[3]);
+			}catch(e)
+			{
+				//ignore
+			}
 			
-			this.editor.resize(area[2], area[3]);
 			this.layout();
 			if (this._text) {
 				this.setText(this._text);
@@ -321,18 +327,31 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 		onSend : function() {
 			if (this.editor.checkDirty()) {
 				rap.getRemoteObject(this).set("text", this.editor.getData());
+				try
+				{
+					this.editor.resetDirty();
+				}catch(e)
+				{
+					//ignore
+				}
 				
-				this.editor.resetDirty();
 			}
 		},
 
 		setText : function(text) {
 			if (this.ready) {
-				this.editor.setData(text);
-				if(this.removeToolbar && this.editor.isReadOnly && this.editor.isReadOnly())
+				try
 				{
-					this.elementReadonly.innerHTML = (this.editor.document.getBody().getHtml());
+				    this.editor.setData(text);
+					if(this.removeToolbar && this.editor.isReadOnly && this.editor.isReadOnly())
+					{
+						this.elementReadonly.innerHTML = (this.editor.document.getBody().getHtml());
+					}
+				}catch(e)
+				{
+					//ignore
 				}
+				
 				
 			} else {
 				this._text = text;
@@ -353,24 +372,30 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 
 		setEnable : function(enable) {
 			if (this.ready) {
-				this.editor.setReadOnly(!enable);
-				if(this.removeToolbar)
+				try
 				{
-					if (enable) {
-						this.elementReadonly.style.visibility = "hidden";
+					this.editor.setReadOnly(!enable);
+					if(this.removeToolbar)
+					{
+						if (enable) {
+							this.elementReadonly.style.visibility = "hidden";
+							this.element.style.visibility = "visible";
+							this.elementReadonly.innerHTML = '';
+						} else {
+		
+							this.elementReadonly.innerHTML = (this.editor.document.getBody().getHtml());
+							this.element.style.visibility = "hidden";
+							this.elementReadonly.style.visibility = "visible";
+		
+						}	
+					}
+					else
+					{
 						this.element.style.visibility = "visible";
-						this.elementReadonly.innerHTML = '';
-					} else {
-	
-						this.elementReadonly.innerHTML = (this.editor.document.getBody().getHtml());
-						this.element.style.visibility = "hidden";
-						this.elementReadonly.style.visibility = "visible";
-	
-					}	
-				}
-				else
+					}
+				}catch(e)
 				{
-					this.element.style.visibility = "visible";
+					//ignore
 				}
 				
 
@@ -403,8 +428,14 @@ var CKEDITOR_BASEPATH = "rwt-resources/ckeditor/";
 					this.elementReadonly.style.left = area[0] + "px";
 					this.elementReadonly.style.top = area[1] + "px";
 				}
+				try
+				{
+					this.editor.resize(area[2], area[3]);
+				}catch(e)
+				{
+					//ignore
+				}
 				
-				this.editor.resize(area[2], area[3]);
 			}
 		}
 
