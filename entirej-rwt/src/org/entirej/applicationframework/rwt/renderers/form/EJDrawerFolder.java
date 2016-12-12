@@ -374,7 +374,7 @@ public class EJDrawerFolder extends Composite
                         composite.layout(true);
                     }
                     showTab(true);
-                    selection(page.getName());
+                   
                 }
 
             });
@@ -395,11 +395,12 @@ public class EJDrawerFolder extends Composite
             if (toggle && shell.isVisible())
             {
                 shell.setVisible(false);
-                selection(null);
+               // selection(null);
                 active.rotatingButton.setSelection(false);
             }
             else
             {
+                
                 Point point = EJDrawerFolder.this.toDisplay(0, 0);
                 Rectangle bounds = EJDrawerFolder.this.getBounds();
 
@@ -409,6 +410,7 @@ public class EJDrawerFolder extends Composite
                     shell.setLocation((point.x - page.getDrawerWidth())+1, point.y);
                 shell.setSize(page.getDrawerWidth(), bounds.height);
                 shell.open();
+                selection(active.page.getName());
             }
         }
 
