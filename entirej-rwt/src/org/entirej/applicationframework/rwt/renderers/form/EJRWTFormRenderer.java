@@ -177,12 +177,12 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     @Override
     public void showStackedPage(final String canvasName, final String pageName)
     {
-        Display.getDefault().asyncExec(new Runnable()
-        {
-
-            @Override
-            public void run()
-            {
+//        Display.getDefault().asyncExec(new Runnable()
+//        {
+//
+//            @Override
+//            public void run()
+//            {
                 if (canvasName != null && pageName != null)
                 {
                     EJRWTEntireJStackedPane cardPane = _stackedPanes.get(canvasName);
@@ -196,8 +196,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     }
                 }
 
-            }
-        });
+//            }
+//        });
 
     }
 
@@ -1002,7 +1002,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             if (page.isVisible())
             {
 
-                tab.create(true); //tab.create(index == 0);
+                tab.create(index == 0);
             }
             tab.setIndex(index);
             index++;
