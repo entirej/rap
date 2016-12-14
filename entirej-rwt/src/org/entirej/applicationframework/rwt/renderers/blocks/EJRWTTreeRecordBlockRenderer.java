@@ -1157,23 +1157,30 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 }
                 return false;
             }
-            private void addParents(Object rv, Map<Object, List<EJDataRecord>> fcmap2)
+            private void addParents(EJDataRecord record)
             {
-                if (rv != null)
+                if (record!=null)
                 {
-                    EJDataRecord parent = (EJDataRecord) fullindexMap.get(rv);
+                    
+                    
+                    EJDataRecord parent = (EJDataRecord) getParent(record);
+                    
                     if (parent != null && !root.contains(parent))
                     {
                         Object rV = parent.getValue(rid);
-                        List<EJDataRecord> list = cmap.get(rV);
-                        if (list == null)
+                        if(rV!=null)
                         {
-                            list = new ArrayList<EJDataRecord>();
-                            fcmap2.put(rV, list);
+                            List<EJDataRecord> list = fcmap.get(rV);
+                            if (list == null)
+                            {
+                                list = new ArrayList<EJDataRecord>();
+                                fcmap.put(rV, list);
+                            }
+                            if(!list.contains(parent))
+                                list.add(parent);
+                            addParents(parent);
                         }
-                        if(!list.contains(parent))
-                            list.add(parent);
-                        addParents(rV, fcmap);
+                        
                     }
                 }
 
@@ -1198,7 +1205,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                             if (matchItem(record))
                             {
                                 fvalues.add(record);
-                                addParents(record.getValue(rid), fcmap);
+                                addParents(record);
                             }
                         }
                     }
