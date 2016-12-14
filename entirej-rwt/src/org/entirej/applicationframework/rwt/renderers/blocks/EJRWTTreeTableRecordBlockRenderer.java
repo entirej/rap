@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 Mojave Innovations GmbH
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ * Contributors: Mojave Innovations GmbH - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.blocks;
 
@@ -314,24 +313,24 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             msg = "Are you sure you want to delete the current record?";
         }
         EJMessage message = new EJMessage(msg);
-        EJQuestion question = new EJQuestion(new EJForm(_block.getForm()), "DELETE_RECORD", "Delete", message, "Yes", "No"){
-            
+        EJQuestion question = new EJQuestion(new EJForm(_block.getForm()), "DELETE_RECORD", "Delete", message, "Yes", "No")
+        {
+
             @Override
             public void setAnswer(EJQuestionButton answerButton)
             {
-                
+
                 super.setAnswer(answerButton);
-                
+
                 if (EJQuestionButton.ONE == answerButton)
                 {
                     _block.getBlock().deleteRecord(recordToDelete);
                 }
                 _block.setRendererFocus(true);
             }
-            
+
         };
         _block.getForm().getMessenger().askQuestion(question);
-      
 
     }
 
@@ -627,16 +626,11 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             if (propertyGroup != null)
             {
 
-                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_QUERY_KEY),
-                        EJRWTSingleRecordBlockDefinitionProperties.ACTION_QUERY_KEY);
-                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_INSERT_KEY),
-                        EJRWTSingleRecordBlockDefinitionProperties.ACTION_INSERT_KEY);
-                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_UPDATE_KEY),
-                        EJRWTSingleRecordBlockDefinitionProperties.ACTION_UPDATE_KEY);
-                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_DELETE_KEY),
-                        EJRWTSingleRecordBlockDefinitionProperties.ACTION_DELETE_KEY);
-                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_REFRESH_KEY),
-                        EJRWTSingleRecordBlockDefinitionProperties.ACTION_REFRESH_KEY);
+                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_QUERY_KEY), EJRWTSingleRecordBlockDefinitionProperties.ACTION_QUERY_KEY);
+                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_INSERT_KEY), EJRWTSingleRecordBlockDefinitionProperties.ACTION_INSERT_KEY);
+                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_UPDATE_KEY), EJRWTSingleRecordBlockDefinitionProperties.ACTION_UPDATE_KEY);
+                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_DELETE_KEY), EJRWTSingleRecordBlockDefinitionProperties.ACTION_DELETE_KEY);
+                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_REFRESH_KEY), EJRWTSingleRecordBlockDefinitionProperties.ACTION_REFRESH_KEY);
 
             }
         }
@@ -668,10 +662,8 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
         {
             sectionProperties = _rendererProp.getPropertyGroup(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR);
         }
-        if (sectionProperties != null
-                && sectionProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE) != null
-                && !EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE_GROUP.equals(sectionProperties
-                        .getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE)))
+        if (sectionProperties != null && sectionProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE) != null
+                && !EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE_GROUP.equals(sectionProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE)))
         {
             int style = ExpandableComposite.TITLE_BAR;
 
@@ -721,8 +713,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 section.setClient(_mainPane);
             }
 
-            final EJFrameworkExtensionPropertyList propertyList = sectionProperties
-                    .getPropertyList(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_ACTIONS);
+            final EJFrameworkExtensionPropertyList propertyList = sectionProperties.getPropertyList(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_ACTIONS);
 
             if (propertyList != null && propertyList.getAllListEntries().size() > 0)
             {
@@ -813,8 +804,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             style = style | SWT.BORDER;
         }
 
-        Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN)
-                .getAllItemGroupProperties();
+        Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN).getAllItemGroupProperties();
         final Tree table;
         final EJRWTAbstractFilteredTree filterTree;
         if (_rendererProp.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.FILTER, true))
@@ -834,8 +824,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                         @Override
                         public void filter(String filter)
                         {
-                            if (_filteredContentProvider != null
-                                    && (filter == null && _filteredContentProvider.getFilter() != null || !filter.equals(_filteredContentProvider.getFilter())))
+                            if (_filteredContentProvider != null && (filter == null && _filteredContentProvider.getFilter() != null || !filter.equals(_filteredContentProvider.getFilter())))
                             {
                                 _filteredContentProvider.setFilter(filter);
                                 refresh(filter);
@@ -850,8 +839,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                         @Override
                         public void filter(String filter)
                         {
-                            if (_filteredContentProvider != null
-                                    && (filter == null && _filteredContentProvider.getFilter() != null || !filter.equals(_filteredContentProvider.getFilter())))
+                            if (_filteredContentProvider != null && (filter == null && _filteredContentProvider.getFilter() != null || !filter.equals(_filteredContentProvider.getFilter())))
                             {
                                 _filteredContentProvider.setFilter(filter);
                                 refresh(filter);
@@ -868,8 +856,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     @Override
                     public void filter(String filter)
                     {
-                        if (_filteredContentProvider != null
-                                && (filter == null && _filteredContentProvider.getFilter() != null || !filter.equals(_filteredContentProvider.getFilter())))
+                        if (_filteredContentProvider != null && (filter == null && _filteredContentProvider.getFilter() != null || !filter.equals(_filteredContentProvider.getFilter())))
                         {
                             _filteredContentProvider.setFilter(filter);
                             refresh(filter);
@@ -1171,6 +1158,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                             if (matchItem(record))
                             {
                                 fvalues.add(record);
+                                addParents(record.getValue(rid), fcmap);
                             }
                         }
                     }
@@ -1262,6 +1250,28 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                         addSubRecords(record.getValue(pid), cmap);
                     }
 
+                }
+
+            }
+
+            private void addParents(Object rv, Map<Object, List<EJDataRecord>> fcmap2)
+            {
+                if (rv != null)
+                {
+                    EJDataRecord parent = (EJDataRecord) indexMap.get(rv);
+                    if (parent != null && !root.contains(parent))
+                    {
+                        Object rV = parent.getValue(rid);
+                        List<EJDataRecord> list = cmap.get(rV);
+                        if (list == null)
+                        {
+                            list = new ArrayList<EJDataRecord>();
+                            fcmap2.put(rV, list);
+                        }
+                        if(!list.contains(parent))
+                            list.add(parent);
+                        addParents(rV, fcmap);
+                    }
                 }
 
             }
@@ -1474,15 +1484,14 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
                 if (visualAttribute != null)
                 {
-                    EJCoreVisualAttributeProperties va = EJCoreProperties.getInstance().getVisualAttributesContainer()
-                            .getVisualAttributeProperties(visualAttribute);
+                    EJCoreVisualAttributeProperties va = EJCoreProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(visualAttribute);
                     if (va != null)
                     {
                         itemRenderer.setInitialVisualAttribute(va);
                     }
                 }
-                
-                if(item.getProperties().getVisualAttributeProperties()!=null)
+
+                if (item.getProperties().getVisualAttributeProperties() != null)
                 {
                     renderer.setVisualAttribute(item.getProperties().getVisualAttributeProperties());
                 }
@@ -1541,8 +1550,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public void keyReleased(KeyEvent arg0)
     {
         int keyCode = arg0.keyCode;
-        KeyInfo keyInfo = EJRWTKeysUtil
-                .toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
+        KeyInfo keyInfo = EJRWTKeysUtil.toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
 
         String actionID = _actionInfoMap.get(keyInfo);
         if (actionID != null)

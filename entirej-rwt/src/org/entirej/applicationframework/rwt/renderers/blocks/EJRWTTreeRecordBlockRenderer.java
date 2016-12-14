@@ -1156,7 +1156,27 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 }
                 return false;
             }
+            private void addParents(Object rv, Map<Object, List<EJDataRecord>> fcmap2)
+            {
+                if (rv != null)
+                {
+                    EJDataRecord parent = (EJDataRecord) indexMap.get(rv);
+                    if (parent != null && !root.contains(parent))
+                    {
+                        Object rV = parent.getValue(rid);
+                        List<EJDataRecord> list = cmap.get(rV);
+                        if (list == null)
+                        {
+                            list = new ArrayList<EJDataRecord>();
+                            fcmap2.put(rV, list);
+                        }
+                        if(!list.contains(parent))
+                            list.add(parent);
+                        addParents(rV, fcmap);
+                    }
+                }
 
+            }
             @Override
             public void inputChanged(Viewer arg0, Object arg1, Object arg2)
             {
@@ -1177,6 +1197,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                             if (matchItem(record))
                             {
                                 fvalues.add(record);
+                                addParents(record.getValue(rid), fcmap);
                             }
                         }
                     }
