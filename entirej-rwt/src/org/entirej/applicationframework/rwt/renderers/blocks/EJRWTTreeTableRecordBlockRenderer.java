@@ -1117,6 +1117,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
         {
             private List<EJDataRecord>              root     = new ArrayList<EJDataRecord>();
             private Map<Object, Object>             indexMap = new HashMap<Object, Object>();
+            private Map<Object, Object>             fullindexMap = new HashMap<Object, Object>();
             private Map<Object, List<EJDataRecord>> cmap     = new HashMap<Object, List<EJDataRecord>>();
 
             private List<EJDataRecord>              froot    = new ArrayList<EJDataRecord>();
@@ -1189,6 +1190,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     }
                     root.clear();
                     indexMap.clear();
+                    fullindexMap.clear();
                     froot.clear();
                     cmap.clear();
                     fcmap.clear();
@@ -1197,6 +1199,10 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     {
                         Object rV = record.getValue(rid);
                         Object pV = record.getValue(pid);
+                        if(pV!=null)
+                        {
+                            fullindexMap.put(pV, record);
+                        }
                         if (rV == null)
                         {
                             root.add(record);
@@ -1258,7 +1264,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             {
                 if (rv != null)
                 {
-                    EJDataRecord parent = (EJDataRecord) indexMap.get(rv);
+                    EJDataRecord parent = (EJDataRecord) fullindexMap.get(rv);
                     if (parent != null && !root.contains(parent))
                     {
                         Object rV = parent.getValue(rid);
@@ -1297,6 +1303,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             {
                 root.clear();
                 indexMap.clear();
+                fullindexMap.clear();
                 cmap.clear();
                 froot.clear();
                 fcmap.clear();
@@ -1341,7 +1348,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     Object rV = record.getValue(rid);
                     if (rV != null)
                     {
-                        return indexMap.get(rV);
+                        return fullindexMap.get(rV);
                     }
                 }
                 return null;
