@@ -137,6 +137,10 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     private FilteredContentProvider   _filteredContentProvider;
     private List<EJDataRecord>        _tableBaseRecords = new ArrayList<EJDataRecord>();
 
+    private EJRWTAbstractFilteredTable filterTree;
+
+    private String filterText;
+
     protected void clearFilter()
     {
         if (_filteredContentProvider != null)
@@ -145,6 +149,27 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
         }
     }
 
+    @Override
+    public void setFilter(String filter)
+    {
+        throw new IllegalStateException("not supported yet");
+//        this.filterText = filter;
+//        if(filterTree!=null)
+//        {
+//            filterTree.setFilterText(filter);
+//            filterTree.filter(filter);
+//        }
+        
+    }
+    
+    @Override
+    public String getFilter()
+    {
+        throw new IllegalStateException("not supported yet");
+       // return filterText;
+       
+    }
+    
     @Override
     public void refreshBlockProperty(EJManagedBlockProperty managedBlockPropertyType)
     {
@@ -806,7 +831,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
         Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN)
                 .getAllItemGroupProperties();
         final Table table;
-        final EJRWTAbstractFilteredTable filterTree;
+        
         if (rendererProp.getBooleanProperty(EJRWTTreeBlockDefinitionProperties.FILTER, false))
         {
             if (allItemGroupProperties.size() > 0)

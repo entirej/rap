@@ -1646,4 +1646,25 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
         }
         return SWT.LEFT;
     }
+    
+    @Override
+    public void setFilter(String filter)
+    {
+        throw new IllegalStateException("not supported yet");
+//        this.filterText = filter;
+//        if(filterTree!=null)
+//        {
+//            filterTree.setFilterText(filter);
+//            filterTree.filter(filter);
+//        }
+        
+    }
+    
+    @Override
+    public String getFilter()
+    {
+        throw new IllegalStateException("not supported yet");
+       // return filterText;
+       
+    }
 }

@@ -1599,4 +1599,25 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         control.setData(EJ_RWT.ACTIVE_KEYS, subActions.toArray(new String[0]));
         control.addKeyListener(this);
     }
+    
+    @Override
+    public void setFilter(String filter)
+    {
+        throw new IllegalStateException("not supported yet");
+//        this.filterText = filter;
+//        if(filterTree!=null)
+//        {
+//            filterTree.setFilterText(filter);
+//            filterTree.filter(filter);
+//        }
+        
+    }
+    
+    @Override
+    public String getFilter()
+    {
+        throw new IllegalStateException("not supported yet");
+       // return filterText;
+       
+    }
 }
