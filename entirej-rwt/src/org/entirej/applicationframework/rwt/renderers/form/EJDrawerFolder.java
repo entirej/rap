@@ -337,7 +337,6 @@ public class EJDrawerFolder extends Composite
         EJRWTEntireJGridPane   composite;
         final AtomicBoolean    init = new AtomicBoolean(true);
         private TabButton      rotatingButton;
-       private AtomicBoolean eventHandle = new AtomicBoolean(true);
 
         DrawerTab(EJDrawerPageProperties page)
         {
@@ -348,7 +347,7 @@ public class EJDrawerFolder extends Composite
         {
 
             Display current = Display.getCurrent();
-            shell = new Shell(current, SWT.NO_TRIM | SWT.ON_TOP);
+            shell = new Shell(current, SWT.RESIZE | SWT.ON_TOP);
             shell.addListener(SWT.Deactivate, new Listener()
             {
                 
@@ -357,16 +356,17 @@ public class EJDrawerFolder extends Composite
                 {
                    if(shell.isVisible() )
                    {
-                       showTab(true);
-                       eventHandle.set(false);
+                      
+                       
                        Display.getDefault().asyncExec(new Runnable()
                     {
                         
                         @Override
                         public void run()
                         {
-                            eventHandle.set(true);
-                            
+                            shell.setVisible(false);
+                            // selection(null);
+                            active.rotatingButton.setSelection(false);
                         }
                     });
                    }
@@ -447,10 +447,7 @@ public class EJDrawerFolder extends Composite
                         }
                         composite.layout(true);
                     }
-                    if(eventHandle.get())
-                        showTab(true);
-                    else
-                        eventHandle.set(true);
+                    showTab(true);
 
                 }
 
