@@ -337,6 +337,7 @@ public class EJDrawerFolder extends Composite
         EJRWTEntireJGridPane   composite;
         final AtomicBoolean    init = new AtomicBoolean(true);
         private TabButton      rotatingButton;
+        protected long      deactive;
 
         DrawerTab(EJDrawerPageProperties page)
         {
@@ -367,6 +368,7 @@ public class EJDrawerFolder extends Composite
                             shell.setVisible(false);
                             // selection(null);
                             active.rotatingButton.setSelection(false);
+                            active.deactive = System.currentTimeMillis();
                         }
                     });
                    }
@@ -462,6 +464,11 @@ public class EJDrawerFolder extends Composite
             {
                 active.shell.setVisible(false);
                 active.rotatingButton.setSelection(false);
+            }
+            
+            if(Math.abs(deactive-System.currentTimeMillis())<300)
+            {
+                return;//avoid close events
             }
             active = this;
             active.rotatingButton.setSelection(true);
