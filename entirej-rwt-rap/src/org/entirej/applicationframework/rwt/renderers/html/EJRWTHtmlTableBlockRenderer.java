@@ -2218,21 +2218,19 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public void setFilter(String filter)
     {
-        throw new IllegalStateException("not supported yet");
-//        this.filterText = filter;
-//        if(filterTree!=null)
-//        {
-//            filterTree.setFilterText(filter);
-//            filterTree.filter(filter);
-//        }
+        if(_filteredContentProvider!=null)
+        {
+            _filteredContentProvider.setFilter(filter);
+            createHTML();
+        }
         
     }
     
     @Override
     public String getFilter()
     {
-        throw new IllegalStateException("not supported yet");
-       // return filterText;
+       
+        return _filteredContentProvider!=null ? _filteredContentProvider.getFilter():null;
        
     }
     

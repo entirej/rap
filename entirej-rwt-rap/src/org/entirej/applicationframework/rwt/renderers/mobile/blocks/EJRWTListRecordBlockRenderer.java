@@ -140,11 +140,22 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
 
     private List<EJDataRecord>        tableBaseRecords = new ArrayList<EJDataRecord>();
 
+    private String filterText;
+    private EJRWTAbstractFilteredTable filterTree;
+
     protected void clearFilter()
     {
         if (filteredContentProvider != null)
         {
             filteredContentProvider.setFilter(null);
+        }
+    }
+    protected void applyFileter()
+    {
+        if (filterText != null && !filterText.isEmpty())
+        {
+            filterTree.setFilterText(filterText);
+            filterTree.filter(filterText);
         }
     }
 
@@ -239,6 +250,7 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         {
             clearFilter();
             _tableViewer.setInput(new Object());
+            applyFileter();
         }
         notifyStatus();
     }
@@ -349,6 +361,7 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         {
             clearFilter();
             _tableViewer.setInput(new Object());
+            applyFileter();
         }
         selectRow(0);
 
@@ -360,6 +373,7 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         {
             clearFilter();
             _tableViewer.setInput(new Object());
+            applyFileter();
         }
         selectRow(0);
     }
@@ -377,6 +391,7 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         {
             clearFilter();
             _tableViewer.setInput(new Object());
+            applyFileter();
 
         }
         if (recordAt != null)
@@ -390,6 +405,7 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
         {
             clearFilter();
             _tableViewer.setInput(new Object());
+            applyFileter();
         }
         recordSelected(record);
     }
@@ -760,7 +776,7 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 .getAllItemGroupProperties();
         final Table table;
         final boolean hideSelection = (style & SWT.HIDE_SELECTION) != 0;
-        final EJRWTAbstractFilteredTable filterTree;
+       // final EJRWTAbstractFilteredTable filterTree;
         if (rendererProp.getBooleanProperty(EJRWTTreeBlockDefinitionProperties.FILTER, false))
         {
             if (allItemGroupProperties.size() > 0)
@@ -783,6 +799,7 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                                     && ((filter == null && filteredContentProvider.getFilter() != null) || !filter.equals(filteredContentProvider.getFilter())))
                             {
                                 filteredContentProvider.setFilter(filter);
+                                filterText = filter;
                                 getViewer().setInput(filter);
                                 notifyStatus();
                             }
@@ -825,6 +842,7 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                                     && ((filter == null && filteredContentProvider.getFilter() != null) || !filter.equals(filteredContentProvider.getFilter())))
                             {
                                 filteredContentProvider.setFilter(filter);
+                                filterText = filter;
                                 getViewer().setInput(filter);
                                 notifyStatus();
                             }
@@ -869,6 +887,7 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                                 && ((filter == null && filteredContentProvider.getFilter() != null) || !filter.equals(filteredContentProvider.getFilter())))
                         {
                             filteredContentProvider.setFilter(filter);
+                            filterText = filter;
                             getViewer().setInput(filter);
                             notifyStatus();
                         }
