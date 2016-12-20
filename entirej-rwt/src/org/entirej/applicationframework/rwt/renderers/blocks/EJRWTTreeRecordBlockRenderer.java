@@ -475,6 +475,24 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
             }
         }
     }
+    public void filaterData(Object input)
+    {
+        if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
+        {
+            TreeViewer treeview = _tableViewer;
+            if (treeview != null)
+            {
+                Object[] expanded = treeview.getExpandedElements();
+                
+                treeview.getControl().setRedraw(false);
+               
+                _tableViewer.setInput(input);
+                treeview.setExpandedElements(expanded);
+                treeview.getControl().setRedraw(true);
+                treeview.refresh();
+            }
+        }
+    }
 
     @Override
     public void recordInserted(EJDataRecord record)
@@ -872,7 +890,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                                 filteredContentProvider.setFilter(filter);
 
                                 filterText =filter;
-                                refresh(filter);
+                                filaterData(filter);
                             }
                         }
                     };
@@ -889,7 +907,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                                 filteredContentProvider.setFilter(filter);
 
                                 filterText =filter;
-                                refresh(filter);
+                                filaterData(filter);
                             }
                         }
                     };
@@ -909,7 +927,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                             filteredContentProvider.setFilter(filter);
 
                             filterText =filter;
-                            refresh(filter);
+                            filaterData(filter);
                         }
                     }
                 };
