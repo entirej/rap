@@ -148,25 +148,35 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
             _filteredContentProvider.setFilter(null);
         }
     }
+    protected void applyFileter()
+    {
+        if (filterText != null && !filterText.isEmpty())
+        {
+            filterTree.setFilterText(filterText);
+            filterTree.filter(filterText);
+        }
+    }
 
     @Override
     public void setFilter(String filter)
     {
-        throw new IllegalStateException("not supported yet");
-//        this.filterText = filter;
-//        if(filterTree!=null)
-//        {
-//            filterTree.setFilterText(filter);
-//            filterTree.filter(filter);
-//        }
+        this.filterText = filter;
+        if(filterText!=null && !filterText.isEmpty())
+        {
+            applyFileter();
+        }
+        else
+        {
+            filterTree.clearText();
+            clearFilter();
+        }
         
     }
     
     @Override
     public String getFilter()
     {
-        throw new IllegalStateException("not supported yet");
-       // return filterText;
+        return filterText;
        
     }
     
@@ -301,6 +311,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
         {
             clearFilter();
             _tableViewer.setInput(new Object());
+            
         }
         notifyStatus();
     }
@@ -418,6 +429,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
         {
             clearFilter();
             _tableViewer.setInput(new Object());
+            applyFileter();
         }
         selectRow(0);
 
@@ -429,6 +441,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
         {
             clearFilter();
             _tableViewer.setInput(new Object());
+            applyFileter();
         }
         selectRow(0);
     }
@@ -446,6 +459,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
         {
             clearFilter();
             _tableViewer.setInput(new Object());
+            applyFileter();
         }
         if (recordAt != null)
         {
@@ -460,6 +474,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
         {
             clearFilter();
             _tableViewer.setInput(new Object());
+            applyFileter();
         }
         recordSelected(record);
     }
@@ -1074,6 +1089,15 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
         _tableViewer.setContentProvider(_filteredContentProvider = new FilteredContentProvider()
         {
+            @Override
+            public void setFilter(String filter)
+            {
+             
+                super.setFilter(filter);
+               filterText = filter;
+               System.out.println("EJRWTMultiRecordBlockRenderer.buildGuiComponent(...).new FilteredContentProvider() {...}.setFilter()");
+               System.err.println(filterText);
+            }
             boolean matchItem(EJDataRecord rec)
             {
                 if (filter != null && filter.trim().length() > 0)
