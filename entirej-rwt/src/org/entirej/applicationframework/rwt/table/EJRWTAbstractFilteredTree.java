@@ -229,7 +229,7 @@ public abstract class EJRWTAbstractFilteredTree extends Composite
         }
     }
 
-    protected void setFilterText(String string)
+    public void setFilterText(String string)
     {
         if (_filterText != null && !_filterText.isDisposed())
         {

@@ -141,6 +141,50 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     private FilteredContentProvider        _filteredContentProvider;
 
+    
+    private String filterText;
+
+    private EJRWTAbstractFilteredTree filterTree;
+
+    protected void clearFilter()
+    {
+        if (_filteredContentProvider != null)
+        {
+            _filteredContentProvider.setFilter(null);
+        }
+    }
+    protected void applyFileter()
+    {
+        if (filterText != null && !filterText.isEmpty())
+        {
+            filterTree.setFilterText(filterText);
+            filterTree.filter(filterText);
+        }
+    }
+
+    @Override
+    public void setFilter(String filter)
+    {
+        this.filterText = filter;
+        if(filterText!=null && !filterText.isEmpty())
+        {
+            applyFileter();
+        }
+        else
+        {
+            filterTree.clearText();
+            clearFilter();
+        }
+        
+    }
+    
+    @Override
+    public String getFilter()
+    {
+        return filterText;
+       
+    }
+    
     @Override
     public void refreshBlockProperty(EJManagedBlockProperty managedBlockPropertyType)
     {
@@ -269,7 +313,9 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     {
         if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
         {
+            clearFilter();
             _tableViewer.setInput(new Object());
+            applyFileter();
         }
     }
 
@@ -388,7 +434,9 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     {
         if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
         {
+            clearFilter();
             _tableViewer.setInput(new Object());
+            applyFileter();
         }
         selectFirst();
     }
@@ -397,7 +445,9 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     {
         if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
         {
-            _tableViewer.refresh();
+            clearFilter();
+            _tableViewer.setInput(new Object());
+            applyFileter();
         }
         selectFirst();
     }
@@ -438,7 +488,9 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 Object[] expanded = treeview.getExpandedElements();
 
                 treeview.getControl().setRedraw(false);
-                treeview.setInput(input);
+                clearFilter();
+                _tableViewer.setInput(new Object());
+                applyFileter();
                 treeview.setExpandedElements(expanded);
                 treeview.getControl().setRedraw(true);
                 treeview.refresh();
@@ -806,7 +858,6 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
         Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN).getAllItemGroupProperties();
         final Tree table;
-        final EJRWTAbstractFilteredTree filterTree;
         if (_rendererProp.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.FILTER, true))
         {
             if (allItemGroupProperties.size() > 0)
@@ -827,6 +878,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                             if (_filteredContentProvider != null && (filter == null && _filteredContentProvider.getFilter() != null || !filter.equals(_filteredContentProvider.getFilter())))
                             {
                                 _filteredContentProvider.setFilter(filter);
+                                filterText = filter;
                                 refresh(filter);
                             }
                         }
@@ -842,6 +894,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                             if (_filteredContentProvider != null && (filter == null && _filteredContentProvider.getFilter() != null || !filter.equals(_filteredContentProvider.getFilter())))
                             {
                                 _filteredContentProvider.setFilter(filter);
+                                filterText = filter;
                                 refresh(filter);
                             }
                         }
@@ -859,6 +912,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                         if (_filteredContentProvider != null && (filter == null && _filteredContentProvider.getFilter() != null || !filter.equals(_filteredContentProvider.getFilter())))
                         {
                             _filteredContentProvider.setFilter(filter);
+                            filterText = filter;
                             refresh(filter);
                         }
                     }
@@ -1647,24 +1701,5 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
         return SWT.LEFT;
     }
     
-    @Override
-    public void setFilter(String filter)
-    {
-        throw new IllegalStateException("not supported yet");
-//        this.filterText = filter;
-//        if(filterTree!=null)
-//        {
-//            filterTree.setFilterText(filter);
-//            filterTree.filter(filter);
-//        }
-        
-    }
-    
-    @Override
-    public String getFilter()
-    {
-        throw new IllegalStateException("not supported yet");
-       // return filterText;
-       
-    }
+
 }

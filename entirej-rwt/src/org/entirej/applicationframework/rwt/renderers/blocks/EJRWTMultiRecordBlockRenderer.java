@@ -870,6 +870,8 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                                     && (filter == null && _filteredContentProvider.getFilter() != null || !filter.equals(_filteredContentProvider.getFilter())))
                             {
                                 _filteredContentProvider.setFilter(filter);
+
+                                filterText = filter;
                                 getViewer().setInput(filter);
                                 if (getFocusedRecord() == null)
                                 {
@@ -898,6 +900,8 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                                     && (filter == null && _filteredContentProvider.getFilter() != null || !filter.equals(_filteredContentProvider.getFilter())))
                             {
                                 _filteredContentProvider.setFilter(filter);
+
+                                filterText = filter;
                                 getViewer().setInput(filter);
                                 if (getFocusedRecord() == null)
                                 {
@@ -927,6 +931,8 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                                 && (filter == null && _filteredContentProvider.getFilter() != null || !filter.equals(_filteredContentProvider.getFilter())))
                         {
                             _filteredContentProvider.setFilter(filter);
+
+                            filterText = filter;
                             getViewer().setInput(filter);
                             if (getFocusedRecord() == null)
                             {
@@ -1089,15 +1095,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
         _tableViewer.setContentProvider(_filteredContentProvider = new FilteredContentProvider()
         {
-            @Override
-            public void setFilter(String filter)
-            {
-             
-                super.setFilter(filter);
-               filterText = filter;
-               System.out.println("EJRWTMultiRecordBlockRenderer.buildGuiComponent(...).new FilteredContentProvider() {...}.setFilter()");
-               System.err.println(filterText);
-            }
+            
             boolean matchItem(EJDataRecord rec)
             {
                 if (filter != null && filter.trim().length() > 0)
