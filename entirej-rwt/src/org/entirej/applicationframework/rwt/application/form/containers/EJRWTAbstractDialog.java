@@ -79,26 +79,26 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
     {
 
         
-        final ServerPushSession pushSession = new ServerPushSession();
-        pushSession.start();
-        final Display dp = Display.getDefault();
-        new java.util.Timer().schedule(new java.util.TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                dp.asyncExec(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        getShell().forceFocus();
-                        pushSession.stop();
-                    }
-                });
-
-            }
-        }, 100);
+//        final ServerPushSession pushSession = new ServerPushSession();
+//        pushSession.start();
+//        final Display dp = Display.getDefault();
+//        new java.util.Timer().schedule(new java.util.TimerTask()
+//        {
+//            @Override
+//            public void run()
+//            {
+//                dp.asyncExec(new Runnable()
+//                {
+//                    @Override
+//                    public void run()
+//                    {
+//                            getShell().forceFocus();
+//                        pushSession.stop();
+//                    }
+//                });
+//
+//            }
+//        }, 100);
         
     }
     
