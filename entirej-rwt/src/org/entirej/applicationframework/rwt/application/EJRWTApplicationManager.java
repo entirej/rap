@@ -29,6 +29,7 @@ import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.entirej.applicationframework.rwt.application.components.EJRWTStatusbar;
 import org.entirej.applicationframework.rwt.application.components.menu.EJRWTDefaultMenuBuilder;
 import org.entirej.applicationframework.rwt.application.components.menu.EJRWTDefaultMenuPropertiesBuilder;
 import org.entirej.applicationframework.rwt.application.components.menu.EJRWTMenuTreeRoot;
@@ -36,11 +37,13 @@ import org.entirej.applicationframework.rwt.application.interfaces.EJRWTApplicat
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormContainer;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderers.form.EJRWTFormRenderer;
+import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJFrameworkManager;
 import org.entirej.framework.core.EJManagedFrameworkConnection;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.EJParameterList;
 import org.entirej.framework.core.EJTranslatorHelper;
+import org.entirej.framework.core.actionprocessor.interfaces.EJApplicationActionProcessor;
 import org.entirej.framework.core.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.core.data.controllers.EJEmbeddedFormController;
 import org.entirej.framework.core.data.controllers.EJFormParameter;
@@ -50,6 +53,7 @@ import org.entirej.framework.core.data.controllers.EJQuestion;
 import org.entirej.framework.core.interfaces.EJApplicationManager;
 import org.entirej.framework.core.interfaces.EJMessenger;
 import org.entirej.framework.core.internal.EJInternalForm;
+import org.entirej.framework.core.processorfactories.EJActionProcessorFactory;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.report.EJReport;
@@ -59,6 +63,8 @@ import org.entirej.framework.report.EJReportParameterList;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
 import org.entirej.framework.report.interfaces.EJReportRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EJRWTApplicationManager implements EJApplicationManager, Serializable
 {
@@ -70,6 +76,9 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     private Shell                     shell;
 
     private List<EJInternalForm>      embeddedForms = new ArrayList<EJInternalForm>();
+    private  EJApplicationActionProcessor actionProcessor = null;
+
+    private static final Logger logger                    = LoggerFactory.getLogger(EJRWTApplicationManager.class);
 
     public EJRWTApplicationManager()
     {
@@ -101,6 +110,19 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     public void setFrameworkManager(EJFrameworkManager manager)
     {
         _frameworkManager = manager;
+        try
+        {
+            actionProcessor = EJActionProcessorFactory.getInstance().getActionProcessor(manager, EJCoreProperties.getInstance());
+        }
+        catch (EJApplicationException e)
+        {
+            logger.warn(e.getMessage());
+        }
+    }
+    
+    public EJApplicationActionProcessor getApplicationActionProcessor()
+    {
+        return actionProcessor;
     }
 
 

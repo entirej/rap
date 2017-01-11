@@ -86,14 +86,7 @@ public class EJRWTStatusbar implements EJRWTAppComponentRenderer
         panel.setData(EJ_RWT.CUSTOM_VARIANT, "applayout");
         
 
-        try
-        {
-            actionProcessor = EJActionProcessorFactory.getInstance().getActionProcessor(manager.getFrameworkManager(), EJCoreProperties.getInstance());
-        }
-        catch (EJApplicationException e)
-        {
-            logger.warn(e.getMessage());
-        }
+        actionProcessor =manager.getApplicationActionProcessor();
 
         final EJFrameworkExtensionPropertyList propertyList = rendererprop.getPropertyList(SECTIONS);
 

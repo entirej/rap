@@ -36,6 +36,7 @@ public class EJRWTBannerRendererDefinition implements EJDevAppComponentRendererD
     public static final String PROPERTY_ALIGNMENT_LEFT   = "LEFT";
     public static final String PROPERTY_ALIGNMENT_RIGHT  = "RIGHT";
     public static final String PROPERTY_ALIGNMENT_CENTER = "CENTER";
+    public static final String ACTION = "ACTION";
 
     @Override
     public EJPropertyDefinitionGroup getComponentPropertyDefinitionGroup()
@@ -57,10 +58,17 @@ public class EJRWTBannerRendererDefinition implements EJDevAppComponentRendererD
         imageAlignment.addValidValue(PROPERTY_ALIGNMENT_RIGHT, "Right");
         imageAlignment.addValidValue(PROPERTY_ALIGNMENT_CENTER, "Center");
         imageAlignment.setDefaultValue(PROPERTY_ALIGNMENT_LEFT);
+        
+        
+        EJDevPropertyDefinition action = new EJDevPropertyDefinition(ACTION, EJPropertyDefinitionType.ACTION_COMMAND);
+
+        action.setLabel("Action Command");
+        action.setMandatory(false);
 
         mainGroup.addPropertyDefinition(imageParam);
         mainGroup.addPropertyDefinition(imagePath);
         mainGroup.addPropertyDefinition(imageAlignment);
+        mainGroup.addPropertyDefinition(action);
         return mainGroup;
     }
 
