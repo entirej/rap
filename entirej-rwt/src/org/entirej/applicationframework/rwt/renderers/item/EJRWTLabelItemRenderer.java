@@ -38,6 +38,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
@@ -494,7 +495,16 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 @Override
                 public void mouseUp(MouseEvent e)
                 {
-                    _item.executeActionCommand();
+                    Display.getDefault().asyncExec(new Runnable()
+                    {
+                        
+                        @Override
+                        public void run()
+                        {
+                            _item.executeActionCommand();
+                            
+                        }
+                    });
                 }
             });
 
@@ -597,7 +607,16 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 @Override
                 public void widgetSelected(SelectionEvent e)
                 {
-                    _item.executeActionCommand();
+                    Display.getDefault().asyncExec(new Runnable()
+                    {
+                        
+                        @Override
+                        public void run()
+                        {
+                            _item.executeActionCommand();
+                            
+                        }
+                    });
                 }
             });
         }

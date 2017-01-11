@@ -2161,21 +2161,30 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 @Override
                 public void handleEvent(Event e)
                 {
-                    Object old = null;
-                    Object newVal = null;
-                    EJRWTStackedItemRendererConfig.CheckBox config = (CheckBox) _baseValue.getConfig();
-                    if (_button.getSelection())
+                    Display.getDefault().asyncExec(new Runnable()
                     {
-                        old = config.getCheckBoxUnCheckedValue();
-                        newVal =  config.getCheckBoxCheckedValue();
-                    }
-                    else
-                    {
-                        old = config.getCheckBoxCheckedValue();
-                        newVal =  config.getCheckBoxUnCheckedValue();
-                    }
-                    _item.executeActionCommand();
-                    _item.itemValueChaged(getValue());
+                        
+                        @Override
+                        public void run()
+                        {
+                            Object old = null;
+                            Object newVal = null;
+                            EJRWTStackedItemRendererConfig.CheckBox config = (CheckBox) _baseValue.getConfig();
+                            if (_button.getSelection())
+                            {
+                                old = config.getCheckBoxUnCheckedValue();
+                                newVal =  config.getCheckBoxCheckedValue();
+                            }
+                            else
+                            {
+                                old = config.getCheckBoxCheckedValue();
+                                newVal =  config.getCheckBoxUnCheckedValue();
+                            }
+                            _item.executeActionCommand();
+                            _item.itemValueChaged(getValue());
+                        }
+                    });
+                    
                 }
 
             });
@@ -2218,7 +2227,16 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 public void handleEvent(Event e)
                 {
 
-                    _item.executeActionCommand();
+                    Display.getDefault().asyncExec(new Runnable()
+                    {
+                        
+                        @Override
+                        public void run()
+                        {
+                            _item.executeActionCommand();
+                            
+                        }
+                    });
                 }
 
             });

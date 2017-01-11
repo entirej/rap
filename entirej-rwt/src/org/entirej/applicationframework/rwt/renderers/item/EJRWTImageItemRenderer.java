@@ -503,7 +503,16 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 @Override
                 public void mouseUp(MouseEvent e)
                 {
-                    _item.executeActionCommand();
+                    Display.getDefault().asyncExec(new Runnable()
+                    {
+                        
+                        @Override
+                        public void run()
+                        {
+                            _item.executeActionCommand();
+                            
+                        }
+                    });
                 }
             });
         }
