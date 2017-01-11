@@ -1854,6 +1854,9 @@ Shell.jface_contentProposalPopup, Shell.jface_infoPopupDialog {
 Composite.applayout {
 	background-color: #F5F5F5;
 }
+Link.applayout {
+	background-color: transparent;
+}
 Composite.drawer {
 	
 }

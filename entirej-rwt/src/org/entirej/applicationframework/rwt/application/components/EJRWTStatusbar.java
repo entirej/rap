@@ -160,14 +160,15 @@ public class EJRWTStatusbar implements EJRWTAppComponentRenderer
                     if (applicationLevelParameter != null)
                     {
                         Object value = applicationLevelParameter.getValue();
-                        linkField.setText(value == null ? "" : value.toString());
+                       
+                        linkField.setText(String.format("<a>%s</a>", (value == null ? "" : value.toString())));
                         applicationLevelParameter.addParameterChangedListener(new ParameterChangedListener()
                         {
 
                             @Override
                             public void parameterChanged(String parameterName, Object oldValue, Object newValue)
                             {
-                                linkField.setText(newValue == null ? "" : newValue.toString());
+                                linkField.setText(String.format("<a>%s</a>", (newValue == null ? "" : newValue.toString())));
 
                             }
                         });
@@ -208,7 +209,7 @@ public class EJRWTStatusbar implements EJRWTAppComponentRenderer
                         Color background = EJRWTVisualAttributeUtils.INSTANCE.getBackground(va);
                         if (background != null)
                         {
-                            control.setBackground(background);
+                            linkField.setBackground(background);
                         }
 
                         Color foreground = EJRWTVisualAttributeUtils.INSTANCE.getForeground(va);
@@ -221,6 +222,8 @@ public class EJRWTStatusbar implements EJRWTAppComponentRenderer
 
                     }
                 }
+                linkField.setData(EJ_RWT.CUSTOM_VARIANT, "applayout");
+                control.setData(EJ_RWT.CUSTOM_VARIANT, "applayout");
 
             }
             else
