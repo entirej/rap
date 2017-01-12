@@ -359,6 +359,19 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         return _registeredItemName;
     }
 
+    Object getRealValue()
+    
+    {
+        Object value = getValue();
+        
+        if(value instanceof EJRWTStackedItemRendererValue)
+        {
+            return ((EJRWTStackedItemRendererValue)value).getValue();
+        }
+        return value;
+    }
+            
+    
     @Override
     public Object getValue()
     {
@@ -1549,7 +1562,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     public void valueChanged()
     {
         Object base = _intbaseValue!=null ? _intbaseValue.getValue():null;
-        Object value = getValue();
+        Object value = getRealValue();
 
         Control activeControl = stackedPane.getActiveControl();
         if (!(activeControl instanceof Text && activeControl.isFocusControl()))
@@ -1608,7 +1621,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 {
                     _valueChanged = false;
                     
-                    _item.itemValueChaged(getValue());
+                    _item.itemValueChaged(getRealValue());
                     _oldvalue = null;
                     setMandatoryBorder(_mandatory);
 
@@ -1735,7 +1748,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         }
                     }
                     setValue(newVal);
-                    _item.itemValueChaged(getValue());
+                    _item.itemValueChaged(getRealValue());
                 }
                 catch (ParseException e1)
                 {
@@ -1783,7 +1796,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                                 }
                             }
                             setValue(newVal);
-                            _item.itemValueChaged(getValue());
+                            _item.itemValueChaged(getRealValue());
                         }
                         catch (ParseException e1)
                         {
@@ -1880,7 +1893,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                             Object old = _baseValue.getValue();
                             Date newVal = format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay()));
                             setValue(newVal);
-                            _item.itemValueChaged(getValue());
+                            _item.itemValueChaged(getRealValue());
                         }
                         catch (ParseException e1)
                         {
@@ -2104,7 +2117,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     if (_valueChanged)
                     {
                         _valueChanged = false;
-                        _item.itemValueChaged(getValue());
+                        _item.itemValueChaged(getRealValue());
                         _oldvalue = null;
                         setMandatoryBorder(_mandatory);
                     }
@@ -2182,7 +2195,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                                 newVal =  config.getCheckBoxUnCheckedValue();
                             }
                             _item.executeActionCommand();
-                            _item.itemValueChaged(getValue());
+                            _item.itemValueChaged(getRealValue());
                         }
                     });
                     
@@ -2329,7 +2342,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                             value.populateReturnItems(_item.getBlock().getBlockController(), _item.getScreenType());
                         }
 
-                        _item.itemValueChaged(getValue());
+                        _item.itemValueChaged(getRealValue());
 
                         setMandatoryBorder(_mandatory);
                     }
