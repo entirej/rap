@@ -1163,6 +1163,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 {
                     EJRWTStackedItemRendererConfig.LOVSupportConfig lovMapping = (LOVSupportConfig) _baseValue.getConfig();
                     _item.setItemLovMapping(lovMapping.getLovMapping());
+                    _item.getProperties().enableLovNotification(lovMapping.isValidateLov());
                     enableLovActivation(_item.getItemLovController() != null);
                 }
 
