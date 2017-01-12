@@ -723,7 +723,19 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 if (_baseValue != null)
                 {
                     _baseValue.setValue(value);
+                    
                     setStackValue();
+                    boolean lovNotificationEnabled = _item.getProperties().isLovNotificationEnabled();
+                    try
+                    {
+                        _item.getProperties().enableLovNotification(false);
+                        _item.itemValueChaged(_baseValue);
+                    }
+                    finally
+                    {
+                        
+                        _item.getProperties().enableLovNotification(lovNotificationEnabled);;
+                    }
                     return;
                 }
             }
