@@ -560,7 +560,8 @@ public class EJRWTMessenger implements EJMessenger
                 protected Control createMessageArea(Composite composite)
                 {
                     Control createMessageArea = super.createMessageArea(composite);
-                    messageLabel.setData(EJ_RWT.MARKUP_ENABLED, true);
+                    if(messageLabel!=null)
+                        messageLabel.setData(EJ_RWT.MARKUP_ENABLED, true);
                     return createMessageArea;
                 }
             };

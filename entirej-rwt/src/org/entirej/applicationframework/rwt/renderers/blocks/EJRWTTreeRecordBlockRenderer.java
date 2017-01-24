@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -140,6 +141,8 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
     private String filterText;
 
     private EJRWTAbstractFilteredTree filterTree;
+
+    private AtomicBoolean onSelection = new AtomicBoolean(false);
 
     protected void clearFilter()
     {
@@ -523,7 +526,15 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 return;
             }
 
+           try
+           {
+               onSelection.set(true);
             _tableViewer.setSelection(record != null ? new StructuredSelection(record) : new StructuredSelection(), true);
+          
+           }finally
+           {
+               onSelection.set(false);
+           }
 
         }
     }
@@ -1515,7 +1526,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                     _block.newRecordInstance(focusedRecord);
                 }
 
-                if (clickActionCommand != null)
+                if (clickActionCommand != null && !onSelection.get())
                 {
                     _block.executeActionCommand(clickActionCommand, EJScreenType.MAIN);
                 }
