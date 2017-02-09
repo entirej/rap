@@ -35,13 +35,13 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
+import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractLabel;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
@@ -470,7 +470,30 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
         final String label = _screenItemProperties.getLabel();
         if (!_displayAsHyperlink)
         {
-            final Label labelField = new Label(composite, style);
+            final int labelStyle=  style;
+            final EJRWTAbstractLabel labelField = new EJRWTAbstractLabel(composite)
+            {
+                
+                @Override
+                public Label createLabel(Composite parent)
+                {
+                    return new Label(parent, labelStyle);
+                }
+                
+                @Override
+                public Control createCustomActionLabel(Composite parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+                
+                @Override
+                public Control createActionLabel(Composite parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            };
             labelField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LABEL);
             String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
@@ -486,7 +509,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
             {
                 if (pictureName != null && pictureName.trim().length() > 0)
                 {
-                    labelField.setImage(EJRWTImageRetriever.get(pictureName));
+                    labelField.getLabelControl().setImage(EJRWTImageRetriever.get(pictureName));
                 }
             }
             

@@ -53,6 +53,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
+import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractLabel;
 import org.entirej.applicationframework.rwt.application.components.actions.EJRWTDeleteAction;
 import org.entirej.applicationframework.rwt.application.components.actions.EJRWTInsertAction;
 import org.entirej.applicationframework.rwt.application.components.actions.EJRWTQueryAction;
@@ -1291,6 +1292,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             {
                 gridData.heightHint = displayedHeight;
             }
+        }else if (control instanceof EJRWTAbstractLabel) {
+            gridData.heightHint = 20;
         }
 
         return gridData;

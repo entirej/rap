@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
+import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractLabel;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
@@ -280,6 +281,9 @@ public abstract class EJRWTAbstractScreenRenderer implements EJRenderer
             {
                 gridData.heightHint = displayedHeight;
             }
+        }
+        else if (control instanceof EJRWTAbstractLabel) {
+            gridData.heightHint = 20;
         }
         return gridData;
     }

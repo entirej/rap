@@ -25,34 +25,39 @@ import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
 
-public abstract class EJRWTAbstractActionCombo extends Composite implements Serializable
+public abstract class EJRWTAbstractLabel extends Composite implements Serializable
 {
-    private final Combo comboControl;
-    private Control     actionControl;
-    private int         actionWidthHint = 0;
 
-    public EJRWTAbstractActionCombo(Composite parent)
+    private static final long serialVersionUID = 3047819425055529793L;
+
+    private final Label        labelControl;
+    private Control           actionControl;
+    private Control           actionCustomControl;
+    private int               actionWidthHint  = 0;
+
+    public EJRWTAbstractLabel(Composite parent)
     {
         super(parent, SWT.NO_FOCUS);
         setData(EJ_RWT.CUSTOM_VARIANT, "itemgroupclear");
+
         int numColumns = 1;
 
-        numColumns = 2;
+        numColumns = 3;
 
-        GridLayoutFactory.swtDefaults().margins(0, 0).extendedMargins(1, 1, 1, 1).spacing(0, 2).numColumns(numColumns).applyTo(this);
+        GridLayoutFactory.swtDefaults().margins(0, 0).extendedMargins(2, 2, 3, 2).spacing(0, 2).numColumns(numColumns).applyTo(this);
 
-        comboControl = createCombo(this);
+        labelControl = createLabel(this);
 
-        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-        comboControl.setLayoutData(gridData);
-        super.setFont(comboControl.getFont());
+        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        labelControl.setLayoutData(gridData);
+        super.setFont(labelControl.getFont());
+        actionCustomControl = createCustomLabelButtonControl(this);
         actionControl = createLabelButtonControl(this);
         setActionVisible(false);
     }
@@ -68,36 +73,59 @@ public abstract class EJRWTAbstractActionCombo extends Composite implements Seri
         }
     }
 
-    public abstract Combo createCombo(Composite parent);
+    public void setCustomActionVisible(boolean visible)
+    {
+        if (actionCustomControl != null && !actionCustomControl.isDisposed())
+        {
+            actionCustomControl.setVisible(visible);
+            GridData gridData = (GridData) actionCustomControl.getLayoutData();
+            gridData.widthHint = visible ? actionWidthHint : 0;
+            layout();
+        }
+    }
+
+    public abstract Label createLabel(Composite parent);
 
     public abstract Control createActionLabel(Composite parent);
+
+    public abstract Control createCustomActionLabel(Composite parent);
 
     private Control createLabelButtonControl(Composite parent)
     {
 
         final Control labelButton = createActionLabel(parent);
-        GridData gridData = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
-        actionWidthHint = gridData.widthHint;
-        gridData.horizontalIndent = 2;
-        labelButton.setLayoutData(gridData);
-        labelButton.setBackground(parent.getBackground());
+        if(labelButton!=null)
+        {
+            GridData gridData = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
+            actionWidthHint = gridData.widthHint;
+            gridData.horizontalIndent = 2;
+            labelButton.setLayoutData(gridData);
+            labelButton.setBackground(parent.getBackground());
+        }
 
         return labelButton;
     }
 
-    public void addModifyListener(ModifyListener listener)
+    private Control createCustomLabelButtonControl(Composite parent)
     {
-        comboControl.addModifyListener(listener);
+
+        final Control labelButton = createCustomActionLabel(parent);
+        if (labelButton != null)
+        {
+            GridData gridData = new GridData(SWT.BEGINNING, SWT.CENTER, false, false);
+
+            gridData.horizontalIndent = 2;
+            labelButton.setLayoutData(gridData);
+            labelButton.setBackground(parent.getBackground());
+        }
+        return labelButton;
     }
 
-    public void removeModifyListener(ModifyListener listener)
-    {
-        comboControl.removeModifyListener(listener);
-    }
+  
 
-    public Combo getComboControl()
+    public Label getLabelControl()
     {
-        return comboControl;
+        return labelControl;
     }
 
     public Control getActionControl()
@@ -107,27 +135,27 @@ public abstract class EJRWTAbstractActionCombo extends Composite implements Seri
 
     public String getText()
     {
-        if (comboControl != null && !comboControl.isDisposed())
+        if (labelControl != null && !labelControl.isDisposed())
         {
-            return comboControl.getText();
+            return labelControl.getText();
         }
         return "";
     }
 
     public void setText(String text)
     {
-        if (comboControl != null && !comboControl.isDisposed())
+        if (labelControl != null && !labelControl.isDisposed())
         {
-            comboControl.setText(text);
+            labelControl.setText(text);
         }
     }
 
     @Override
     public void setBackground(Color color)
     {
-        if (comboControl != null && !comboControl.isDisposed())
+        if (labelControl != null && !labelControl.isDisposed())
         {
-            comboControl.setBackground(color);
+            labelControl.setBackground(color);
         }
         if (actionControl != null && !actionControl.isDisposed())
         {
@@ -135,19 +163,27 @@ public abstract class EJRWTAbstractActionCombo extends Composite implements Seri
         }
         super.setBackground(color);
     }
+    @Override
+    public void setForeground(Color color)
+    {
+        if (labelControl != null && !labelControl.isDisposed())
+        {
+            labelControl.setForeground(color);
+        }
+    }
 
     @Override
     public void addKeyListener(KeyListener listener)
     {
-        comboControl.addKeyListener(listener);
+        labelControl.addKeyListener(listener);
     }
 
     @Override
     public void setData(String key, Object value)
     {
-        if (EJ_RWT.ACTIVE_KEYS.equals(key))
+        if (EJ_RWT.ACTIVE_KEYS.equals(key)|| EJ_RWT.PROPERTY_CSS_KEY.equals(key))
         {
-            comboControl.setData(key, value);
+            labelControl.setData(key, value);
         }
         else
         {
@@ -158,7 +194,7 @@ public abstract class EJRWTAbstractActionCombo extends Composite implements Seri
     @Override
     public void setData(Object data)
     {
-        comboControl.setData(data);
+        labelControl.setData(data);
     }
 
     @Override
@@ -166,15 +202,14 @@ public abstract class EJRWTAbstractActionCombo extends Composite implements Seri
     {
         if (EJ_RWT.ACTIVE_KEYS.equals(key))
         {
-            return comboControl.getData(key);
+            return labelControl.getData(key);
         }
-
         return super.getData(key);
     }
 
     @Override
     public void addFocusListener(FocusListener listener)
     {
-        comboControl.addFocusListener(listener);
+        labelControl.addFocusListener(listener);
     }
 }

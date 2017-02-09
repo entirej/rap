@@ -334,14 +334,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
         setupGui(parent);
         setFocus();
-        try
+        Display.getDefault().asyncExec(new Runnable()
         {
-            _form.getFormController().formInitialised();
-        }
-        catch (EJApplicationException e)
-        {
-            _form.getFrameworkManager().handleException(e);
-        }
+            
+            @Override
+            public void run()
+            {
+                try
+                {
+                    _form.getFormController().formInitialised();
+                }
+                catch (EJApplicationException e)
+                {
+                    _form.getFrameworkManager().handleException(e);
+                }
+                
+            }
+        });
+        
     }
 
     @Override

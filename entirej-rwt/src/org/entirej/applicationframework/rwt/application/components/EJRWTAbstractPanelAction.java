@@ -144,7 +144,7 @@ public abstract class EJRWTAbstractPanelAction extends Composite implements Seri
         {
             actionControl.setBackground(color);
         }
-        setBackground(color);
+        super.setBackground(color);
     }
 
     @Override

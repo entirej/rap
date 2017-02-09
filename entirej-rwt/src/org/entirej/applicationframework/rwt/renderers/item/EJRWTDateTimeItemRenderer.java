@@ -53,6 +53,7 @@ import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionDateTime;
+import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractLabel;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTDateTimeItemRendererDefinitionProperties;
@@ -97,6 +98,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
 
     protected Object                          _baseValue;
     private EJMessage message;
+    private EJRWTAbstractLabel labelField;
 
     protected boolean controlState(Control control)
     {
@@ -233,7 +235,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
     {
         if (_displayValueAsLabel)
         {
-            return _valueLabel;
+            return labelField;
         }
         return _actionControl;
     }
@@ -632,7 +634,29 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
 
         if (_displayValueAsLabel)
         {
-            _valueLabel = newVlaueLabel(composite);
+            labelField = new EJRWTAbstractLabel(composite)
+            {
+                
+                @Override
+                public Label createLabel(Composite parent)
+                {
+                    return _valueLabel = newVlaueLabel(parent);
+                }
+                
+                @Override
+                public Control createCustomActionLabel(Composite parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+                
+                @Override
+                public Control createActionLabel(Composite parent)
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+            };
             _valueLabel.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_DATETIME);
             String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 

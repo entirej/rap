@@ -206,7 +206,7 @@ public abstract class EJRWTAbstractActionList extends Composite implements Seria
         {
             actionControl.setBackground(color);
         }
-        setBackground(color);
+        super.setBackground(color);
     }
 
     @Override

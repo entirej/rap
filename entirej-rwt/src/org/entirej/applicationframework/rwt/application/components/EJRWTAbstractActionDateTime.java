@@ -136,7 +136,7 @@ public abstract class EJRWTAbstractActionDateTime extends Composite implements S
         {
             actionControl.setBackground(color);
         }
-        setBackground(color);
+        super.setBackground(color);
     }
 
     @Override
