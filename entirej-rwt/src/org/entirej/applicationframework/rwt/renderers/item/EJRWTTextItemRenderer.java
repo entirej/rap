@@ -706,7 +706,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
             if (controlState(_valueLabel))
             {
-                _valueLabel.setBackground(background != null ? background : _visualContext.getBackgroundColor());
+                labelField.setBackground(background != null ? background : _visualContext.getBackgroundColor());
             }
         }
         else
@@ -727,7 +727,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
             if (controlState(_valueLabel))
             {
-                _valueLabel.setForeground(foreground != null ? foreground : _visualContext.getForegroundColor());
+                labelField.setForeground(foreground != null ? foreground : _visualContext.getForegroundColor());
             }
         }
         else

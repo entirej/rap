@@ -547,7 +547,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
         {
             if (controlState(_valueLabel))
             {
-                _valueLabel.setBackground(background != null ? background : _visualContext.getBackgroundColor());
+                labelField.setBackground(background != null ? background : _visualContext.getBackgroundColor());
             }
         }
         else
