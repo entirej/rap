@@ -29,6 +29,7 @@ import java.util.Set;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTAppComponentRenderer;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormContainer;
@@ -94,18 +95,27 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
     public EJInternalForm addForm(EJInternalForm form)
     {
         final String name = form.getFormController().getEJForm().getName();
-        EJInternalForm formByPage = getFormByPage(name);
+        final EJInternalForm formByPage = getFormByPage(name);
         if (formByPage != null)
         {
             _stackPane.showPane(name);
             EJRWTFormRenderer renderer = (EJRWTFormRenderer) formByPage.getRenderer();
             renderer.gainInitialFocus();
 
-            formByPage.focusGained();
-            for (EJRWTFormSelectedListener listener : _formSelectedListeners)
+            Display.getDefault().asyncExec(new Runnable()
             {
-                listener.fireFormSelected(formByPage);
-            }
+
+                @Override
+                public void run()
+                {
+                    formByPage.focusGained();
+                    for (EJRWTFormSelectedListener listener : _formSelectedListeners)
+                    {
+                        listener.fireFormSelected(formByPage);
+                    }
+                }
+            });
+            
             return formByPage;
         }
         _stackedPages.put(form, name);

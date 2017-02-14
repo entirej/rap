@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 Mojave Innovations GmbH
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ * Contributors: Mojave Innovations GmbH - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.application;
 
@@ -68,23 +67,22 @@ import org.slf4j.LoggerFactory;
 
 public class EJRWTApplicationManager implements EJApplicationManager, Serializable
 {
-    private EJFrameworkManager        _frameworkManager;
-    private EJRWTApplicationContainer _applicationContainer;
+    private EJFrameworkManager           _frameworkManager;
+    private EJRWTApplicationContainer    _applicationContainer;
 
-    private EJRWTMessenger            messenger;
+    private EJRWTMessenger               messenger;
 
-    private Shell                     shell;
+    private Shell                        shell;
 
-    private List<EJInternalForm>      embeddedForms = new ArrayList<EJInternalForm>();
-    private  EJApplicationActionProcessor actionProcessor = null;
+    private List<EJInternalForm>         embeddedForms   = new ArrayList<EJInternalForm>();
+    private EJApplicationActionProcessor actionProcessor = null;
 
-    private static final Logger logger                    = LoggerFactory.getLogger(EJRWTApplicationManager.class);
+    private static final Logger          logger          = LoggerFactory.getLogger(EJRWTApplicationManager.class);
 
     public EJRWTApplicationManager()
     {
         messenger = new EJRWTMessenger(this);
     }
-
 
     public EJFrameworkManager getFrameworkManager()
     {
@@ -106,7 +104,6 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         return _applicationContainer.getStatusbar();
     }
 
-
     public void setFrameworkManager(EJFrameworkManager manager)
     {
         _frameworkManager = manager;
@@ -119,12 +116,11 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             logger.warn(e.getMessage());
         }
     }
-    
+
     public EJApplicationActionProcessor getApplicationActionProcessor()
     {
         return actionProcessor;
     }
-
 
     public EJMessenger getApplicationMessenger()
     {
@@ -201,7 +197,6 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         _applicationContainer.buildApplication(this, mainWindow);
     }
 
-
     public EJInternalForm getActiveForm()
     {
         if (_applicationContainer == null)
@@ -211,7 +206,6 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
         return _applicationContainer.getActiveForm();
     }
-
 
     public EJInternalForm getForm(String formName)
     {
@@ -256,7 +250,6 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         return null;
     }
 
-
     public void removeFormFromContainer(EJInternalForm form)
     {
         if (_applicationContainer == null)
@@ -266,7 +259,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
         _applicationContainer.remove(form);
     }
-    
+
     @Override
     public void updateFormTitle(EJInternalForm form)
     {
@@ -276,9 +269,9 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         }
 
         _applicationContainer.updateFormTitle(form);
-        
+
     }
-    
+
     @Override
     public Collection<EJInternalForm> getOpenedForms()
     {
@@ -288,7 +281,6 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         }
         return _applicationContainer.getOpenForms();
     }
-
 
     public int getOpenedFormCount()
     {
@@ -300,7 +292,6 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         return _applicationContainer.getOpenFormCount();
     }
 
-
     public boolean isFormOpened(String formName)
     {
         if (_applicationContainer == null)
@@ -310,6 +301,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
         return _applicationContainer.isFormOpened(formName);
     }
+
     @Override
     public boolean isFormOpened(EJInternalForm form)
     {
@@ -320,7 +312,6 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
         return _applicationContainer.isFormOpened(form);
     }
-
 
     public void addFormToContainer(EJInternalForm form, boolean blocking)
     {
@@ -351,18 +342,15 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         }
     }
 
-
     public void openEmbeddedForm(EJEmbeddedFormController embeddedController)
     {
         embeddedController.getCallingForm().getRenderer().openEmbeddedForm(embeddedController);
     }
 
-
     public void closeEmbeddedForm(EJEmbeddedFormController embeddedController)
     {
         embeddedController.getCallingForm().getRenderer().closeEmbeddedForm(embeddedController);
     }
-
 
     public void popupFormClosed()
     {
@@ -372,36 +360,41 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         }
     }
 
-
     public EJInternalForm switchToForm(String key)
     {
 
         return _applicationContainer.switchToForm(key);
     }
-    
+
     @Override
     public void switchToForm(EJInternalForm form)
     {
-        EJInternalForm toForm = _applicationContainer.switchToForm(form);
-        if(toForm!=null)
+        final EJInternalForm toForm = _applicationContainer.switchToForm(form);
+        if (toForm != null)
         {
-            toForm.focusGained();
-        }
-        
-    }
+            Display.getDefault().asyncExec(new Runnable()
+            {
 
+                @Override
+                public void run()
+                {
+                    toForm.focusGained();
+
+                }
+            });
+        }
+
+    }
 
     public EJManagedFrameworkConnection getConnection()
     {
         return _frameworkManager.getConnection();
     }
 
-
     public EJApplicationLevelParameter getApplicationLevelParameter(String valueName)
     {
         return _frameworkManager.getApplicationLevelParameter(valueName);
     }
-
 
     public void setApplicationLevelParameter(String valueName, Object value)
     {
@@ -425,48 +418,40 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         _frameworkManager.changeLocale(locale);
     }
 
-
     public Locale getCurrentLocale()
     {
         return _frameworkManager.getCurrentLocale();
     }
-
 
     public EJTranslatorHelper getTranslatorHelper()
     {
         return _frameworkManager.getTranslatorHelper();
     }
 
-
     public void handleMessage(EJMessage message)
     {
         messenger.handleMessage(message);
     }
-
 
     public void handleException(Exception exception)
     {
         messenger.handleException(exception);
     }
 
-
     public void handleException(Exception exception, boolean showUserMessage)
     {
         messenger.handleException(exception, showUserMessage);
     }
-
 
     public void askQuestion(EJQuestion question)
     {
         messenger.askQuestion(question);
     }
 
-
     public void askInternalQuestion(EJInternalQuestion question)
     {
         messenger.askInternalQuestion(question);
     }
-
 
     public void openForm(String formName, EJParameterList parameterList, boolean blocking)
     {
@@ -474,13 +459,11 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
     }
 
-
     public void openForm(String formName, EJParameterList parameterList)
     {
         _frameworkManager.openForm(formName, parameterList);
 
     }
-
 
     public void openForm(String formName)
     {
@@ -488,13 +471,11 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
     }
 
-
     public void runReport(String reportName)
     {
         runReport(reportName, null);
 
     }
-
 
     public void runReport(String reportName, EJParameterList parameterList)
     {
@@ -527,8 +508,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         String output = reportRunner.runReport(report);
 
         String name = report.getName();
-        
-        
+
         EJReportParameter reportParameter = report.getReportParameter("REPORT_NAME");
 
         if (reportParameter != null && reportParameter.getValue() != null && !((String) reportParameter.getValue()).isEmpty())
@@ -540,60 +520,57 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             if (report.getOutputName() != null && !report.getOutputName().isEmpty())
             {
                 name = report.getOutputName();
-            }  
+            }
         }
-        
+
         String ext = report.getProperties().getExportType().toString().toLowerCase();
         report.getProperties().getExportType();
         if (report.getProperties().getExportType() == EJReportExportType.XLSX_LARGE)
         {
-           
+
             ext = EJReportExportType.XLSX.toString().toLowerCase();
         }
-        EJRWTImageRetriever.getGraphicsProvider().open(output,
-                String.format("%s.%s", name, ext));
+        EJRWTImageRetriever.getGraphicsProvider().open(output, String.format("%s.%s", name, ext));
 
     }
-    
-    
-    
+
     @Override
     public void runReportAsync(String reportName)
     {
-        runReportAsync(reportName,null,null);
-        
+        runReportAsync(reportName, null, null);
+
     }
+
     @Override
     public void runReportAsync(String reportName, EJMessage completedMessage)
     {
-        runReportAsync(reportName,null,completedMessage);
-        
+        runReportAsync(reportName, null, completedMessage);
+
     }
-    
+
     @Override
     public void runReportAsync(String reportName, EJParameterList parameterList)
     {
-        runReportAsync(reportName,parameterList,null);
-        
+        runReportAsync(reportName, parameterList, null);
+
     }
-    
+
     @Override
-    public void runReportAsync(final String reportName,final EJParameterList parameterList,final EJMessage completedMessage)
+    public void runReportAsync(final String reportName, final EJParameterList parameterList, final EJMessage completedMessage)
     {
         if (reportManager == null)
         {
             reportManager = EJReportFrameworkInitialiser.initialiseFramework("report.ejprop");
         }
-       final  Display display = Display.getDefault();
-       
-       
-       final ServerPushSession pushSession = new ServerPushSession();
-       Runnable job = new Runnable()
-    {
-        
-        @Override
-        public void run()
+        final Display display = Display.getDefault();
+
+        final ServerPushSession pushSession = new ServerPushSession();
+        Runnable job = new Runnable()
         {
+
+            @Override
+            public void run()
+            {
                 try
                 {
                     final EJReport report;
@@ -627,8 +604,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                             public void run()
                             {
                                 String name = report.getName();
-                                
-                                
+
                                 EJReportParameter reportParameter = report.getReportParameter("REPORT_NAME");
 
                                 if (reportParameter != null && reportParameter.getValue() != null && !((String) reportParameter.getValue()).isEmpty())
@@ -640,10 +616,9 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                                     if (report.getOutputName() != null && !report.getOutputName().isEmpty())
                                     {
                                         name = report.getOutputName();
-                                    }  
+                                    }
                                 }
-                                
-                                
+
                                 if (completedMessage != null)
                                 {
                                     handleMessage(completedMessage);
@@ -652,11 +627,10 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                                 report.getProperties().getExportType();
                                 if (report.getProperties().getExportType() == EJReportExportType.XLSX_LARGE)
                                 {
-                                   
+
                                     ext = EJReportExportType.XLSX.toString().toLowerCase();
                                 }
-                                EJRWTImageRetriever.getGraphicsProvider().open(output,
-                                        String.format("%s.%s", name, ext));
+                                EJRWTImageRetriever.getGraphicsProvider().open(output, String.format("%s.%s", name, ext));
 
                             }
                         });
@@ -672,25 +646,21 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                         }
                     });
                 }
-        
-            
-        }
-    };
-    pushSession.start();
-    Thread bgThread = new Thread( job );
-    bgThread.setDaemon( true );
-    bgThread.start();
-        
-    }
-    
 
+            }
+        };
+        pushSession.start();
+        Thread bgThread = new Thread(job);
+        bgThread.setDaemon(true);
+        bgThread.start();
+
+    }
 
     public String generateReport(String reportName)
     {
         return generateReport(reportName, null);
 
     }
-
 
     public String generateReport(String reportName, EJParameterList parameterList)
     {

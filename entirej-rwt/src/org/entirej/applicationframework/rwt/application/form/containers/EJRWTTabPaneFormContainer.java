@@ -35,6 +35,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTAppComponentRenderer;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormContainer;
@@ -129,12 +130,24 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
                 CTabItem selection = _folder.getSelection();
                 if (selection != null && selection.getData() instanceof EJInternalForm)
                 {
-                    EJInternalForm form = (EJInternalForm) selection.getData();
-                    for (EJRWTFormSelectedListener listener : _formSelectedListeners)
+                    final EJInternalForm form = (EJInternalForm) selection.getData();
+
+                    Display.getDefault().asyncExec(new Runnable()
                     {
-                        listener.fireFormSelected(form);
-                    }
-                    form.focusGained();
+
+                        @Override
+                        public void run()
+                        {
+
+                            for (EJRWTFormSelectedListener listener : _formSelectedListeners)
+                            {
+                                listener.fireFormSelected(form);
+                            }
+                            form.focusGained();
+
+                        }
+                    });
+
                 }
             }
         });

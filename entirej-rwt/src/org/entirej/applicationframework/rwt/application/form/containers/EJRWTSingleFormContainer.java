@@ -27,6 +27,7 @@ import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTAppComponentRenderer;
@@ -98,7 +99,16 @@ public class EJRWTSingleFormContainer implements EJRWTAppComponentRenderer
                             {
                                 listener.fireFormSelected(_form);
                             }
-                            _form.focusGained();
+                            Display.getDefault().asyncExec(new Runnable()
+                            {
+
+                                @Override
+                                public void run()
+                                {
+                                    _form.focusGained();
+
+                                }
+                            });
                         }
                     });
                     _control = composite;
