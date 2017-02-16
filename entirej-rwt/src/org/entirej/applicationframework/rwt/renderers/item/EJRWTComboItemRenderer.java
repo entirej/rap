@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -134,7 +135,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     protected Object                          _baseValue;
 
     protected boolean                         _lovActivated;
-    protected boolean                         _lovInitialied;
+    protected AtomicBoolean                       _lovInitialied = new AtomicBoolean(false);
     protected boolean                         _lovInitialiedOnValueSet;
     private EJMessage message;
 
@@ -259,6 +260,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         
         if (_rendererProps.getBooleanProperty(EJRWTComboBoxRendererDefinitionProperties.INITIALIES_LOV, true))
         {
+            _lovInitialied.set(true);
             Display.getDefault().asyncExec(new Runnable()
             {
                 
@@ -275,8 +277,9 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
 
     private void verifyLOVState()
     {
-        if (!_lovInitialied)
+        if (!_lovInitialied.get())
         {
+            _lovInitialied.set(true);
             Display.getDefault().asyncExec(new Runnable()
             {
                 
@@ -503,7 +506,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     private void _loadComboBoxValues()
     {
         // Initialise both the field and the values.
-        _lovInitialied = true;
+        _lovInitialied.set(true);
         _comboValues.clear();
         String lovDefName = _rendererProps.getStringProperty(EJRWTComboBoxRendererDefinitionProperties.LOV_DEFINITION_NAME);
 
@@ -694,20 +697,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public void setInitialValue(Object value)
     {
-        if(  !_lovInitialied)
-        {
-            Display.getDefault().asyncExec(new Runnable()
-            {
-                
-                @Override
-                public void run()
-                {
-                   _loadComboBoxValues();
-                    refreshCombo();
-                    
-                }
-            });
-        }
+      
        
         
         setValue(value);
@@ -745,7 +735,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public void setValue(Object value)
     {
         _baseValue = value;
-        if ( (!_lovInitialied && value!=null))
+        if ( (!_lovInitialied.get() && value!=null))
         {
             verifyLOVState();
             return;
@@ -1411,8 +1401,9 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)
     {
-        if (!_lovInitialied)
+        if (!_lovInitialied.get())
         {
+            _lovInitialied.set(true);
             Display.getDefault().asyncExec(new Runnable()
             {
                 
