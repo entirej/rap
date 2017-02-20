@@ -37,9 +37,11 @@ import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
 import org.eclipse.rap.rwt.client.WebClient;
+import org.eclipse.rap.rwt.client.service.BrowserNavigation;
+import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
+import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
-import org.eclipse.rap.rwt.internal.lifecycle.RWTLifeCycle;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
@@ -79,6 +81,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
     public void configure(Application configuration)
     {
+        
         createEntryPoint(configuration);
     }
 
@@ -235,12 +238,34 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                     // ignore if already registered
                 }
                 registerWidgetHandlers();
+               final  EntryPoint wrapped = newEntryPoint();
+               return new EntryPoint() {
+                   public int createUI() {
+                           BrowserNavigation service = RWT.getClient().getService( BrowserNavigation.class );
+                           BrowserNavigationListener listener  = new BrowserNavigationListener() {
+                                   @Override
+                                   public void navigated(BrowserNavigationEvent event) {
+                                          EJRWTContext.getPageContext().setState(event.getState());
+                                   }
+                           };
+                           
+                           service.addBrowserNavigationListener(listener);
+                           return wrapped.createUI();
+                   }
+           };
+            }
+
+            private EntryPoint newEntryPoint()
+            {
                 return new EntryPoint()
                 {
 
                     public int createUI()
                     {
 
+                        
+                        
+                        
                       
                         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
                         {
@@ -383,14 +408,28 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             applicationManager.getConnection().close();
                         }
                         applicationManager.buildApplication(appContainer, shell);
-                        try
+                        
+                        final EJRWTApplicationManager appman = applicationManager;
+                       
+
+                        Display.getCurrent().asyncExec(new Runnable()
                         {
-                            postApplicationBuild(applicationManager);
-                        }
-                        finally
-                        {
-                            applicationManager.getConnection().close();
-                        }
+                            
+                            @Override
+                            public void run()
+                            {
+                                try
+                                {
+                                    
+                                    postApplicationBuild(appman);
+                                }
+                                finally
+                                {
+                                    appman.getConnection().close();
+                                }
+                                
+                            }
+                        });
                         shell.layout();
                         shell.setMaximized(true);
                         // disable due to RWT bug
