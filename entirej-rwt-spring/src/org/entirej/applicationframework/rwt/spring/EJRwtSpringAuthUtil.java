@@ -1,16 +1,16 @@
 package org.entirej.applicationframework.rwt.spring;
 
-import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.entirej.applicationframework.rwt.spring.ext.EJSpringWebAuthenticationDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 public class EJRwtSpringAuthUtil
 {
@@ -48,15 +48,16 @@ public class EJRwtSpringAuthUtil
 
         return null;
     }
+
     public static Authentication getAuthentication()
     {
-        
+
         SecurityContext context = getSecurityContext();
         if (context != null)
         {
             return context.getAuthentication();
         }
-        
+
         return null;
     }
 
@@ -66,4 +67,47 @@ public class EJRwtSpringAuthUtil
         SecurityContext context = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
         return context;
     }
+
+    public static String getUrlParameter(String paramName)
+    {
+
+        Object details = getSecurityContext().getAuthentication().getDetails();
+        if (details instanceof EJSpringWebAuthenticationDetails)
+        {
+
+            String state = ((EJSpringWebAuthenticationDetails) details).getQueryString();
+            if (state != null && state.startsWith("#"))
+            {
+                state = state.substring(1);
+            }
+
+            String paramState = state;
+            if (paramState != null && !paramState.trim().isEmpty())
+            {
+                Map<String, String> queryMap = getQueryMap(paramState);
+                return queryMap.get(paramName);
+
+            }
+        }
+
+        return null;
+    }
+
+    static Map<String, String> getQueryMap(String query)
+    {
+        String[] params = query.split("&");
+        Map<String, String> map = new HashMap<String, String>();
+        for (String param : params)
+        {
+            String[] split = param.split("=");
+            if (split.length == 2)
+            {
+                String name = split[0];
+                String value = split[1];
+                map.put(name, value);
+            }
+        }
+        return map;
+    }
+
 }

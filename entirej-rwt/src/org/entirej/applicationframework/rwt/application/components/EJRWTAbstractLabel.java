@@ -26,6 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -170,6 +171,35 @@ public abstract class EJRWTAbstractLabel extends Composite implements Serializab
         {
             labelControl.setForeground(color);
         }
+    }
+    
+    @Override
+    public Color getForeground()
+    {
+        if (labelControl != null && !labelControl.isDisposed())
+        {
+           return labelControl.getForeground();
+        }
+        return super.getForeground();
+    }
+    
+    @Override
+    public void setFont(Font font)
+    {
+        if (labelControl != null && !labelControl.isDisposed())
+        {
+            labelControl.setFont(font);
+        }
+    }
+    
+    @Override
+    public Font getFont()
+    {
+        if (labelControl != null && !labelControl.isDisposed())
+        {
+            return labelControl.getFont();
+        }
+        return super.getFont();
     }
 
     @Override

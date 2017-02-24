@@ -423,12 +423,12 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     {
         Color foreground = EJRWTVisualAttributeUtils.INSTANCE.getForeground(_visualAttributeProperties);
 
-        _labelField.getControl().setForeground(foreground != null ? foreground : _visualContext.getForegroundColor());
+        _labelField.setForeground(foreground != null ? foreground : _visualContext.getForegroundColor());
     }
 
     private void refreshFont()
     {
-        _labelField.getControl().setFont(EJRWTVisualAttributeUtils.INSTANCE.getFont(_visualAttributeProperties, _visualContext.getItemFont()));
+        _labelField.setFont(EJRWTVisualAttributeUtils.INSTANCE.getFont(_visualAttributeProperties, _visualContext.getItemFont()));
     }
 
     @Override
@@ -542,6 +542,31 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                         labelField.setText(text);
                     }
                 }
+                
+                public void setFont(Font font) {
+                    
+                    labelField.setFont(font);
+                    
+                };
+                
+                
+                @Override
+                public Font getFont()
+                {
+                    return labelField.getFont();
+                }
+                
+                public void setForeground(Color color) {
+                    
+                    labelField.setForeground(color);
+                };
+                
+                @Override
+                public Color getForeground()
+                {
+                    return labelField.getForeground();
+                }
+                
 
                 @Override
                 public String getText()
@@ -608,6 +633,45 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                         linkField.setText(String.format("<a>%s</a>", value = text));
                     }
                 }
+                
+                @Override
+                public void setFont(Font font)
+                {
+                    if (controlState(linkField))
+                    {
+                        linkField.setFont(font);
+                    }
+                    
+                }
+                @Override
+                public Font getFont()
+                {
+                    if (controlState(linkField))
+                    {
+                       return linkField.getFont();
+                    }
+                    return null;
+                }
+                
+                @Override
+                public void setForeground(Color color)
+                {
+                    if (controlState(linkField))
+                    {
+                        linkField.setForeground(color);
+                    }
+                    
+                }
+                
+                @Override
+                public Color getForeground()
+                {
+                    if (controlState(linkField))
+                    {
+                       return linkField.getForeground();
+                    }
+                    return null;
+                }
 
                 @Override
                 public String getText()
@@ -648,7 +712,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
         _labelField.getControl().setToolTipText(hint != null ? hint : "");
         _labelField.getControl().setData(_item.getReferencedItemProperties().getName());
         _labelField.getControl().addFocusListener(this);
-        _visualContext = new EJRWTItemRendererVisualContext(_labelField.getControl().getBackground(), _labelField.getControl().getForeground(), _labelField
+        _visualContext = new EJRWTItemRendererVisualContext(_labelField.getControl().getBackground(), _labelField.getForeground(), _labelField
                 .getControl().getFont());
 
         _mandatoryDecoration = new ControlDecoration(_labelField.getControl(), SWT.TOP | SWT.LEFT);
@@ -808,6 +872,14 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     private static interface SWTComponentAdapter
     {
         Control getControl();
+        
+        void setForeground(Color color);
+
+        Color getForeground();
+
+        void setFont(Font font);
+        
+        Font getFont();
 
         String getText();
 
