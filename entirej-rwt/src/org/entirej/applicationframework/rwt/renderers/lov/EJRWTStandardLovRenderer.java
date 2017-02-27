@@ -489,7 +489,7 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
 
         _dialog.centreLocation();
         _dialog.open();
-        _dialog.activateDialog();
+        //_dialog.activateDialog();
     }
 
     @Override
