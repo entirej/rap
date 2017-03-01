@@ -495,13 +495,16 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 }
             };
             labelField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LABEL);
+            labelField.getLabelControl().setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LABEL);
             String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
             if (customCSSKey != null && customCSSKey.trim().length() > 0)
             {
                 labelField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                labelField.getLabelControl().setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
             }
-            labelField.setData(EJ_RWT.MARKUP_ENABLED, _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
+           // labelField.setData(EJ_RWT.MARKUP_ENABLED, _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
+            labelField.getLabelControl().setData(EJ_RWT.MARKUP_ENABLED, _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
 
             String pictureName = _rendererProps.getStringProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_PICTURE);
 
