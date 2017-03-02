@@ -563,7 +563,11 @@ public class EJRWTMessenger implements EJMessenger
                 int  strWidth(String meg)
                 {
                     int big = -1;
-                    String[] split = meg.split("<br>");
+                    String[] split1 = meg.split("<br>");
+                    String[] split2 = meg.split("<br/>");
+                    
+                    String[] split = split1.length>split2.length ? split1 :split2;
+                    
                     boolean firstLine =true;
                     for (String string : split)
                     {
