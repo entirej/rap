@@ -24,15 +24,12 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.entirej.applicationframework.rwt.notifications.EJRWTNotifierDialog;
 import org.entirej.framework.core.EJApplicationException;
@@ -559,74 +556,13 @@ public class EJRWTMessenger implements EJMessenger
             MessageDialog dialog = new MessageDialog(parent, title, null, message, kind, getButtonLabels(kind), 0)
             {
 
-                
-                int  strWidth(String meg)
-                {
-                    int big = -1;
-                    String[] split1 = meg.split("<br>");
-                    String[] split2 = meg.split("<br/>");
-                    
-                    String[] split = split1.length>split2.length ? split1 :split2;
-                    
-                    boolean firstLine =true;
-                    for (String string : split)
-                    {
-                        int length = string.replaceAll("&nbsp;", " ").trim().length();
-                        if(length>big)
-                        {
-                            big = length;
-                            if(firstLine)
-                                big-=40;
-                        }
-                        if(firstLine)
-                            firstLine = false;
-                    }
-                    if(big>0)
-                    {
-                        
-                        big=(int) (6*(big));
-                    }
-                    return big>300?big:300;
-                }
                 @Override
                 protected Control createMessageArea(Composite composite)
                 {
-                 // create composite
-                    // create image
-                    Image image = getImage();
-                    if (image != null) {
-                            imageLabel = new Label(composite, SWT.NULL);
-                            image.setBackground(imageLabel.getBackground());
-                            imageLabel.setImage(image);
-                          
-                            GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.BEGINNING)
-                                            .applyTo(imageLabel);
-                    }
-                    // create message
-                    if (message != null) {
-                        
-                            messageLabel = new Label(composite, getMessageLabelStyle());
-                          
-                            try
-                            {
-                                messageLabel.setText(message);
-                            }
-                            catch(Exception e)
-                            {
-                               e.printStackTrace();
-                            }
-                            messageLabel.setData(RWT.MARKUP_ENABLED, Boolean.TRUE);
-                            GridData gridData = new GridData(GridData.FILL_BOTH|GridData.GRAB_HORIZONTAL|GridData.GRAB_VERTICAL);
-                            gridData.widthHint=(strWidth(message));
-                            messageLabel.setLayoutData(gridData);   
-                           // gridData.widthHint=  (messageLabel.computeSize(SWT.DEFAULT, SWT.DEFAULT).x);
-                           
-                    }
-                    
-                    
-                    setShellStyle(getShellStyle() | SWT.SHEET);
-                    
-                    return composite;
+                    Control createMessageArea = super.createMessageArea(composite);
+                    if(messageLabel!=null)
+                        messageLabel.setData(EJ_RWT.MARKUP_ENABLED, true);
+                    return createMessageArea;
                 }
             };
             dialog.setBlockOnOpen(false);

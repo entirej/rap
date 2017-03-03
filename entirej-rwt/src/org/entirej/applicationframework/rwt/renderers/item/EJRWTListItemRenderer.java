@@ -64,6 +64,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionList;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.item.EJRWTRadioGroupItemRenderer.RadioButtonValue;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTListBoxRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
@@ -1337,5 +1338,17 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
             listener.changed();
         }
+    }
+    
+    @Override
+    public List<Object> getValidValues()
+    {
+        List<Object> objects = new ArrayList<Object>();
+        if(_listValues!=null)
+        for (ListBoxValue buttonValue : _listValues.values())
+        {
+            objects.add(buttonValue._itemValue);
+        }
+        return objects;
     }
 }

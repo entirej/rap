@@ -19,6 +19,8 @@
 package org.entirej.applicationframework.rwt.renderers.item;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -620,5 +622,10 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
             }
         }
         
+    }
+    @Override
+    public List<Object> getValidValues()
+    {
+        return Collections.emptyList();
     }
 }

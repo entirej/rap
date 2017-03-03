@@ -28,6 +28,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -3131,6 +3132,13 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         }
 
         return _comboValues;
+    }
+    
+    @Override
+    public List<Object> getValidValues()
+    {
+        //TODO
+        return Collections.emptyList();
     }
 
 }

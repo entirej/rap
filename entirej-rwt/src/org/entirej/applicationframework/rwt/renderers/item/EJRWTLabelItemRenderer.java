@@ -19,6 +19,8 @@
 package org.entirej.applicationframework.rwt.renderers.item;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -911,5 +913,11 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public boolean isReadOnly()
     {
         return true;
+    }
+    
+    @Override
+    public List<Object> getValidValues()
+    {
+        return Collections.emptyList();
     }
 }
