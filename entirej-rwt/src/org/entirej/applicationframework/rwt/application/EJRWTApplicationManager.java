@@ -509,7 +509,11 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
         String name = report.getName();
 
-        EJReportParameter reportParameter = report.getReportParameter("REPORT_NAME");
+        EJReportParameter reportParameter = null;
+        if(report.hasReportParameter("REPORT_NAME"))
+        {
+            reportParameter = report.getReportParameter("REPORT_NAME");
+        }
 
         if (reportParameter != null && reportParameter.getValue() != null && !((String) reportParameter.getValue()).isEmpty())
         {
@@ -605,7 +609,11 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                             {
                                 String name = report.getName();
 
-                                EJReportParameter reportParameter = report.getReportParameter("REPORT_NAME");
+                                EJReportParameter reportParameter = null;
+                                if(report.hasReportParameter("REPORT_NAME"))
+                                {
+                                    reportParameter = report.getReportParameter("REPORT_NAME");
+                                }
 
                                 if (reportParameter != null && reportParameter.getValue() != null && !((String) reportParameter.getValue()).isEmpty())
                                 {
