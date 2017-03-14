@@ -37,6 +37,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
@@ -167,7 +168,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
     @Override
     protected Text newTextField(Composite composite, int style)
     {
-        _textField = super.newTextField(composite, style);
+        _textField = new Text(composite, style);
         _textField.addModifyListener(new ModifyListener()
         {
             @Override
@@ -195,23 +196,33 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
             @Override
             public void focusLost(FocusEvent arg0)
             {
-                try
+                Display.getCurrent().asyncExec(new Runnable()
                 {
-                    _modifyListener.enable = false;
-                    Object value = getValue();
-                    if (value != null)
+
+                    @Override
+                    public void run()
                     {
-                        _textField.setText(_decimalFormatter.format(value));
+                        try
+                        {
+                            _modifyListener.enable = false;
+                            Object value = getValue();
+                            if (value != null)
+                            {
+                                _textField.setText(_decimalFormatter.format(value));
+                            }
+                            else
+                            {
+                                _textField.setText("");
+                            }
+                        }
+                        finally
+                        {
+                            _modifyListener.enable = true;
+                        }
+
                     }
-                    else
-                    {
-                        _textField.setText("");
-                    }
-                }
-                finally
-                {
-                    _modifyListener.enable = true;
-                }
+                });
+                
             }
 
             @Override
