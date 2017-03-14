@@ -22,6 +22,8 @@ import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -664,5 +666,11 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public boolean canExecuteActionCommand()
     {
         return false;
+    }
+    
+    @Override
+    public List<Object> getValidValues()
+    {
+        return Collections.emptyList();
     }
 }

@@ -24,7 +24,10 @@ package org.entirej.applicationframework.rwt.renderers.item;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -929,5 +932,17 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     public boolean isReadOnly()
     {
         return false;
+    }
+    
+    @Override
+    public List<Object> getValidValues()
+    {
+        List<Object> objects = new ArrayList<Object>();
+        if(_radioButtons!=null)
+        for (RadioButtonValue buttonValue : _radioButtons.values())
+        {
+            objects.add(buttonValue.value);
+        }
+        return objects;
     }
 }

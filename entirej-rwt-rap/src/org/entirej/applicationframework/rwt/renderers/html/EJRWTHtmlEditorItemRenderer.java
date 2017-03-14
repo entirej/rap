@@ -23,7 +23,9 @@ import java.text.Collator;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -711,6 +713,12 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
     public boolean isReadOnly()
     {
         return false;
+    }
+    
+    @Override
+    public List<Object> getValidValues()
+    {
+        return Collections.emptyList();
     }
 
 }
