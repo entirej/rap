@@ -262,17 +262,8 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         if (_rendererProps.getBooleanProperty(EJRWTComboBoxRendererDefinitionProperties.INITIALIES_LOV, true))
         {
             _lovInitialied.set(true);
-            Display.getDefault().asyncExec(new Runnable()
-            {
-                
-                @Override
-                public void run()
-                {
-                   _loadComboBoxValues();
-                    refreshCombo();
-                    
-                }
-            });
+             _loadComboBoxValues();
+             refreshCombo();
         }
     }
 
