@@ -131,6 +131,12 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     {
         return "ej";
     }
+    
+    protected String getTimeoutPage()
+    {
+        
+        return null;
+    }
 
     protected String getBodyHtml()
     {
@@ -250,8 +256,11 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                            };
                            
                            service.addBrowserNavigationListener(listener);
-                           return wrapped.createUI();
+                           int createUI = wrapped.createUI();
+                        return createUI;
                    }
+
+               
            };
             }
 
@@ -265,7 +274,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
                         
                         
-                        
+
+                        RWTUtils.patchClient(getWebPathContext(), getTimeoutPage());
                       
                         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
                         {

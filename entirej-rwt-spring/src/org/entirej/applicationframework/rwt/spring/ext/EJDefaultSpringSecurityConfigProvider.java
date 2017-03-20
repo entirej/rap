@@ -10,8 +10,7 @@ public class EJDefaultSpringSecurityConfigProvider implements EJSpringSecurityCo
     {
         http.csrf().disable();
        
-        http.authorizeRequests().antMatchers("/resources/**", "/login/**").
-        permitAll().anyRequest().authenticated().and().formLogin();
+       
 
     }
 }
