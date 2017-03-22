@@ -17,13 +17,13 @@ public class EJRWTStackedItemRendererConfig
     private String  label;
     private String  tooltip;
 
-    private int     xSpan  = DEFUALT;
-    private int     ySpan  = DEFUALT;
-    private int     width  = DEFUALT;
-    private int     height = DEFUALT;
+    private int     xSpan              = DEFUALT;
+    private int     ySpan              = DEFUALT;
+    private int     width              = DEFUALT;
+    private int     height             = DEFUALT;
 
     private Boolean expandHorizontally = null;
-    private Boolean expandVertically = null;
+    private Boolean expandVertically   = null;
 
     public EJRWTStackedItemRendererType getType()
     {
@@ -122,6 +122,19 @@ public class EJRWTStackedItemRendererConfig
         private String  lovMapping;
 
         private boolean validateLov = true;
+        private boolean lovEnabled  = true;
+
+        public boolean isLovEnabled()
+        {
+
+            return lovEnabled;
+
+        }
+
+        public void setLovEnabled(boolean lovEnabled)
+        {
+            this.lovEnabled = lovEnabled;
+        }
 
         public String getLovMapping()
         {
@@ -193,8 +206,8 @@ public class EJRWTStackedItemRendererConfig
     {
         public enum ReturnType
         {
-            UTIL_DATE, SQL_DATE,SQL_TIME, SQL_TIMESTAMP
-            
+            UTIL_DATE, SQL_DATE, SQL_TIME, SQL_TIMESTAMP
+
         }
 
         public Date()
@@ -232,9 +245,9 @@ public class EJRWTStackedItemRendererConfig
         {
             NUMBER, INTEGER, FLOAT, BIG_DECIMAL, DOUBLE, LONG
         };
-        
-        DataType numberType; 
-        
+
+        DataType numberType;
+
         public Number(DataType numberType)
         {
             super(EJRWTStackedItemRendererType.NUMBER);
@@ -252,17 +265,15 @@ public class EJRWTStackedItemRendererConfig
         {
             this.format = format;
         }
-        
+
         public DataType getDataType()
         {
             return numberType;
         }
-        
-        
-        
+
     }
 
-    public static class Combo extends LOVSupportConfig  implements ActionSupportConfig 
+    public static class Combo extends LOVSupportConfig implements ActionSupportConfig
     {
 
         private List<Column> entries = new ArrayList<Column>();
@@ -276,8 +287,7 @@ public class EJRWTStackedItemRendererConfig
 
         private String lovDefinition;
         private String itemName;
-        
-        
+
         private String actionCommand;
 
         public String getActionCommand()
@@ -382,7 +392,7 @@ public class EJRWTStackedItemRendererConfig
 
     }
 
-    public static class CheckBox extends EJRWTStackedItemRendererConfig implements ActionSupportConfig 
+    public static class CheckBox extends EJRWTStackedItemRendererConfig implements ActionSupportConfig
     {
         public CheckBox()
         {
@@ -411,7 +421,7 @@ public class EJRWTStackedItemRendererConfig
         {
             this.checkBoxUnCheckedValue = checkBoxUnCheckedValue;
         }
-        
+
         private String actionCommand;
 
         public String getActionCommand()
@@ -425,7 +435,7 @@ public class EJRWTStackedItemRendererConfig
         }
     }
 
-    public static class Button extends EJRWTStackedItemRendererConfig implements ActionSupportConfig 
+    public static class Button extends EJRWTStackedItemRendererConfig implements ActionSupportConfig
     {
         public Button()
         {
@@ -443,7 +453,7 @@ public class EJRWTStackedItemRendererConfig
         {
             this.image = image;
         }
-        
+
         private String actionCommand;
 
         public String getActionCommand()
@@ -458,16 +468,13 @@ public class EJRWTStackedItemRendererConfig
 
     }
 
-    public static interface ActionSupportConfig 
+    public static interface ActionSupportConfig
     {
 
-      
         public String getActionCommand();
 
         public void setActionCommand(String actionCommand);
-       
 
-       
     }
 
 }

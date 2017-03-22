@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 Mojave Innovations GmbH
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ * Contributors: Mojave Innovations GmbH - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.application.launcher;
 
@@ -43,6 +42,7 @@ import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.service.ResourceLoader;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
 import org.eclipse.swt.SWT;
@@ -66,6 +66,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.file.EJRWTFileDownload;
 import org.entirej.applicationframework.rwt.file.EJRWTFileUpload;
 import org.entirej.applicationframework.rwt.renderers.html.EJRWTHtmlTableBlockRenderer.VACSSServiceHandler;
+import org.entirej.framework.core.EJActionProcessorException;
 import org.entirej.framework.core.EJFrameworkHelper;
 import org.entirej.framework.core.EJFrameworkInitialiser;
 import org.entirej.framework.core.interfaces.EJMessenger;
@@ -81,7 +82,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
     public void configure(Application configuration)
     {
-        
+
         createEntryPoint(configuration);
     }
 
@@ -99,10 +100,15 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     {
         return "EJ Loading...";
     }
+
     /**
-     * Changes the runtim mode of RAP @link http://download.eclipse.org/rt/rap/doc/2.1/guide/reference/api/org/eclipse/rap/rwt/application/Application.OperationMode.html
+     * Changes the runtim mode of RAP @link
+     * http://download.eclipse.org/rt/rap/doc
+     * /2.1/guide/reference/api/org/eclipse
+     * /rap/rwt/application/Application.OperationMode.html
      * 
      * OperationMode
+     * 
      * @return OperationMode
      */
     protected OperationMode getOperationMode()
@@ -131,10 +137,10 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     {
         return "ej";
     }
-    
+
     protected String getTimeoutPage()
     {
-        
+
         return null;
     }
 
@@ -205,7 +211,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
         {
             favicon = ICONS_FAVICON_ICO;
         }
-        
+
         properties.put(WebClient.FAVICON, favicon);
         properties.put(WebClient.BODY_HTML, getBodyHtml());
         properties.put(WebClient.THEME_ID, THEME_DEFAULT);
@@ -219,7 +225,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             baseThemeCSSLocation = THEME_DEFAULT_CSS;
         }
         configuration.addStyleSheet(THEME_DEFAULT, baseThemeCSSLocation);
-        properties.put( WebClient.PAGE_OVERFLOW, "scrollY" );
+        properties.put(WebClient.PAGE_OVERFLOW, "scrollY");
         configuration.addResource(baseThemeCSSLocation, new FileResource());
         if (getThemeCSSLocation() != null)
         {
@@ -244,24 +250,28 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                     // ignore if already registered
                 }
                 registerWidgetHandlers();
-               final  EntryPoint wrapped = newEntryPoint();
-               return new EntryPoint() {
-                   public int createUI() {
-                           BrowserNavigation service = RWT.getClient().getService( BrowserNavigation.class );
-                           BrowserNavigationListener listener  = new BrowserNavigationListener() {
-                                   @Override
-                                   public void navigated(BrowserNavigationEvent event) {
-                                          EJRWTContext.getPageContext().setState(event.getState());
-                                   }
-                           };
-                           
-                           service.addBrowserNavigationListener(listener);
-                           int createUI = wrapped.createUI();
-                        return createUI;
-                   }
+                final EntryPoint wrapped = newEntryPoint();
+                return new EntryPoint()
+                {
+                    public int createUI()
+                    {
+                        BrowserNavigation service = RWT.getClient().getService(BrowserNavigation.class);
+                        BrowserNavigationListener listener = new BrowserNavigationListener()
+                        {
+                            @Override
+                            public void navigated(BrowserNavigationEvent event)
+                            {
+                                EJRWTContext.getPageContext().setState(event.getState());
+                            }
+                        };
 
-               
-           };
+                        service.addBrowserNavigationListener(listener);
+
+                        int createUI = wrapped.createUI();
+                        return createUI;
+                    }
+
+                };
             }
 
             private EntryPoint newEntryPoint()
@@ -272,11 +282,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                     public int createUI()
                     {
 
-                        
-                        
-
                         RWTUtils.patchClient(getWebPathContext(), getTimeoutPage());
-                      
+
                         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
                         {
 
@@ -285,14 +292,15 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             {
                                 return EJRWTFileUpload.promptFileUpload(title);
                             }
+
                             @Override
                             public List<String> promptMultipleFileUpload(String title)
-                            
+
                             {
                                 String[] promptMultipleFileUpload = EJRWTFileUpload.promptMultipleFileUpload(title);
-                                return (List<String>) (promptMultipleFileUpload!=null ? Arrays.asList(promptMultipleFileUpload):Collections.emptyList());
+                                return (List<String>) (promptMultipleFileUpload != null ? Arrays.asList(promptMultipleFileUpload) : Collections.emptyList());
                             }
-                            
+
                             public Image getImage(String name, ClassLoader loader)
                             {
                                 return RWTUtils.getImage(name, loader);
@@ -302,11 +310,10 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             public void open(final String output, String outputName)
                             {
                                 EJRWTFileDownload.download(output, outputName);
-                                
+
                                 RWT.getUISession().addUISessionListener(new UISessionListener()
                                 {
 
-                                  
                                     private static final long serialVersionUID = 1L;
 
                                     @Override
@@ -315,8 +322,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                         File f = new File(output);
                                         if (f.exists())
                                         {
-                                               
-                                                f.delete();
+
+                                            f.delete();
                                         }
 
                                     }
@@ -351,8 +358,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
                                         Object adapter = section.getAdapter(IWidgetGraphicsAdapter.class);
                                         IWidgetGraphicsAdapter gfxAdapter = (IWidgetGraphicsAdapter) adapter;
-                                        Color[] gradientColors = new Color[] { section.getTitleBarBorderColor(), section.getBackground(),
-                                                section.getTitleBarBackground(), section.getBackground(), section.getBackground() };
+                                        Color[] gradientColors = new Color[] { section.getTitleBarBorderColor(), section.getBackground(), section.getTitleBarBackground(), section.getBackground(), section.getBackground() };
                                         int gradientPercent = 0;
                                         Rectangle bounds = section.getClientArea();
 
@@ -374,7 +380,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
                             }
                         });
-                        EJRWTApplicationManager applicationManager = null;
+                        final EJRWTApplicationManager applicationManager;
 
                         if (this.getClass().getClassLoader().getResource("application.ejprop") != null)
                         {
@@ -391,7 +397,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         }
 
                         EJRWTContext.getPageContext().setManager(applicationManager);
-                        
+
                         getContext().getUISession().setAttribute("ej.applicationManager", applicationManager);
 
                         EJCoreLayoutContainer layoutContainer = EJCoreProperties.getInstance().getLayoutContainer();
@@ -418,26 +424,25 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             applicationManager.getConnection().close();
                         }
                         applicationManager.buildApplication(appContainer, shell);
-                        
+
                         final EJRWTApplicationManager appman = applicationManager;
-                       
 
                         Display.getCurrent().asyncExec(new Runnable()
                         {
-                            
+
                             @Override
                             public void run()
                             {
                                 try
                                 {
-                                    
+
                                     postApplicationBuild(appman);
                                 }
                                 finally
                                 {
                                     appman.getConnection().close();
                                 }
-                                
+
                             }
                         });
                         shell.layout();
@@ -456,6 +461,37 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         // {
                         // confirmation.setMessage(message);
                         // }
+                        
+                        final ServerPushSession pushSession = new ServerPushSession();
+                        
+                            RWT.getUISession().addUISessionListener(new UISessionListener()
+                            {
+                                public void beforeDestroy(UISessionEvent event)
+                                {
+                                    if(applicationManager.getApplicationActionProcessor()!=null)
+                                        try
+                                        {
+                                            applicationManager.getApplicationActionProcessor().whenApplicationEnd(applicationManager);
+                                        }
+                                        catch (EJActionProcessorException e)
+                                        {
+                                            e.printStackTrace();
+                                        }
+                                    pushSession.stop();
+                                }
+                            });
+                        
+                        if(applicationManager.getApplicationActionProcessor()!=null)
+                            try
+                            {
+                                applicationManager.getApplicationActionProcessor().whenApplicationStart(applicationManager);
+                            }
+                            catch (EJActionProcessorException e)
+                            {
+                                e.printStackTrace();
+                            }
+                        
+                        pushSession.start();
 
                         return openShell(display, shell);
                     }
@@ -465,10 +501,10 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     }
 
     @SuppressWarnings("deprecation")
-    public  int openShell(Display display, Shell shell)
+    public int openShell(Display display, Shell shell)
     {
         shell.open();
-        if (getOperationMode()==OperationMode.SWT_COMPATIBILITY)
+        if (getOperationMode() == OperationMode.SWT_COMPATIBILITY)
         {
             while (!shell.isDisposed())
             {

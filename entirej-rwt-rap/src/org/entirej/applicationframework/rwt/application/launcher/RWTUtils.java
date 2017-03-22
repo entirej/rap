@@ -22,6 +22,7 @@ import java.io.InputStream;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
@@ -79,6 +80,7 @@ public class RWTUtils
         builder.append("}() );");
         //System.err.println(builder.toString());
         executor.execute(builder.toString());
+        
     }
 
 }
