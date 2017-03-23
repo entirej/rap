@@ -68,7 +68,10 @@ public class RWTUtils
         //        builder.append(" rwt.remote.Connection.getInstance()._retry();");
         //        builder.append(" }, 100 );} else");
         builder.append(" if( errorType === \"session timeout\" || errorType === \"client error\" ) {");
-        builder.append(" parent.window.location.href = this._getRestartURL()");
+        if(timeoutPage==null || timeoutPage.isEmpty())
+            builder.append(" parent.window.location.href = this._getRestartURL();");
+        else
+            builder.append(" parent.window.location.href = \"").append(timeoutPage).append("\";");   
         builder.append("                                            ");
         builder.append("                                            ");
         builder.append("                                            ");

@@ -79,6 +79,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     private static final String   THEME_DEFAULT_CSS = "theme/default.css";
     private static final String   ICONS_FAVICON_ICO = "icons/favicon.ico";
     protected static final String THEME_DEFAULT     = "org.entirej.applicationframework.rwt.Default";
+    private String _baseURL;
 
     public void configure(Application configuration)
     {
@@ -138,7 +139,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
         return "ej";
     }
 
-    protected String getTimeoutPage()
+    protected String getTimeoutUrl()
     {
 
         return null;
@@ -282,7 +283,25 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                     public int createUI()
                     {
 
-                        RWTUtils.patchClient(getWebPathContext(), getTimeoutPage());
+                        {//connect BaseURL
+                            StringBuffer url = new StringBuffer();
+                            url.append(RWT.getRequest().getContextPath());
+                            url.append(RWT.getRequest().getServletPath());
+                            String encodeURL = RWT.getResponse().encodeURL(url.toString());
+                            if (encodeURL.contains("jsessionid"))
+                            {
+                                encodeURL = encodeURL.substring(0, encodeURL.indexOf("jsessionid"));
+                            }
+                            int patchIndex = encodeURL.lastIndexOf(getWebPathContext());
+                            if (patchIndex > -1)
+                            {
+                                encodeURL = encodeURL.substring(0, patchIndex);
+                            }
+                            _baseURL = encodeURL;
+                            
+                        }
+                        
+                        RWTUtils.patchClient(getWebPathContext(), getTimeoutUrl());
 
                         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
                         {
@@ -462,6 +481,9 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         // confirmation.setMessage(message);
                         // }
                         
+                        
+                        
+                        
                         final ServerPushSession pushSession = new ServerPushSession();
                         
                             RWT.getUISession().addUISessionListener(new UISessionListener()
@@ -490,6 +512,9 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             {
                                 e.printStackTrace();
                             }
+                        
+                        
+                        
                         
                         pushSession.start();
 
@@ -557,6 +582,12 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
     }
 
+    
+    public String getBaseURL()
+    {
+        return _baseURL;
+    }
+    
     public static void reloadApplication(EJFrameworkHelper frameworkHelper)
     {
         // disable due to RWT bug

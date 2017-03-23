@@ -122,7 +122,7 @@ public class EJRWTStackedItemRendererConfig
         private String  lovMapping;
 
         private boolean validateLov = true;
-        private boolean lovEnabled  = true;
+        private boolean lovEnabled  = false;
 
         public boolean isLovEnabled()
         {
@@ -144,6 +144,10 @@ public class EJRWTStackedItemRendererConfig
         public void setLovMapping(String lovMapping)
         {
             this.lovMapping = lovMapping;
+            if(lovMapping!=null)
+            {
+                lovEnabled = true;
+            }
         }
 
         public boolean isValidateLov()

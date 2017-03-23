@@ -769,8 +769,9 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
         try
         {
-            _item.setItemLovMapping(null);
             enableLovActivation(false);
+            _item.setItemLovMapping(null);
+            
 
             _actionControl.setCustomActionVisible(_baseValue != null && _baseValue.getConfig().getType() == EJRWTStackedItemRendererType.DATE);
             if (_baseValue != null)
@@ -1188,9 +1189,11 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 if (_baseValue.getConfig() instanceof EJRWTStackedItemRendererConfig.LOVSupportConfig)
                 {
                     EJRWTStackedItemRendererConfig.LOVSupportConfig lovMapping = (LOVSupportConfig) _baseValue.getConfig();
+
+                    _item.getProperties().enableLovNotification(lovMapping.isLovEnabled());
                     _item.setItemLovMapping(lovMapping.getLovMapping());
-                    _item.getProperties().enableLovNotification(lovMapping.isValidateLov());
-                    enableLovActivation(_item.getItemLovController() != null);
+                    _item.getProperties().enableLovValidation(lovMapping.isValidateLov());
+                    enableLovActivation(lovMapping.isLovEnabled());
                 }
 
                 setStackValue();
