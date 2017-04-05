@@ -90,6 +90,27 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
 
     }
     
+    private Date converType(Date newValue)
+    {
+        if (newValue != null && !_itemProperties.getDataTypeClassName().equals(Date.class.getName()))
+        {
+            String dataTypeClass = _itemProperties.getDataTypeClassName();
+            if (dataTypeClass.equals("java.sql.Date"))
+            {
+                newValue = new java.sql.Date(newValue.getTime());
+            }
+            else if (dataTypeClass.equals("java.sql.Time"))
+            {
+                newValue = new java.sql.Time(newValue.getTime());
+            }
+            else if (dataTypeClass.equals("java.sql.Timestamp"))
+            {
+                newValue = new java.sql.Timestamp(newValue.getTime());
+            }
+        }
+        return newValue;
+    }
+    
     
     
     @Override
@@ -416,22 +437,9 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             }
 
             // convert to correct type if need
-            if (value != null && !_itemProperties.getDataTypeClassName().equals(Date.class.getName()))
-            {
-                String dataTypeClass = _itemProperties.getDataTypeClassName();
-                if (dataTypeClass.equals("java.sql.Date"))
-                {
-                    value = new java.sql.Date(value.getTime());
-                }
-                else if (dataTypeClass.equals("java.sql.Time"))
-                {
-                    value = new java.sql.Time(value.getTime());
-                }
-                else if (dataTypeClass.equals("java.sql.Timestamp"))
-                {
-                    value = new java.sql.Timestamp(value.getTime());
-                }
-            }
+            value = converType(value);
+           
+            
         }
         catch (ParseException e)
         {
@@ -599,22 +607,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     Object old =_baseValue;
                     Date newValue = format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay()));
                     
-                    if (newValue != null && !_itemProperties.getDataTypeClassName().equals(Date.class.getName()))
-                    {
-                        String dataTypeClass = _itemProperties.getDataTypeClassName();
-                        if (dataTypeClass.equals("java.sql.Date"))
-                        {
-                            newValue = new java.sql.Date(newValue.getTime());
-                        }
-                        else if (dataTypeClass.equals("java.sql.Time"))
-                        {
-                            newValue = new java.sql.Time(newValue.getTime());
-                        }
-                        else if (dataTypeClass.equals("java.sql.Timestamp"))
-                        {
-                            newValue = new java.sql.Timestamp(newValue.getTime());
-                        }
-                    }
+                    newValue = converType(newValue);
                     setValue(newValue);
                     _item.itemValueChaged(newValue);
                 }
@@ -651,22 +644,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                             {
                                 Object old =_baseValue;
                                 Date newValue = format.parse(format.format(new Date()));
-                                if (newValue != null && !_itemProperties.getDataTypeClassName().equals(Date.class.getName()))
-                                {
-                                    String dataTypeClass = _itemProperties.getDataTypeClassName();
-                                    if (dataTypeClass.equals("java.sql.Date"))
-                                    {
-                                        newValue = new java.sql.Date(newValue.getTime());
-                                    }
-                                    else if (dataTypeClass.equals("java.sql.Time"))
-                                    {
-                                        newValue = new java.sql.Time(newValue.getTime());
-                                    }
-                                    else if (dataTypeClass.equals("java.sql.Timestamp"))
-                                    {
-                                        newValue = new java.sql.Timestamp(newValue.getTime());
-                                    }
-                                }
+                                newValue = converType(newValue);
                                 setValue(newValue);
                                 _item.itemValueChaged(newValue);
                             }
@@ -681,6 +659,8 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                             }
                             _item.gainFocus();
                         }
+
+                       
                     });
                     Link clear = new Link(abstractDialog, SWT.PUSH);
                     clear.setText("<A>Clear</A>");
@@ -764,7 +744,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                             {
                                 Date newValue = format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay()));
                                 Object old = _baseValue;
-                                
+                                newValue = converType(newValue);
                                 setValue(newValue);
                                 _item.itemValueChaged(newValue);
                             }
@@ -937,6 +917,8 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             
             return builder.toString();
         }
+        
+        
 
     }
     

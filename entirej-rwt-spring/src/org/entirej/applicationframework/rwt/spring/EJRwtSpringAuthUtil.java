@@ -14,6 +14,8 @@ import org.springframework.security.core.context.SecurityContext;
 
 public class EJRwtSpringAuthUtil
 {
+
+    @Deprecated
     public static void logout(String contextpath)
     {
         StringBuffer url = new StringBuffer();
@@ -29,6 +31,47 @@ public class EJRwtSpringAuthUtil
         {
             encodeURL = encodeURL.substring(0, patchIndex) + "logout";
         }
+        String browserText = MessageFormat.format("parent.window.location.href = \"{0}\";", encodeURL);
+        JavaScriptExecutor executor = RWT.getClient().getService(JavaScriptExecutor.class);
+        if (executor != null)
+        {
+            executor.execute(browserText);
+        }
+    }
+
+    public static void logout()
+    {
+        StringBuffer url = new StringBuffer();
+        url.append(RWT.getRequest().getContextPath());
+
+        String encodeURL = RWT.getResponse().encodeURL(url.toString());
+        if (encodeURL.contains("jsessionid"))
+        {
+            encodeURL = encodeURL.substring(0, encodeURL.indexOf("jsessionid"));
+        }
+        
+        encodeURL+= "logout";
+
+        String browserText = MessageFormat.format("parent.window.location.href = \"{0}\";", encodeURL);
+        JavaScriptExecutor executor = RWT.getClient().getService(JavaScriptExecutor.class);
+        if (executor != null)
+        {
+            executor.execute(browserText);
+        }
+    }
+    public static void logoutAndRerirect(String redirect)
+    {
+        StringBuffer url = new StringBuffer();
+        url.append(RWT.getRequest().getContextPath());
+        
+        String encodeURL = RWT.getResponse().encodeURL(url.toString());
+        if (encodeURL.contains("jsessionid"))
+        {
+            encodeURL = encodeURL.substring(0, encodeURL.indexOf("jsessionid"));
+        }
+        
+        encodeURL+= "logout";
+        
         String browserText = MessageFormat.format("parent.window.location.href = \"{0}\";", encodeURL);
         JavaScriptExecutor executor = RWT.getClient().getService(JavaScriptExecutor.class);
         if (executor != null)
