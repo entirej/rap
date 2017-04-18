@@ -22,6 +22,9 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 
@@ -66,22 +69,49 @@ public class EJRWTContext
         {
             Map<String, String> queryMap = getQueryMap(paramState);
             return queryMap.get(paramName);
-            
+
         }
 
         return null;
     }
-    
-     static Map<String, String> getQueryMap(String query)  
-    {  
-        String[] params = query.split("&");  
-        Map<String, String> map = new HashMap<String, String>();  
-        for (String param : params)  
-        {  
-            String name = param.split("=")[0];  
-            String value = param.split("=")[1];  
-            map.put(name, value);  
-        }  
-        return map;  
+
+    static Map<String, String> getQueryMap(String query)
+    {
+        String[] params = query.split("&");
+        Map<String, String> map = new HashMap<String, String>();
+        for (String param : params)
+        {
+            String name = param.split("=")[0];
+            String value = param.split("=")[1];
+            map.put(name, value);
+        }
+        return map;
+    }
+
+    public static String getClientIpFromHeader()
+    {
+        HttpServletRequest request = RWT.getRequest();
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip))
+        {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip))
+        {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip))
+        {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip))
+        {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip))
+        {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
     }
 }

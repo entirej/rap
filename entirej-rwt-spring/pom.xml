@@ -195,6 +195,18 @@
 			<version>3.1.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.security.kerberos</groupId>
+			<artifactId>spring-security-kerberos-web</artifactId>
+			<version>1.0.1.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+
 
 	</dependencies>
 
