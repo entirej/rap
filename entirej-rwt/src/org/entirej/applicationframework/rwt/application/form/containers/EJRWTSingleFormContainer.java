@@ -62,10 +62,9 @@ public class EJRWTSingleFormContainer implements EJRWTAppComponentRenderer
     public void createContainer(EJRWTApplicationManager manager, Composite parent, EJFrameworkExtensionProperties rendererprop)
     {
         String formid = null;
-        if (rendererprop != null)
-        {
-            formid = rendererprop.getStringProperty(FORM_ID);
-        }
+        
+        
+        formid = getFormId(rendererprop);
 
         if (formid != null)
         {
@@ -125,6 +124,15 @@ public class EJRWTSingleFormContainer implements EJRWTAppComponentRenderer
         Label label = new Label(parent, SWT.NONE);
         label.setText("Form could not be found ID#:" + (formid != null ? formid : "<null>"));
         _control = label;
+    }
+
+    protected String getFormId(EJFrameworkExtensionProperties rendererprop)
+    {
+        if (rendererprop != null)
+        {
+            return rendererprop.getStringProperty(FORM_ID);
+        }
+        return null;
     }
 
     public void addFormSelectedListener(EJRWTFormSelectedListener selectionListener)

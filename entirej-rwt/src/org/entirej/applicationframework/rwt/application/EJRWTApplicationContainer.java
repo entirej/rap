@@ -61,6 +61,7 @@ import org.entirej.framework.core.properties.EJCoreLayoutItem.LayoutSpace;
 import org.entirej.framework.core.properties.EJCoreLayoutItem.SplitGroup;
 import org.entirej.framework.core.properties.EJCoreLayoutItem.SplitGroup.ORIENTATION;
 import org.entirej.framework.core.properties.EJCoreLayoutItem.TabGroup;
+import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.core.renderers.interfaces.EJApplicationComponentRenderer;
 import org.entirej.framework.core.renderers.registry.EJRendererFactory;
 
@@ -122,7 +123,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
         return _mainPane;
     }
 
-    void buildApplication(EJRWTApplicationManager applicationManager, Composite mainWindow)
+    void buildApplication(EJRWTApplicationManager applicationManager, Composite mainWindow,String serviceForm)
     {
         _applicationManager = applicationManager;
 
@@ -131,7 +132,10 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
 
         mainWindow.setLayout(new FillLayout());
 
-        buildApplicationContainer();
+        if(serviceForm==null)
+            buildApplicationContainer();
+        else
+            buildServiceApplicationContainer(serviceForm);
 
         if (_formContainer == null)
         {
@@ -416,6 +420,34 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                 }
             }
         }
+        for (EJRWTSingleFormContainer singleFormContainer : _singleFormContainers)
+        {
+            if (singleFormContainer.getForm() != null)
+            {
+                fireFormOpened(singleFormContainer.getForm());
+            }
+        }
+    }
+    protected void buildServiceApplicationContainer(final String fromID)
+    {
+        GridLayout gridLayout = new GridLayout(1, true);
+        _mainPane.setLayout(gridLayout);
+        
+        EJRWTSingleFormContainer container = new  EJRWTSingleFormContainer(){
+            
+            @Override
+            protected String getFormId(EJFrameworkExtensionProperties rendererprop)
+            {
+                return fromID;
+            }
+        };
+        
+        container.createContainer(_applicationManager, _mainPane, null);
+        container.getGuiComponent().setLayoutData(new GridData(GridData.FILL_BOTH|GridData.GRAB_HORIZONTAL|GridData.GRAB_VERTICAL));
+        _singleFormContainers.add(container);
+        
+        _mainPane.layout();
+        
         for (EJRWTSingleFormContainer singleFormContainer : _singleFormContainers)
         {
             if (singleFormContainer.getForm() != null)

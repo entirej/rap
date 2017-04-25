@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 Mojave Innovations GmbH
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ * Contributors: Mojave Innovations GmbH - initial API and implementation
  ******************************************************************************/
 /**
  * 
@@ -23,7 +22,6 @@ package org.entirej.applicationframework.rwt.renderers.application;
 
 import org.eclipse.jface.fieldassist.AutoCompleteField;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
-
 import org.entirej.framework.core.application.definition.interfaces.EJApplicationDefinition;
 import org.entirej.framework.core.properties.EJCoreLayoutItem.TYPE;
 import org.entirej.framework.core.properties.definitions.EJPropertyDefinitionType;
@@ -33,6 +31,7 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDe
 import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDefinitionListener;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionGroup;
+import org.entirej.framework.dev.properties.EJDevPropertyDefinitionList;
 
 public class EJRWTApplicationDefinition implements EJApplicationDefinition
 {
@@ -61,6 +60,12 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
 
     public static final String SPRING_SECURITY_CONFIG        = "SPRING_SECURITY_CONFIG";
 
+    public static final String SERVICE                       = "SERVICE";
+    public static final String SERVICE_LIST                  = "SERVICE_LIST";
+    public static final String SERVICE_PATH                  = "SERVICE_PATH";
+    public static final String SERVICE_NAME                  = "SERVICE_NAME";
+    public static final String SERVICE_FORM                  = "SERVICE_FORM";
+
     @Override
     public String getApplicationManagerClassName()
     {
@@ -73,86 +78,98 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("RWTAPP");
         mainGroup.setLabel("Eclipse RAP Application Framework");
 
-        
-        {//Spring support
-            
+        {// Spring support
+
             try
             {
                 Class<?> support = Class.forName("org.entirej.applicationframework.rwt.spring.EJSpringSupport");
-                if(support!=null)
+                if (support != null)
                 {
                     mainGroup.setLabel("Eclipse RAP Application Framework with Spring Security");
                     EJDevPropertyDefinitionGroup springGroup = new EJDevPropertyDefinitionGroup(SPRING_SECURITY, "Spring Security Support");
                     mainGroup.addSubGroup(springGroup);
-                    
-                    {//Config
-                        
+
+                    {// Config
+
                         EJDevPropertyDefinition type = new EJDevPropertyDefinition(SPRING_SECURITY_CONFIG, EJPropertyDefinitionType.PROJECT_CLASS_FILE);
                         type.setLabel("Security Config Provider");
                         type.setClassParent("org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityConfigProvider");
                         springGroup.addPropertyDefinition(type);
-                        
+
                     }
-                    {//Auth
-                        
+                    {// Auth
+
                         EJDevPropertyDefinition type = new EJDevPropertyDefinition(SPRING_SECURITY_AUTH, EJPropertyDefinitionType.PROJECT_CLASS_FILE);
                         type.setLabel("Authentication Provider");
                         type.setClassParent("org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityAuthenticationProvider");
                         springGroup.addPropertyDefinition(type);
-                        
+
                     }
                 }
             }
             catch (ClassNotFoundException e)
             {
-                //ignore
+                // ignore
             }
-            
+
         }
-        
+
+        {// services
+
+            EJDevPropertyDefinitionGroup serviceGroup = new EJDevPropertyDefinitionGroup(SERVICE, "Services");
+            mainGroup.addSubGroup(serviceGroup);
+
+            EJDevPropertyDefinitionList list = new EJDevPropertyDefinitionList(SERVICE_LIST, "Paths");
+            serviceGroup.addPropertyDefinitionList(list);
+
+            EJDevPropertyDefinition serviceName = new EJDevPropertyDefinition(SERVICE_NAME, EJPropertyDefinitionType.STRING);
+            serviceName.setLabel("Service Name");
+            EJDevPropertyDefinition servicePath = new EJDevPropertyDefinition(SERVICE_PATH, EJPropertyDefinitionType.STRING);
+            servicePath.setLabel("Service Path");
+
+            EJDevPropertyDefinition serviceForm = new EJDevPropertyDefinition(SERVICE_FORM, EJPropertyDefinitionType.FORM_ID);
+            serviceForm.setLabel("Service Form");
+            list.addPropertyDefinition(servicePath);
+            list.addPropertyDefinition(serviceName);
+            list.addPropertyDefinition(serviceForm);
+
+        }
+
         EJDevPropertyDefinition applicationMenu = new EJDevPropertyDefinition(APPLICATION_MENU, EJPropertyDefinitionType.MENU_GROUP);
         applicationMenu.setLabel("Application Menu");
-        applicationMenu
-                .setDescription("The Application Menu is the standard drop down menu displayed at the top of the screen. The menu is created using the <a href=\"http://docs.entirej.com/display/EJ1/Application+Menu\">EntireJ Menu Editor</a>");
+        applicationMenu.setDescription("The Application Menu is the standard drop down menu displayed at the top of the screen. The menu is created using the <a href=\"http://docs.entirej.com/display/EJ1/Application+Menu\">EntireJ Menu Editor</a>");
 
         mainGroup.addPropertyDefinition(applicationMenu);
         EJDevPropertyDefinition displayTabBorder = new EJDevPropertyDefinition(DISPLAY_TAB_BORDER, EJPropertyDefinitionType.BOOLEAN);
         displayTabBorder.setLabel("Display border on tabs");
-        displayTabBorder
-                .setDescription("Indicates if borders should be used to surround tab canvases. Displaying borders on tabs can lead to many unwanted frames displayed on your application.");
+        displayTabBorder.setDescription("Indicates if borders should be used to surround tab canvases. Displaying borders on tabs can lead to many unwanted frames displayed on your application.");
 
         mainGroup.addPropertyDefinition(displayTabBorder);
 
         EJDevPropertyDefinitionGroup actionGroup = new EJDevPropertyDefinitionGroup(EJRWTSingleRecordBlockDefinitionProperties.ACTION_GROUP, "Shortcuts");
         mainGroup.addSubGroup(actionGroup);
 
-        EJDevPropertyDefinition queryAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_QUERY_KEY,
-                EJPropertyDefinitionType.STRING);
+        EJDevPropertyDefinition queryAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_QUERY_KEY, EJPropertyDefinitionType.STRING);
         queryAction.setLabel("Query");
         queryAction.setDefaultValue("SHIFT+Q");
         queryAction.setDescription("Use this shortcut to open the Query Screen");
-        EJDevPropertyDefinition insertAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_INSERT_KEY,
-                EJPropertyDefinitionType.STRING);
+        EJDevPropertyDefinition insertAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_INSERT_KEY, EJPropertyDefinitionType.STRING);
         insertAction.setLabel("Insert");
         insertAction.setDefaultValue("SHIFT+I");
         queryAction.setDescription("Use this shortcut to open the Insert Screen");
-        EJDevPropertyDefinition updateAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_UPDATE_KEY,
-                EJPropertyDefinitionType.STRING);
+        EJDevPropertyDefinition updateAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_UPDATE_KEY, EJPropertyDefinitionType.STRING);
         updateAction.setLabel("Update");
         updateAction.setDefaultValue("SHIFT+U");
         queryAction.setDescription("Use this shortcut to open the Update Screen");
-        EJDevPropertyDefinition deleteAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_DELETE_KEY,
-                EJPropertyDefinitionType.STRING);
+        EJDevPropertyDefinition deleteAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_DELETE_KEY, EJPropertyDefinitionType.STRING);
         deleteAction.setLabel("Delete");
         deleteAction.setDefaultValue("SHIFT+D");
         queryAction.setDescription("Use this shortcut to delete the current record");
-        EJDevPropertyDefinition refreshAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_REFRESH_KEY,
-                EJPropertyDefinitionType.STRING);
+        EJDevPropertyDefinition refreshAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_REFRESH_KEY, EJPropertyDefinitionType.STRING);
         refreshAction.setLabel("Refresh");
         refreshAction.setDefaultValue("SHIFT+R");
         queryAction.setDescription("Use this shortcut to refresh the current block by calling the blocks execute last query method");
-        EJDevPropertyDefinition lovAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_LOV_KEY,
-                EJPropertyDefinitionType.STRING);
+        EJDevPropertyDefinition lovAction = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ACTION_LOV_KEY, EJPropertyDefinitionType.STRING);
         lovAction.setLabel("Lov");
         queryAction.setDescription("Use this shortcut to open the lov assigned with the current item");
         lovAction.setDefaultValue("SHIFT+ARROW_DOWN");
@@ -167,8 +184,7 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
         // Application message settings
 
         EJDevPropertyDefinitionGroup messageGroup = new EJDevPropertyDefinitionGroup(APP_MESSAGING, "Application Messaging");
-        messageGroup
-                .setDescription("EntireJ gives you the possibility to have application messages displayed either in standard popup message boxes or in notifications that rise up from the bottom of the application. You can decide which option you would prefer or have a  combination of both");
+        messageGroup.setDescription("EntireJ gives you the possibility to have application messages displayed either in standard popup message boxes or in notifications that rise up from the bottom of the application. You can decide which option you would prefer or have a  combination of both");
         // add error message settings
         {
             EJDevPropertyDefinitionGroup errorMsgGroup = new EJDevPropertyDefinitionGroup(APP_MSG_ERROR, "Error Message");
@@ -183,8 +199,7 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
 
             EJDevPropertyDefinition notificationAutoHide = new EJDevPropertyDefinition(APP_MSG_NOTIFICATION_AUTOHIDE, EJPropertyDefinitionType.BOOLEAN);
             notificationAutoHide.setLabel("Auto Hide Notification");
-            notificationAutoHide
-                    .setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
+            notificationAutoHide.setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
 
             EJDevPropertyDefinition width = new EJDevPropertyDefinition(APP_MSG_WIDTH, EJPropertyDefinitionType.INTEGER);
             width.setLabel("Width");
@@ -214,8 +229,7 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
 
             EJDevPropertyDefinition notificationAutoHide = new EJDevPropertyDefinition(APP_MSG_NOTIFICATION_AUTOHIDE, EJPropertyDefinitionType.BOOLEAN);
             notificationAutoHide.setLabel("Auto Hide Notification");
-            notificationAutoHide
-                    .setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
+            notificationAutoHide.setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
 
             EJDevPropertyDefinition width = new EJDevPropertyDefinition(APP_MSG_WIDTH, EJPropertyDefinitionType.INTEGER);
             width.setLabel("Width");
@@ -245,8 +259,7 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
 
             EJDevPropertyDefinition notificationAutoHide = new EJDevPropertyDefinition(APP_MSG_NOTIFICATION_AUTOHIDE, EJPropertyDefinitionType.BOOLEAN);
             notificationAutoHide.setLabel("Notification Auto Hide");
-            notificationAutoHide
-                    .setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
+            notificationAutoHide.setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
 
             notificationAutoHide.setDefaultValue("true");
             EJDevPropertyDefinition width = new EJDevPropertyDefinition(APP_MSG_WIDTH, EJPropertyDefinitionType.INTEGER);
@@ -269,8 +282,7 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
 
             EJDevPropertyDefinition notificationAutoHide = new EJDevPropertyDefinition(APP_MSG_NOTIFICATION_AUTOHIDE, EJPropertyDefinitionType.BOOLEAN);
             notificationAutoHide.setLabel("Auto Hide Notification");
-            notificationAutoHide
-                    .setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
+            notificationAutoHide.setDescription("Indicates if the notifications should automatically hide after being displayed. If this is not set, the user must close the notifications manually");
             notificationAutoHide.setDefaultValue("true");
 
             EJDevPropertyDefinition width = new EJDevPropertyDefinition(APP_MSG_WIDTH, EJPropertyDefinitionType.INTEGER);

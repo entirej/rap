@@ -39,8 +39,8 @@ import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
+import org.eclipse.rap.rwt.client.service.ClientFileLoader;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
-import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
@@ -69,9 +69,12 @@ import org.entirej.applicationframework.rwt.renderers.html.EJRWTHtmlTableBlockRe
 import org.entirej.framework.core.EJActionProcessorException;
 import org.entirej.framework.core.EJFrameworkHelper;
 import org.entirej.framework.core.EJFrameworkInitialiser;
+import org.entirej.framework.core.extensions.properties.EJCoreFrameworkExtensionPropertyList;
 import org.entirej.framework.core.interfaces.EJMessenger;
 import org.entirej.framework.core.properties.EJCoreLayoutContainer;
 import org.entirej.framework.core.properties.EJCoreProperties;
+import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
+import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionPropertyListEntry;
 
 public abstract class EJRWTApplicationLauncher implements ApplicationConfiguration
 {
@@ -79,7 +82,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     private static final String   THEME_DEFAULT_CSS = "theme/default.css";
     private static final String   ICONS_FAVICON_ICO = "icons/favicon.ico";
     protected static final String THEME_DEFAULT     = "org.entirej.applicationframework.rwt.Default";
-    private String _baseURL;
+    private String                _baseURL;
 
     public void configure(Application configuration)
     {
@@ -205,7 +208,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
         {
             throw new RuntimeException("application.ejprop not found");
         }
-        EJCoreLayoutContainer layoutContainer = EJCoreProperties.getInstance().getLayoutContainer();
+        final EJCoreProperties coreProperties = EJCoreProperties.getInstance();
+        EJCoreLayoutContainer layoutContainer = coreProperties.getLayoutContainer();
         properties.put(WebClient.PAGE_TITLE, layoutContainer.getTitle());
         String favicon = getFavicon();
         if (favicon == null)
@@ -275,6 +279,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                 };
             }
 
+           
+
             private EntryPoint newEntryPoint()
             {
                 return new EntryPoint()
@@ -283,7 +289,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                     public int createUI()
                     {
 
-                        {//connect BaseURL
+                        {// connect BaseURL
                             StringBuffer url = new StringBuffer();
                             url.append(RWT.getRequest().getContextPath());
                             url.append(RWT.getRequest().getServletPath());
@@ -298,9 +304,9 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                 encodeURL = encodeURL.substring(0, patchIndex);
                             }
                             _baseURL = encodeURL;
-                            
+
                         }
-                        
+
                         RWTUtils.patchClient(getWebPathContext(), getTimeoutUrl());
 
                         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
@@ -480,30 +486,27 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         // {
                         // confirmation.setMessage(message);
                         // }
-                        
-                        
-                        
-                        
+
                         final ServerPushSession pushSession = new ServerPushSession();
-                        
-                            RWT.getUISession().addUISessionListener(new UISessionListener()
+
+                        RWT.getUISession().addUISessionListener(new UISessionListener()
+                        {
+                            public void beforeDestroy(UISessionEvent event)
                             {
-                                public void beforeDestroy(UISessionEvent event)
-                                {
-                                    if(applicationManager.getApplicationActionProcessor()!=null)
-                                        try
-                                        {
-                                            applicationManager.getApplicationActionProcessor().whenApplicationEnd(applicationManager);
-                                        }
-                                        catch (EJActionProcessorException e)
-                                        {
-                                            e.printStackTrace();
-                                        }
-                                    pushSession.stop();
-                                }
-                            });
-                        
-                        if(applicationManager.getApplicationActionProcessor()!=null)
+                                if (applicationManager.getApplicationActionProcessor() != null)
+                                    try
+                                    {
+                                        applicationManager.getApplicationActionProcessor().whenApplicationEnd(applicationManager);
+                                    }
+                                    catch (EJActionProcessorException e)
+                                    {
+                                        e.printStackTrace();
+                                    }
+                                pushSession.stop();
+                            }
+                        });
+
+                        if (applicationManager.getApplicationActionProcessor() != null)
                             try
                             {
                                 applicationManager.getApplicationActionProcessor().whenApplicationStart(applicationManager);
@@ -512,10 +515,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             {
                                 e.printStackTrace();
                             }
-                        
-                        
-                        
-                        
+
                         pushSession.start();
 
                         return openShell(display, shell);
@@ -523,6 +523,274 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                 };
             }
         }, properties);
+        
+        
+        // services
+
+        {
+            final String SERVICE = "SERVICE";
+            final String SERVICE_LIST = "SERVICE_LIST";
+            final String SERVICE_PATH = "SERVICE_PATH";
+            final String SERVICE_FORM = "SERVICE_FORM";
+
+           final String SERVICE_NAME = "SERVICE_NAME";
+            EJFrameworkExtensionProperties definedProperties = coreProperties.getApplicationDefinedProperties();
+            if (definedProperties != null)
+            {
+                EJFrameworkExtensionProperties group = definedProperties.getPropertyGroup(SERVICE);
+                if (group != null)
+                {
+                    EJCoreFrameworkExtensionPropertyList list = group.getPropertyList(SERVICE_LIST);
+                    List<EJFrameworkExtensionPropertyListEntry> allListEntries = list.getAllListEntries();
+                    for (EJFrameworkExtensionPropertyListEntry entry : allListEntries)
+                    {
+
+                        
+                        final String formId = entry.getProperty(SERVICE_FORM);
+                        HashMap<String, String>  srvproperties = new HashMap<String, String>(properties);
+                         srvproperties.put(WebClient.PAGE_TITLE, entry.getProperty(SERVICE_NAME));
+                        if(entry.getProperty(SERVICE_PATH)!=null && formId!=null && formId!=null)
+                        {
+                            configuration.addEntryPoint(String.format("/%s", entry.getProperty(SERVICE_PATH)), new EntryPointFactory()
+                            {
+
+                                public EntryPoint create()
+                                {
+                                    try
+                                    {
+                                        RWT.getServiceManager().registerServiceHandler(VACSSServiceHandler.SERVICE_HANDLER, new VACSSServiceHandler());
+                                        RWT.getServiceManager().registerServiceHandler(EJRWTFileDownload.SERVICE_HANDLER, EJRWTFileDownload.newServiceHandler());
+                                        registerServiceHandlers();
+                                    }
+                                    catch (java.lang.IllegalArgumentException e)
+                                    {
+                                        // ignore if already registered
+                                    }
+                                    registerWidgetHandlers();
+                                    final EntryPoint wrapped = newServiceEntryPoint(formId);
+                                    return new EntryPoint()
+                                    {
+                                        public int createUI()
+                                        {
+                                            BrowserNavigation service = RWT.getClient().getService(BrowserNavigation.class);
+                                            BrowserNavigationListener listener = new BrowserNavigationListener()
+                                            {
+                                                @Override
+                                                public void navigated(BrowserNavigationEvent event)
+                                                {
+                                                    EJRWTContext.getPageContext().setState(event.getState());
+                                                }
+                                            };
+
+                                            service.addBrowserNavigationListener(listener);
+
+                                            int createUI = wrapped.createUI();
+                                            return createUI;
+                                        }
+
+                                    };
+                                }
+
+                               
+
+                                private EntryPoint newServiceEntryPoint(String serviceFormID)
+                                {
+                                    return new EntryPoint()
+                                    {
+
+                                        public int createUI()
+                                        {
+
+                                            
+
+                                            RWTUtils.patchClient(getWebPathContext(), null);
+
+                                            EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
+                                            {
+
+                                                @Override
+                                                public String promptFileUpload(String title)
+                                                {
+                                                    return EJRWTFileUpload.promptFileUpload(title);
+                                                }
+
+                                                @Override
+                                                public List<String> promptMultipleFileUpload(String title)
+
+                                                {
+                                                    String[] promptMultipleFileUpload = EJRWTFileUpload.promptMultipleFileUpload(title);
+                                                    return (List<String>) (promptMultipleFileUpload != null ? Arrays.asList(promptMultipleFileUpload) : Collections.emptyList());
+                                                }
+
+                                                public Image getImage(String name, ClassLoader loader)
+                                                {
+                                                    return RWTUtils.getImage(name, loader);
+                                                }
+
+                                                @Override
+                                                public void open(final String output, String outputName)
+                                                {
+                                                    EJRWTFileDownload.download(output, outputName);
+
+                                                    RWT.getUISession().addUISessionListener(new UISessionListener()
+                                                    {
+
+                                                        private static final long serialVersionUID = 1L;
+
+                                                        @Override
+                                                        public void beforeDestroy(UISessionEvent arg0)
+                                                        {
+                                                            File f = new File(output);
+                                                            if (f.exists())
+                                                            {
+
+                                                                f.delete();
+                                                            }
+
+                                                        }
+                                                    });
+
+                                                }
+
+                                                public float getAvgCharWidth(Font font)
+                                                {
+                                                    return RWTUtils.getAvgCharWidth(font);
+                                                }
+
+                                                public int getCharHeight(Font font)
+                                                {
+                                                    return RWTUtils.getCharHeight(font);
+                                                }
+
+                                                public void rendererSection(final Section section)
+                                                {
+                                                    section.removeListener(SWT.Dispose, section.getListeners(SWT.Dispose)[0]);
+                                                    section.removeListener(SWT.Resize, section.getListeners(SWT.Resize)[0]);
+                                                    section.setFont(section.getParent().getFont());
+                                                    section.setForeground(section.getParent().getForeground());
+                                                    Object adapter = section.getAdapter(IWidgetGraphicsAdapter.class);
+                                                    IWidgetGraphicsAdapter gfxAdapter = (IWidgetGraphicsAdapter) adapter;
+                                                    gfxAdapter.setRoundedBorder(1, section.getTitleBarBackground(), 2, 2, 0, 0);
+
+                                                    Listener listener = new Listener()
+                                                    {
+                                                        public void handleEvent(Event e)
+                                                        {
+
+                                                            Object adapter = section.getAdapter(IWidgetGraphicsAdapter.class);
+                                                            IWidgetGraphicsAdapter gfxAdapter = (IWidgetGraphicsAdapter) adapter;
+                                                            Color[] gradientColors = new Color[] { section.getTitleBarBorderColor(), section.getBackground(), section.getTitleBarBackground(), section.getBackground(), section.getBackground() };
+                                                            int gradientPercent = 0;
+                                                            Rectangle bounds = section.getClientArea();
+
+                                                            if (bounds.height != 0)
+                                                            {
+                                                                gradientPercent = 30 * 100 / bounds.height;
+                                                                if (gradientPercent > 100)
+                                                                {
+                                                                    gradientPercent = 100;
+                                                                }
+                                                            }
+                                                            int[] percents = new int[] { 0, 1, 2, gradientPercent, 100 };
+                                                            gfxAdapter.setBackgroundGradient(gradientColors, percents, true);
+                                                            gfxAdapter.setRoundedBorder(1, section.getBackground(), 4, 4, 0, 0);
+                                                        }
+                                                    };
+                                                    section.addListener(SWT.Dispose, listener);
+                                                    section.addListener(SWT.Resize, listener);
+
+                                                }
+                                            });
+                                            final EJRWTApplicationManager applicationManager;
+
+                                            if (this.getClass().getClassLoader().getResource("application.ejprop") != null)
+                                            {
+                                                applicationManager = (EJRWTApplicationManager) EJFrameworkInitialiser.initialiseFramework("application.ejprop");
+                                            }
+                                            else if (this.getClass().getClassLoader().getResource("EntireJApplication.properties") != null)
+                                            {
+
+                                                applicationManager = (EJRWTApplicationManager) EJFrameworkInitialiser.initialiseFramework("EntireJApplication.properties");
+                                            }
+                                            else
+                                            {
+                                                throw new RuntimeException("application.ejprop not found");
+                                            }
+
+                                            EJRWTContext.getPageContext().setManager(applicationManager);
+
+                                            getContext().getUISession().setAttribute("ej.applicationManager", applicationManager);
+
+                                            EJCoreLayoutContainer layoutContainer = EJCoreProperties.getInstance().getLayoutContainer();
+                                            // Now build the application container
+                                            EJRWTApplicationContainer appContainer = new EJRWTApplicationContainer(layoutContainer);
+
+                                            // Add the application menu and status bar to the app
+                                            // container
+                                            EJMessenger messenger = applicationManager.getApplicationMessenger();
+                                            if (messenger == null)
+                                            {
+                                                throw new NullPointerException("The ApplicationComponentProvider must provide an Messenger via method: getApplicationMessenger()");
+                                            }
+                                            Display display = Display.getDefault();
+                                            if (display.isDisposed())
+                                                display = new Display();
+                                            Shell shell = new Shell(display, SWT.NO_TRIM);
+                                           
+                                            applicationManager.buildServiceApplication(appContainer, shell,formId);
+
+                                            final EJRWTApplicationManager appman = applicationManager;
+
+                                            Display.getCurrent().asyncExec(new Runnable()
+                                            {
+
+                                                @Override
+                                                public void run()
+                                                {
+                                                    try
+                                                    {
+
+                                                        postApplicationBuild(appman);
+                                                    }
+                                                    finally
+                                                    {
+                                                        appman.getConnection().close();
+                                                    }
+
+                                                }
+                                            });
+                                            shell.layout();
+                                            shell.setMaximized(true);
+                                           
+
+                                            final ServerPushSession pushSession = new ServerPushSession();
+
+                                            RWT.getUISession().addUISessionListener(new UISessionListener()
+                                            {
+                                                public void beforeDestroy(UISessionEvent event)
+                                                {
+                                                    
+                                                    pushSession.stop();
+                                                }
+                                            });
+
+                                            
+
+                                            pushSession.start();
+
+                                            return openShell(display, shell);
+                                        }
+                                    };
+                                }
+                            }, srvproperties);
+                        }
+                    }
+                }
+
+            }
+
+        }
+        
     }
 
     @SuppressWarnings("deprecation")
@@ -559,12 +827,12 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     {
         // TODO remove after fixed
         // https://bugs.eclipse.org/bugs/show_bug.cgi?id=401126
-        JavaScriptLoader loader = RWT.getClient().getService(JavaScriptLoader.class);
-        loader.require("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit.ToggleHyperlinkResource().getLocation());
-        loader.require("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit.ToggleHyperlinkAdapterResource().getLocation());
-        loader.require("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkAdapterResource().getLocation());
-        loader.require("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextResource().getLocation());
-        loader.require("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextAdapterResource().getLocation());
+        ClientFileLoader loader = RWT.getClient().getService(ClientFileLoader.class);
+        loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit.ToggleHyperlinkResource().getLocation());
+        loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.togglehyperlinkkit.ToggleHyperlinkAdapterResource().getLocation());
+        loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkAdapterResource().getLocation());
+        loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextResource().getLocation());
+        loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextAdapterResource().getLocation());
     }
 
     public static class FileResource implements ResourceLoader
@@ -582,12 +850,11 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
     }
 
-    
     public String getBaseURL()
     {
         return _baseURL;
     }
-    
+
     public static void reloadApplication(EJFrameworkHelper frameworkHelper)
     {
         // disable due to RWT bug

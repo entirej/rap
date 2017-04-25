@@ -194,7 +194,25 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         }
 
         _applicationContainer = container;
-        _applicationContainer.buildApplication(this, mainWindow);
+        _applicationContainer.buildApplication(this, mainWindow,null);
+    }
+    
+    
+    public void buildServiceApplication(EJRWTApplicationContainer container, Composite mainWindow,String serviceForm)
+    {
+        if (container == null)
+        {
+            throw new NullPointerException("The ApplicationContainer cannot bu null");
+        }
+        if (serviceForm == null)
+        {
+            throw new NullPointerException("The serviceForm cannot bu null");
+        }
+        shell = mainWindow.getShell();
+       
+        
+        _applicationContainer = container;
+        _applicationContainer.buildApplication(this, mainWindow,serviceForm);
     }
 
     public EJInternalForm getActiveForm()
