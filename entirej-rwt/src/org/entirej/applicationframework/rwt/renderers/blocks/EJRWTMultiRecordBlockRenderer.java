@@ -92,6 +92,7 @@ import org.entirej.applicationframework.rwt.table.EJRWTAbstractFilteredTable.Fil
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.table.EJRWTTableSortSelectionListener;
 import org.entirej.applicationframework.rwt.table.EJRWTTableViewerColumnFactory;
+import org.entirej.applicationframework.rwt.table.HtmlBaseColumnLabelProvider;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
 import org.entirej.framework.core.EJForm;
@@ -1008,7 +1009,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
         boolean autoSize = false;
         final List<ColumnLabelProvider> nodeTextProviders = new ArrayList<ColumnLabelProvider>();
-
+        table.setData(EJ_RWT.MARKUP_ENABLED, rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, false));
         for (EJItemGroupProperties groupProperties : allItemGroupProperties)
         {
             Collection<EJScreenItemProperties> itemProperties = groupProperties.getAllItemProperties();
@@ -1017,6 +1018,10 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
             {
                 EJCoreMainScreenItemProperties mainScreenItemProperties = (EJCoreMainScreenItemProperties) screenItemProperties;
                 ColumnLabelProvider screenItem = createScreenItem(factory, mainScreenItemProperties);
+                if(screenItem instanceof HtmlBaseColumnLabelProvider)
+                {
+                    table.setData(EJ_RWT.MARKUP_ENABLED,true);
+                }
                 if (screenItem != null)
                 {
                     nodeTextProviders.add(screenItem);
@@ -1055,7 +1060,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 }
             });
         }
-        table.setData(EJ_RWT.MARKUP_ENABLED, rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, false));
+        
         table.addFocusListener(new FocusListener()
         {
             @Override

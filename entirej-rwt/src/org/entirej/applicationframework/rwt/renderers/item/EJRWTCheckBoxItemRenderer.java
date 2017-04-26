@@ -96,7 +96,7 @@ public class EJRWTCheckBoxItemRenderer extends EJRWTButtonItemRenderer
         _checkedValue = getValueAsObject(_itemProperties.getDataTypeClass(), checkedValue);
         _uncheckedValue = getValueAsObject(_itemProperties.getDataTypeClass(), uncheckedValue);
 
-        _otherValueMappingValue = EJRWTCheckBoxRendererDefinitionProperties.CHECKED.equals(otherValueMapping);
+        _otherValueMappingValue = !EJRWTCheckBoxRendererDefinitionProperties.UNCHECKED.equals(otherValueMapping);
 
         _defaultValue = _itemProperties.getItemRendererProperties().getStringProperty(EJRWTCheckBoxRendererDefinitionProperties.DEFAULT_VALUE);
     }
