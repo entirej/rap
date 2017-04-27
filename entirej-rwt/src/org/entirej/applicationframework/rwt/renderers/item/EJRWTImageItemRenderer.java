@@ -39,6 +39,8 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.internal.graphics.ImageFactory;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -48,6 +50,7 @@ import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRend
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTImageItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
+import org.entirej.applicationframework.rwt.table.HtmlBaseColumnLabelProvider;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJMessage;
@@ -62,6 +65,99 @@ import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
 
 public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListener, Serializable
 {
+    private final class HtmlBaseImageColumn extends ColumnLabelProvider implements HtmlBaseColumnLabelProvider
+    {
+        private final EJScreenItemProperties item;
+
+        private HtmlBaseImageColumn(EJScreenItemProperties item)
+        {
+            this.item = item;
+        }
+
+        @Override
+        public Color getBackground(Object element)
+        {
+
+            EJCoreVisualAttributeProperties properties = getAttributes(item, element);
+            if (properties != null)
+            {
+                Color background = EJRWTVisualAttributeUtils.INSTANCE.getBackground(properties);
+                if (background != null)
+                {
+                    return background;
+                }
+            }
+            return super.getBackground(element);
+        }
+
+        private EJCoreVisualAttributeProperties getAttributes(final EJScreenItemProperties item, Object element)
+        {
+            EJCoreVisualAttributeProperties properties = null;
+            if (element instanceof EJDataRecord)
+            {
+                EJDataRecord record = (EJDataRecord) element;
+                properties = record.getItem(item.getReferencedItemName()).getVisualAttribute();
+            }
+            if (properties == null)
+            {
+                properties = _visualAttributeProperties;
+            }
+            return properties;
+        }
+
+        @Override
+        public String getText(Object element)
+        {
+            Image srcImage = getSrcImage(element);
+            if(srcImage==null)return "";
+            String src = ImageFactory.getImagePath(srcImage);
+            Rectangle bounds = srcImage.getBounds();
+            return "<img width='"+bounds.width+"' height='"+bounds.height+"' src='" + src  + "'/>";
+        }
+
+        //@Override
+        public Image getSrcImage(Object element)
+        {
+            if (element instanceof EJDataRecord)
+            {
+                EJDataRecord record = (EJDataRecord) element;
+                Object value = record.getValue(item.getReferencedItemName());
+
+                if (value != null)
+                {
+                    if (value instanceof String)
+                    {
+                        URL resource = EJRWTImageRetriever.class.getClassLoader().getResource((String) value);
+                        if(resource!=null)
+                        {
+                            return ImageDescriptor.createFromURL(resource).createImage();
+                        }
+                        else
+                        {
+                            try
+                            {
+                               return ImageDescriptor.createFromURL((new URL((String)value))).createImage();
+                            }
+                            catch (MalformedURLException e)
+                            {
+                                return null;
+                            }
+                        }
+                    }
+                    else if (value instanceof URL)
+                    {
+                        return ImageDescriptor.createFromURL((URL) value).createImage();
+                    }
+                    else if (value instanceof byte[])
+                    {
+                        return new Image(Display.getDefault(), new ByteArrayInputStream((byte[]) value));
+                    }
+                }
+            }
+            return _defaultImage;
+        }
+    }
+
     protected EJFrameworkExtensionProperties  _rendererProps;
     protected EJScreenItemController          _item;
     protected EJScreenItemProperties          _screenItemProperties;
@@ -559,88 +655,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)
     {
-        ColumnLabelProvider provider = new ColumnLabelProvider()
-        {
-            @Override
-            public Color getBackground(Object element)
-            {
-
-                EJCoreVisualAttributeProperties properties = getAttributes(item, element);
-                if (properties != null)
-                {
-                    Color background = EJRWTVisualAttributeUtils.INSTANCE.getBackground(properties);
-                    if (background != null)
-                    {
-                        return background;
-                    }
-                }
-                return super.getBackground(element);
-            }
-
-            private EJCoreVisualAttributeProperties getAttributes(final EJScreenItemProperties item, Object element)
-            {
-                EJCoreVisualAttributeProperties properties = null;
-                if (element instanceof EJDataRecord)
-                {
-                    EJDataRecord record = (EJDataRecord) element;
-                    properties = record.getItem(item.getReferencedItemName()).getVisualAttribute();
-                }
-                if (properties == null)
-                {
-                    properties = _visualAttributeProperties;
-                }
-                return properties;
-            }
-
-            @Override
-            public String getText(Object element)
-            {
-                return "";
-            }
-
-            @Override
-            public Image getImage(Object element)
-            {
-                if (element instanceof EJDataRecord)
-                {
-                    EJDataRecord record = (EJDataRecord) element;
-                    Object value = record.getValue(item.getReferencedItemName());
-
-                    if (value != null)
-                    {
-                        if (value instanceof String)
-                        {
-                            URL resource = EJRWTImageRetriever.class.getClassLoader().getResource((String) value);
-                            if(resource!=null)
-                            {
-                                return ImageDescriptor.createFromURL(resource).createImage();
-                            }
-                            else
-                            {
-                                try
-                                {
-                                   return ImageDescriptor.createFromURL((new URL((String)value))).createImage();
-                                }
-                                catch (MalformedURLException e)
-                                {
-                                    return null;
-                                }
-                            }
-                        }
-                        else if (value instanceof URL)
-                        {
-                            return ImageDescriptor.createFromURL((URL) value).createImage();
-                        }
-                        else if (value instanceof byte[])
-                        {
-                            return new Image(Display.getDefault(), new ByteArrayInputStream((byte[]) value));
-                        }
-                    }
-                }
-                return _defaultImage;
-            }
-
-        };
+        ColumnLabelProvider provider = new HtmlBaseImageColumn(item);
         return provider;
     }
 

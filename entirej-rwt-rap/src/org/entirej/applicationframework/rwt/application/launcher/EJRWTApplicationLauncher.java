@@ -538,7 +538,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             if (definedProperties != null)
             {
                 EJFrameworkExtensionProperties group = definedProperties.getPropertyGroup(SERVICE);
-                if (group != null)
+                if (group != null && group.getPropertyList(SERVICE_LIST)!=null)
                 {
                     EJCoreFrameworkExtensionPropertyList list = group.getPropertyList(SERVICE_LIST);
                     List<EJFrameworkExtensionPropertyListEntry> allListEntries = list.getAllListEntries();
