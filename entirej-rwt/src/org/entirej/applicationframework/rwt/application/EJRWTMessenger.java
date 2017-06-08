@@ -242,8 +242,8 @@ public class EJRWTMessenger implements EJMessenger
             @Override
             public Object call() throws Exception
             {
-                if(fileUpload.getFiles()!=null)
-                    fileUpload.getActionProcessor().filesUploaded(fileUpload);
+                
+                fileUpload.getActionProcessor().filesUploaded(fileUpload);
                 return null;
             }
         });

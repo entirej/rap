@@ -162,7 +162,7 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                                         {
                                             try
                                             {
-                                                fileUpload.setFiles(files);
+                                                fileUpload.setFilePaths(files!=null ? Arrays.asList(files) :null);
                                                 callable.call();
                                             }
                                             catch (Exception e)
@@ -184,7 +184,7 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                                         {
                                             try
                                             {
-                                                fileUpload.setFiles(files);
+                                                fileUpload.setFilePaths(files!=null ? Arrays.asList(files) :null);
                                                 callable.call();
                                             }
                                             catch (Exception e)

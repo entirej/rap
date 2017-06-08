@@ -32,6 +32,7 @@ public class EJRWTFileUpload
     {
 
         final FileDialog fileDialog = new FileDialog(Display.getDefault().getActiveShell(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | SWT.SINGLE);
+        
         fileDialog.setText(title);
         fileDialog.open(new DialogCallback()
         {

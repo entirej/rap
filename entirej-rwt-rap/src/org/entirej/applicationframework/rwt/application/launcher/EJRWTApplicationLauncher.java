@@ -22,6 +22,7 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -329,7 +330,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                         {
                                             try
                                             {
-                                                fileUpload.setFiles(files);
+                                                fileUpload.setFilePaths(files!=null ? Arrays.asList(files) :null);
                                                 callable.call();
                                             }
                                             catch (Exception e)
@@ -351,7 +352,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                         {
                                             try
                                             {
-                                                fileUpload.setFiles(files);
+                                                fileUpload.setFilePaths(files!=null ? Arrays.asList(files) :null);
                                                 callable.call();
                                             }
                                             catch (Exception e)
@@ -664,7 +665,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                                             {
                                                                 try
                                                                 {
-                                                                    fileUpload.setFiles(files);
+                                                                    fileUpload.setFilePaths(files!=null ? Arrays.asList(files) :null);
                                                                     callable.call();
                                                                 }
                                                                 catch (Exception e)
@@ -686,7 +687,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                                             {
                                                                 try
                                                                 {
-                                                                    fileUpload.setFiles(files);
+                                                                    fileUpload.setFilePaths(files!=null ? Arrays.asList(files) :null);
                                                                     callable.call();
                                                                 }
                                                                 catch (Exception e)
