@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.Application;
@@ -63,8 +64,10 @@ import org.entirej.applicationframework.rwt.application.form.containers.EJRWTSta
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormContainer;
 import org.entirej.applicationframework.rwt.file.EJRWTFileDownload;
 import org.entirej.applicationframework.rwt.file.EJRWTFileUpload;
+import org.entirej.applicationframework.rwt.file.EJRWTFileUpload.FileSelectionCallBack;
 import org.entirej.applicationframework.rwt.renderers.html.EJRWTHtmlTableBlockRenderer.VACSSServiceHandler;
 import org.entirej.framework.core.EJFrameworkInitialiser;
+import org.entirej.framework.core.data.controllers.EJFileUpload;
 import org.entirej.framework.core.interfaces.EJMessenger;
 import org.entirej.framework.core.properties.EJCoreLayoutContainer;
 import org.entirej.framework.core.properties.EJCoreProperties;
@@ -147,16 +150,54 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                         {
 
                             @Override
-                            public String promptFileUpload(String title)
+                            public void promptFileUpload(final EJFileUpload fileUpload,final Callable<Object> callable)
                             {
-                                return EJRWTFileUpload.promptFileUpload(title);
-                            }
-                            @Override
-                            public List<String> promptMultipleFileUpload(String title)
-                            
-                            {
-                                String[] promptMultipleFileUpload = EJRWTFileUpload.promptMultipleFileUpload(title);
-                                return (List<String>) (promptMultipleFileUpload!=null ? Arrays.asList(promptMultipleFileUpload):Collections.emptyList());
+                                if(fileUpload.isMultiSelection())
+                                {
+                                    EJRWTFileUpload.promptMultipleFileUpload(fileUpload.getTitle(), new FileSelectionCallBack()
+                                    {
+                                        
+                                        @Override
+                                        public void select(String[] files)
+                                        {
+                                            try
+                                            {
+                                                fileUpload.setFiles(files);
+                                                callable.call();
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.printStackTrace();
+                                            }
+                                            
+                                        }
+                                    });
+                                }
+                                else
+                                {
+                                    
+                                    EJRWTFileUpload.promptFileUpload(fileUpload.getTitle(), new FileSelectionCallBack()
+                                    {
+                                        
+                                        @Override
+                                        public void select(String[] files)
+                                        {
+                                            try
+                                            {
+                                                fileUpload.setFiles(files);
+                                                callable.call();
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                e.printStackTrace();
+                                            }
+                                            
+                                        }
+                                    });
+                                    
+                                    
+                                }
+                                
                             }
                             
                             public Image getImage(String name, ClassLoader loader)

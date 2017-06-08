@@ -19,6 +19,7 @@
 package org.entirej.applicationframework.rwt.application;
 
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -34,6 +35,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.entirej.applicationframework.rwt.notifications.EJRWTNotifierDialog;
 import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJMessage;
+import org.entirej.framework.core.data.controllers.EJFileUpload;
 import org.entirej.framework.core.data.controllers.EJInternalQuestion;
 import org.entirej.framework.core.data.controllers.EJQuestion;
 import org.entirej.framework.core.enumerations.EJQuestionButton;
@@ -229,6 +231,23 @@ public class EJRWTMessenger implements EJMessenger
         dialog.setBlockOnOpen(false);
 
         dialog.open();
+    }
+    
+    @Override
+    public void uploadFile(final EJFileUpload fileUpload)
+    {
+        EJRWTImageRetriever.getGraphicsProvider().promptFileUpload(fileUpload,new Callable<Object>()
+        {
+            
+            @Override
+            public Object call() throws Exception
+            {
+                if(fileUpload.getFiles()!=null)
+                    fileUpload.getActionProcessor().filesUploaded(fileUpload);
+                return null;
+            }
+        });
+        
     }
 
     private EJQuestionButton[] getOptions(EJQuestion question)

@@ -45,6 +45,7 @@ import org.entirej.framework.core.EJTranslatorHelper;
 import org.entirej.framework.core.actionprocessor.interfaces.EJApplicationActionProcessor;
 import org.entirej.framework.core.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.core.data.controllers.EJEmbeddedFormController;
+import org.entirej.framework.core.data.controllers.EJFileUpload;
 import org.entirej.framework.core.data.controllers.EJFormParameter;
 import org.entirej.framework.core.data.controllers.EJInternalQuestion;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
@@ -466,6 +467,13 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         messenger.askQuestion(question);
     }
 
+    @Override
+    public void uploadFile(EJFileUpload fileUpload)
+    {
+        messenger.uploadFile(fileUpload);
+        
+    }
+    
     public void askInternalQuestion(EJInternalQuestion question)
     {
         messenger.askInternalQuestion(question);

@@ -2355,18 +2355,6 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     }
 
     @Override
-    public String promptFileUpload(String title)
-    {
-        return EJRWTImageRetriever.getGraphicsProvider().promptFileUpload(title);
-    }
-
-    @Override
-    public List<String> promptMultipleFileUpload(String title)
-    {
-        return EJRWTImageRetriever.getGraphicsProvider().promptMultipleFileUpload(title);
-    }
-
-    @Override
     public void setTabPageBadge(String canvasName, String tabPageName, String badge)
     {
         if (canvasName != null && tabPageName != null)
