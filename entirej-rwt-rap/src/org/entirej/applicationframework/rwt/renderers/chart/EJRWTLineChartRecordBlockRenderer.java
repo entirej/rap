@@ -22,7 +22,6 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -34,7 +33,6 @@ import java.util.Map;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.rap.chartjs.Chart;
 import org.eclipse.rap.chartjs.ChartOptions;
 import org.eclipse.rap.chartjs.ChartRowData;
@@ -79,13 +77,17 @@ import org.entirej.framework.core.EJForm;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.data.controllers.EJEditableBlockController;
+import org.entirej.framework.core.data.controllers.EJItemController;
+import org.entirej.framework.core.data.controllers.EJItemLovController;
 import org.entirej.framework.core.data.controllers.EJQuestion;
 import org.entirej.framework.core.enumerations.EJManagedBlockProperty;
 import org.entirej.framework.core.enumerations.EJManagedScreenProperty;
 import org.entirej.framework.core.enumerations.EJQuestionButton;
 import org.entirej.framework.core.enumerations.EJScreenType;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
+import org.entirej.framework.core.internal.EJInternalBlock;
 import org.entirej.framework.core.internal.EJInternalEditableBlock;
+import org.entirej.framework.core.internal.EJInternalForm;
 import org.entirej.framework.core.properties.EJCoreBlockProperties;
 import org.entirej.framework.core.properties.EJCoreMainScreenItemProperties;
 import org.entirej.framework.core.properties.EJCoreProperties;
@@ -95,11 +97,18 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkE
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionPropertyListEntry;
 import org.entirej.framework.core.properties.interfaces.EJBlockProperties;
 import org.entirej.framework.core.properties.interfaces.EJItemGroupProperties;
+import org.entirej.framework.core.properties.interfaces.EJItemProperties;
 import org.entirej.framework.core.properties.interfaces.EJMainScreenProperties;
 import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
+import org.entirej.framework.core.renderers.EJManagedItemRendererWrapper;
+import org.entirej.framework.core.renderers.eventhandlers.EJItemFocusListener;
+import org.entirej.framework.core.renderers.eventhandlers.EJScreenItemValueChangedListener;
 import org.entirej.framework.core.renderers.interfaces.EJInsertScreenRenderer;
+import org.entirej.framework.core.renderers.interfaces.EJItemRenderer;
 import org.entirej.framework.core.renderers.interfaces.EJQueryScreenRenderer;
 import org.entirej.framework.core.renderers.interfaces.EJUpdateScreenRenderer;
+import org.entirej.framework.core.renderers.registry.EJBlockItemRendererRegister;
+import org.entirej.framework.core.renderers.registry.EJRendererFactory;
 
 public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyListener
 {
@@ -130,6 +139,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     public final String                    X_AXIS_COLUMN             = "xAxisColumn";
     private String                         xAxisColumn;
+    private EJRWTAppItemRenderer           appItemRenderer;
     public static final String             VISUAL_ATTRIBUTE_PROPERTY = "VISUAL_ATTRIBUTE";
 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
@@ -251,6 +261,8 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         options.setStrokeWidth(blockProperties.getBlockRendererProperties().getIntProperty(STROKE_WIDTH, options.getStrokeWidth()));
         xAxisColumn = blockProperties.getBlockRendererProperties().getStringProperty(X_AXIS_COLUMN);
 
+       
+        
     }
 
     @Override
@@ -386,19 +398,44 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
                 return;
             }
-            Map<Object, Map<String, List<Float>>> dataset = new HashMap<Object, Map<String, List<Float>>>();
+            Map<String, Map<String, List<Float>>> dataset = new HashMap<String, Map<String, List<Float>>>();
 
             Collection<EJDataRecord> records = _block.getRecords();
 
             Collection<EJScreenItemController> screenItems = _block.getAllScreenItems(EJScreenType.MAIN);
 
-            List<Object> labelsIndex = new ArrayList<Object>();
+            List<String> labelsIndex = new ArrayList<String>();
             Map<String, Number> lastVal = new HashMap<String, Number>();
             for (EJDataRecord ejDataRecord : records)
             {
-                Object xvalue = ejDataRecord.getValue(xAxisColumn);
-                if (xvalue != null)
+                Object object = ejDataRecord.getValue(xAxisColumn);
+                if (object != null)
                 {
+                    
+                    String xvalue =null;
+                    if (appItemRenderer != null)
+                    {
+                        String formatValue = appItemRenderer.formatValue(object);
+                        xvalue= (formatValue != null ? formatValue : object.toString());
+                    }
+                    else if (object instanceof String)
+                    {
+                        xvalue= ((String) object);
+                    }
+                    else if (object instanceof Number)
+                    {
+
+                        xvalue= (createDecimalFormat(object, null).format(object));
+                    }
+                    else if (object instanceof Date)
+                    {
+
+                        xvalue= (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
+                    }
+                    else
+                    {
+                        xvalue= (object.toString());
+                    }
                     Map<String, List<Float>> set = dataset.get(xvalue);
                     if (set == null)
                     {
@@ -411,11 +448,11 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                         if (sItem.isVisible() && !sItem.isSpacerItem())
                         {
                             Object yvalue = ejDataRecord.getValue(sItem.getName());
-                            
+
                             Float val = null;
                             if (yvalue instanceof Number)
                             {
-                                lastVal.put(sItem.getName(), (Number)yvalue);
+                                lastVal.put(sItem.getName(), (Number) yvalue);
                                 val = ((Number) yvalue).floatValue();
                                 List<Float> list = set.get(sItem.getName());
                                 if (list == null)
@@ -428,7 +465,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                             else
                             {
                                 Number last = lastVal.get(sItem.getName());
-                                val = last!=null? last.floatValue():0f;
+                                val = last != null ? last.floatValue() : 0f;
                             }
 
                         }
@@ -437,55 +474,28 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 }
             }
 
-            // process values
-            List<String> labels = new ArrayList<String>();
+           
 
-            for (Object object : labelsIndex)
-            {
-                if (object instanceof String)
-                {
-                    labels.add((String) object);
-                }
-                else if (object instanceof Number)
-                {
+            ChartRowData chartRowData = new ChartRowData(labelsIndex.toArray(new String[0]));
 
-                    labels.add(createDecimalFormat(object, null).format(object));
-                }
-                else if (object instanceof Date)
-                {
-
-                    labels.add(DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
-                }
-                else
-                {
-                    labels.add(object.toString());
-                }
-            }
-
-            ChartRowData chartRowData = new ChartRowData(labels.toArray(new String[0]));
-          
-            
             for (EJScreenItemController sItem : screenItems)
             {
                 List<Float> row = new ArrayList<Float>();
-                
+
                 for (Object object : dataset.keySet())
                 {
                     Map<String, List<Float>> map = dataset.get(object);
                     if (map == null)
                         continue;
 
-                    
+                    List<Float> list = map.get(sItem.getName());
+                    if (list == null)
+                        continue;
 
-                        List<Float> list = map.get(sItem.getName());
-                        if (list == null)
-                            continue;
-                        
+                    row.addAll(list);
 
-                        row.addAll(list);
-                    
                 }
-                
+
                 ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
 
                 EJCoreVisualAttributeProperties attributeProperties = sItem.getItemRenderer().getVisualAttributeProperties();
@@ -503,18 +513,19 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
                     }
                 }
-                
+
                 float[] floatArray = new float[row.size()];
                 int i = 0;
 
-                for (Float f : row) 
+                for (Float f : row)
                 {
                     floatArray[i++] = (f != null ? f : 0);
                 }
-               // chartRowData.addRow(sItem.getProperties().getLabel(),floatArray, colors);
-                 chartRowData.addRow(floatArray, colors);
+                 chartRowData.addRow(sItem.getProperties().getLabel(),floatArray,
+                 colors);
+                //chartRowData.addRow(floatArray, colors);
             }
-            
+
             _chartView.drawLineChart(chartRowData, options);
 
         }
@@ -1016,6 +1027,197 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
             }
         }
+        appItemRenderer = null;
+        final EJItemController blockItemController = _block.getBlockItemController(xAxisColumn);
+
+        String itemRendererName = blockItemController.getProperties().getItemRendererName();
+        if (itemRendererName != null)
+        {
+            EJScreenItemController itemController = new EJScreenItemController()
+            {
+
+                @Override
+                public boolean validateFromLov()
+                {
+                    // TODO Auto-generated method stub
+                    return false;
+                }
+
+                @Override
+                public void setItemLovMapping(String lovMapping)
+                {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void removeItemValueChangedListener(EJScreenItemValueChangedListener listener)
+                {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void removeItemFocusListener(EJItemFocusListener listener)
+                {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void itemValueChaged(Object newValue)
+                {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void itemFocusLost()
+                {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void itemFocusGained()
+                {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public boolean isVisible()
+                {
+                    // TODO Auto-generated method stub
+                    return false;
+                }
+
+                @Override
+                public boolean isSpacerItem()
+                {
+                    // TODO Auto-generated method stub
+                    return false;
+                }
+
+                @Override
+                public void initialiseRenderer()
+                {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void initialise(EJBlockItemRendererRegister blockItemRegister)
+                {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public EJScreenType getScreenType()
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public EJItemProperties getReferencedItemProperties()
+                {
+                    return blockItemController.getProperties();
+                }
+
+                @Override
+                public EJScreenItemProperties getProperties()
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public String getName()
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public EJManagedItemRendererWrapper getManagedItemRenderer()
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public EJBlockItemRendererRegister getItemRendererRegister()
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public EJItemRenderer getItemRenderer()
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public EJItemLovController getItemLovController()
+                {
+                    // TODO Auto-generated method stub
+                    return null;
+                }
+
+                @Override
+                public EJInternalForm getForm()
+                {
+                    // TODO Auto-generated method stub
+                    return _block.getForm();
+                }
+
+                @Override
+                public EJInternalBlock getBlock()
+                {
+                    return _block.getBlock();
+                }
+
+                @Override
+                public void gainFocus()
+                {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void executeActionCommand()
+                {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void addItemValueChangedListener(EJScreenItemValueChangedListener listener)
+                {
+                    // TODO Auto-generated method stub
+
+                }
+
+                @Override
+                public void addItemFocusListener(EJItemFocusListener listener)
+                {
+                    // TODO Auto-generated method stub
+
+                }
+            };
+            EJManagedItemRendererWrapper renderer = EJRendererFactory.getInstance().getItemRenderer(itemController, new EJCoreMainScreenItemProperties(_block.getProperties(), false));
+
+            if (renderer != null && renderer.getUnmanagedRenderer() instanceof EJRWTAppItemRenderer)
+            {
+                appItemRenderer = (EJRWTAppItemRenderer) renderer.getUnmanagedRenderer();
+            }
+        }
+
+        refresh();
     }
 
     private void addActionKeyinfo(String actionKey, String actionId)
