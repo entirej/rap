@@ -261,8 +261,6 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         options.setStrokeWidth(blockProperties.getBlockRendererProperties().getIntProperty(STROKE_WIDTH, options.getStrokeWidth()));
         xAxisColumn = blockProperties.getBlockRendererProperties().getStringProperty(X_AXIS_COLUMN);
 
-       
-        
     }
 
     @Override
@@ -398,50 +396,26 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
                 return;
             }
-            Map<String, Map<String, Float>> dataset = new HashMap<String, Map<String, Float>>();
+            Map<Object, Map<String, Float>> dataset = new HashMap<Object, Map<String, Float>>();
 
             Collection<EJDataRecord> records = _block.getRecords();
 
             Collection<EJScreenItemController> screenItems = _block.getAllScreenItems(EJScreenType.MAIN);
 
-            List<String> labelsIndex = new ArrayList<String>();
+            List<Object> labelsIndex = new ArrayList<Object>();
             Map<String, Number> lastVal = new HashMap<String, Number>();
             for (EJDataRecord ejDataRecord : records)
             {
-                Object object = ejDataRecord.getValue(xAxisColumn);
-                if (object != null)
+                Object xobject = ejDataRecord.getValue(xAxisColumn);
+                if (xobject != null)
                 {
-                    
-                    String xvalue =null;
-                    if (appItemRenderer != null)
-                    {
-                        String formatValue = appItemRenderer.formatValue(object);
-                        xvalue= (formatValue != null ? formatValue : object.toString());
-                    }
-                    else if (object instanceof String)
-                    {
-                        xvalue= ((String) object);
-                    }
-                    else if (object instanceof Number)
-                    {
 
-                        xvalue= (createDecimalFormat(object, null).format(object));
-                    }
-                    else if (object instanceof Date)
-                    {
-
-                        xvalue= (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
-                    }
-                    else
-                    {
-                        xvalue= (object.toString());
-                    }
-                    Map<String, Float> set = dataset.get(xvalue);
+                    Map<String, Float> set = dataset.get(xobject);
                     if (set == null)
                     {
                         set = new HashMap<String, Float>();
-                        dataset.put(xvalue, set);
-                        labelsIndex.add(xvalue);
+                        dataset.put(xobject, set);
+                        labelsIndex.add(xobject);
                     }
                     for (EJScreenItemController sItem : screenItems)
                     {
@@ -454,29 +428,53 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                             {
                                 lastVal.put(sItem.getName(), (Number) yvalue);
                                 val = ((Number) yvalue).floatValue();
-                               
-                                    set.put(sItem.getName(), val);
-                               
+
                             }
                             else
                             {
                                 Number last = lastVal.get(sItem.getName());
                                 val = last != null ? last.floatValue() : 0f;
-                                
-                                   
-                                    set.put(sItem.getName(), val);
-                                
-                            }
 
+                            }
+                            set.put(sItem.getName(), val);
                         }
                     }
 
                 }
             }
+            
+            List<String> xlabel = new ArrayList<String>(labelsIndex.size());
+            for (Object object : labelsIndex)
+            {
+                String xvalue ;
+                if (appItemRenderer != null)
+                {
+                    String formatValue = appItemRenderer.formatValue(object);
+                    xvalue= (formatValue != null ? formatValue : object.toString());
+                }
+                else if (object instanceof String)
+                {
+                    xvalue= ((String) object);
+                }
+                else if (object instanceof Number)
+                {
 
-           
+                    xvalue= (createDecimalFormat(object, null).format(object));
+                }
+                else if (object instanceof Date)
+                {
 
-            ChartRowData chartRowData = new ChartRowData(labelsIndex.toArray(new String[0]));
+                    xvalue= (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
+                }
+                else
+                {
+                    xvalue= (object.toString());
+                }
+                xlabel.add(xvalue);
+                
+            }
+
+            ChartRowData chartRowData = new ChartRowData(xlabel.toArray(new String[0]));
 
             for (EJScreenItemController sItem : screenItems)
             {
@@ -487,8 +485,6 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     Map<String, Float> map = dataset.get(object);
                     if (map == null)
                         continue;
-
-                   
 
                     row.add(map.get(sItem.getName()));
 
@@ -519,9 +515,8 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 {
                     floatArray[i++] = (f != null ? f : 0);
                 }
-                 chartRowData.addRow(sItem.getProperties().getLabel(),floatArray,
-                 colors);
-                //chartRowData.addRow(floatArray, colors);
+                chartRowData.addRow(sItem.getProperties().getLabel(), floatArray, colors);
+                // chartRowData.addRow(floatArray, colors);
             }
 
             _chartView.drawLineChart(chartRowData, options);
