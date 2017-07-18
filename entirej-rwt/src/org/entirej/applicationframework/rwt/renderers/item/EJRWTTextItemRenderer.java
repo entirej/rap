@@ -114,6 +114,12 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
     }
     
+     @Override
+    public String formatValue(Object obj)
+    {
+        return obj.toString();
+    }
+    
     public String getDisplayValue()
     {
         if(controlState(_textField) )

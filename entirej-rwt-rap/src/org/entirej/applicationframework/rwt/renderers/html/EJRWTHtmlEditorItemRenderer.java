@@ -94,6 +94,13 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
 
     }
     
+    @Override
+    public String formatValue(Object obj)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
    
     public String getDisplayValue()
     {

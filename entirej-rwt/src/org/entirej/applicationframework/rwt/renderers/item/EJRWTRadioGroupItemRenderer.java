@@ -102,6 +102,19 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
 
     }
     
+    @Override
+    public String formatValue(Object obj)
+    {
+        for (RadioButtonValue buttonValue : _radioButtons.values())
+        {
+            if (buttonValue.getValue().equals(obj))
+            {
+               return  buttonValue.getButton().getText();
+            }
+        }
+        return obj.toString();
+    }
+    
     public String getDisplayValue()
     {
         

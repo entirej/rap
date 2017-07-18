@@ -317,6 +317,12 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             _modifyListener.enable = true;
         }
     }
+    
+    @Override
+    public String formatValue(Object obj)
+    {
+        return _dateFormat.format(obj);
+    }
 
     @Override
     public void initialise(EJScreenItemController item, EJScreenItemProperties screenItemProperties)

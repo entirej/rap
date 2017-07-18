@@ -83,6 +83,20 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     {
         return control != null && !control.isDisposed();
     }
+    
+    
+    
+    @Override
+    public String formatValue(Object value)
+    {
+        if (value == null)
+        {
+            value = _item.getForm().translateText(_screenItemProperties.getLabel());
+        }
+
+        return  (value == null ? "" : toCaseValue(value.toString()));
+       
+    }
 
     @Override
     public boolean useFontDimensions()

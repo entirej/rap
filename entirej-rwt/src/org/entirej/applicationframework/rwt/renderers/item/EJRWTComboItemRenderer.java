@@ -145,6 +145,47 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         return control != null && !control.isDisposed();
     }
 
+    
+    @Override
+    public String formatValue(Object obj)
+    {
+        
+        ComboBoxValue boxValue = null;
+
+        for (ComboBoxValue val : _comboValues)
+        {
+            if (val.getItemValue() == null && obj == null)
+            {
+                boxValue = val;
+                break;
+            }
+
+            if (val.getItemValue() == null)
+            {
+                continue;
+            }
+
+            if (!val.getItemValue().getClass().isAssignableFrom(obj.getClass()))
+            {
+                EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM,
+                        _item.getName(), val.getItemValue().getClass().getName(), obj.getClass().getName());
+                throw new IllegalArgumentException(message.getMessage());
+            }
+
+            if (val.getItemValue().equals(obj))
+            {
+                boxValue = val;
+                break;
+            }
+        }
+
+        if (boxValue != null)
+        {
+            return boxValue.getItemValueAsString();
+        }
+        return null;
+    }
+    
     @Override
     public boolean useFontDimensions()
     {

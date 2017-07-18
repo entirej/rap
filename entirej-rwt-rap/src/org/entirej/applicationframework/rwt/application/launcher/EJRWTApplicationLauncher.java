@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import org.eclipse.rap.chartjs.Chart;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
@@ -558,7 +559,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                 e.printStackTrace();
                             }
 
-                        pushSession.start();
+                      //  pushSession.start();
 
                         return openShell(display, shell);
                     }
@@ -915,6 +916,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
         loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextResource().getLocation());
         loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextAdapterResource().getLocation());
         EJRWTCKEditor.initResources();
+        Chart.registerJS();
+        Chart.requireJS();
     }
 
     public static class FileResource implements ResourceLoader

@@ -64,6 +64,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionList;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.item.EJRWTComboItemRenderer.ComboBoxValue;
 import org.entirej.applicationframework.rwt.renderers.item.EJRWTRadioGroupItemRenderer.RadioButtonValue;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTListBoxRendererDefinitionProperties;
@@ -474,6 +475,47 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     {
         _registeredItemName = name;
     }
+    
+    @Override
+    public String formatValue(Object obj)
+    {
+        
+        ListBoxValue boxValue = null;
+
+        for (ListBoxValue val : _listValues.values())
+        {
+            if (val.getItemValue() == null && obj == null)
+            {
+                boxValue = val;
+                break;
+            }
+
+            if (val.getItemValue() == null)
+            {
+                continue;
+            }
+
+            if (!val.getItemValue().getClass().isAssignableFrom(obj.getClass()))
+            {
+                EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM,
+                        _item.getName(), val.getItemValue().getClass().getName(), obj.getClass().getName());
+                throw new IllegalArgumentException(message.getMessage());
+            }
+
+            if (val.getItemValue().equals(obj))
+            {
+                boxValue = val;
+                break;
+            }
+        }
+
+        if (boxValue != null)
+        {
+            return boxValue.getItemValueAsString();
+        }
+        return null;
+    }
+    
 
     @Override
     public void setValue(Object value)

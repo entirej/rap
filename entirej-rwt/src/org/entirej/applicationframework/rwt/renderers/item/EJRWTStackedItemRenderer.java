@@ -2786,6 +2786,13 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     {
         _changeListeners.remove(listener);
     }
+    
+    @Override
+    public String formatValue(Object obj)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     protected void fireTextChange()
     {

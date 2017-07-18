@@ -926,6 +926,13 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
             }
         }
     }
+    
+    @Override
+    public String formatValue(Object obj)
+    {
+       
+        return _dateFormat.format(obj);
+    }
 
     @Override
     public void initialise(EJScreenItemController item, EJScreenItemProperties screenItemProperties)

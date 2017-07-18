@@ -77,5 +77,7 @@ public interface EJRWTAppItemRenderer extends EJItemRenderer
     ColumnLabelProvider createColumnLabelProvider(EJScreenItemProperties item, EJScreenItemController controller);
 
     EJRWTAbstractTableSorter getColumnSorter(EJScreenItemProperties item, EJScreenItemController controller);
+    
+    String formatValue(Object obj);
 
 }

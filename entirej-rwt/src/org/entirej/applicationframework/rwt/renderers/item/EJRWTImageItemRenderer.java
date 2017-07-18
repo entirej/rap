@@ -65,6 +65,12 @@ import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
 
 public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListener, Serializable
 {
+    @Override
+    public String formatValue(Object obj)
+    {
+       
+        return null;
+    }
     private final class HtmlBaseImageColumn extends ColumnLabelProvider implements HtmlBaseColumnLabelProvider
     {
         private final EJScreenItemProperties item;

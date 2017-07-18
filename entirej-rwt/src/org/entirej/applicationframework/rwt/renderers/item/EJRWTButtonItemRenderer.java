@@ -80,6 +80,12 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
     }
     
     @Override
+    public String formatValue(Object obj)
+    {
+        return null;
+    }
+    
+    @Override
     public void refreshItemRendererProperty(String propertyName)
     {
         

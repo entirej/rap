@@ -78,6 +78,12 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
     
     
     @Override
+    public String formatValue(Object obj)
+    {
+        return _decimalFormatter.format(obj);
+    }
+    
+    @Override
     public void refreshItemRendererProperty(String propertyName)
     {
         
