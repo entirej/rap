@@ -396,6 +396,9 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
                 return;
             }
+            
+            
+            
             Map<Object, Map<String, Float>> dataset = new HashMap<Object, Map<String, Float>>();
 
             Collection<EJDataRecord> records = _block.getRecords();
@@ -478,9 +481,11 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
             for (EJScreenItemController sItem : screenItems)
             {
+                if(!sItem.isVisible() || sItem.isSpacerItem())
+                    continue;
                 List<Float> row = new ArrayList<Float>();
 
-                for (Object object : dataset.keySet())
+                for (Object object : labelsIndex)
                 {
                     Map<String, Float> map = dataset.get(object);
                     if (map == null)
