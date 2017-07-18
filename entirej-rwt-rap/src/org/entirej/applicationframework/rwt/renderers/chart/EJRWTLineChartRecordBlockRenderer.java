@@ -398,7 +398,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
                 return;
             }
-            Map<String, Map<String, List<Float>>> dataset = new HashMap<String, Map<String, List<Float>>>();
+            Map<String, Map<String, Float>> dataset = new HashMap<String, Map<String, Float>>();
 
             Collection<EJDataRecord> records = _block.getRecords();
 
@@ -436,10 +436,10 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     {
                         xvalue= (object.toString());
                     }
-                    Map<String, List<Float>> set = dataset.get(xvalue);
+                    Map<String, Float> set = dataset.get(xvalue);
                     if (set == null)
                     {
-                        set = new HashMap<String, List<Float>>();
+                        set = new HashMap<String, Float>();
                         dataset.put(xvalue, set);
                         labelsIndex.add(xvalue);
                     }
@@ -454,18 +454,18 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                             {
                                 lastVal.put(sItem.getName(), (Number) yvalue);
                                 val = ((Number) yvalue).floatValue();
-                                List<Float> list = set.get(sItem.getName());
-                                if (list == null)
-                                {
-                                    list = new ArrayList<Float>();
-                                    set.put(sItem.getName(), list);
-                                }
-                                list.add(val);
+                               
+                                    set.put(sItem.getName(), val);
+                               
                             }
                             else
                             {
                                 Number last = lastVal.get(sItem.getName());
                                 val = last != null ? last.floatValue() : 0f;
+                                
+                                   
+                                    set.put(sItem.getName(), val);
+                                
                             }
 
                         }
@@ -484,15 +484,13 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
                 for (Object object : dataset.keySet())
                 {
-                    Map<String, List<Float>> map = dataset.get(object);
+                    Map<String, Float> map = dataset.get(object);
                     if (map == null)
                         continue;
 
-                    List<Float> list = map.get(sItem.getName());
-                    if (list == null)
-                        continue;
+                   
 
-                    row.addAll(list);
+                    row.add(map.get(sItem.getName()));
 
                 }
 
