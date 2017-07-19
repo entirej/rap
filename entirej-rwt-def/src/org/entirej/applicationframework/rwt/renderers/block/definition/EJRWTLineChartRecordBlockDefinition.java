@@ -126,55 +126,22 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
     public EJPropertyDefinitionGroup getBlockPropertyDefinitionGroup()
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("LineChart-Record Block");
-        
-        
-        EJDevPropertyDefinition relationItem = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.X_AXIS_COLUMN,
-                EJPropertyDefinitionType.BLOCK_ITEM);
+
+        EJDevPropertyDefinition relationItem = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.X_AXIS_COLUMN, EJPropertyDefinitionType.BLOCK_ITEM);
         relationItem.setLabel("X Axis");
         relationItem.setMandatory(true);
 
         EJDevPropertyDefinition animation = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.ANIMATION, EJPropertyDefinitionType.BOOLEAN);
         animation.setLabel("Animation");
         animation.setDefaultValue("true");
-        
+
         EJDevPropertyDefinition showToolTips = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_TOOLTIPS, EJPropertyDefinitionType.BOOLEAN);
         showToolTips.setLabel("Show ToolTips");
         showToolTips.setDefaultValue("true");
-        
-        EJDevPropertyDefinition scaleBeginAtZero = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SCALE_BEGIN_AT_ZERO, EJPropertyDefinitionType.BOOLEAN);
-        scaleBeginAtZero.setLabel("Scale Begin At Zero");
-        scaleBeginAtZero.setDefaultValue("true");
-        
-        EJDevPropertyDefinition bezierCurve = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.BEZIER_CURVE, EJPropertyDefinitionType.BOOLEAN);
-        bezierCurve.setLabel("Bezier Curve");
-        bezierCurve.setDefaultValue("true");
-        
-        
-        EJDevPropertyDefinition showFill = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_FILL, EJPropertyDefinitionType.BOOLEAN);
-        showFill.setLabel("Show Fill");
-        showFill.setDefaultValue("true");
-        
-        EJDevPropertyDefinition scaleShowLabels = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SCALE_SHOW_LABELS, EJPropertyDefinitionType.BOOLEAN);
-        scaleShowLabels.setLabel("Scale Show Labels");
-        scaleShowLabels.setDefaultValue("true");
-        
-        EJDevPropertyDefinition pointDotRadius = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.POINT_DOT_RADIUS, EJPropertyDefinitionType.INTEGER);
-        pointDotRadius.setLabel("Point Dot Radius");
-        pointDotRadius.setDefaultValue("3");
-        
-        EJDevPropertyDefinition strokeWidth = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.STROKE_WIDTH, EJPropertyDefinitionType.INTEGER);
-        strokeWidth.setLabel("Stroke Width");
-        strokeWidth.setDefaultValue("2");
 
         mainGroup.addPropertyDefinition(relationItem);
         mainGroup.addPropertyDefinition(animation);
         mainGroup.addPropertyDefinition(showToolTips);
-        mainGroup.addPropertyDefinition(scaleBeginAtZero);
-        mainGroup.addPropertyDefinition(bezierCurve);
-        mainGroup.addPropertyDefinition(showFill);
-        mainGroup.addPropertyDefinition(scaleShowLabels);
-        mainGroup.addPropertyDefinition(pointDotRadius);
-        mainGroup.addPropertyDefinition(strokeWidth);
 
         EJDevPropertyDefinitionGroup sectionGroup = new EJDevPropertyDefinitionGroup("TITLE_BAR");
         sectionGroup.setLabel("Title Bar");
@@ -247,7 +214,52 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
         visualAttribute.setDescription("The background, foreground and font attributes applied for screen item");
         visualAttribute.setMandatory(false);
 
+        EJDevPropertyDefinition showFill = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_FILL, EJPropertyDefinitionType.BOOLEAN);
+        showFill.setLabel("Show Fill");
+        showFill.setDefaultValue("false");
+
+        EJDevPropertyDefinition showLine = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_LINE, EJPropertyDefinitionType.BOOLEAN);
+        showLine.setLabel("Show Line");
+        showLine.setDefaultValue("true");
+        showLine.setDescription("If false, the line is not drawn for this dataset.");
+
+        EJDevPropertyDefinition pointDotRadius = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.POINT_DOT_RADIUS, EJPropertyDefinitionType.INTEGER);
+        pointDotRadius.setLabel("Point Dot Radius");
+        pointDotRadius.setDefaultValue("3");
+
+        EJDevPropertyDefinition lineTension = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LINE_TENSION, EJPropertyDefinitionType.FLOAT);
+        lineTension.setLabel("Line Tension");
+        lineTension.setDescription("Bezier curve tension of the line. Set to 0 to draw straightlines.");
+        lineTension.setDefaultValue("0.4");
+        EJDevPropertyDefinition strokeWidth = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LINE_WIDTH, EJPropertyDefinitionType.INTEGER);
+        strokeWidth.setLabel("Line Width");
+        strokeWidth.setDescription("The width of the line in pixels.");
+        strokeWidth.setDefaultValue("1");
+
+        EJDevPropertyDefinition pointStyle = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.POINT_STYLE, EJPropertyDefinitionType.STRING);
+        pointStyle.setLabel("Point Style");
+        pointStyle.setDescription("The character case for the text displayed within this label");
+        pointStyle.setDefaultValue("circle");
+        /*
+         * 'circle' 'cross' 'crossRot' 'dash'. 'line' 'rect' 'rectRounded'
+         * 'rectRot' 'star' 'triangle'
+         */
+        pointStyle.addValidValue("circle", "circle");
+        pointStyle.addValidValue("cross", "cross");
+        pointStyle.addValidValue("crossRot", "crossRot");
+        pointStyle.addValidValue("dash", "dash");
+        pointStyle.addValidValue("rect", "rect");
+        pointStyle.addValidValue("rectRounded", "rectRounded");
+        pointStyle.addValidValue("triangle", "triangle");
+        pointStyle.addValidValue("star", "star");
+        pointStyle.addValidValue("rectRot", "rectRot");
+
         mainGroup.addPropertyDefinition(visualAttribute);
+        mainGroup.addPropertyDefinition(strokeWidth);
+        mainGroup.addPropertyDefinition(lineTension);
+        mainGroup.addPropertyDefinition(showFill);
+        mainGroup.addPropertyDefinition(showLine);
+        mainGroup.addPropertyDefinition(pointStyle);
 
         return mainGroup;
     }

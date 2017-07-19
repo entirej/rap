@@ -130,17 +130,17 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     public final String                    ANIMATION                 = "animation";
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
-    public final String                    SCALE_BEGIN_AT_ZERO       = "scaleBeginAtZero";
-    public final String                    BEZIER_CURVE              = "bezierCurve";
-    public final String                    SHOW_FILL                 = "showFill";
-    public final String                    SCALE_SHOW_LABELS         = "scaleShowLabels";
-    public final String                    POINT_DOT_RADIUS          = "pointDotRadius";
-    public final String                    STROKE_WIDTH              = "strokeWidth";
-
     public final String                    X_AXIS_COLUMN             = "xAxisColumn";
+
+    public final String                    POINT_STYLE               = "pointStyle";
+    public final String                    LINE_TENSION              = "lineTension";
+    public final String                    SHOW_FILL                 = "showFill";
+    public final String                    SHOW_LINE                 = "showLine";
+    public final String                    POINT_DOT_RADIUS          = "pointDotRadius";
+    public final String                    LINE_WIDTH                = "lineWidth";
+
     private String                         xAxisColumn;
     private EJRWTAppItemRenderer           appItemRenderer;
-    private boolean                        _filldefault;
     public static final String             VISUAL_ATTRIBUTE_PROPERTY = "VISUAL_ATTRIBUTE";
 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
@@ -253,9 +253,8 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         _block = block;
         EJCoreBlockProperties blockProperties = _block.getProperties();
         options.setAnimation(blockProperties.getBlockRendererProperties().getBooleanProperty(ANIMATION, options.getAnimation()));
-        _filldefault = blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_FILL, true);
         options.setShowToolTips(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_TOOLTIPS, options.getShowToolTips()));
-        
+
         xAxisColumn = blockProperties.getBlockRendererProperties().getStringProperty(X_AXIS_COLUMN);
 
     }
@@ -263,7 +262,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     @Override
     public void blockCleared()
     {
-        if(_chartView!=null && !_chartView.isDisposed())
+        if (_chartView != null && !_chartView.isDisposed())
         {
             _chartView.clear();
         }
@@ -518,10 +517,20 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 {
                     floatArray[i++] = (f != null ? f : 0);
                 }
+                /*
+                 * String pointStyle = "circle";
+                 * 
+                 * ChartStyle chartStyle;
+                 */
                 LineChartRowData.RowInfo info = new LineChartRowData.RowInfo();
                 info.setLabel(sItem.getProperties().getLabel());
                 info.setChartStyle(colors);
-                info.setFill(_filldefault);
+                EJCoreMainScreenItemProperties mainScreenItemProperties = (EJCoreMainScreenItemProperties) sItem.getProperties();
+                info.setFill(mainScreenItemProperties.getBlockRendererRequiredProperties().getBooleanProperty(SHOW_FILL, info.isFill()));
+                info.setPointStyle(mainScreenItemProperties.getBlockRendererRequiredProperties().getStringProperty(POINT_STYLE));
+                info.setShowLine(mainScreenItemProperties.getBlockRendererRequiredProperties().getBooleanProperty(SHOW_LINE, info.isShowLine()));
+                info.setLineWidth(mainScreenItemProperties.getBlockRendererRequiredProperties().getIntProperty(LINE_WIDTH, info.getLineWidth()));
+                info.setLineTension(mainScreenItemProperties.getBlockRendererRequiredProperties().getFloatProperty(LINE_TENSION, (float) info.getLineTension()));
                 chartRowData.addRow(info, floatArray);
                 // chartRowData.addRow(floatArray, colors);
             }
@@ -1314,7 +1323,5 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         control.setData(EJ_RWT.ACTIVE_KEYS, subActions.toArray(new String[0]));
         control.addKeyListener(this);
     }
-
-    
 
 }

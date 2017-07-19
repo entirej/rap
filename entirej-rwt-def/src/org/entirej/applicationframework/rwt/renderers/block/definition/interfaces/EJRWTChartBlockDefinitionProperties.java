@@ -21,13 +21,14 @@ public interface EJRWTChartBlockDefinitionProperties
 {
     public final String        ANIMATION                 = "animation";
     public final String        SHOW_TOOLTIPS             = "showToolTips";
-    public final String        SCALE_BEGIN_AT_ZERO       = "scaleBeginAtZero";
-    public final String        BEZIER_CURVE              = "bezierCurve";
-    public final String        SHOW_FILL                 = "showFill";
-    public final String        SCALE_SHOW_LABELS         = "scaleShowLabels";
-    public final String        POINT_DOT_RADIUS          = "pointDotRadius";
-    public final String        STROKE_WIDTH              = "strokeWidth";
     public final String        X_AXIS_COLUMN             = "xAxisColumn";
+
+    public final String        POINT_STYLE               = "pointStyle";
+    public final String        LINE_TENSION              = "lineTension";
+    public final String        SHOW_FILL                 = "showFill";
+    public final String        SHOW_LINE                 = "showLine";
+    public final String        POINT_DOT_RADIUS          = "pointDotRadius";
+    public final String        LINE_WIDTH                = "lineWidth";
 
     public static final String VISUAL_ATTRIBUTE_PROPERTY = "VISUAL_ATTRIBUTE";
 }
