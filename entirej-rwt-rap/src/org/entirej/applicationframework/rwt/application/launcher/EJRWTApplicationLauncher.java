@@ -22,16 +22,14 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import org.eclipse.rap.chartjs.Chart;
+import org.eclipse.rap.chartjs.AbstractChart;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
@@ -916,8 +914,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
         loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextResource().getLocation());
         loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextAdapterResource().getLocation());
         EJRWTCKEditor.initResources();
-        Chart.registerJS();
-        Chart.requireJS();
+        AbstractChart.registerJS();
+        AbstractChart.requireJS();
     }
 
     public static class FileResource implements ResourceLoader

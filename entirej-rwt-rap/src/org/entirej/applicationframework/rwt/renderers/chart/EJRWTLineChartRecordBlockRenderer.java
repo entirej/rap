@@ -33,10 +33,10 @@ import java.util.Map;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.rap.chartjs.Chart;
-import org.eclipse.rap.chartjs.ChartOptions;
-import org.eclipse.rap.chartjs.ChartRowData;
 import org.eclipse.rap.chartjs.ChartStyle;
+import org.eclipse.rap.chartjs.line.LineChart;
+import org.eclipse.rap.chartjs.line.LineChartOptions;
+import org.eclipse.rap.chartjs.line.LineChartRowData;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -118,7 +118,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     private boolean                        _isFocused                = false;
     private EJEditableBlockController      _block;
     private EJRWTEntireJGridPane           _mainPane;
-    private Chart                          _chartView;
+    private LineChart                      _chartView;
 
     private EJFrameworkExtensionProperties _rendererProp;
     List<String>                           _actionkeys               = new ArrayList<String>();
@@ -126,7 +126,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     private List<EJDataRecord>             _treeBaseRecords          = new ArrayList<EJDataRecord>();
 
-    private final ChartOptions             options                   = new ChartOptions();
+    private final LineChartOptions         options                   = new LineChartOptions();
 
     public final String                    ANIMATION                 = "animation";
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
@@ -140,6 +140,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public final String                    X_AXIS_COLUMN             = "xAxisColumn";
     private String                         xAxisColumn;
     private EJRWTAppItemRenderer           appItemRenderer;
+    private boolean                        _filldefault;
     public static final String             VISUAL_ATTRIBUTE_PROPERTY = "VISUAL_ATTRIBUTE";
 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
@@ -252,13 +253,9 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         _block = block;
         EJCoreBlockProperties blockProperties = _block.getProperties();
         options.setAnimation(blockProperties.getBlockRendererProperties().getBooleanProperty(ANIMATION, options.getAnimation()));
-        options.setBezierCurve(blockProperties.getBlockRendererProperties().getBooleanProperty(BEZIER_CURVE, options.getBezierCurve()));
-        options.setScaleBeginAtZero(blockProperties.getBlockRendererProperties().getBooleanProperty(SCALE_BEGIN_AT_ZERO, options.getScaleBeginAtZero()));
-        options.setScaleShowLabels(blockProperties.getBlockRendererProperties().getBooleanProperty(SCALE_SHOW_LABELS, options.getScaleShowLabels()));
-        options.setShowFill(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_FILL, options.getShowFill()));
+        _filldefault = blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_FILL, true);
         options.setShowToolTips(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_TOOLTIPS, options.getShowToolTips()));
-        options.setPointDotRadius(blockProperties.getBlockRendererProperties().getIntProperty(POINT_DOT_RADIUS, options.getPointDotRadius()));
-        options.setStrokeWidth(blockProperties.getBlockRendererProperties().getIntProperty(STROKE_WIDTH, options.getStrokeWidth()));
+        
         xAxisColumn = blockProperties.getBlockRendererProperties().getStringProperty(X_AXIS_COLUMN);
 
     }
@@ -266,7 +263,10 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     @Override
     public void blockCleared()
     {
-        refresh();
+        if(_chartView!=null && !_chartView.isDisposed())
+        {
+            _chartView.clear();
+        }
     }
 
     @Override
@@ -396,9 +396,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
                 return;
             }
-            
-            
-            
+
             Map<Object, Map<String, Float>> dataset = new HashMap<Object, Map<String, Float>>();
 
             Collection<EJDataRecord> records = _block.getRecords();
@@ -445,43 +443,43 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
                 }
             }
-            
+
             List<String> xlabel = new ArrayList<String>(labelsIndex.size());
             for (Object object : labelsIndex)
             {
-                String xvalue ;
+                String xvalue;
                 if (appItemRenderer != null)
                 {
                     String formatValue = appItemRenderer.formatValue(object);
-                    xvalue= (formatValue != null ? formatValue : object.toString());
+                    xvalue = (formatValue != null ? formatValue : object.toString());
                 }
                 else if (object instanceof String)
                 {
-                    xvalue= ((String) object);
+                    xvalue = ((String) object);
                 }
                 else if (object instanceof Number)
                 {
 
-                    xvalue= (createDecimalFormat(object, null).format(object));
+                    xvalue = (createDecimalFormat(object, null).format(object));
                 }
                 else if (object instanceof Date)
                 {
 
-                    xvalue= (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
+                    xvalue = (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
                 }
                 else
                 {
-                    xvalue= (object.toString());
+                    xvalue = (object.toString());
                 }
                 xlabel.add(xvalue);
-                
+
             }
 
-            ChartRowData chartRowData = new ChartRowData(xlabel.toArray(new String[0]));
+            LineChartRowData chartRowData = new LineChartRowData(xlabel.toArray(new String[0]));
 
             for (EJScreenItemController sItem : screenItems)
             {
-                if(!sItem.isVisible() || sItem.isSpacerItem())
+                if (!sItem.isVisible() || sItem.isSpacerItem())
                     continue;
                 List<Float> row = new ArrayList<Float>();
 
@@ -520,11 +518,15 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 {
                     floatArray[i++] = (f != null ? f : 0);
                 }
-                chartRowData.addRow(sItem.getProperties().getLabel(), floatArray, colors);
+                LineChartRowData.RowInfo info = new LineChartRowData.RowInfo();
+                info.setLabel(sItem.getProperties().getLabel());
+                info.setChartStyle(colors);
+                info.setFill(_filldefault);
+                chartRowData.addRow(info, floatArray);
                 // chartRowData.addRow(floatArray, colors);
             }
 
-            _chartView.drawLineChart(chartRowData, options);
+            _chartView.load(chartRowData, options);
 
         }
     }
@@ -913,18 +915,18 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     group.setText(displayProperties.getFrameTitle());
 
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                    _chartView = new Chart(group, SWT.NONE);
+                    _chartView = new LineChart(group, SWT.NONE);
                 }
                 else
                 {
 
-                    _chartView = new Chart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style);
+                    _chartView = new LineChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style);
                     _chartView.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
                 }
             }
             else
             {
-                _chartView = new Chart(_mainPane, style);
+                _chartView = new LineChart(_mainPane, style);
 
                 _chartView.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
             }
@@ -942,18 +944,18 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     group.setText(displayProperties.getFrameTitle());
 
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                    _chartView = new Chart(group, style);
+                    _chartView = new LineChart(group, style);
                 }
                 else
                 {
-                    _chartView = new Chart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style);
+                    _chartView = new LineChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style);
 
                     _chartView.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
                 }
             }
             else
             {
-                _chartView = new Chart(_mainPane, style);
+                _chartView = new LineChart(_mainPane, style);
 
                 _chartView.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
             }
@@ -1313,16 +1315,6 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         control.addKeyListener(this);
     }
 
-    // DEMO
-    private ChartStyle chartStyle1;
-    private ChartStyle chartStyle2;
-
-    private int nr()
-    {
-        int factor = options.getScaleBeginAtZero() ? 100 : 1000;
-        int offset = Math.round(factor * 0.1f);
-        return offset + (int) (Math.random() * (factor - offset));
-
-    }
+    
 
 }
