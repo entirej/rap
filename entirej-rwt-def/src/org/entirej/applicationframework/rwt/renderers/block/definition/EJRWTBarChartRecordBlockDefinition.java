@@ -29,7 +29,6 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTChartBlockDefinitionProperties;
-import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTInsertScreenRendererDefinition;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTQueryScreenRendererDefinition;
@@ -52,16 +51,16 @@ import org.entirej.framework.dev.renderer.definition.interfaces.EJDevInsertScree
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevQueryScreenRendererDefinition;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevUpdateScreenRendererDefinition;
 
-public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDefinition
+public class EJRWTBarChartRecordBlockDefinition implements EJDevBlockRendererDefinition
 {
-    public EJRWTLineChartRecordBlockDefinition()
+    public EJRWTBarChartRecordBlockDefinition()
     {
     }
 
     @Override
     public String getRendererClassName()
     {
-        return "org.entirej.applicationframework.rwt.renderers.chart.EJRWTLineChartRecordBlockRenderer";
+        return "org.entirej.applicationframework.rwt.renderers.chart.EJRWTBarChartRecordBlockRenderer";
     }
 
     @Override
@@ -128,6 +127,9 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("LineChart-Record Block");
 
+        EJDevPropertyDefinition horizontalBar = new EJDevPropertyDefinition("horizontalBar", EJPropertyDefinitionType.BOOLEAN);
+        horizontalBar.setLabel("Horizontal Bar Chart");
+        
         EJDevPropertyDefinition relationItem = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.X_AXIS_COLUMN, EJPropertyDefinitionType.BLOCK_ITEM);
         relationItem.setLabel("X Axis");
         relationItem.setMandatory(true);
@@ -147,18 +149,49 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
         EJDevPropertyDefinition legendPostions = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LEGEND_POSITION, EJPropertyDefinitionType.STRING);
         legendPostions.setLabel("Legend Postion");
         legendPostions.setDefaultValue("top");
-
+        
+        EJDevPropertyDefinition barPercentage = new EJDevPropertyDefinition("barPercentage", EJPropertyDefinitionType.INTEGER);
+        barPercentage.setLabel("Bar Percentage");
+        barPercentage.setDescription("Percent (0-1) of the available width each bar should be within the category percentage. 1.0 will take the whole category width and put the bars right next to each other");
+        barPercentage.setDefaultValue("0.9");
+        
+        EJDevPropertyDefinition categoryPercentage = new EJDevPropertyDefinition("categoryPercentage", EJPropertyDefinitionType.FLOAT);
+        categoryPercentage.setLabel("Category Percentage");
+        categoryPercentage.setDescription("Percent (0-1) of the available width (the space between the gridlines for small datasets) for each data-point to use for the bars.");
+        categoryPercentage.setDefaultValue("0.8");
+        
+        
+        
+        
+        
+        
+        EJDevPropertyDefinition barThickness = new EJDevPropertyDefinition("barThickness", EJPropertyDefinitionType.FLOAT);
+        barThickness.setLabel("Bar Thickness");
+        barThickness.setDescription("Manually set width of each bar in pixels. If not set, the bars are sized automatically using bar percentage and category percentage.");
+        
+        EJDevPropertyDefinition maxBarThickness = new EJDevPropertyDefinition("maxBarThickness", EJPropertyDefinitionType.INTEGER);
+        maxBarThickness.setLabel("Max Bar Thickness");
+        maxBarThickness.setDescription("Set this to ensure that the automatically sized bars are not sized thicker than this. Only works if barThickness is not set (automatic sizing is enabled).");
+       
+      
+        
+        
         legendPostions.addValidValue("top", "Top");
         legendPostions.addValidValue("bottom", "Bottom");
         legendPostions.addValidValue("left", "Left");
         legendPostions.addValidValue("right", "Right");
 
         mainGroup.addPropertyDefinition(relationItem);
+        mainGroup.addPropertyDefinition(horizontalBar);
         mainGroup.addPropertyDefinition(animation);
 
         mainGroup.addPropertyDefinition(showToolTips);
         mainGroup.addPropertyDefinition(legend);
         mainGroup.addPropertyDefinition(legendPostions);
+        mainGroup.addPropertyDefinition(barPercentage);
+        mainGroup.addPropertyDefinition(categoryPercentage);
+        mainGroup.addPropertyDefinition(barThickness);
+        mainGroup.addPropertyDefinition(maxBarThickness);
 
         EJDevPropertyDefinitionGroup sectionGroup = new EJDevPropertyDefinitionGroup("TITLE_BAR");
         sectionGroup.setLabel("Title Bar");
@@ -231,67 +264,15 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
         visualAttribute.setDescription("The background, foreground and font attributes applied for screen item");
         visualAttribute.setMandatory(false);
 
+
         EJDevPropertyDefinition actionCmd = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.ACTION, EJPropertyDefinitionType.ACTION_COMMAND);
         actionCmd.setLabel("Click Action Command");
         actionCmd.setDescription("Add an action command that will be sent to the action processor when a user  clicks on this chart");
 
-        EJDevPropertyDefinition showFill = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_FILL, EJPropertyDefinitionType.BOOLEAN);
-        showFill.setLabel("Show Fill");
-        showFill.setDefaultValue("false");
-
-        EJDevPropertyDefinition showLine = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_LINE, EJPropertyDefinitionType.BOOLEAN);
-        showLine.setLabel("Show Line");
-        showLine.setDefaultValue("true");
-        showLine.setDescription("If false, the line is not drawn for this dataset.");
-
-        EJDevPropertyDefinition pointDotRadius = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.POINT_DOT_RADIUS, EJPropertyDefinitionType.INTEGER);
-        pointDotRadius.setLabel("Point Dot Radius");
-        pointDotRadius.setDefaultValue("3");
-
-        EJDevPropertyDefinition lineTension = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LINE_TENSION, EJPropertyDefinitionType.FLOAT);
-        lineTension.setLabel("Line Tension");
-        lineTension.setDescription("Bezier curve tension of the line. Set to 0 to draw straightlines.");
-        lineTension.setDefaultValue("0.4");
-        EJDevPropertyDefinition strokeWidth = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LINE_WIDTH, EJPropertyDefinitionType.INTEGER);
-        strokeWidth.setLabel("Line Width");
-        strokeWidth.setDescription("The width of the line in pixels.");
-        strokeWidth.setDefaultValue("1");
-
-        EJDevPropertyDefinition steppedLine = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.STEPPED_LINE, EJPropertyDefinitionType.STRING);
-        steppedLine.setLabel("Stepped Line");
-        steppedLine.setDescription("The character case for the text displayed within this label");
-        steppedLine.setDefaultValue("false");
-
-        steppedLine.addValidValue("false", "off");
-        steppedLine.addValidValue("before", "before");
-        steppedLine.addValidValue("after", "after");
-
-        EJDevPropertyDefinition pointStyle = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.POINT_STYLE, EJPropertyDefinitionType.STRING);
-        pointStyle.setLabel("Point Style");
-        pointStyle.setDescription("The character case for the text displayed within this label");
-        pointStyle.setDefaultValue("circle");
-        /*
-         * 'circle' 'cross' 'crossRot' 'dash'. 'line' 'rect' 'rectRounded'
-         * 'rectRot' 'star' 'triangle'
-         */
-        pointStyle.addValidValue("circle", "circle");
-        pointStyle.addValidValue("cross", "cross");
-        pointStyle.addValidValue("crossRot", "crossRot");
-        pointStyle.addValidValue("dash", "dash");
-        pointStyle.addValidValue("rect", "rect");
-        pointStyle.addValidValue("rectRounded", "rectRounded");
-        pointStyle.addValidValue("triangle", "triangle");
-        pointStyle.addValidValue("star", "star");
-        pointStyle.addValidValue("rectRot", "rectRot");
+        
 
         mainGroup.addPropertyDefinition(visualAttribute);
         mainGroup.addPropertyDefinition(actionCmd);
-        mainGroup.addPropertyDefinition(strokeWidth);
-        mainGroup.addPropertyDefinition(lineTension);
-        mainGroup.addPropertyDefinition(showFill);
-        mainGroup.addPropertyDefinition(showLine);
-        mainGroup.addPropertyDefinition(pointStyle);
-        mainGroup.addPropertyDefinition(steppedLine);
 
         return mainGroup;
     }
@@ -380,7 +361,7 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
 
         Label label = new Label(client, SWT.NONE);
 
-        label.setText("Line Chart");
+        label.setText("Bar Chart");
         return new EJDevBlockRendererDefinitionControl(blockDisplayProperties, Collections.<EJDevItemRendererDefinitionControl> emptyList());
     }
 
@@ -396,6 +377,8 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("LineChart-Record Block: Required Item Group Properties");
 
+       
+        
         EJDevPropertyDefinition beginAtZero = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.BEGIN_AT_ZERO, EJPropertyDefinitionType.BOOLEAN);
         beginAtZero.setLabel("Begin At Zero");
         beginAtZero.setDescription(" if true, scale will include 0 if it is not already included");
@@ -421,6 +404,7 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
         suggestedMin.setLabel("Suggested Min");
         suggestedMin.setDescription("Adjustment used when calculating the minimum data value.");
 
+       
         mainGroup.addPropertyDefinition(beginAtZero);
         mainGroup.addPropertyDefinition(min);
         mainGroup.addPropertyDefinition(suggestedMin);

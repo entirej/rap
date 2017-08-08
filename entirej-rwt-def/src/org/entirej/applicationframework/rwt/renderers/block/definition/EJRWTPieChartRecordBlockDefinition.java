@@ -29,7 +29,6 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTChartBlockDefinitionProperties;
-import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTInsertScreenRendererDefinition;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTQueryScreenRendererDefinition;
@@ -52,16 +51,16 @@ import org.entirej.framework.dev.renderer.definition.interfaces.EJDevInsertScree
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevQueryScreenRendererDefinition;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevUpdateScreenRendererDefinition;
 
-public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDefinition
+public class EJRWTPieChartRecordBlockDefinition implements EJDevBlockRendererDefinition
 {
-    public EJRWTLineChartRecordBlockDefinition()
+    public EJRWTPieChartRecordBlockDefinition()
     {
     }
 
     @Override
     public String getRendererClassName()
     {
-        return "org.entirej.applicationframework.rwt.renderers.chart.EJRWTLineChartRecordBlockRenderer";
+        return "org.entirej.applicationframework.rwt.renderers.chart.EJRWTPieChartRecordBlockRenderer";
     }
 
     @Override
@@ -126,11 +125,21 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
      */
     public EJPropertyDefinitionGroup getBlockPropertyDefinitionGroup()
     {
-        EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("LineChart-Record Block");
+        EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("PieChart-Record Block");
 
-        EJDevPropertyDefinition relationItem = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.X_AXIS_COLUMN, EJPropertyDefinitionType.BLOCK_ITEM);
-        relationItem.setLabel("X Axis");
-        relationItem.setMandatory(true);
+        EJDevPropertyDefinition viewType = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.VIEW_TYPE, EJPropertyDefinitionType.STRING);
+        viewType.setLabel("View Type");
+        viewType.setDefaultValue("pie");
+
+        viewType.addValidValue("pie", "Pie");
+        viewType.addValidValue("doughnut", "Doughnut");
+        
+        EJDevPropertyDefinition multi = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.MULTI, EJPropertyDefinitionType.BOOLEAN);
+        multi.setLabel("Multi Record");
+        multi.setDefaultValue("false");
+        
+        EJDevPropertyDefinition relationItem = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LABLE_COLUMN, EJPropertyDefinitionType.BLOCK_ITEM);
+        relationItem.setLabel("Dataset Label Item");
 
         EJDevPropertyDefinition animation = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.ANIMATION, EJPropertyDefinitionType.BOOLEAN);
         animation.setLabel("Animation");
@@ -153,6 +162,8 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
         legendPostions.addValidValue("left", "Left");
         legendPostions.addValidValue("right", "Right");
 
+        mainGroup.addPropertyDefinition(viewType);
+        mainGroup.addPropertyDefinition(multi);
         mainGroup.addPropertyDefinition(relationItem);
         mainGroup.addPropertyDefinition(animation);
 
@@ -231,67 +242,26 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
         visualAttribute.setDescription("The background, foreground and font attributes applied for screen item");
         visualAttribute.setMandatory(false);
 
+
         EJDevPropertyDefinition actionCmd = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.ACTION, EJPropertyDefinitionType.ACTION_COMMAND);
         actionCmd.setLabel("Click Action Command");
         actionCmd.setDescription("Add an action command that will be sent to the action processor when a user  clicks on this chart");
 
-        EJDevPropertyDefinition showFill = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_FILL, EJPropertyDefinitionType.BOOLEAN);
-        showFill.setLabel("Show Fill");
-        showFill.setDefaultValue("false");
+        
 
-        EJDevPropertyDefinition showLine = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_LINE, EJPropertyDefinitionType.BOOLEAN);
-        showLine.setLabel("Show Line");
-        showLine.setDefaultValue("true");
-        showLine.setDescription("If false, the line is not drawn for this dataset.");
-
-        EJDevPropertyDefinition pointDotRadius = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.POINT_DOT_RADIUS, EJPropertyDefinitionType.INTEGER);
-        pointDotRadius.setLabel("Point Dot Radius");
-        pointDotRadius.setDefaultValue("3");
-
-        EJDevPropertyDefinition lineTension = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LINE_TENSION, EJPropertyDefinitionType.FLOAT);
-        lineTension.setLabel("Line Tension");
-        lineTension.setDescription("Bezier curve tension of the line. Set to 0 to draw straightlines.");
-        lineTension.setDefaultValue("0.4");
         EJDevPropertyDefinition strokeWidth = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LINE_WIDTH, EJPropertyDefinitionType.INTEGER);
-        strokeWidth.setLabel("Line Width");
-        strokeWidth.setDescription("The width of the line in pixels.");
+        strokeWidth.setLabel("Border Width");
+        strokeWidth.setDescription("The border width of the arcs in the dataset.");
         strokeWidth.setDefaultValue("1");
 
-        EJDevPropertyDefinition steppedLine = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.STEPPED_LINE, EJPropertyDefinitionType.STRING);
-        steppedLine.setLabel("Stepped Line");
-        steppedLine.setDescription("The character case for the text displayed within this label");
-        steppedLine.setDefaultValue("false");
+        
 
-        steppedLine.addValidValue("false", "off");
-        steppedLine.addValidValue("before", "before");
-        steppedLine.addValidValue("after", "after");
-
-        EJDevPropertyDefinition pointStyle = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.POINT_STYLE, EJPropertyDefinitionType.STRING);
-        pointStyle.setLabel("Point Style");
-        pointStyle.setDescription("The character case for the text displayed within this label");
-        pointStyle.setDefaultValue("circle");
-        /*
-         * 'circle' 'cross' 'crossRot' 'dash'. 'line' 'rect' 'rectRounded'
-         * 'rectRot' 'star' 'triangle'
-         */
-        pointStyle.addValidValue("circle", "circle");
-        pointStyle.addValidValue("cross", "cross");
-        pointStyle.addValidValue("crossRot", "crossRot");
-        pointStyle.addValidValue("dash", "dash");
-        pointStyle.addValidValue("rect", "rect");
-        pointStyle.addValidValue("rectRounded", "rectRounded");
-        pointStyle.addValidValue("triangle", "triangle");
-        pointStyle.addValidValue("star", "star");
-        pointStyle.addValidValue("rectRot", "rectRot");
+       
+       
 
         mainGroup.addPropertyDefinition(visualAttribute);
         mainGroup.addPropertyDefinition(actionCmd);
         mainGroup.addPropertyDefinition(strokeWidth);
-        mainGroup.addPropertyDefinition(lineTension);
-        mainGroup.addPropertyDefinition(showFill);
-        mainGroup.addPropertyDefinition(showLine);
-        mainGroup.addPropertyDefinition(pointStyle);
-        mainGroup.addPropertyDefinition(steppedLine);
 
         return mainGroup;
     }
@@ -380,7 +350,7 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
 
         Label label = new Label(client, SWT.NONE);
 
-        label.setText("Line Chart");
+        label.setText("Pie Chart");
         return new EJDevBlockRendererDefinitionControl(blockDisplayProperties, Collections.<EJDevItemRendererDefinitionControl> emptyList());
     }
 
@@ -394,40 +364,9 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
     @Override
     public EJPropertyDefinitionGroup getItemGroupPropertiesDefinitionGroup()
     {
-        EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("LineChart-Record Block: Required Item Group Properties");
+        EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("PieChart-Record Block: Required Item Group Properties");
 
-        EJDevPropertyDefinition beginAtZero = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.BEGIN_AT_ZERO, EJPropertyDefinitionType.BOOLEAN);
-        beginAtZero.setLabel("Begin At Zero");
-        beginAtZero.setDescription(" if true, scale will include 0 if it is not already included");
-
-        EJDevPropertyDefinition min = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.MIN, EJPropertyDefinitionType.FLOAT);
-        min.setLabel("Min");
-        min.setDescription("User defined minimum number for the scale, overrides minimum value from data.");
-        EJDevPropertyDefinition max = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.MAX, EJPropertyDefinitionType.FLOAT);
-        max.setLabel("Max");
-        max.setDescription(" User defined maximum number for the scale, overrides maximum value from data.");
-        EJDevPropertyDefinition maxTicksLimit = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.MAX_TICKS_LIMIT, EJPropertyDefinitionType.INTEGER);
-        maxTicksLimit.setLabel("Max Ticks Limit");
-        maxTicksLimit.setDescription("Maximum number of ticks and gridlines to show.");
-        maxTicksLimit.setDefaultValue("20");
-
-        EJDevPropertyDefinition stepSize = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.STEP_SIZE, EJPropertyDefinitionType.FLOAT);
-        stepSize.setLabel("Step Size");
-        stepSize.setDescription("User defined fixed step size for the scale.");
-        EJDevPropertyDefinition suggestedMax = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SUGGESTED_MAX, EJPropertyDefinitionType.FLOAT);
-        suggestedMax.setLabel("Suggested Max");
-        suggestedMax.setDescription("Adjustment used when calculating the maximum data value.");
-        EJDevPropertyDefinition suggestedMin = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SUGGESTED_MIN, EJPropertyDefinitionType.FLOAT);
-        suggestedMin.setLabel("Suggested Min");
-        suggestedMin.setDescription("Adjustment used when calculating the minimum data value.");
-
-        mainGroup.addPropertyDefinition(beginAtZero);
-        mainGroup.addPropertyDefinition(min);
-        mainGroup.addPropertyDefinition(suggestedMin);
-        mainGroup.addPropertyDefinition(max);
-        mainGroup.addPropertyDefinition(suggestedMax);
-        mainGroup.addPropertyDefinition(stepSize);
-        mainGroup.addPropertyDefinition(maxTicksLimit);
+       
 
         return mainGroup;
     }

@@ -18,13 +18,12 @@
 package org.entirej.applicationframework.rwt.renderers.chart;
 
 import java.awt.Color;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -33,12 +32,11 @@ import java.util.Map;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.rap.chartjs.Axis;
 import org.eclipse.rap.chartjs.ChartStyle;
-import org.eclipse.rap.chartjs.Ticks;
-import org.eclipse.rap.chartjs.line.LineChart;
-import org.eclipse.rap.chartjs.line.LineChartOptions;
-import org.eclipse.rap.chartjs.line.LineChartRowData;
+import org.eclipse.rap.chartjs.pie.PieChart;
+import org.eclipse.rap.chartjs.pie.PieChartOptions;
+import org.eclipse.rap.chartjs.pie.PieChartRowData;
+import org.eclipse.rap.chartjs.pie.PieChartRowData.RowInfo;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
@@ -78,44 +76,31 @@ import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
 import org.entirej.framework.core.EJForm;
 import org.entirej.framework.core.EJMessage;
-import org.entirej.framework.core.EJRecord;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.data.controllers.EJEditableBlockController;
-import org.entirej.framework.core.data.controllers.EJItemController;
-import org.entirej.framework.core.data.controllers.EJItemLovController;
 import org.entirej.framework.core.data.controllers.EJQuestion;
 import org.entirej.framework.core.enumerations.EJManagedBlockProperty;
 import org.entirej.framework.core.enumerations.EJManagedScreenProperty;
 import org.entirej.framework.core.enumerations.EJQuestionButton;
 import org.entirej.framework.core.enumerations.EJScreenType;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
-import org.entirej.framework.core.internal.EJInternalBlock;
 import org.entirej.framework.core.internal.EJInternalEditableBlock;
-import org.entirej.framework.core.internal.EJInternalForm;
 import org.entirej.framework.core.properties.EJCoreBlockProperties;
 import org.entirej.framework.core.properties.EJCoreMainScreenItemProperties;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
-import org.entirej.framework.core.properties.containers.interfaces.EJItemGroupPropertiesContainer;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionPropertyList;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionPropertyListEntry;
 import org.entirej.framework.core.properties.interfaces.EJBlockProperties;
 import org.entirej.framework.core.properties.interfaces.EJItemGroupProperties;
-import org.entirej.framework.core.properties.interfaces.EJItemProperties;
 import org.entirej.framework.core.properties.interfaces.EJMainScreenProperties;
 import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
-import org.entirej.framework.core.renderers.EJManagedItemRendererWrapper;
-import org.entirej.framework.core.renderers.eventhandlers.EJItemFocusListener;
-import org.entirej.framework.core.renderers.eventhandlers.EJScreenItemValueChangedListener;
 import org.entirej.framework.core.renderers.interfaces.EJInsertScreenRenderer;
-import org.entirej.framework.core.renderers.interfaces.EJItemRenderer;
 import org.entirej.framework.core.renderers.interfaces.EJQueryScreenRenderer;
 import org.entirej.framework.core.renderers.interfaces.EJUpdateScreenRenderer;
-import org.entirej.framework.core.renderers.registry.EJBlockItemRendererRegister;
-import org.entirej.framework.core.renderers.registry.EJRendererFactory;
 
-public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyListener
+public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyListener
 {
     final FormToolkit                      toolkit                   = new FormToolkit(Display.getDefault());
     private static final long              serialVersionUID          = -1300484097701416526L;
@@ -123,7 +108,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     private boolean                        _isFocused                = false;
     private EJEditableBlockController      _block;
     private EJRWTEntireJGridPane           _mainPane;
-    private LineChart                      _chartView;
+    private PieChart                       _chartView;
 
     private EJFrameworkExtensionProperties _rendererProp;
     List<String>                           _actionkeys               = new ArrayList<String>();
@@ -131,33 +116,22 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     private List<EJDataRecord>             _treeBaseRecords          = new ArrayList<EJDataRecord>();
 
-    private final LineChartOptions         options                   = new LineChartOptions();
+    private final PieChartOptions          options                   = new PieChartOptions();
 
     public final String                    ANIMATION                 = "animation";
+    public final String                    MULTI                     = "multi";
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
     public final String                    SHOW_LEGEND               = "showLegend";
     public final String                    LEGEND_POSITION           = "legendPosition";
-    public final String                    X_AXIS_COLUMN             = "xAxisColumn";
 
-    public final String                    POINT_STYLE               = "pointStyle";
-    public final String                    LINE_TENSION              = "lineTension";
-    public final String                    STEPPED_LINE              = "steppedLine";
-    public final String                    SHOW_FILL                 = "showFill";
-    public final String                    SHOW_LINE                 = "showLine";
-    public final String                    POINT_DOT_RADIUS          = "pointDotRadius";
+    public final String                    LABLE_COLUMN              = "lblColumn";
+    public final String                    VIEW_TYPE                 = "viewType";
+
     public final String                    LINE_WIDTH                = "lineWidth";
 
-    public final String                    BEGIN_AT_ZERO             = "beginAtZero";
-    public final String                    MIN                       = "min";
-    public final String                    MAX                       = "max";
-    public final String                    STEP_SIZE                 = "stepSize";
-    public final String                    SUGGESTED_MAX             = "suggestedMax";
-    public final String                    SUGGESTED_MIN             = "suggestedMin";
-    public final String                    MAX_TICKS_LIMIT           = "maxTicksLimit";
-
-    private String                         xAxisColumn;
-    private EJRWTAppItemRenderer           appItemRenderer;
-    private EJDataRecord                   currentRec;
+    private String                         labelColumn;
+    private EJDataRecord                   currentRecord;
+    private boolean                        multi;
     public static final String             VISUAL_ATTRIBUTE_PROPERTY = "VISUAL_ATTRIBUTE";
 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
@@ -273,50 +247,23 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         _block = block;
         EJCoreBlockProperties blockProperties = _block.getProperties();
         options.setAnimation(blockProperties.getBlockRendererProperties().getBooleanProperty(ANIMATION, options.getAnimation()));
+        multi = (blockProperties.getBlockRendererProperties().getBooleanProperty(MULTI, false));
+        options.setViewType(blockProperties.getBlockRendererProperties().getStringProperty(VIEW_TYPE));
         options.setShowToolTips(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_TOOLTIPS, options.getShowToolTips()));
 
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
 
-        xAxisColumn = blockProperties.getBlockRendererProperties().getStringProperty(X_AXIS_COLUMN);
-
-        EJItemGroupPropertiesContainer container = blockProperties.getScreenItemGroupContainer(EJScreenType.MAIN);
-        Collection<EJItemGroupProperties> itemGroupProperties = container.getAllItemGroupProperties();
-        options.getYAxes().clear();
-        for (EJItemGroupProperties g : itemGroupProperties)
-        {
-            Axis axis = new Axis();
-
-            options.getYAxes().add(axis);
-            if (g.getRendererProperties() == null)
-            {
-                continue;
-            }
-
-            Ticks ticks = axis.getTicks();
-            if (!g.getRendererProperties().isPropertyValueNull(BEGIN_AT_ZERO))
-                ticks.setBeginAtZero(g.getRendererProperties().getBooleanProperty(BEGIN_AT_ZERO, false));
-            if (!g.getRendererProperties().isPropertyValueNull(MIN))
-                ticks.setMin(Double.valueOf(g.getRendererProperties().getFloatProperty(MIN, 0f)));
-            if (!g.getRendererProperties().isPropertyValueNull(MAX))
-                ticks.setMax(Double.valueOf(g.getRendererProperties().getFloatProperty(MAX, 0f)));
-            if (!g.getRendererProperties().isPropertyValueNull(SUGGESTED_MAX))
-                ticks.setSuggestedMax(Double.valueOf(g.getRendererProperties().getFloatProperty(SUGGESTED_MAX, 0f)));
-            if (!g.getRendererProperties().isPropertyValueNull(SUGGESTED_MIN))
-                ticks.setSuggestedMin(Double.valueOf(g.getRendererProperties().getFloatProperty(SUGGESTED_MIN, 0f)));
-
-            if (!g.getRendererProperties().isPropertyValueNull(STEP_SIZE))
-                ticks.setStepSize(Double.valueOf(g.getRendererProperties().getFloatProperty(STEP_SIZE, 0f)));
-
-            ticks.setMaxTicksLimit((g.getRendererProperties().getIntProperty(MAX_TICKS_LIMIT, ticks.getMaxTicksLimit())));
-
-        }
+        labelColumn = blockProperties.getBlockRendererProperties().getStringProperty(LABLE_COLUMN);
 
     }
 
     @Override
     public void blockCleared()
     {
+        currentRecord = null;
+        _treeBaseRecords.clear();
+
         if (_chartView != null && !_chartView.isDisposed())
         {
             _chartView.clear();
@@ -420,7 +367,8 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     @Override
     public void queryExecuted()
     {
-        refresh();
+        _treeBaseRecords.addAll(_block.getRecords());
+        recordSelected(getFirstRecord());
     }
 
     public void pageRetrieved()
@@ -466,174 +414,88 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     {
         if (_chartView != null && !_chartView.isDisposed())
         {
-            if (xAxisColumn == null && xAxisColumn.isEmpty())
-            {
 
-                return;
-            }
-
-            Map<Object, Map<String, Float>> dataset = new HashMap<Object, Map<String, Float>>();
-
-            Collection<EJDataRecord> records = _block.getRecords();
+            Collection<EJDataRecord> records = (!multi/* check mode */) ? Arrays.asList(currentRecord == null ? getFirstRecord() : currentRecord) : _block.getRecords();
 
             Collection<EJScreenItemController> screenItems = getScreenItems();
 
-            List<Object> labelsIndex = new ArrayList<Object>();
-            Map<String, Number> lastVal = new HashMap<String, Number>();
-            for (EJDataRecord ejDataRecord : records)
-            {
-                Object xobject = ejDataRecord.getValue(xAxisColumn);
-                if (xobject != null)
-                {
-
-                    Map<String, Float> set = dataset.get(xobject);
-                    if (set == null)
-                    {
-                        set = new HashMap<String, Float>();
-                        dataset.put(xobject, set);
-                        labelsIndex.add(xobject);
-                    }
-                    for (EJScreenItemController sItem : screenItems)
-                    {
-                        if (!sItem.isSpacerItem())
-                        {
-                            Object yvalue = ejDataRecord.getValue(sItem.getName());
-
-                            Float val = null;
-                            if (yvalue instanceof Number)
-                            {
-                                lastVal.put(sItem.getName(), (Number) yvalue);
-                                val = ((Number) yvalue).floatValue();
-
-                            }
-                            else
-                            {
-                                Number last = lastVal.get(sItem.getName());
-                                val = last != null ? last.floatValue() : 0f;
-
-                            }
-                            set.put(sItem.getName(), val);
-                        }
-                    }
-
-                }
-            }
-
-            List<String> xlabel = new ArrayList<String>(labelsIndex.size());
-            for (Object object : labelsIndex)
-            {
-                String xvalue;
-                xvalue = getStrValue(object);
-                xlabel.add(xvalue);
-
-            }
-
-            LineChartRowData chartRowData = new LineChartRowData(xlabel.toArray(new String[0]));
-
+            List<String> xlabel = new ArrayList<String>(screenItems.size());
             for (EJScreenItemController sItem : screenItems)
             {
                 if (sItem.isSpacerItem())
                     continue;
-                List<Float> row = new ArrayList<Float>();
 
-                for (Object object : labelsIndex)
+                xlabel.add(sItem.getProperties().getLabel());
+
+            }
+
+            PieChartRowData chartRowData = new PieChartRowData(xlabel.toArray(new String[0]));
+
+            for (EJDataRecord ejDataRecord : records)
+            {
+                if (ejDataRecord == null)
+                    continue;
+                Object lbl = labelColumn != null ? ejDataRecord.getValue(labelColumn) : "";
+
+                PieChartRowData.RowInfo rowInfo = new RowInfo();
+                rowInfo.setLabel(lbl != null ? lbl.toString() : "");
+
+                boolean[] hidden = new boolean[screenItems.size()];
+                ChartStyle[] styles = new ChartStyle[screenItems.size()];
+                double[] data = new double[screenItems.size()];
+                int[] widths = new int[screenItems.size()];
+                int index = 0;
+                for (EJScreenItemController sItem : screenItems)
                 {
-                    Map<String, Float> map = dataset.get(object);
-                    if (map == null)
-                        continue;
 
-                    row.add(map.get(sItem.getName()));
+                    ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
 
-                }
-
-                ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
-
-                EJCoreVisualAttributeProperties attributeProperties = sItem.getItemRenderer().getVisualAttributeProperties();
-                if (attributeProperties != null)
-                {
-                    if (attributeProperties.getForegroundColor() != null)
+                    EJCoreVisualAttributeProperties attributeProperties = sItem.getItemRenderer().getVisualAttributeProperties();
+                    if (attributeProperties != null)
                     {
-                        Color color = attributeProperties.getForegroundColor();
-                        colors = new ChartStyle(color.getRed(), color.getGreen(), color.getBlue(), 0.8f);
+                        if (attributeProperties.getForegroundColor() != null)
+                        {
+                            Color color = attributeProperties.getForegroundColor();
+                            colors = new ChartStyle(color.getRed(), color.getGreen(), color.getBlue(), 0.8f);
+                        }
+                        if (attributeProperties.getBackgroundColor() != null)
+                        {
+                            Color color = attributeProperties.getBackgroundColor();
+                            colors.setFillColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
+
+                        }
                     }
-                    if (attributeProperties.getBackgroundColor() != null)
+                    EJCoreMainScreenItemProperties mainScreenItemProperties = (EJCoreMainScreenItemProperties) sItem.getProperties();
+                    styles[index] = (colors);
+                    hidden[index] = (!sItem.isVisible());
+                    widths[index] = (mainScreenItemProperties.getBlockRendererRequiredProperties().getIntProperty(LINE_WIDTH, 1));
+
+                    Object yvalue = ejDataRecord.getValue(sItem.getName());
+
+                    double val = 0;
+                    if (yvalue instanceof Number)
                     {
-                        Color color = attributeProperties.getBackgroundColor();
-                        colors.setFillColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
+
+                        val = ((Number) yvalue).doubleValue();
 
                     }
-                }
 
-                float[] floatArray = new float[row.size()];
-                int i = 0;
+                    data[index] = (val);
+                    index++;
 
-                for (Float f : row)
-                {
-                    floatArray[i++] = (f != null ? f : 0);
                 }
-                /*
-                 * String pointStyle = "circle";
-                 * 
-                 * ChartStyle chartStyle;
-                 */
-                LineChartRowData.RowInfo info = new LineChartRowData.RowInfo();
-                String label = sItem.getProperties().getLabel();
-                if (label.trim().isEmpty())
-                {
-                    label = sItem.getProperties().getReferencedItemName();
-                }
-                info.setLabel(label);
-                info.setChartStyle(colors);
-                info.setHidden(!sItem.isVisible());
-                EJCoreMainScreenItemProperties mainScreenItemProperties = (EJCoreMainScreenItemProperties) sItem.getProperties();
-                info.setFill(mainScreenItemProperties.getBlockRendererRequiredProperties().getBooleanProperty(SHOW_FILL, info.isFill()));
-                String action = mainScreenItemProperties.getBlockRendererRequiredProperties().getStringProperty("action");
-                if (action == null || action.trim().isEmpty())
-                {
-                    action = "select";
-                }
-                info.setAction(action);
-                info.setPointStyle(mainScreenItemProperties.getBlockRendererRequiredProperties().getStringProperty(POINT_STYLE));
-                info.setShowLine(mainScreenItemProperties.getBlockRendererRequiredProperties().getBooleanProperty(SHOW_LINE, info.isShowLine()));
-                info.setLineWidth(mainScreenItemProperties.getBlockRendererRequiredProperties().getIntProperty(LINE_WIDTH, info.getLineWidth()));
-                info.setLineTension(mainScreenItemProperties.getBlockRendererRequiredProperties().getFloatProperty(LINE_TENSION, (float) info.getLineTension()));
-                info.setSteppedLine(mainScreenItemProperties.getBlockRendererRequiredProperties().getStringProperty(STEPPED_LINE));
-                chartRowData.addRow(info, floatArray);
-                // chartRowData.addRow(floatArray, colors);
+                // rowInfo.setHidden(hidden);
+                rowInfo.setChartStyle(styles);
+                rowInfo.setBorderWidth(widths);
+
+                rowInfo.setAction("_pie_select");
+                chartRowData.addRow(rowInfo, data);
+
             }
 
             _chartView.load(chartRowData, options);
 
         }
-    }
-
-    private String getStrValue(Object object)
-    {
-        String xvalue;
-        if (appItemRenderer != null)
-        {
-            String formatValue = appItemRenderer.formatValue(object);
-            xvalue = (formatValue != null ? formatValue : object.toString());
-        }
-        else if (object instanceof String)
-        {
-            xvalue = ((String) object);
-        }
-        else if (object instanceof Number)
-        {
-
-            xvalue = (createDecimalFormat(object, null).format(object));
-        }
-        else if (object instanceof Date)
-        {
-
-            xvalue = (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
-        }
-        else
-        {
-            xvalue = (object.toString());
-        }
-        return xvalue;
     }
 
     DecimalFormat createDecimalFormat(Object obj, String format)
@@ -695,7 +557,8 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     @Override
     public void recordSelected(EJDataRecord record)
     {
-        currentRec = record;
+        currentRecord = record;
+        refresh();
     }
 
     @Override
@@ -751,7 +614,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public EJDataRecord getFocusedRecord()
     {
 
-        return currentRec != null ? currentRec : getFirstRecord();
+        return currentRecord!=null? currentRecord:getFirstRecord();
     }
 
     @Override
@@ -1020,7 +883,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     group.setText(displayProperties.getFrameTitle());
 
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                    _chartView = new LineChart(group, SWT.NONE)
+                    _chartView = new PieChart(group, SWT.NONE)
                     {
 
                         protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1033,7 +896,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 else
                 {
 
-                    _chartView = new LineChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
+                    _chartView = new PieChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
                     {
 
                         protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1047,7 +910,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
             }
             else
             {
-                _chartView = new LineChart(_mainPane, style)
+                _chartView = new PieChart(_mainPane, style)
                 {
 
                     protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1073,7 +936,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     group.setText(displayProperties.getFrameTitle());
 
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                    _chartView = new LineChart(group, style)
+                    _chartView = new PieChart(group, style)
                     {
 
                         protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1085,7 +948,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 }
                 else
                 {
-                    _chartView = new LineChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
+                    _chartView = new PieChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
                     {
 
                         protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1100,7 +963,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
             }
             else
             {
-                _chartView = new LineChart(_mainPane, style)
+                _chartView = new PieChart(_mainPane, style)
                 {
 
                     protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1180,250 +1043,63 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
             }
         }
-        appItemRenderer = null;
-        final EJItemController blockItemController = _block.getBlockItemController(xAxisColumn);
-
-        String itemRendererName = blockItemController.getProperties().getItemRendererName();
-        if (itemRendererName != null)
-        {
-            EJScreenItemController itemController = new EJScreenItemController()
-            {
-
-                @Override
-                public boolean validateFromLov()
-                {
-                    // TODO Auto-generated method stub
-                    return false;
-                }
-
-                @Override
-                public void setItemLovMapping(String lovMapping)
-                {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void removeItemValueChangedListener(EJScreenItemValueChangedListener listener)
-                {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void removeItemFocusListener(EJItemFocusListener listener)
-                {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void itemValueChaged(Object newValue)
-                {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void itemFocusLost()
-                {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void itemFocusGained()
-                {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public boolean isVisible()
-                {
-                    // TODO Auto-generated method stub
-                    return false;
-                }
-
-                @Override
-                public boolean isSpacerItem()
-                {
-                    // TODO Auto-generated method stub
-                    return false;
-                }
-
-                @Override
-                public void initialiseRenderer()
-                {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void initialise(EJBlockItemRendererRegister blockItemRegister)
-                {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public EJScreenType getScreenType()
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public EJItemProperties getReferencedItemProperties()
-                {
-                    return blockItemController.getProperties();
-                }
-
-                @Override
-                public EJScreenItemProperties getProperties()
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public String getName()
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public EJManagedItemRendererWrapper getManagedItemRenderer()
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public EJBlockItemRendererRegister getItemRendererRegister()
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public EJItemRenderer getItemRenderer()
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public EJItemLovController getItemLovController()
-                {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public EJInternalForm getForm()
-                {
-                    // TODO Auto-generated method stub
-                    return _block.getForm();
-                }
-
-                @Override
-                public EJInternalBlock getBlock()
-                {
-                    return _block.getBlock();
-                }
-
-                @Override
-                public void gainFocus()
-                {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void executeActionCommand()
-                {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void addItemValueChangedListener(EJScreenItemValueChangedListener listener)
-                {
-                    // TODO Auto-generated method stub
-
-                }
-
-                @Override
-                public void addItemFocusListener(EJItemFocusListener listener)
-                {
-                    // TODO Auto-generated method stub
-
-                }
-            };
-            EJManagedItemRendererWrapper renderer = EJRendererFactory.getInstance().getItemRenderer(itemController, new EJCoreMainScreenItemProperties(_block.getProperties(), false));
-
-            if (renderer != null && renderer.getUnmanagedRenderer() instanceof EJRWTAppItemRenderer)
-            {
-                appItemRenderer = (EJRWTAppItemRenderer) renderer.getUnmanagedRenderer();
-            }
-        }
 
         refresh();
     }
 
     protected void processAction(String method, JsonObject parameters)
     {
-
-        if (parameters.names().contains("data_label") && parameters.names().contains("value"))
+        if (method.equals("_pie_select"))
         {
-            currentRec = null;
-            EJScreenItemController dataItem = null;
-            List<EJScreenItemController> screenItems = getScreenItems();
-            for (EJScreenItemController sItem : screenItems)
+            if (parameters.names().contains("label") && parameters.names().contains("value"))
             {
-                String label = sItem.getProperties().getLabel();
-                if (label.trim().isEmpty())
+                currentRecord = null;
+                EJScreenItemController dataItem = null;
+                List<EJScreenItemController> screenItems = getScreenItems();
+                for (EJScreenItemController sItem : screenItems)
                 {
-                    label = sItem.getProperties().getReferencedItemName();
-                }
-
-                if (label.equals(parameters.get("data_label").asString()))
-                {
-                    dataItem = sItem;
-                    break;
-                }
-            }
-            if (dataItem != null)
-            {
-                Collection<EJDataRecord> records = _block.getRecords();
-                Object lastVal=null;
-                for (EJDataRecord record : records)
-                {
-                    Object value = record.getValue(dataItem.getName());
-                    if(value==null)
-                        value = lastVal;
-                    
-                    if (record.getValue(xAxisColumn) != null && getStrValue(record.getValue(xAxisColumn)).equals(parameters.get("label").asString()) && 
-                            value != null && value.equals(parameters.get("value").asDouble()))
+                    String label = sItem.getProperties().getLabel();
+                    if (label.trim().isEmpty())
                     {
-                        currentRec = record;
+                        label = sItem.getProperties().getReferencedItemName();
+                    }
+
+                    if (label.equals(parameters.get("label").asString()))
+                    {
+                        dataItem = sItem;
                         break;
                     }
-                    lastVal = value;
-
+                }
+                if (dataItem != null)
+                {
+//                    Collection<EJDataRecord> records = _block.getRecords();
+//                    Object lastVal=null;
+//                    for (EJDataRecord record : records)
+//                    {
+//                        Object value = record.getValue(dataItem.getName());
+//                        if(value==null)
+//                            value = lastVal;
+//                        
+//                        if ( 
+//                                value != null && value.equals(parameters.get("value").asDouble()))
+//                        {
+//                            currentRecord = record;
+//                            break;
+//                        }
+//                        lastVal = value;
+//
+//                    }
+                    
+                    EJCoreMainScreenItemProperties mainScreenItemProperties = (EJCoreMainScreenItemProperties) dataItem.getProperties();
+                    String action = mainScreenItemProperties.getBlockRendererRequiredProperties().getStringProperty("action");
+                    if (action != null && !action.trim().isEmpty())
+                    {
+                        _block.executeActionCommand(action, EJScreenType.MAIN);
+                    }
+                    
+                    
                 }
             }
-
-        }
-        if (currentRec != null)
-        {
-            _block.newRecordInstance(currentRec);
-        }
-        if (!method.equals("select"))
-        {
-            _block.executeActionCommand(method, EJScreenType.MAIN);
         }
 
     }

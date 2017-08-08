@@ -36,9 +36,9 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.rap.chartjs.Axis;
 import org.eclipse.rap.chartjs.ChartStyle;
 import org.eclipse.rap.chartjs.Ticks;
-import org.eclipse.rap.chartjs.line.LineChart;
-import org.eclipse.rap.chartjs.line.LineChartOptions;
-import org.eclipse.rap.chartjs.line.LineChartRowData;
+import org.eclipse.rap.chartjs.bar.BarChart;
+import org.eclipse.rap.chartjs.bar.BarChartOptions;
+import org.eclipse.rap.chartjs.bar.BarChartRowData;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
@@ -78,7 +78,6 @@ import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
 import org.entirej.framework.core.EJForm;
 import org.entirej.framework.core.EJMessage;
-import org.entirej.framework.core.EJRecord;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.data.controllers.EJEditableBlockController;
 import org.entirej.framework.core.data.controllers.EJItemController;
@@ -115,7 +114,7 @@ import org.entirej.framework.core.renderers.interfaces.EJUpdateScreenRenderer;
 import org.entirej.framework.core.renderers.registry.EJBlockItemRendererRegister;
 import org.entirej.framework.core.renderers.registry.EJRendererFactory;
 
-public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyListener
+public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyListener
 {
     final FormToolkit                      toolkit                   = new FormToolkit(Display.getDefault());
     private static final long              serialVersionUID          = -1300484097701416526L;
@@ -123,7 +122,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     private boolean                        _isFocused                = false;
     private EJEditableBlockController      _block;
     private EJRWTEntireJGridPane           _mainPane;
-    private LineChart                      _chartView;
+    private BarChart                       _chartView;
 
     private EJFrameworkExtensionProperties _rendererProp;
     List<String>                           _actionkeys               = new ArrayList<String>();
@@ -131,7 +130,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     private List<EJDataRecord>             _treeBaseRecords          = new ArrayList<EJDataRecord>();
 
-    private final LineChartOptions         options                   = new LineChartOptions();
+    private final BarChartOptions          options                   = new BarChartOptions();
 
     public final String                    ANIMATION                 = "animation";
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
@@ -157,7 +156,8 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     private String                         xAxisColumn;
     private EJRWTAppItemRenderer           appItemRenderer;
-    private EJDataRecord                   currentRec;
+    private boolean                        horizontalBar;
+    private EJDataRecord currentRec;
     public static final String             VISUAL_ATTRIBUTE_PROPERTY = "VISUAL_ATTRIBUTE";
 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
@@ -277,17 +277,32 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
+        
+        
+        options.setBarPercentage(blockProperties.getBlockRendererProperties().getFloatProperty("barPercentage",options.getBarPercentage()));
+        options.setCategoryPercentage(blockProperties.getBlockRendererProperties().getFloatProperty("categoryPercentage",options.getCategoryPercentage()));
+        int barThickness = blockProperties.getBlockRendererProperties().getIntProperty("barThickness",0);
+        if(barThickness>0)
+            options.setBarThickness(barThickness);
+        int maxBarThickness = blockProperties.getBlockRendererProperties().getIntProperty("maxBarThickness",0);
+        if(maxBarThickness>0)
+            options.setBarThickness(maxBarThickness);
 
+        horizontalBar = blockProperties.getBlockRendererProperties().getBooleanProperty("horizontalBar", false);
         xAxisColumn = blockProperties.getBlockRendererProperties().getStringProperty(X_AXIS_COLUMN);
 
         EJItemGroupPropertiesContainer container = blockProperties.getScreenItemGroupContainer(EJScreenType.MAIN);
         Collection<EJItemGroupProperties> itemGroupProperties = container.getAllItemGroupProperties();
         options.getYAxes().clear();
+        options.getxAxes().clear();
         for (EJItemGroupProperties g : itemGroupProperties)
         {
             Axis axis = new Axis();
 
-            options.getYAxes().add(axis);
+            if(horizontalBar)
+                options.getxAxes().add(axis);
+            else
+                options.getYAxes().add(axis);
             if (g.getRendererProperties() == null)
             {
                 continue;
@@ -528,7 +543,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
             }
 
-            LineChartRowData chartRowData = new LineChartRowData(xlabel.toArray(new String[0]));
+            BarChartRowData chartRowData = new BarChartRowData(xlabel.toArray(new String[0]));
 
             for (EJScreenItemController sItem : screenItems)
             {
@@ -576,33 +591,31 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                  * 
                  * ChartStyle chartStyle;
                  */
-                LineChartRowData.RowInfo info = new LineChartRowData.RowInfo();
+                BarChartRowData.RowInfo info = new BarChartRowData.RowInfo();
                 String label = sItem.getProperties().getLabel();
                 if (label.trim().isEmpty())
                 {
                     label = sItem.getProperties().getReferencedItemName();
                 }
                 info.setLabel(label);
-                info.setChartStyle(colors);
-                info.setHidden(!sItem.isVisible());
+
                 EJCoreMainScreenItemProperties mainScreenItemProperties = (EJCoreMainScreenItemProperties) sItem.getProperties();
-                info.setFill(mainScreenItemProperties.getBlockRendererRequiredProperties().getBooleanProperty(SHOW_FILL, info.isFill()));
                 String action = mainScreenItemProperties.getBlockRendererRequiredProperties().getStringProperty("action");
                 if (action == null || action.trim().isEmpty())
                 {
                     action = "select";
                 }
                 info.setAction(action);
-                info.setPointStyle(mainScreenItemProperties.getBlockRendererRequiredProperties().getStringProperty(POINT_STYLE));
-                info.setShowLine(mainScreenItemProperties.getBlockRendererRequiredProperties().getBooleanProperty(SHOW_LINE, info.isShowLine()));
-                info.setLineWidth(mainScreenItemProperties.getBlockRendererRequiredProperties().getIntProperty(LINE_WIDTH, info.getLineWidth()));
-                info.setLineTension(mainScreenItemProperties.getBlockRendererRequiredProperties().getFloatProperty(LINE_TENSION, (float) info.getLineTension()));
-                info.setSteppedLine(mainScreenItemProperties.getBlockRendererRequiredProperties().getStringProperty(STEPPED_LINE));
+                info.setChartStyle(colors);
+                info.setHidden(!sItem.isVisible());
                 chartRowData.addRow(info, floatArray);
                 // chartRowData.addRow(floatArray, colors);
             }
 
-            _chartView.load(chartRowData, options);
+            if (horizontalBar)
+                _chartView.loadHorizontal(chartRowData, options);
+            else
+                _chartView.load(chartRowData, options);
 
         }
     }
@@ -751,7 +764,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public EJDataRecord getFocusedRecord()
     {
 
-        return currentRec != null ? currentRec : getFirstRecord();
+        return currentRec!=null? currentRec: getFirstRecord();
     }
 
     @Override
@@ -1020,7 +1033,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     group.setText(displayProperties.getFrameTitle());
 
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                    _chartView = new LineChart(group, SWT.NONE)
+                    _chartView = new BarChart(group, SWT.NONE)
                     {
 
                         protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1033,7 +1046,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 else
                 {
 
-                    _chartView = new LineChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
+                    _chartView = new BarChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
                     {
 
                         protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1047,7 +1060,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
             }
             else
             {
-                _chartView = new LineChart(_mainPane, style)
+                _chartView = new BarChart(_mainPane, style)
                 {
 
                     protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1073,7 +1086,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     group.setText(displayProperties.getFrameTitle());
 
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                    _chartView = new LineChart(group, style)
+                    _chartView = new BarChart(group, style)
                     {
 
                         protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1085,7 +1098,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 }
                 else
                 {
-                    _chartView = new LineChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
+                    _chartView = new BarChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
                     {
 
                         protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1100,7 +1113,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
             }
             else
             {
-                _chartView = new LineChart(_mainPane, style)
+                _chartView = new BarChart(_mainPane, style)
                 {
 
                     protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1375,7 +1388,6 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     protected void processAction(String method, JsonObject parameters)
     {
-
         if (parameters.names().contains("data_label") && parameters.names().contains("value"))
         {
             currentRec = null;
@@ -1417,7 +1429,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
             }
 
         }
-        if (currentRec != null)
+        if(currentRec!=null)
         {
             _block.newRecordInstance(currentRec);
         }
