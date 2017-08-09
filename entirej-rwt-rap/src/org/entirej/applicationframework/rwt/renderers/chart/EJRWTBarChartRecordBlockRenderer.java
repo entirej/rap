@@ -286,7 +286,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
             options.setBarThickness(barThickness);
         int maxBarThickness = blockProperties.getBlockRendererProperties().getIntProperty("maxBarThickness",0);
         if(maxBarThickness>0)
-            options.setBarThickness(maxBarThickness);
+            options.setMaxBarThickness(maxBarThickness);
 
         horizontalBar = blockProperties.getBlockRendererProperties().getBooleanProperty("horizontalBar", false);
         xAxisColumn = blockProperties.getBlockRendererProperties().getStringProperty(X_AXIS_COLUMN);
@@ -564,6 +564,10 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
 
                 EJCoreVisualAttributeProperties attributeProperties = sItem.getItemRenderer().getVisualAttributeProperties();
+                
+                
+                
+                
                 if (attributeProperties != null)
                 {
                     if (attributeProperties.getForegroundColor() != null)
@@ -1012,68 +1016,12 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         }
 
         hookKeyListener(_mainPane);
-        int style = SWT.VIRTUAL | SWT.FULL_SELECTION;
-
-        if (!_rendererProp.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.HIDE_TREE_BORDER, false))
-        {
-            style = style | SWT.BORDER;
-        }
+        int style = SWT.NONE;
+        
 
         Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN).getAllItemGroupProperties();
 
-        if (_rendererProp.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.FILTER, true))
-        {
-            if (allItemGroupProperties.size() > 0)
-            {
-                EJItemGroupProperties displayProperties = allItemGroupProperties.iterator().next();
-                if (displayProperties.dispayGroupFrame() && displayProperties.getFrameTitle() != null && displayProperties.getFrameTitle().length() > 0)
-                {
-                    Group group = new Group(_mainPane, SWT.NONE);
-                    group.setLayout(new GridLayout());
-                    group.setText(displayProperties.getFrameTitle());
-
-                    group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                    _chartView = new BarChart(group, SWT.NONE)
-                    {
-
-                        protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
-                        {
-
-                            processAction(method, parameters);
-                        }
-                    };
-                }
-                else
-                {
-
-                    _chartView = new BarChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
-                    {
-
-                        protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
-                        {
-
-                            processAction(method, parameters);
-                        }
-                    };
-                    _chartView.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                }
-            }
-            else
-            {
-                _chartView = new BarChart(_mainPane, style)
-                {
-
-                    protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
-                    {
-
-                        processAction(method, parameters);
-                    }
-                };
-
-                _chartView.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-            }
-        }
-        else
+        
         {
             _chartView = null;
             if (allItemGroupProperties.size() > 0)
@@ -1391,42 +1339,10 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         if (parameters.names().contains("data_label") && parameters.names().contains("value"))
         {
             currentRec = null;
-            EJScreenItemController dataItem = null;
-            List<EJScreenItemController> screenItems = getScreenItems();
-            for (EJScreenItemController sItem : screenItems)
-            {
-                String label = sItem.getProperties().getLabel();
-                if (label.trim().isEmpty())
-                {
-                    label = sItem.getProperties().getReferencedItemName();
-                }
-
-                if (label.equals(parameters.get("data_label").asString()))
-                {
-                    dataItem = sItem;
-                    break;
-                }
-            }
-            if (dataItem != null)
-            {
-                Collection<EJDataRecord> records = _block.getRecords();
-                Object lastVal=null;
-                for (EJDataRecord record : records)
-                {
-                    Object value = record.getValue(dataItem.getName());
-                    if(value==null)
-                        value = lastVal;
-                    
-                    if (record.getValue(xAxisColumn) != null && getStrValue(record.getValue(xAxisColumn)).equals(parameters.get("label").asString()) && 
-                            value != null && value.equals(parameters.get("value").asDouble()))
-                    {
-                        currentRec = record;
-                        break;
-                    }
-                    lastVal = value;
-
-                }
-            }
+            String dataLbl = parameters.get("data_label").asString();
+            double pointValue = parameters.get("value").asDouble();
+            String lbl = parameters.get("label").asString();
+            currentRec = getRecord(dataLbl, pointValue, lbl);
 
         }
         if(currentRec!=null)
@@ -1438,6 +1354,50 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
             _block.executeActionCommand(method, EJScreenType.MAIN);
         }
 
+    }
+
+    private EJDataRecord getRecord(String dataLbl, double pointValue, String lbl)
+    {
+        EJScreenItemController dataItem = null;
+        List<EJScreenItemController> screenItems = getScreenItems();
+        for (EJScreenItemController sItem : screenItems)
+        {
+            String label = sItem.getProperties().getLabel();
+            if (label.trim().isEmpty())
+            {
+                label = sItem.getProperties().getReferencedItemName();
+            }
+
+           
+            if (label.equals(dataLbl))
+            {
+                dataItem = sItem;
+                break;
+            }
+        }
+        if (dataItem != null)
+        {
+            Collection<EJDataRecord> records = _block.getRecords();
+            Object lastVal=null;
+            for (EJDataRecord record : records)
+            {
+                Object value = record.getValue(dataItem.getName());
+                if(value==null)
+                    value = lastVal;
+                
+                
+               
+                if (record.getValue(xAxisColumn) != null && getStrValue(record.getValue(xAxisColumn)).equals(lbl) && 
+                        value != null && value.equals(pointValue))
+                {
+                   return record;
+                }
+                lastVal = value;
+
+            }
+        }
+        
+        return null;
     }
 
     private void addActionKeyinfo(String actionKey, String actionId)

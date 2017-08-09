@@ -473,6 +473,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
             }
 
             Map<Object, Map<String, Float>> dataset = new HashMap<Object, Map<String, Float>>();
+            Map<Object, EJDataRecord> datasetRec = new HashMap<Object, EJDataRecord>();
 
             Collection<EJDataRecord> records = _block.getRecords();
 
@@ -491,6 +492,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     {
                         set = new HashMap<String, Float>();
                         dataset.put(xobject, set);
+                        datasetRec.put(xobject, ejDataRecord);
                         labelsIndex.add(xobject);
                     }
                     for (EJScreenItemController sItem : screenItems)
@@ -999,68 +1001,14 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         }
 
         hookKeyListener(_mainPane);
-        int style = SWT.VIRTUAL | SWT.FULL_SELECTION;
+        int style = SWT.NONE ;
 
-        if (!_rendererProp.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.HIDE_TREE_BORDER, false))
-        {
-            style = style | SWT.BORDER;
-        }
+      
 
         Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN).getAllItemGroupProperties();
 
-        if (_rendererProp.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.FILTER, true))
-        {
-            if (allItemGroupProperties.size() > 0)
-            {
-                EJItemGroupProperties displayProperties = allItemGroupProperties.iterator().next();
-                if (displayProperties.dispayGroupFrame() && displayProperties.getFrameTitle() != null && displayProperties.getFrameTitle().length() > 0)
-                {
-                    Group group = new Group(_mainPane, SWT.NONE);
-                    group.setLayout(new GridLayout());
-                    group.setText(displayProperties.getFrameTitle());
-
-                    group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                    _chartView = new LineChart(group, SWT.NONE)
-                    {
-
-                        protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
-                        {
-
-                            processAction(method, parameters);
-                        }
-                    };
-                }
-                else
-                {
-
-                    _chartView = new LineChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
-                    {
-
-                        protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
-                        {
-
-                            processAction(method, parameters);
-                        }
-                    };
-                    _chartView.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                }
-            }
-            else
-            {
-                _chartView = new LineChart(_mainPane, style)
-                {
-
-                    protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
-                    {
-
-                        processAction(method, parameters);
-                    }
-                };
-
-                _chartView.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-            }
-        }
-        else
+       
+        
         {
             _chartView = null;
             if (allItemGroupProperties.size() > 0)

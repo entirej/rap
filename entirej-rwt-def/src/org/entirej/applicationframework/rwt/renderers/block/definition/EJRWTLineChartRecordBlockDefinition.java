@@ -138,7 +138,7 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
 
         EJDevPropertyDefinition legend = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_LEGEND, EJPropertyDefinitionType.BOOLEAN);
         legend.setLabel("Show Legend");
-        animation.setDefaultValue("true");
+        legend.setDefaultValue("true");
 
         EJDevPropertyDefinition showToolTips = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_TOOLTIPS, EJPropertyDefinitionType.BOOLEAN);
         showToolTips.setLabel("Show ToolTips");

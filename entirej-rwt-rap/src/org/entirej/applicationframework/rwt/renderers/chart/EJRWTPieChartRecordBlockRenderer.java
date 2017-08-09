@@ -451,6 +451,12 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                     ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
 
                     EJCoreVisualAttributeProperties attributeProperties = sItem.getItemRenderer().getVisualAttributeProperties();
+                    
+                    EJCoreVisualAttributeProperties visualAttribute = ejDataRecord.getItem(sItem.getName()).getVisualAttribute();
+                    if(visualAttribute!=null)
+                    {
+                        attributeProperties = visualAttribute;
+                    }
                     if (attributeProperties != null)
                     {
                         if (attributeProperties.getForegroundColor() != null)
@@ -862,68 +868,12 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         }
 
         hookKeyListener(_mainPane);
-        int style = SWT.VIRTUAL | SWT.FULL_SELECTION;
+        int style = SWT.NONE;
 
-        if (!_rendererProp.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.HIDE_TREE_BORDER, false))
-        {
-            style = style | SWT.BORDER;
-        }
 
         Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN).getAllItemGroupProperties();
 
-        if (_rendererProp.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.FILTER, true))
-        {
-            if (allItemGroupProperties.size() > 0)
-            {
-                EJItemGroupProperties displayProperties = allItemGroupProperties.iterator().next();
-                if (displayProperties.dispayGroupFrame() && displayProperties.getFrameTitle() != null && displayProperties.getFrameTitle().length() > 0)
-                {
-                    Group group = new Group(_mainPane, SWT.NONE);
-                    group.setLayout(new GridLayout());
-                    group.setText(displayProperties.getFrameTitle());
-
-                    group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                    _chartView = new PieChart(group, SWT.NONE)
-                    {
-
-                        protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
-                        {
-
-                            processAction(method, parameters);
-                        }
-                    };
-                }
-                else
-                {
-
-                    _chartView = new PieChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
-                    {
-
-                        protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
-                        {
-
-                            processAction(method, parameters);
-                        }
-                    };
-                    _chartView.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                }
-            }
-            else
-            {
-                _chartView = new PieChart(_mainPane, style)
-                {
-
-                    protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
-                    {
-
-                        processAction(method, parameters);
-                    }
-                };
-
-                _chartView.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-            }
-        }
-        else
+    
         {
             _chartView = null;
             if (allItemGroupProperties.size() > 0)
