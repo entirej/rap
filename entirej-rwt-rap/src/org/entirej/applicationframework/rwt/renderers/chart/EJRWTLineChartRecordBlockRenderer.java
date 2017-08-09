@@ -18,6 +18,7 @@
 package org.entirej.applicationframework.rwt.renderers.chart;
 
 import java.awt.Color;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -277,7 +278,8 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
-
+        options.getGridLines().setDisplay(blockProperties.getBlockRendererProperties().getBooleanProperty("gridLines", options.getGridLines().isDisplay()));
+        
         xAxisColumn = blockProperties.getBlockRendererProperties().getStringProperty(X_AXIS_COLUMN);
 
         EJItemGroupPropertiesContainer container = blockProperties.getScreenItemGroupContainer(EJScreenType.MAIN);
@@ -473,7 +475,6 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
             }
 
             Map<Object, Map<String, Float>> dataset = new HashMap<Object, Map<String, Float>>();
-            Map<Object, EJDataRecord> datasetRec = new HashMap<Object, EJDataRecord>();
 
             Collection<EJDataRecord> records = _block.getRecords();
 
@@ -492,7 +493,6 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     {
                         set = new HashMap<String, Float>();
                         dataset.put(xobject, set);
-                        datasetRec.put(xobject, ejDataRecord);
                         labelsIndex.add(xobject);
                     }
                     for (EJScreenItemController sItem : screenItems)
@@ -551,6 +551,15 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
 
                 EJCoreVisualAttributeProperties attributeProperties = sItem.getItemRenderer().getVisualAttributeProperties();
+                
+                if(!records.isEmpty())
+                {
+                    EJCoreVisualAttributeProperties visualAttribute = records.iterator().next().getItem(sItem.getName()).getVisualAttribute();
+                    if(visualAttribute!=null)
+                    {
+                        attributeProperties = visualAttribute;
+                    }
+                }
                 if (attributeProperties != null)
                 {
                     if (attributeProperties.getForegroundColor() != null)
@@ -1352,6 +1361,10 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     Object value = record.getValue(dataItem.getName());
                     if(value==null)
                         value = lastVal;
+                    if(value instanceof BigDecimal)
+                    {
+                        value = ((BigDecimal)value).doubleValue();
+                    }
                     
                     if (record.getValue(xAxisColumn) != null && getStrValue(record.getValue(xAxisColumn)).equals(parameters.get("label").asString()) && 
                             value != null && value.equals(parameters.get("value").asDouble()))

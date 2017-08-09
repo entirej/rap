@@ -137,6 +137,11 @@ public class EJRWTBarChartRecordBlockDefinition implements EJDevBlockRendererDef
         EJDevPropertyDefinition animation = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.ANIMATION, EJPropertyDefinitionType.BOOLEAN);
         animation.setLabel("Animation");
         animation.setDefaultValue("true");
+        
+        EJDevPropertyDefinition gridLines = new EJDevPropertyDefinition("gridLines", EJPropertyDefinitionType.BOOLEAN);
+        gridLines.setLabel("Grid Lines");
+        gridLines.setDescription("If false, do not display grid lines");
+        gridLines.setDefaultValue("true");
 
         EJDevPropertyDefinition legend = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_LEGEND, EJPropertyDefinitionType.BOOLEAN);
         legend.setLabel("Show Legend");
@@ -184,6 +189,7 @@ public class EJRWTBarChartRecordBlockDefinition implements EJDevBlockRendererDef
         mainGroup.addPropertyDefinition(relationItem);
         mainGroup.addPropertyDefinition(horizontalBar);
         mainGroup.addPropertyDefinition(animation);
+        mainGroup.addPropertyDefinition(gridLines);
 
         mainGroup.addPropertyDefinition(showToolTips);
         mainGroup.addPropertyDefinition(legend);

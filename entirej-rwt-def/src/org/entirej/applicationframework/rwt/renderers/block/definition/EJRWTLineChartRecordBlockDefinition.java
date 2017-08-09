@@ -132,6 +132,10 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
         relationItem.setLabel("X Axis");
         relationItem.setMandatory(true);
 
+        EJDevPropertyDefinition gridLines = new EJDevPropertyDefinition("gridLines", EJPropertyDefinitionType.BOOLEAN);
+        gridLines.setLabel("Grid Lines");
+        gridLines.setDescription("If false, do not display grid lines");
+        gridLines.setDefaultValue("true");
         EJDevPropertyDefinition animation = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.ANIMATION, EJPropertyDefinitionType.BOOLEAN);
         animation.setLabel("Animation");
         animation.setDefaultValue("true");
@@ -155,6 +159,7 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
 
         mainGroup.addPropertyDefinition(relationItem);
         mainGroup.addPropertyDefinition(animation);
+        mainGroup.addPropertyDefinition(gridLines);
 
         mainGroup.addPropertyDefinition(showToolTips);
         mainGroup.addPropertyDefinition(legend);

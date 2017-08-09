@@ -18,6 +18,7 @@
 package org.entirej.applicationframework.rwt.renderers.chart;
 
 import java.awt.Color;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -277,6 +278,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
+        options.getGridLines().setDisplay(blockProperties.getBlockRendererProperties().getBooleanProperty("gridLines", options.getGridLines().isDisplay()));
         
         
         options.setBarPercentage(blockProperties.getBlockRendererProperties().getFloatProperty("barPercentage",options.getBarPercentage()));
@@ -565,7 +567,14 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
                 EJCoreVisualAttributeProperties attributeProperties = sItem.getItemRenderer().getVisualAttributeProperties();
                 
-                
+                if(!records.isEmpty())
+                {
+                    EJCoreVisualAttributeProperties visualAttribute = records.iterator().next().getItem(sItem.getName()).getVisualAttribute();
+                    if(visualAttribute!=null)
+                    {
+                        attributeProperties = visualAttribute;
+                    }
+                }
                 
                 
                 if (attributeProperties != null)
@@ -1385,6 +1394,10 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 if(value==null)
                     value = lastVal;
                 
+                if(value instanceof BigDecimal)
+                {
+                    value = ((BigDecimal)value).doubleValue();
+                }
                 
                
                 if (record.getValue(xAxisColumn) != null && getStrValue(record.getValue(xAxisColumn)).equals(lbl) && 
