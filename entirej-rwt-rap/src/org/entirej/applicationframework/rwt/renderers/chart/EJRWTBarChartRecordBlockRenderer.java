@@ -490,6 +490,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
             }
 
             Map<Object, Map<String, Float>> dataset = new HashMap<Object, Map<String, Float>>();
+            Map<Object, Map<String, EJCoreVisualAttributeProperties>> datasetVa = new HashMap<Object, Map<String, EJCoreVisualAttributeProperties>>();
 
             Collection<EJDataRecord> records = _block.getRecords();
 
@@ -504,10 +505,13 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 {
 
                     Map<String, Float> set = dataset.get(xobject);
+                    Map<String, EJCoreVisualAttributeProperties> setVa = datasetVa.get(xobject);
                     if (set == null)
                     {
                         set = new HashMap<String, Float>();
+                        setVa = new HashMap<String, EJCoreVisualAttributeProperties>();
                         dataset.put(xobject, set);
+                        datasetVa.put(xobject, setVa);
                         labelsIndex.add(xobject);
                     }
                     for (EJScreenItemController sItem : screenItems)
@@ -530,6 +534,10 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
                             }
                             set.put(sItem.getName(), val);
+                            EJCoreVisualAttributeProperties visualAttribute = ejDataRecord.getItem(sItem.getName()).getVisualAttribute();
+                            if(visualAttribute==null)
+                                visualAttribute = sItem.getItemRenderer().getVisualAttributeProperties();
+                            setVa.put(sItem.getName(), visualAttribute);
                         }
                     }
 
@@ -552,52 +560,50 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 if (sItem.isSpacerItem())
                     continue;
                 List<Float> row = new ArrayList<Float>();
+                List<EJCoreVisualAttributeProperties> rowVa = new ArrayList<EJCoreVisualAttributeProperties>();
 
                 for (Object object : labelsIndex)
                 {
                     Map<String, Float> map = dataset.get(object);
-                    if (map == null)
+                    Map<String, EJCoreVisualAttributeProperties> mapVa = datasetVa.get(object);
+                    if (map == null || mapVa==null)
                         continue;
 
                     row.add(map.get(sItem.getName()));
+                    rowVa.add(mapVa.get(sItem.getName()));
 
                 }
 
-                ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
-
-                EJCoreVisualAttributeProperties attributeProperties = sItem.getItemRenderer().getVisualAttributeProperties();
                 
-                if(!records.isEmpty())
-                {
-                    EJCoreVisualAttributeProperties visualAttribute = records.iterator().next().getItem(sItem.getName()).getVisualAttribute();
-                    if(visualAttribute!=null)
-                    {
-                        attributeProperties = visualAttribute;
-                    }
-                }
-                
-                
-                if (attributeProperties != null)
-                {
-                    if (attributeProperties.getForegroundColor() != null)
-                    {
-                        Color color = attributeProperties.getForegroundColor();
-                        colors = new ChartStyle(color.getRed(), color.getGreen(), color.getBlue(), 0.8f);
-                    }
-                    if (attributeProperties.getBackgroundColor() != null)
-                    {
-                        Color color = attributeProperties.getBackgroundColor();
-                        colors.setFillColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
-
-                    }
-                }
 
                 float[] floatArray = new float[row.size()];
+                ChartStyle[] styleArray = new ChartStyle[row.size()];
                 int i = 0;
 
                 for (Float f : row)
                 {
-                    floatArray[i++] = (f != null ? f : 0);
+                    floatArray[i] = (f != null ? f : 0);
+                    
+                    ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
+
+                    EJCoreVisualAttributeProperties attributeProperties = rowVa.get(i);
+                    if (attributeProperties != null)
+                    {
+                        if (attributeProperties.getForegroundColor() != null)
+                        {
+                            Color color = attributeProperties.getForegroundColor();
+                            colors = new ChartStyle(color.getRed(), color.getGreen(), color.getBlue(), 0.8f);
+                        }
+                        if (attributeProperties.getBackgroundColor() != null)
+                        {
+                            Color color = attributeProperties.getBackgroundColor();
+                            colors.setFillColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
+
+                        }
+                    }
+                    styleArray[i] = colors;
+                    i++;
+                    
                 }
                 /*
                  * String pointStyle = "circle";
@@ -618,10 +624,33 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 {
                     action = "select";
                 }
+                
+                ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
+
+                EJCoreVisualAttributeProperties attributeProperties = sItem.getItemRenderer().getVisualAttributeProperties();
+                
+                
+                
+                
+                if (attributeProperties != null)
+                {
+                    if (attributeProperties.getForegroundColor() != null)
+                    {
+                        Color color = attributeProperties.getForegroundColor();
+                        colors = new ChartStyle(color.getRed(), color.getGreen(), color.getBlue(), 0.8f);
+                    }
+                    if (attributeProperties.getBackgroundColor() != null)
+                    {
+                        Color color = attributeProperties.getBackgroundColor();
+                        colors.setFillColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
+
+                    }
+                }
+                
                 info.setAction(action);
                 info.setChartStyle(colors);
                 info.setHidden(!sItem.isVisible());
-                chartRowData.addRow(info, floatArray);
+                chartRowData.addRow(info, floatArray,styleArray);
                 // chartRowData.addRow(floatArray, colors);
             }
 
