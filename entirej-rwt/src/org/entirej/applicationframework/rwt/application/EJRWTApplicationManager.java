@@ -41,6 +41,7 @@ import org.entirej.framework.core.EJFrameworkManager;
 import org.entirej.framework.core.EJManagedFrameworkConnection;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.EJParameterList;
+import org.entirej.framework.core.EJTabLayoutComponent;
 import org.entirej.framework.core.EJTranslatorHelper;
 import org.entirej.framework.core.actionprocessor.interfaces.EJApplicationActionProcessor;
 import org.entirej.framework.core.data.controllers.EJApplicationLevelParameter;
@@ -730,5 +731,38 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     }
 
     private EJReportFrameworkManager reportManager;
+
+    @Override
+    public EJTabLayoutComponent getTabLayoutComponent(String name)
+    {
+        return new EJTabLayoutComponent(this, name);
+    }
+
+    @Override
+    public void setTabPageVisible(String name, String tabPageName, boolean visible)
+    {
+        _applicationContainer.setTabPageVisible(name,visible);
+        
+    }
+
+    @Override
+    public String getDisplayedTabPage(String name)
+    {
+        return  _applicationContainer.getDisplayedTabPage(name);
+    }
+
+    @Override
+    public void setTabBadge(String name, String pageName, String badge)
+    {
+        _applicationContainer.setTabBadge(name,pageName,badge);
+        
+    }
+
+    @Override
+    public void showTabPage(String name, String pageName)
+    {
+        _applicationContainer.showTabPage(name,pageName);
+        
+    }
 
 }

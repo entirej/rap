@@ -24,6 +24,8 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -78,7 +80,13 @@ public class EJRWTBanner implements EJRWTAppComponentRenderer
     @Override
     public void createContainer(final EJRWTApplicationManager manager, Composite parent, final EJFrameworkExtensionProperties rendererprop)
     {
+         
+       
+        
+        
+        
         canvas = new Label(parent, getComponentStyle(rendererprop.getStringProperty(PROPERTY_ALIGNMENT), SWT.NONE));
+        canvas.setLayoutData(new GridData(GridData.FILL_BOTH));
         String imagePath = null;
         if (rendererprop != null)
         {

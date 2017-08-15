@@ -22,7 +22,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
@@ -30,6 +32,8 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -50,6 +54,8 @@ import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormOpen
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormSelectedListener;
 import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.applicationframework.rwt.renderers.form.EJRWTFormRenderer;
+import org.entirej.framework.core.EJActionProcessorException;
+import org.entirej.framework.core.actionprocessor.interfaces.EJApplicationActionProcessor;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
 import org.entirej.framework.core.internal.EJInternalForm;
 import org.entirej.framework.core.properties.EJCoreFormProperties;
@@ -77,6 +83,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
     protected EJRWTFormContainer              _formContainer;
     protected EJRWTApplicationStatusbar       _statusbar;
     protected List<EJRWTSingleFormContainer>  _singleFormContainers = new ArrayList<EJRWTSingleFormContainer>();
+    private Map<String, EJAppTabFolder>            _tabFolders         = new HashMap<String, EJAppTabFolder>();
     protected EJRWTApplicationManager         _applicationManager;
     protected final EJCoreLayoutContainer     _layoutContainer;
 
@@ -462,8 +469,10 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
         GridData gd = new GridData();
         gd.minimumHeight = layoutItem.getMinHeight();
         gd.minimumWidth = layoutItem.getMinWidth();
+        
         gd.heightHint = layoutItem.getHintHeight();
         gd.widthHint = layoutItem.getHintWidth();
+        
         gd.verticalSpan = layoutItem.getVerticalSpan();
         gd.horizontalSpan = layoutItem.getHorizontalSpan();
 
@@ -496,6 +505,10 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                 gd.horizontalAlignment = SWT.FILL;
                 break;
             case NONE:
+                   
+//                gd.verticalAlignment = SWT.FILL;
+    //            gd.horizontalAlignment = SWT.FILL;
+                
                 break;
         }
 
@@ -514,6 +527,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
     private void createSpace(Composite parent, EJCoreLayoutItem.LayoutSpace space)
     {
         Label spaceLabel = new Label(parent, SWT.NONE);
+        
         spaceLabel.setLayoutData(createGridData(space));
     }
 
@@ -663,22 +677,54 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
         layoutBody.setBackground(parent.getBackground());
     }
 
-    private void createTabLayout(Composite parent, EJCoreLayoutItem.TabGroup group)
+    private void createTabLayout(Composite parent,final  EJCoreLayoutItem.TabGroup group)
     {
-        CTabFolder layoutBody = new CTabFolder(parent, SWT.BORDER | (group.getOrientation() == TabGroup.ORIENTATION.TOP ? SWT.TOP : SWT.BOTTOM));
+       final  CTabFolder layoutBody = new CTabFolder(parent, SWT.BORDER | (group.getOrientation() == TabGroup.ORIENTATION.TOP ? SWT.TOP : SWT.BOTTOM));
 
+       EJAppTabFolder appTabFolder = new EJAppTabFolder(this, layoutBody);
+       _tabFolders.put(group.getName(), appTabFolder);
+        
+        layoutBody.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                EJApplicationActionProcessor applicationActionProcessor = _applicationManager.getApplicationActionProcessor();
+                if(applicationActionProcessor!=null)
+                {
+                    CTabItem selection = layoutBody.getSelection();
+                    if (selection != null)
+                    {
+                        return ;
+                    }
+                    
+                    try
+                 {
+                     applicationActionProcessor.tabPageChanged(_applicationManager.getFrameworkManager(), group.getName(), (String) selection.getData("TAB_KEY"));
+                 }
+                 catch (EJActionProcessorException e1)
+                 {
+                     e1.printStackTrace();
+                 }
+                }
+            }
+        });
+        
         layoutBody.setLayoutData(createGridData(group));
         List<EJCoreLayoutItem> items = group.getItems();
 
         for (EJCoreLayoutItem item : items)
         {
             CTabItem tabItem = new CTabItem(layoutBody, SWT.NONE);
+            appTabFolder.put(item.getName(), tabItem);
             Composite composite = new Composite(layoutBody, SWT.NO_FOCUS);
             composite.setData(EJ_RWT.CUSTOM_VARIANT, "applayout");
             composite.setData("TAB_ITEM", tabItem);
+            composite.setData("TAB_KEY", item.getName());
+            tabItem.setData("TAB_KEY", item.getName());
             composite.setLayout(new GridLayout());
             tabItem.setControl(composite);
-            tabItem.setText(item.getName() != null ? item.getName() : "");
+            tabItem.setText(item.getTitle() != null ? item.getTitle() :item.getName());
             switch (item.getType())
             {
                 case GROUP:
@@ -882,5 +928,52 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
     {
         
         return new ArrayList<EJInternalForm>(_formContainer.getAllForms());
+    }
+
+    public void setTabPageVisible(String name, boolean visible)
+    {
+        EJAppTabFolder appTabFolder = _tabFolders.get(name);
+        if(appTabFolder ==null)
+        {
+            throw new NullPointerException("Tab not found, name :"+name);
+            
+        }
+         appTabFolder.setTabPageVisible(name,visible);
+        
+    }
+
+    public String getDisplayedTabPage(String name)
+    {
+        EJAppTabFolder appTabFolder = _tabFolders.get(name);
+        if(appTabFolder ==null)
+        {
+            throw new NullPointerException("Tab not found, name :"+name);
+            
+        }
+        return appTabFolder.getActiveKey();
+    }
+
+    public void setTabBadge(String name, String pageName, String badge)
+    {
+        EJAppTabFolder appTabFolder = _tabFolders.get(name);
+        if(appTabFolder ==null)
+        {
+            throw new NullPointerException("Tab not found, name :"+name);
+            
+        }
+        appTabFolder.setTabPageBadge(pageName,badge);
+        
+    }
+
+    public void showTabPage(String name, String pageName)
+    {
+        
+        EJAppTabFolder appTabFolder = _tabFolders.get(name);
+        if(appTabFolder ==null)
+        {
+            throw new NullPointerException("Tab not found, name :"+name);
+            
+        }
+        appTabFolder.showPage(pageName);
     }
 }

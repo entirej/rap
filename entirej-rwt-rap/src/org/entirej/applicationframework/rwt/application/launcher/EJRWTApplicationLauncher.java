@@ -98,6 +98,11 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     {
         return ICONS_FAVICON_ICO;
     }
+    
+    protected boolean canLoadServices(){
+        
+       return true;
+    }
 
     protected String getLoadingImage()
     {
@@ -576,7 +581,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
            final String SERVICE_NAME = "SERVICE_NAME";
             EJFrameworkExtensionProperties definedProperties = coreProperties.getApplicationDefinedProperties();
-            if (definedProperties != null)
+            if (canLoadServices()&& definedProperties != null)
             {
                 EJFrameworkExtensionProperties group = definedProperties.getPropertyGroup(SERVICE);
                 if (group != null && group.getPropertyList(SERVICE_LIST)!=null)

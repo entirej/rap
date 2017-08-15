@@ -119,6 +119,7 @@ public class EJRwtSpringAuthUtil
         {
 
             String state = ((EJSpringWebAuthenticationDetails) details).getQueryString();
+            
             if (state != null && state.startsWith("#"))
             {
                 state = state.substring(1);
