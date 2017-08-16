@@ -29,6 +29,8 @@ import java.util.Map;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabFolder2Listener;
+import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -681,9 +683,9 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
     {
        final  CTabFolder layoutBody = new CTabFolder(parent, SWT.BORDER | (group.getOrientation() == TabGroup.ORIENTATION.TOP ? SWT.TOP : SWT.BOTTOM));
 
-       EJAppTabFolder appTabFolder = new EJAppTabFolder(this, layoutBody);
+      final  EJAppTabFolder appTabFolder = new EJAppTabFolder(this, layoutBody);
        _tabFolders.put(group.getName(), appTabFolder);
-        
+       
         layoutBody.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -692,15 +694,38 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                 EJApplicationActionProcessor applicationActionProcessor = _applicationManager.getApplicationActionProcessor();
                 if(applicationActionProcessor!=null)
                 {
+                    
+                    
+                    
                     CTabItem selection = layoutBody.getSelection();
-                    if (selection != null)
+                    if (selection == null)
                     {
                         return ;
                     }
                     
                     try
+                    {
+                        String pageName = (String) selection.getData("TAB_KEY");
+                       
+                       applicationActionProcessor.preShowTabPage(_applicationManager.getFrameworkManager(), group.getName(), pageName);
+                    }
+                    catch (EJActionProcessorException e1)
+                    {
+                        if(appTabFolder.getLastSelection()!=null)
+                        {
+                            appTabFolder.showPage(appTabFolder.getLastSelection());
+                        }
+                        if(e1.getFrameworkMessage()!=null)
+                            _applicationManager.handleMessage(e1.getFrameworkMessage());
+                        return;
+                    }
+                    
+                    
+                 try
                  {
-                     applicationActionProcessor.tabPageChanged(_applicationManager.getFrameworkManager(), group.getName(), (String) selection.getData("TAB_KEY"));
+                     String pageName = (String) selection.getData("TAB_KEY");
+                     appTabFolder.setLastSelection(pageName);
+                    applicationActionProcessor.tabPageChanged(_applicationManager.getFrameworkManager(), group.getName(), pageName);
                  }
                  catch (EJActionProcessorException e1)
                  {
@@ -974,6 +999,22 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
             throw new NullPointerException("Tab not found, name :"+name);
             
         }
-        appTabFolder.showPage(pageName);
+        if(appTabFolder.showPage(pageName)){
+        
+            EJApplicationActionProcessor applicationActionProcessor = _applicationManager.getApplicationActionProcessor();
+            if(applicationActionProcessor!=null)
+            {
+               
+                
+                try
+             {
+                 applicationActionProcessor.tabPageChanged(_applicationManager.getFrameworkManager(), name, pageName);
+             }
+             catch (EJActionProcessorException e1)
+             {
+                 e1.printStackTrace();
+             }
+            }
+        }
     }
 }

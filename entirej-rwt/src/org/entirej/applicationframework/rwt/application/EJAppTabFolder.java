@@ -15,6 +15,8 @@ class EJAppTabFolder
     private final EJRWTApplicationContainer container;
     final CTabFolder         folder;
     final Map<String, CTabItem>   tabPages = new HashMap<String, CTabItem>();
+    
+    private String lastSelection;
 
     EJAppTabFolder(EJRWTApplicationContainer container, CTabFolder folder)
     {
@@ -22,15 +24,28 @@ class EJAppTabFolder
         this.folder = folder;
     }
 
-    public void showPage(String pageName)
+    public boolean showPage(String pageName)
     {
         CTabItem cTabItem = tabPages.get(pageName);
         if (cTabItem != null && cTabItem != null)
         {
-         
+            lastSelection = pageName;
             folder.setSelection(cTabItem);
+          
+            return true;
         }
 
+        return true;
+    }
+    
+    public String getLastSelection()
+    {
+        return lastSelection;
+    }
+    
+    public void setLastSelection(String lastSelection)
+    {
+        this.lastSelection = lastSelection;
     }
 
     public CTabFolder getFolder()
@@ -97,6 +112,8 @@ class EJAppTabFolder
     public void put(String key, CTabItem value)
     {
         tabPages.put(key,(CTabItem) value);
+        if(lastSelection==null)
+            lastSelection = key;
     }
 
     void remove(String key)

@@ -28,6 +28,8 @@ class EJTabFolder implements ITabFolder
     final EJCanvasController canvasController;
     final Map<String, Tab>   tabPages = new HashMap<String, Tab>();
 
+    private String lastSelection;
+    
     EJTabFolder(EJRWTFormRenderer ejrwtFormRenderer, CTabFolder folder, EJCanvasController canvasController)
     {
         super();
@@ -41,10 +43,21 @@ class EJTabFolder implements ITabFolder
         Tab cTabItem = tabPages.get(pageName);
         if (cTabItem != null && cTabItem.item != null)
         {
+            lastSelection = pageName;
             cTabItem.createTabData();
             folder.setSelection(cTabItem.item);
         }
 
+    }
+    
+    public String getLastSelection()
+    {
+        return lastSelection;
+    }
+    
+    public void setLastSelection(String lastSelection)
+    {
+        this.lastSelection = lastSelection;
     }
 
     public CTabFolder getFolder()
@@ -126,6 +139,8 @@ class EJTabFolder implements ITabFolder
     public void put(String key, ITab value)
     {
         tabPages.put(key,(Tab) value);
+        if(lastSelection==null)
+            key =lastSelection;
     }
 
     void remove(String key)
