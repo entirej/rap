@@ -955,7 +955,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
         return new ArrayList<EJInternalForm>(_formContainer.getAllForms());
     }
 
-    public void setTabPageVisible(String name, boolean visible)
+    public void setTabPageVisible(String name,String tabPageName, boolean visible)
     {
         EJAppTabFolder appTabFolder = _tabFolders.get(name);
         if(appTabFolder ==null)
@@ -963,7 +963,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
             throw new NullPointerException("Tab not found, name :"+name);
             
         }
-         appTabFolder.setTabPageVisible(name,visible);
+         appTabFolder.setTabPageVisible(tabPageName,visible);
         
     }
 

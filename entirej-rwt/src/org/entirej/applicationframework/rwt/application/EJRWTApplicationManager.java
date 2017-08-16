@@ -741,7 +741,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     @Override
     public void setTabPageVisible(String name, String tabPageName, boolean visible)
     {
-        _applicationContainer.setTabPageVisible(name,visible);
+        _applicationContainer.setTabPageVisible(name,tabPageName,visible);
         
     }
 

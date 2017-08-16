@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 
 class EJAppTabFolder 
 {
@@ -15,6 +18,7 @@ class EJAppTabFolder
     private final EJRWTApplicationContainer container;
     final CTabFolder         folder;
     final Map<String, CTabItem>   tabPages = new HashMap<String, CTabItem>();
+    final Map<String, TabContext>   tabContPages = new HashMap<String, TabContext>();
     
     private String lastSelection;
 
@@ -55,44 +59,69 @@ class EJAppTabFolder
 
     public void setTabPageVisible(String pageName, boolean visible)
     {
-//        final CTabItem cTabItem = tabPages.get(pageName);
-//        if (cTabItem != null)
-//        {
-//            if (visible)
-//            {
-//                
-//            }
-//            else
-//            {
-//                if (cTabItem.item != null)
-//                {
-//                    CTabItem[] items = folder.getItems();
-//                    int index = 0;
-//                    for (CTabItem cTabItem2 : items)
-//                    {
-//                        if (cTabItem2 == cTabItem.item)
-//                        {
-//                            cTabItem.index = index;
-//                            break;
-//                        }
-//                        index++;
-//                    }
-//                    Display.getDefault().asyncExec(new Runnable()
-//                    {
-//
-//                        @Override
-//                        public void run()
-//                        {
-//                            cTabItem.remove();
-//                        }
-//                    });
-//                }
-//            }
-//        }
+        final CTabItem cTabItem = tabPages.get(pageName);
+        if (cTabItem != null)
+        {
+            if (visible)
+            {
+               if(cTabItem.isDisposed())
+               {
+                   TabContext tabContext = tabContPages.get(pageName);
+                   int index =  tabContext.index;
+                   CTabItem tabItem = (index == -1 || folder.getItemCount() < index) ? new CTabItem(folder, SWT.NONE) : new CTabItem(folder, SWT.NONE, index);
+                   tabItem.setText(tabContext.text);
+                   tabItem.setToolTipText(tabContext.tooltip);
+                   
+                   tabItem.setControl(tabContext.control);
+                   tabItem.setData("TAB_KEY", pageName);
+                   tabPages.put(pageName, tabItem);
+               }
+            }
+            else
+            {
+                if (cTabItem != null)
+                {
+                    CTabItem[] items = folder.getItems();
+                    int index = 0;
+                    for (CTabItem cTabItem2 : items)
+                    {
+                        if (cTabItem2 == cTabItem)
+                        {
+                           
+                            break;
+                        }
+                        index++;
+                    }
+                    Control control = cTabItem.getControl();
+                    TabContext context = new TabContext();
+                    context.control = control;
+                    context.text=(cTabItem.getText());
+                    context.tooltip=(cTabItem.getToolTipText());
+                    context.index=index;
+                    tabContPages.put(pageName, context);
+                    Display.getDefault().asyncExec(new Runnable()
+                    {
+
+                        @Override
+                        public void run()
+                        {
+                            cTabItem.dispose();
+                        }
+                    });
+                }
+            }
+        }
 
     }
 
     
+    private class TabContext
+    {
+        Control control;
+        String text;
+        String tooltip;
+        int index;
+    }
 
     void clear()
     {
