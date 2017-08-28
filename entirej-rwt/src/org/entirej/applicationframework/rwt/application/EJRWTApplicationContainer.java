@@ -393,7 +393,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
 
     protected void buildApplicationContainer()
     {
-        GridLayout gridLayout = new GridLayout(_layoutContainer.getColumns(), true);
+        GridLayout gridLayout = new GridLayout(_layoutContainer.getColumns(), false);
         _mainPane.setLayout(gridLayout);
 
         List<EJCoreLayoutItem> items = _layoutContainer.getItems();
@@ -439,7 +439,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
     }
     protected void buildServiceApplicationContainer(final String fromID)
     {
-        GridLayout gridLayout = new GridLayout(1, true);
+        GridLayout gridLayout = new GridLayout(1, false);
         _mainPane.setLayout(gridLayout);
         
         EJRWTSingleFormContainer container = new  EJRWTSingleFormContainer(){
@@ -523,6 +523,9 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
         {
             gd.verticalAlignment = SWT.FILL;
         }
+        
+        
+        
         return gd;
     }
 
@@ -1016,5 +1019,17 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
              }
             }
         }
+    }
+
+    public void setTabPageEnable(String name, String tabPageName, boolean enable)
+    {
+        EJAppTabFolder appTabFolder = _tabFolders.get(name);
+        if(appTabFolder ==null)
+        {
+            throw new NullPointerException("Tab not found, name :"+name);
+            
+        }
+         appTabFolder.setTabPageEnable(tabPageName,enable);
+        
     }
 }

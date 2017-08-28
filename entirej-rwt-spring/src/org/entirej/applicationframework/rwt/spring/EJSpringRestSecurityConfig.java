@@ -1,11 +1,16 @@
 package org.entirej.applicationframework.rwt.spring;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.entirej.applicationframework.rwt.spring.ext.EJDefaultSpringSecurityConfigProvider;
 import org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityConfigProvider;
 import org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityContext;
+import org.entirej.framework.core.EJFrameworkInitialiser;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Configuration
 @EnableWebSecurity
+@Order(1)
 public class EJSpringRestSecurityConfig extends WebSecurityConfigurerAdapter
 {
 
@@ -22,6 +28,17 @@ public class EJSpringRestSecurityConfig extends WebSecurityConfigurerAdapter
     private EJSpringSecurityConfigProvider provider;
 
     public EJSpringRestSecurityConfig()
+    {
+        provider = getProvider();
+    }
+    public EJSpringRestSecurityConfig(boolean init)
+    {
+        if(init)
+            EJFrameworkInitialiser.initialiseFramework("application.ejprop");
+        provider = getProvider();
+    }
+
+    private static EJSpringSecurityConfigProvider  getProvider()
     {
         EJCoreProperties instance = EJCoreProperties.getInstance();
         EJFrameworkExtensionProperties definedProperties = instance.getApplicationDefinedProperties();
@@ -41,7 +58,7 @@ public class EJSpringRestSecurityConfig extends WebSecurityConfigurerAdapter
 
                         if (obj instanceof EJSpringSecurityConfigProvider)
                         {
-                            provider = (EJSpringSecurityConfigProvider) obj;
+                            return (EJSpringSecurityConfigProvider) obj;
                         }
                         else
 
@@ -68,10 +85,8 @@ public class EJSpringRestSecurityConfig extends WebSecurityConfigurerAdapter
                 }
             }
         }
-        if (provider == null)
-        {
-            provider = new EJDefaultSpringSecurityConfigProvider();
-        }
+        return new EJDefaultSpringSecurityConfigProvider();
+        
     }
 
     @Override
@@ -95,6 +110,24 @@ public class EJSpringRestSecurityConfig extends WebSecurityConfigurerAdapter
             }
         });
 
+    }
+
+    public Class<?>[] getConfigClasses()
+    {
+        
+        
+        List<Class<?>> configs = new ArrayList<Class<?>>();
+        configs.add(this.getClass());
+        System.out.println("EJSpringRestSecurityConfig.getConfigClasses()");
+        
+        Class<? extends WebSecurityConfigurerAdapter>[] otherSecurityConfigurer = provider.getOtherSecurityConfigurer();
+        for (Class<? extends WebSecurityConfigurerAdapter> class1 : otherSecurityConfigurer)
+        {
+           
+            configs.add(class1);
+        }
+        configs.add(EJSpringSecurityConfig.class);
+        return configs.toArray(new Class<?>[configs.size()]);
     }
 
 }

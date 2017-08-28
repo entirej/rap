@@ -765,4 +765,11 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         
     }
 
+    @Override
+    public void setTabPageEnable(String name, String tabPageName, boolean enable)
+    {
+        _applicationContainer.setTabPageEnable(name,tabPageName,enable);
+        
+    }
+
 }

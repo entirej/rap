@@ -1,6 +1,7 @@
 package org.entirej.applicationframework.rwt.spring.ext;
 
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 public class EJDefaultSpringSecurityConfigProvider implements EJSpringSecurityConfigProvider
 {
@@ -12,5 +13,12 @@ public class EJDefaultSpringSecurityConfigProvider implements EJSpringSecurityCo
        
        
 
+    }
+    
+    @Override
+    public Class< WebSecurityConfigurerAdapter>[] getOtherSecurityConfigurer()
+    {
+       
+        return new Class[0];
     }
 }

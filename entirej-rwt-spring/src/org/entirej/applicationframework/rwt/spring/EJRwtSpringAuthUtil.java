@@ -15,23 +15,11 @@ import org.springframework.security.core.context.SecurityContext;
 public class EJRwtSpringAuthUtil
 {
 
-    @Deprecated
-    public static void logout(String contextpath)
+    
+    public static void logout(String url)
     {
-        StringBuffer url = new StringBuffer();
-        url.append(RWT.getRequest().getContextPath());
-        url.append(RWT.getRequest().getServletPath());
-        String encodeURL = RWT.getResponse().encodeURL(url.toString());
-        if (encodeURL.contains("jsessionid"))
-        {
-            encodeURL = encodeURL.substring(0, encodeURL.indexOf("jsessionid"));
-        }
-        int patchIndex = encodeURL.lastIndexOf(contextpath);
-        if (patchIndex > -1)
-        {
-            encodeURL = encodeURL.substring(0, patchIndex) + "logout";
-        }
-        String browserText = MessageFormat.format("parent.window.location.href = \"{0}\";", encodeURL);
+     
+        String browserText = MessageFormat.format("parent.window.location.href = \"{0}\";", url);
         JavaScriptExecutor executor = RWT.getClient().getService(JavaScriptExecutor.class);
         if (executor != null)
         {
@@ -59,26 +47,8 @@ public class EJRwtSpringAuthUtil
             executor.execute(browserText);
         }
     }
-    public static void logoutAndRerirect(String redirect)
-    {
-        StringBuffer url = new StringBuffer();
-        url.append(RWT.getRequest().getContextPath());
-        
-        String encodeURL = RWT.getResponse().encodeURL(url.toString());
-        if (encodeURL.contains("jsessionid"))
-        {
-            encodeURL = encodeURL.substring(0, encodeURL.indexOf("jsessionid"));
-        }
-        
-        encodeURL+= "logout";
-        
-        String browserText = MessageFormat.format("parent.window.location.href = \"{0}\";", encodeURL);
-        JavaScriptExecutor executor = RWT.getClient().getService(JavaScriptExecutor.class);
-        if (executor != null)
-        {
-            executor.execute(browserText);
-        }
-    }
+
+    
 
     public static String getRemoteUser()
     {

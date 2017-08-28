@@ -172,6 +172,16 @@ class EJAppTabFolder
 
     }
 
+    public void setTabPageEnable(String tabPageName, boolean enable)
+    {
+        CTabItem cTabItem = tabPages.get(tabPageName);
+        if (cTabItem != null)
+        {
+            cTabItem.getControl().setEnabled(enable);
+        }
+        
+    }
+
     
 
 }
