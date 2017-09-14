@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Mojave Innovations GmbH
+ * Copyright 2013 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ *     CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.item;
 
@@ -60,6 +60,19 @@ public class EJRWTTextAreaRenderer extends EJRWTTextItemRenderer
         public void addListener(ILabelProviderListener listener)
         {
             proxy.addListener(listener);
+        }
+        
+        @Override
+        public String getSrcText(Object element)
+        {
+            
+            return proxy.getText(element);
+        }
+        
+        @Override
+        public Image getSrcImage(Object element)
+        {
+            return getImage(element);
         }
         
         public void dispose()

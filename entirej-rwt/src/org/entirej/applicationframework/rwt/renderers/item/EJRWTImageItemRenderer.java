@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Mojave Innovations GmbH
+ * Copyright 2013 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ *     CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.item;
 
@@ -71,7 +71,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
        
         return null;
     }
-    private final class HtmlBaseImageColumn extends ColumnLabelProvider implements HtmlBaseColumnLabelProvider
+    public final class HtmlBaseImageColumn extends ColumnLabelProvider implements HtmlBaseColumnLabelProvider
     {
         private final EJScreenItemProperties item;
 
@@ -121,6 +121,11 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
             return "<img width='"+bounds.width+"' height='"+bounds.height+"' src='" + src  + "'/>";
         }
 
+        public String getSrcText(Object element)
+        {
+            return "";
+        }
+        
         //@Override
         public Image getSrcImage(Object element)
         {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2013 Mojave Innovations GmbH
+ * Copyright 2013 CRESOFT AG
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  * 
  * Contributors:
- *     Mojave Innovations GmbH - initial API and implementation
+ *     CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.html;
 
@@ -73,6 +73,7 @@ import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRe
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTUpdateScreenRenderer;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
+import org.entirej.applicationframework.rwt.table.HtmlBaseColumnLabelProvider;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
@@ -1792,9 +1793,9 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 }
                                 builder.append(">");
 
-                                String text = columnLabelProvider.getText(record);
+                                String text = columnLabelProvider instanceof HtmlBaseColumnLabelProvider? ((HtmlBaseColumnLabelProvider)columnLabelProvider).getSrcText(record): columnLabelProvider.getText(record);
 
-                                boolean htmlformatting = extentionProperties.getBooleanProperty(ENABLE_MARKUP, false) || rendererProperties.getBooleanProperty("HTML_FORMAT",
+                                boolean htmlformatting =   extentionProperties.getBooleanProperty(ENABLE_MARKUP, false) || rendererProperties.getBooleanProperty("HTML_FORMAT",
                                         false);
                                 if (!htmlformatting)
                                     text = ignoreHtml(text);
@@ -1806,7 +1807,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                     builder.append(actionDef).append(">");
                                 }
 
-                                Image image = columnLabelProvider.getImage(record);
+                                Image image = columnLabelProvider instanceof HtmlBaseColumnLabelProvider? ((HtmlBaseColumnLabelProvider)columnLabelProvider).getSrcImage(record) :columnLabelProvider.getImage(record);
                                 if (image != null)
                                 {
                                     if (actionDef == null)
