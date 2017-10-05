@@ -675,14 +675,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             @Override
             public void run()
             {
-                if (_valueChanged)
-                {
-                    _valueChanged = false;
-                    _item.itemValueChaged(getValue());
-                    _oldvalue = null;
-                    setMandatoryBorder(_mandatory);
-
-                }
+               commitValue();
                 _item.itemFocusLost();
 
             }
@@ -959,16 +952,12 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
                             if (arg0.keyCode == 13 && (SWT.MULTI != (_textField.getStyle() & SWT.MULTI) || (arg0.stateMask & SWT.CONTROL) != 0))
                             {
-                                if (_valueChanged)
-                                {
-                                    _valueChanged = false;
-                                    _item.itemValueChaged(getValue());
-                                    _oldvalue=null;
-                                    setMandatoryBorder(_mandatory);
-                                }
+                                commitValue();
                             }
 
                         }
+
+                        
 
                         @Override
                         public void keyPressed(KeyEvent arg0)
@@ -1028,6 +1017,18 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 });
             }
             setInitialValue(_baseValue);
+        }
+    }
+    
+    
+    protected void commitValue()
+    {
+        if (_valueChanged)
+        {
+            _valueChanged = false;
+            _item.itemValueChaged(getValue());
+            _oldvalue=null;
+            setMandatoryBorder(_mandatory);
         }
     }
 

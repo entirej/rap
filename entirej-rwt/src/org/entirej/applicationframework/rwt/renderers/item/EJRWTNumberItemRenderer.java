@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 CRESOFT AG
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     CRESOFT AG - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.item;
 
@@ -56,8 +55,10 @@ import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
 
 public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Serializable
 {
-    private DecimalFormat                  _decimalFormatter;
-    private NUMBER_TYPE                    _numberType;
+    private DecimalFormat _decimalFormatter;
+    private NUMBER_TYPE   _numberType;
+    private Number        maxValue;
+    private Number        minValue;
 
     public enum NUMBER_TYPE
     {
@@ -75,23 +76,21 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         return EJ_RWT.CSS_CV_ITEM_NUMBER;
 
     }
-    
-    
+
     @Override
     public String formatValue(Object obj)
     {
         return _decimalFormatter.format(obj);
     }
-    
+
     @Override
     public void refreshItemRendererProperty(String propertyName)
     {
-        
-        if(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
+
+        if (EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
         {
 
-            
-            if(controlState(_label) && _rendererProps!=null)
+            if (controlState(_label) && _rendererProps != null)
             {
                 String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
@@ -104,11 +103,11 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                     _label.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_NUMBER);
                 }
             }
-           
-            if(controlState(_textField) && _rendererProps!=null)
+
+            if (controlState(_textField) && _rendererProps != null)
             {
                 String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
-                
+
                 if (customCSSKey != null && customCSSKey.trim().length() > 0)
                 {
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
@@ -118,10 +117,10 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_NUMBER);
                 }
             }
-            
+
         }
     }
-    
+
     @Override
     protected void setValueLabelAlign(final String alignmentProperty)
     {
@@ -170,10 +169,63 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         }
         return style;
     }
+    
+    
+    @Override
+    public boolean isValid()
+    {
+        
+        boolean valid = super.isValid();
+        if(valid)
+        {
+            Number number = (Number) getValue();
+            if (number  != null && number.doubleValue() > maxValue.doubleValue())
+            {
+                return false;
+            }
+            if (number != null && number.doubleValue() < minValue.doubleValue())
+            {
+                return false;
+            }
+        }
+        return valid;
+    }
 
+    
+    protected void commitValue()
+    {
+        if (_valueChanged)
+        {
+            _valueChanged = false;
+            Number value = (Number) getValue();
+            
+            if (value != null && value.doubleValue() > maxValue.doubleValue())
+            {
+                value = (Number) _oldvalue;
+                _textField.setText(_oldvalue != null ? _decimalFormatter.format(_oldvalue) : "");
+                _item.getForm().getFrameworkManager().handleException(new EJApplicationException(String.format("The maximum allowable value: %s", _decimalFormatter.format(maxValue.doubleValue()))), true);
+            }
+            if (value != null && value.doubleValue() < minValue.doubleValue())
+            {
+                value = (Number) _oldvalue;
+                _textField.setText(_oldvalue != null ? _decimalFormatter.format(_oldvalue) : "");
+
+                _item.getForm().getFrameworkManager().handleException(new EJApplicationException(String.format("The minimum allowable value: %s", _decimalFormatter.format(minValue.doubleValue()))), true);
+            }
+            
+            
+            _item.itemValueChaged(value);
+            _oldvalue=null;
+            setMandatoryBorder(_mandatory);
+        }
+    }
+    
     @Override
     protected Text newTextField(Composite composite, int style)
     {
+
+        maxValue = _rendererProps.getFloatProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MAXVALUE, Float.MAX_VALUE);
+        minValue = _rendererProps.getFloatProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MINVALUE, Float.MIN_VALUE);
         _textField = new Text(composite, style);
         _textField.addModifyListener(new ModifyListener()
         {
@@ -184,14 +236,15 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                 {
                     try
                     {
-                        _decimalFormatter.parse(_textField.getText());
+                        Number number = _decimalFormatter.parse(_textField.getText());
+
+                       
                     }
                     catch (ParseException e)
                     {
                         _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_FORMAT);
 
-                        _errorDecoration.setDescriptionText(String.format("Invalid Number format. Should be %s ",
-                                _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_FORMAT)));
+                        _errorDecoration.setDescriptionText(String.format("Invalid Number format. Should be %s ", _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_FORMAT)));
                         _errorDecoration.show();
                     }
                 }
@@ -211,6 +264,10 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                         try
                         {
                             _modifyListener.enable = false;
+                            
+                            
+                            
+                            
                             Object value = getValue();
                             if (value != null)
                             {
@@ -228,7 +285,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
 
                     }
                 });
-                
+
             }
 
             @Override
@@ -267,8 +324,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
             _modifyListener.enable = false;
             if (value != null && !Number.class.isAssignableFrom(value.getClass()))
             {
-                EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM, _item.getName(),
-                        Number.class.getName(), value.getClass().getName());
+                EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM, _item.getName(), Number.class.getName(), value.getClass().getName());
                 throw new IllegalArgumentException(message.getMessage());
             }
             _baseValue = value;
@@ -287,8 +343,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                     {
                         if (_maxLength > 0 && value.toString().length() > _maxLength)
                         {
-                            EJMessage message = new EJMessage("The value for item, " + _item.getReferencedItemProperties().getBlockName() + "."
-                                    + _item.getReferencedItemProperties().getName() + " is too long for its field definition.");
+                            EJMessage message = new EJMessage("The value for item, " + _item.getReferencedItemProperties().getBlockName() + "." + _item.getReferencedItemProperties().getName() + " is too long for its field definition.");
                             throw new EJApplicationException(message);
                         }
                     }
@@ -341,7 +396,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         return numberType;
     }
 
-     static DecimalFormat createFormatter(EJScreenItemController item, NUMBER_TYPE numberType)
+    static DecimalFormat createFormatter(EJScreenItemController item, NUMBER_TYPE numberType)
     {
         DecimalFormat _decimalFormatter = null;
         EJFrameworkExtensionProperties _rendererProps = item.getReferencedItemProperties().getItemRendererProperties();
@@ -560,8 +615,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                 }
                 return 0;
             }
-            
-          
+
         };
     }
 }

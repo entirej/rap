@@ -100,12 +100,24 @@ public class EJRWTNumberItemRendererDefinition implements EJDevItemRendererDefin
         customCSSKey.setLabel("Custom CSS Key");
         customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
 
+        
+        
+        
+        EJDevPropertyDefinition maxValue = new EJDevPropertyDefinition(PROPERTY_MAXVALUE, EJPropertyDefinitionType.FLOAT);
+        maxValue.setLabel("Maximum Value");
+        maxValue.setDescription("The maximum allowable value for this item");
+        
+        EJDevPropertyDefinition minValue = new EJDevPropertyDefinition(PROPERTY_MINVALUE, EJPropertyDefinitionType.FLOAT);
+        minValue.setLabel("Minimum Value");
+        minValue.setDescription("The minimum allowable value for this item");
 
         mainGroup.addPropertyDefinition(format);
         mainGroup.addPropertyDefinition(textAlignment);
         mainGroup.addPropertyDefinition(selectOnFocus);
         mainGroup.addPropertyDefinition(displayValueAsLabel);
         mainGroup.addPropertyDefinition(customCSSKey);
+        mainGroup.addPropertyDefinition(maxValue);
+        mainGroup.addPropertyDefinition(minValue);
 
         return mainGroup;
     }
