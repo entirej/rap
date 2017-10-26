@@ -23,7 +23,6 @@ import java.text.Collator;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -61,6 +60,7 @@ import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfac
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
+import org.entirej.applicationframework.rwt.table.HtmlEscapeSupport;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJApplicationException;
@@ -1108,10 +1108,23 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
     }
 
+    private static class TextHtmlEscapeSupport extends ColumnLabelProvider implements HtmlEscapeSupport
+    {
+        protected boolean escapeHtml;
+        @Override
+        public void setEscape()
+        {
+            escapeHtml = true;
+            
+        }
+        
+    }
+    
+    
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)
     {
-        ColumnLabelProvider provider = new ColumnLabelProvider()
+        ColumnLabelProvider provider = new TextHtmlEscapeSupport() 
         {
             @Override
             public Color getBackground(Object element)
@@ -1179,10 +1192,49 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     Object value = record.getValue(item.getReferencedItemName());
                     if (value instanceof String)
                     {
-                        return value.toString();
+                        return check(value.toString());
                     }
                 }
                 return "";
+            }
+            
+            String check(String text)
+            {
+                if(escapeHtml && text!=null && !text.isEmpty())
+                {
+                   return escapeHtml(text); 
+                }
+                return text;
+            }
+            
+             String escapeHtml(String string) {
+                StringBuilder escapedTxt = new StringBuilder();
+                for (int i = 0; i < string.length(); i++) {
+                    char tmp = string.charAt(i);
+                    switch (tmp) {
+                    case '<':
+                        escapedTxt.append("&lt;");
+                        break;
+                    case '>':
+                        escapedTxt.append("&gt;");
+                        break;
+                    case '&':
+                        escapedTxt.append("&amp;");
+                        break;
+                    case '"':
+                        escapedTxt.append("&quot;");
+                        break;
+                    case '\'':
+                        escapedTxt.append("&#x27;");
+                        break;
+                    case '/':
+                        escapedTxt.append("&#x2F;");
+                        break;
+                    default:
+                        escapedTxt.append(tmp);
+                    }
+                }
+                return escapedTxt.toString();
             }
 
         };

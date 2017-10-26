@@ -27,7 +27,6 @@ import java.util.Map;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -93,6 +92,7 @@ import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.table.EJRWTTableSortSelectionListener;
 import org.entirej.applicationframework.rwt.table.EJRWTTableViewerColumnFactory;
 import org.entirej.applicationframework.rwt.table.HtmlBaseColumnLabelProvider;
+import org.entirej.applicationframework.rwt.table.HtmlEscapeSupport;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
 import org.entirej.framework.core.EJForm;
@@ -1010,6 +1010,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
         boolean autoSize = false;
         final List<ColumnLabelProvider> nodeTextProviders = new ArrayList<ColumnLabelProvider>();
         table.setData(EJ_RWT.MARKUP_ENABLED, rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, false));
+        boolean markEscapeHtml = false;
         for (EJItemGroupProperties groupProperties : allItemGroupProperties)
         {
             Collection<EJScreenItemProperties> itemProperties = groupProperties.getAllItemProperties();
@@ -1021,6 +1022,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 if(screenItem instanceof HtmlBaseColumnLabelProvider)
                 {
                     table.setData(EJ_RWT.MARKUP_ENABLED,true);
+                    markEscapeHtml = !rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, false);
                 }
                 if (screenItem != null)
                 {
@@ -1034,6 +1036,15 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                     }
                 }
 
+            }
+        }
+        if(markEscapeHtml)
+        for (ColumnLabelProvider columnLabelProvider : nodeTextProviders)
+        {
+            if(columnLabelProvider instanceof HtmlEscapeSupport)
+            {
+                HtmlEscapeSupport escapeSupport = (HtmlEscapeSupport) columnLabelProvider;
+                escapeSupport.setEscape();
             }
         }
 
