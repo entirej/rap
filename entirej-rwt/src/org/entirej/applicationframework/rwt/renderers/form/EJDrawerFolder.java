@@ -219,10 +219,10 @@ public class EJDrawerFolder extends Composite
                 Color color = e.gc.getForeground();
                 Color bgColor = e.gc.getBackground();
                 e.gc.setBackground(SYSTEM_COLOR_RED);
-                e.gc.fillOval(p.y, 1, 14, 14);
+                e.gc.fillOval(p.y-4, 3, 14, 14);
 
                 e.gc.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-                e.gc.drawText(badge, p.y + 4, 3, true);
+                e.gc.drawText(badge, p.y , 3, true);
                 e.gc.setForeground(color);
                 e.gc.setBackground(bgColor);
                 offset += 14;

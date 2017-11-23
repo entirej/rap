@@ -147,6 +147,7 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
         _dialog = new EJRWTAbstractDialog(getRWTManager().getShell())
         {
             private static final long serialVersionUID = -4685316941898120169L;
+            private EJRWTAbstractFilteredTable filterTree;
 
             @Override
             public boolean close()
@@ -156,7 +157,12 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
                 return super.close();
             }
             
-           
+           @Override
+        public void activateDialog()
+        {
+            super.activateDialog();
+            filterTree.getFilterControl().forceFocus();
+        }
 
             @Override
             public void createBody(Composite parent)
@@ -180,7 +186,7 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
                 }
 
                
-                final EJRWTAbstractFilteredTable filterTree;
+                 ;
                 Table table;
 
                 filterTree = new EJRWTAbstractFilteredTable(parent, style)
@@ -193,6 +199,7 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
                         {
                             _filteredContentProvider.setFilter(filter);
                             getViewer().setInput(filter);
+                            getViewer().getTable().select(0);
                         }
                     }
 
@@ -489,7 +496,7 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
 
         _dialog.centreLocation();
         _dialog.open();
-        //_dialog.activateDialog();
+        _dialog.activateDialog();
     }
 
     @Override

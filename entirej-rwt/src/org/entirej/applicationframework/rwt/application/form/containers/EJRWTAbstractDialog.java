@@ -41,6 +41,7 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
 {
     private Shell _parent;
     private int   _selectedButtonId = -1;
+    private int counter =0;
 
     public EJRWTAbstractDialog(final Shell parent)
     {
@@ -77,7 +78,12 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
     
     public void activateDialog()
     {
-
+        getShell().forceFocus();
+        if(counter==0)
+        {
+            //counter++;
+            return;
+        }
         
         final ServerPushSession pushSession = new ServerPushSession();
         pushSession.start();
