@@ -271,11 +271,13 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                             Object value = getValue();
                             if (value != null)
                             {
-                                _textField.setText(_decimalFormatter.format(value));
+                                if(controlState(_textField))
+                                    _textField.setText(_decimalFormatter.format(value));
                             }
                             else
                             {
-                                _textField.setText("");
+                                if(controlState(_textField))
+                                    _textField.setText("");
                             }
                         }
                         finally
@@ -308,7 +310,8 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                 @Override
                 public void focusGained(FocusEvent arg0)
                 {
-                    _textField.selectAll();
+                    if(controlState(_textField))
+                        _textField.selectAll();
                 }
             });
         }
