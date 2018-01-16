@@ -154,7 +154,7 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                             {
                                 if(fileUpload.isMultiSelection())
                                 {
-                                    EJRWTFileUpload.promptMultipleFileUpload(fileUpload.getTitle(), new FileSelectionCallBack()
+                                    EJRWTFileUpload.promptMultipleFileUpload(fileUpload.getTitle(),fileUpload.getUploadSizeLimit(),fileUpload.getUploadTimeLimit(),fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
                                     {
                                         
                                         @Override
@@ -176,7 +176,7 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                                 else
                                 {
                                     
-                                    EJRWTFileUpload.promptFileUpload(fileUpload.getTitle(), new FileSelectionCallBack()
+                                    EJRWTFileUpload.promptFileUpload(fileUpload.getTitle(),fileUpload.getUploadSizeLimit(),fileUpload.getUploadTimeLimit(),fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
                                     {
                                         
                                         @Override

@@ -168,28 +168,28 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.jface</artifactId>
-			<version>3.1.0</version>
+			<version>3.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.forms</artifactId>
-			<version>3.1.0</version>
+			<version>3.4.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui.forms_3.1.0.20150914-0802.jar</systemPath>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui.forms_3.4.0.20171017-0945.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui</artifactId>
-			<version>3.1.0</version>
+			<version>3.4.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui_3.1.0.20150624-1329.jar</systemPath>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui_3.4.0.20171017-0945.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.workbench</artifactId>
-			<version>3.1.0</version>
+			<version>3.4.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui.workbench_3.1.0.20151219-0931.jar</systemPath>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui.workbench_3.4.0.20171017-0945.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap.incubator</groupId>
@@ -201,26 +201,26 @@
 		<dependency>
 			<groupId>org.eclipse.rap.incubator</groupId>
 			<artifactId>org.eclipse.rap.addons.fileupload</artifactId>
-			<version>3.1.0</version>
+			<version>3.4.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.fileupload_3.1.0.20150813-1927.jar</systemPath>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.fileupload_3.4.0.20171017-0945.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap.incubator</groupId>
 			<artifactId>org.eclipse.rap.addons.filedialog</artifactId>
-			<version>3.1.0</version>
+			<version>3.4.0</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.filedialog_3.1.0.20160422-2018.jar</systemPath>
+			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.filedialog_3.4.0.20171017-0945.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt</artifactId>
-			<version>3.1.0</version>
+			<version>3.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt.osgi</artifactId>
-			<version>3.1.0</version>
+			<version>3.4.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
@@ -241,7 +241,7 @@
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.2</version>
+			<version>1.3.2</version>
 		</dependency>
 
 	</dependencies>

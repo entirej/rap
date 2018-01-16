@@ -28,12 +28,15 @@ public class EJRWTFileUpload
     {
     }
 
-    public static void promptFileUpload(String title, final FileSelectionCallBack callBack)
+    public static void promptFileUpload(String title,long fileSizeLimit,long uploadTimeLimit,String [] ext, final FileSelectionCallBack callBack)
     {
 
         final FileDialog fileDialog = new FileDialog(Display.getDefault().getActiveShell(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | SWT.SINGLE);
         
         fileDialog.setText(title);
+        fileDialog.setFilterExtensions(ext);
+        fileDialog.setUploadSizeLimit(fileSizeLimit);
+        fileDialog.setUploadTimeLimit(uploadTimeLimit);
         fileDialog.open(new DialogCallback()
         {
 
@@ -48,7 +51,7 @@ public class EJRWTFileUpload
 
     }
 
-    public static void promptMultipleFileUpload(String title, final FileSelectionCallBack callBack)
+    public static void promptMultipleFileUpload(String title,long fileSizeLimit,long uploadTimeLimit,String [] ext, final FileSelectionCallBack callBack)
     {
 
         final FileDialog fileDialog = new FileDialog(Display.getDefault().getActiveShell(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | SWT.MULTI);
