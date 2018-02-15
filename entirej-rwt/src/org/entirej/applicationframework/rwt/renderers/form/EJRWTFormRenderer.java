@@ -1234,7 +1234,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             trayPane.initBase(group);
             parent = group;
         }
-        final EJRWTEntireJGridPane groupPane = new EJRWTEntireJGridPane(parent, canvasProperties.getNumCols(), canvasProperties.getDisplayGroupFrame() ? SWT.BORDER : SWT.NONE);
+        final EJRWTEntireJGridPane groupPane = new EJRWTEntireJGridPane(parent, canvasProperties.getNumCols(), canvasProperties.getDisplayGroupFrame() && (frameTitle == null || frameTitle.length() == 0) ? SWT.BORDER : SWT.NONE);
         groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         if (canvasProperties.getDisplayGroupFrame())
         {
