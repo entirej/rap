@@ -1369,7 +1369,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         createFormCanvas(groupPane, containedCanvas, canvasController);
                         break;
                     case SEPARATOR:
-                        createSeparatorCanvas(parent, canvasProperties);
+                        createSeparatorCanvas(groupPane, canvasProperties);
                         break;
                     case SPLIT:
                         createSplitCanvas(groupPane, containedCanvas, canvasController);
@@ -1524,7 +1524,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         break;
 
                     case SEPARATOR:
-                        createSeparatorCanvas(parent, canvasProperties);
+                        createSeparatorCanvas(layoutBody, canvasProperties);
                         break;
                     case SPLIT:
                         createSplitCanvas(layoutBody, containedCanvas, canvasController);
