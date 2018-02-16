@@ -1238,11 +1238,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         if (canvasProperties.getDisplayGroupFrame())
         {
-            groupPane.cleanLayoutTop();
+           //.cleanLayoutTop();
         }
         else
         {
-            groupPane.cleanLayout();
+          //  groupPane.cleanLayout();
         }
 
         groupPane.setPaneName(canvasProperties.getName());
@@ -1755,19 +1755,20 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             case ID_BUTTON_1:
                             {
                                 msgs = null;
-                                canvasController.closePopupCanvas(name, EJPopupButton.ONE);
+                                Display.getDefault().asyncExec(()->canvasController.closePopupCanvas(name, EJPopupButton.ONE));
+                                
                                 break;
                             }
                             case ID_BUTTON_2:
                             {
                                 msgs = null;
-                                canvasController.closePopupCanvas(name, EJPopupButton.TWO);
+                                Display.getDefault().asyncExec(()->canvasController.closePopupCanvas(name, EJPopupButton.TWO));
                                 break;
                             }
                             case ID_BUTTON_3:
                             {
                                 msgs = null;
-                                canvasController.closePopupCanvas(name, EJPopupButton.THREE);
+                                Display.getDefault().asyncExec(()->canvasController.closePopupCanvas(name, EJPopupButton.THREE));
 
                                 break;
                             }
@@ -1852,6 +1853,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             if (_popupDialog != null && _popupDialog.getShell() != null && _popupDialog.getShell().isVisible())
             {
                 _popupDialog.close();
+                _popupDialog.getShell().dispose();
+                _popupDialog = null;
             }
         }
 

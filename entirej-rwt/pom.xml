@@ -28,8 +28,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.0</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 
@@ -59,8 +59,8 @@
 					<links>
 						<link>http://docs.oracle.com/javase/6/docs/api/</link>
 					</links>
-					<javadocVersion>1.6</javadocVersion>
-					<source>1.6</source>
+					<javadocVersion>1.8</javadocVersion>
+					<source>1.8</source>
 					<show>public</show>
 					<doctitle>Entirej RWT API</doctitle>
 					<title>Entirej Development API</title>
