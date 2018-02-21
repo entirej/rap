@@ -69,6 +69,7 @@ public class EJRWTLookupFormLovRenderer extends EJRWTStandardLovRenderer
         else
         {
             _queryScreenRenderer.open(record);
+            
         }
     }
 

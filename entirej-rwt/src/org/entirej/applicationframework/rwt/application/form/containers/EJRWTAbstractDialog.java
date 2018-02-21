@@ -19,6 +19,7 @@
 package org.entirej.applicationframework.rwt.application.form.containers;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -78,12 +79,8 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
     
     public void activateDialog()
     {
-        getShell().forceFocus();
-        if(counter==0)
-        {
-            //counter++;
-            return;
-        }
+        //getShell().forceFocus();
+        
         
         final ServerPushSession pushSession = new ServerPushSession();
         pushSession.start();
@@ -93,12 +90,14 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
             @Override
             public void run()
             {
+                
                 dp.asyncExec(new Runnable()
                 {
+                    AtomicBoolean b = new AtomicBoolean(true);
                     @Override
                     public void run()
                     {
-                            getShell().forceFocus();
+                            
                         pushSession.stop();
                     }
                 });

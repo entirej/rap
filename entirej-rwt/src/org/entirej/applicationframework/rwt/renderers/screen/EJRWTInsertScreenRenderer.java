@@ -25,6 +25,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
@@ -156,6 +157,7 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
     public void close()
     {
         _insertDialog.close();
+        _insertDialog.getShell().dispose();
         _insertDialog = null;
     }
 
@@ -319,6 +321,7 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
             @Override
             protected void buttonPressed(int buttonId)
             {
+                Display.getDefault().asyncExec(()->{
                 try
                 {
                     switch (buttonId)
@@ -387,7 +390,7 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
                     _logger.trace(e.getMessage());
                     _frameworkManager.handleException(e);
                     return;
-                }
+                }});
             }
         };
         _insertDialog.create();

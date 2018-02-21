@@ -25,6 +25,7 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
@@ -173,6 +174,7 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
     public void close()
     {
         _queryDialog.close();
+        _queryDialog.getShell().dispose();
         _queryDialog = null;
     }
 
@@ -306,6 +308,7 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
             @Override
             protected void buttonPressed(int buttonId)
             {
+                Display.getDefault().asyncExec(()->{
                 try
                 {
                     switch (buttonId)
@@ -373,6 +376,7 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
                     _frameworkManager.handleException(e);
                     return;
                 }
+                });
             }
         };
         _queryDialog.create();
