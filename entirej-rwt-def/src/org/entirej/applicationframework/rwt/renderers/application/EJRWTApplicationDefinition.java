@@ -66,6 +66,8 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
     public static final String SERVICE_NAME                  = "SERVICE_NAME";
     public static final String SERVICE_FORM                  = "SERVICE_FORM";
 
+    public static final String LIVE_CONNECTION               = "LIVE_CONNECTION";
+
     @Override
     public String getApplicationManagerClassName()
     {
@@ -140,10 +142,15 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
         applicationMenu.setDescription("The Application Menu is the standard drop down menu displayed at the top of the screen. The menu is created using the <a href=\"http://docs.entirej.com/display/EJ1/Application+Menu\">EntireJ Menu Editor</a>");
 
         mainGroup.addPropertyDefinition(applicationMenu);
+        EJDevPropertyDefinition liveConnection = new EJDevPropertyDefinition(LIVE_CONNECTION, EJPropertyDefinitionType.BOOLEAN);
+        liveConnection.setLabel("Keep live connection to server.");
+        liveConnection.setDescription("Keep a live connection to the server so in the event of a session timeout, the timeout page will automatically be shown without any user interaction.");
+
+        mainGroup.addPropertyDefinition(liveConnection);
         EJDevPropertyDefinition displayTabBorder = new EJDevPropertyDefinition(DISPLAY_TAB_BORDER, EJPropertyDefinitionType.BOOLEAN);
         displayTabBorder.setLabel("Display border on tabs");
         displayTabBorder.setDescription("Indicates if borders should be used to surround tab canvases. Displaying borders on tabs can lead to many unwanted frames displayed on your application.");
-
+        
         mainGroup.addPropertyDefinition(displayTabBorder);
 
         EJDevPropertyDefinitionGroup actionGroup = new EJDevPropertyDefinitionGroup(EJRWTSingleRecordBlockDefinitionProperties.ACTION_GROUP, "Shortcuts");

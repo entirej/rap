@@ -64,7 +64,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTApplicationContaine
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.EJRWTGraphicsProvider;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
-import org.entirej.applicationframework.rwt.component.EJRWTCKEditor;
+import org.entirej.applicationframework.rwt.component.EJRWTTinymceEditor;
 import org.entirej.applicationframework.rwt.file.EJRWTFileDownload;
 import org.entirej.applicationframework.rwt.file.EJRWTFileUpload;
 import org.entirej.applicationframework.rwt.file.EJRWTFileUpload.FileSelectionCallBack;
@@ -562,7 +562,10 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                 e.printStackTrace();
                             }
 
-                      //  pushSession.start();
+                        EJFrameworkExtensionProperties definedProperties = coreProperties.getApplicationDefinedProperties();
+                        
+                        if(definedProperties!=null && definedProperties.getBooleanProperty("LIVE_CONNECTION", false))
+                            pushSession.start();
 
                         return openShell(display, shell);
                     }
@@ -918,7 +921,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
         loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.hyperlinkkit.HyperlinkAdapterResource().getLocation());
         loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextResource().getLocation());
         loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextAdapterResource().getLocation());
-        EJRWTCKEditor.initResources();
+        EJRWTTinymceEditor.initResources();
         AbstractChart.registerJS();
         AbstractChart.requireJS();
     }

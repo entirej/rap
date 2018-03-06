@@ -19,32 +19,23 @@
 package org.entirej.applicationframework.rwt.renderers.html;
 
 import java.io.Serializable;
-import java.text.Collator;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.entirej.applicationframework.rwt.component.EJRWTCKEditor;
+import org.entirej.applicationframework.rwt.component.EJRWTTinymceEditor;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.ControlDecorationSupport;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
@@ -53,7 +44,6 @@ import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJMessage;
-import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
@@ -74,7 +64,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
     protected EJScreenItemProperties          _screenItemProperties;
     protected EJItemProperties                _itemProperties;
     protected String                          _registeredItemName;
-    protected EJRWTCKEditor                   _textField;
+    protected EJRWTTinymceEditor                   _textField;
     protected Label                           _label;
     protected boolean                         _isValid = true;
     protected boolean                         _mandatory;
@@ -612,7 +602,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
         {
 
             composite.setData(EJ_RWT.CUSTOM_VARIANT, "html");
-            _textField = new EJRWTCKEditor(composite, SWT.NONE,_rendererProps.getBooleanProperty(PROPERTY_INLINE_KEY, false),
+            _textField = new EJRWTTinymceEditor(composite, SWT.NONE,_rendererProps.getBooleanProperty(PROPERTY_INLINE_KEY, false),
                     
                     _rendererProps.getStringProperty(PROPERTY_PROFILE_KEY),_rendererProps.getBooleanProperty(PROPERTY_REMOVE_TOOLBAR_KEY, false)){
                 
