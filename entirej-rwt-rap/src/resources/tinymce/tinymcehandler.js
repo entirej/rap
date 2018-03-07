@@ -184,7 +184,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 		},
 
 		onSend : function() {
-			if (this.editor && !this.editor.isDirty()) {
+			if (this.editor && this.editor.isDirty()) {
 				rap.getRemoteObject(this).set("text", this.editor.getContent());
 				try
 				{
