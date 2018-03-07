@@ -42,10 +42,12 @@ import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.client.service.ClientFileLoader;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
+import org.eclipse.rap.rwt.client.service.StartupParameters;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
@@ -486,6 +488,15 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         if (display.isDisposed())
                             display = new Display();
                         Shell shell = new Shell(display, SWT.NO_TRIM);
+                        
+                        //check test mode
+                        
+                        StartupParameters service = RWT.getClient().getService(StartupParameters.class);
+                        if(service!= null && Boolean.valueOf(service.getParameter("TEST_MODE")))
+                        {
+                            EJ_RWT.setTestMode(true);
+                        }
+                        
                         try
                         {
                             preApplicationBuild(applicationManager);

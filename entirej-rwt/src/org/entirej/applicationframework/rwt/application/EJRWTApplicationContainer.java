@@ -570,6 +570,10 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
 
             EJRWTAppComponentRenderer renderer = (EJRWTAppComponentRenderer) applicationComponentRenderer;
             renderer.createContainer(_applicationManager, parent, component.getRendereProperties());
+            
+            
+            EJ_RWT.setTestId(renderer.getGuiComponent(), component.getName());
+           
             renderer.getGuiComponent().setLayoutData(createGridData(component));
             return;
         }
@@ -594,6 +598,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
         Composite layoutBody = new Composite(parent, SWT.NO_FOCUS | (group.isBorder() ? SWT.BORDER : SWT.NONE));
         layoutBody.setLayoutData(createGridData(group));
         layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "applayout");
+        EJ_RWT.setTestId(layoutBody, group.getName());
         List<EJCoreLayoutItem> items = group.getItems();
         if (items.size() > 0)
         {
@@ -640,6 +645,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
     {
         SashForm layoutBody = new SashForm(parent, group.getOrientation() == ORIENTATION.HORIZONTAL ? SWT.HORIZONTAL : SWT.VERTICAL);
         layoutBody.setLayoutData(createGridData(group));
+        EJ_RWT.setTestId(layoutBody, group.getName());
         List<EJCoreLayoutItem> items = group.getItems();
         if (items.size() > 0)
         {
@@ -688,7 +694,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
 
       final  EJAppTabFolder appTabFolder = new EJAppTabFolder(this, layoutBody);
        _tabFolders.put(group.getName(), appTabFolder);
-       
+       EJ_RWT.setTestId(layoutBody, group.getName());
         layoutBody.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -709,7 +715,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                     try
                     {
                         String pageName = (String) selection.getData("TAB_KEY");
-                       
+                        
                        applicationActionProcessor.preShowTabPage(_applicationManager.getFrameworkManager(), group.getName(), pageName);
                     }
                     catch (EJActionProcessorException e1)
@@ -749,6 +755,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
             composite.setData(EJ_RWT.CUSTOM_VARIANT, "applayout");
             composite.setData("TAB_ITEM", tabItem);
             composite.setData("TAB_KEY", item.getName());
+            EJ_RWT.setTestId(tabItem, group.getName()+"."+item.getName());
             tabItem.setData("TAB_KEY", item.getName());
             composite.setLayout(new GridLayout());
             tabItem.setControl(composite);

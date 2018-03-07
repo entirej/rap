@@ -1397,6 +1397,10 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             {
                 itemRenderer.getGuiComponentLabel().setLayoutData(createBlockLableGridData(blockRequiredItemProperties));
             }
+            
+            EJ_RWT.setTestId(itemRenderer.getGuiComponent(), blockRequiredItemProperties.getBlockProperties().getName()+"."+itemRenderer.getRegisteredItemName());
+            
+            
             if (visualAttribute != null)
             {
                 EJCoreVisualAttributeProperties va = EJCoreProperties.getInstance().getVisualAttributesContainer()

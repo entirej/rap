@@ -425,6 +425,7 @@ public class EJDrawerFolder extends Composite
             composite.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
 
             rotatingButton = new TabButton(EJDrawerFolder.this, SWT.None);
+            EJ_RWT.setTestId(rotatingButton, page.getName());
             addSeperator();
             if (position == EJCanvasDrawerPosition.RIGHT && tabPages.size() == 0)
             {

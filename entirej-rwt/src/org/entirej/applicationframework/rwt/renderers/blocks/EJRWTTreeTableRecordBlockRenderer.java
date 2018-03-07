@@ -1584,6 +1584,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
                 TreeViewerColumn viewerColumn = factory.createColumn(itemProps.getLabel(), displayedWidth, labelProvider, getComponentStyle(labelOrientation));
                 TreeColumn column = viewerColumn.getColumn();
+                EJ_RWT.setTestId(column, blockProperties.getName()+"."+itemProps.getReferencedItemName());
                 column.setData("KEY", itemProps.getReferencedItemName());
                 column.setData("VIEWER", viewerColumn);
                 column.setData("ITEM", item);

@@ -18,6 +18,8 @@
  ******************************************************************************/
 package org.eclipse.rwt;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.StartupParameters;
@@ -60,16 +62,17 @@ public class EJ_RWT
 
     public static final java.lang.String PROPERTY_CSS_KEY     = "CSS_KEY";
 
+    private static final AtomicBoolean TESTMODE = new AtomicBoolean(false); 
+    
+    
     public static void setTestId(Widget widget, String value)
     {
-        //TODO: add test mode
-        if (!widget.isDisposed())
+        if(!TESTMODE.get() && value !=null && widget!=null)
+            return ;
+        
+        if ( !widget.isDisposed())
         {
-            StartupParameters service = RWT.getClient().getService(StartupParameters.class);
-            if(service== null || !Boolean.valueOf(service.getParameter("TEST_MODE")))
-            {
-                return;
-            }
+            
             
             String $el = widget instanceof Text ? "$input" : "$el";
             String id = WidgetUtil.getId(widget);
@@ -88,5 +91,10 @@ public class EJ_RWT
         builder.append("}catch(e){}");
         JavaScriptExecutor executor = RWT.getClient().getService(JavaScriptExecutor.class);
         executor.execute(builder.toString());
+    }
+    
+    public static void setTestMode(boolean b)
+    {
+        TESTMODE.set(b);
     }
 }

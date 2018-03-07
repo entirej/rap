@@ -752,6 +752,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         stackedPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         stackedPane.setLayout(new FillLayout());
         stackedPane.setLayoutData(createCanvasGridData(canvasProperties));
+
+        EJ_RWT.setTestId(trayPane, _form.getProperties().getName()+"."+canvasProperties.getName());
         _formPanes.put(name, stackedPane);
         trayPane.initBase(stackedPane);
         _canvasesIds.add(name);
@@ -889,6 +891,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         final String name = canvasProperties.getName();
 
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
+
+        EJ_RWT.setTestId(trayPane, _form.getProperties().getName()+"."+canvasProperties.getName());
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
         parent = trayPane;
 
@@ -1041,6 +1045,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
+        EJ_RWT.setTestId(trayPane, _form.getProperties().getName()+"."+canvasProperties.getName());
         parent = trayPane;
         
         EJDrawerFolder folder = null;
@@ -1220,6 +1225,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
+
+        EJ_RWT.setTestId(trayPane, _form.getProperties().getName()+"."+canvasProperties.getName());
         parent = trayPane;
 
         String frameTitle = canvasProperties.getGroupFrameTitle();
@@ -1394,11 +1401,14 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
 
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
+
+        EJ_RWT.setTestId(trayPane, _form.getProperties().getName()+"."+canvasProperties.getName());
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
         parent = trayPane;
         SashForm layoutBody = new SashForm(parent, canvasProperties.getSplitOrientation() == EJCanvasSplitOrientation.HORIZONTAL ? SWT.HORIZONTAL : SWT.VERTICAL);
         trayPane.initBase(layoutBody);
         layoutBody.setLayoutData(createCanvasGridData(canvasProperties));
+        
         CanvasHandler canvasHandler = new CanvasHandler()
         {
 

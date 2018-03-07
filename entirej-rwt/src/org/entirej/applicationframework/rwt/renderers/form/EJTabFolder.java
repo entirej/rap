@@ -193,6 +193,8 @@ class EJTabFolder implements ITabFolder
             final CTabItem tabItem = (index == -1 || folder.getItemCount() < index) ? new CTabItem(folder, SWT.NONE) : new CTabItem(folder, SWT.NONE, index);
             tabItem.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
             tabItem.setData("TAB_KEY", page.getName());
+            
+            EJ_RWT.setTestId(tabItem, page.getName());
             pageCanvas = new EJRWTEntireJGridPane(folder, page.getNumCols());
             pageCanvas.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
             tabItem.setText(page.getPageTitle() != null && page.getPageTitle().length() > 0 ? page.getPageTitle() : page.getName());

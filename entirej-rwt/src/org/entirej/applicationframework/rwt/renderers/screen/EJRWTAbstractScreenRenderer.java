@@ -400,6 +400,8 @@ public abstract class EJRWTAbstractScreenRenderer implements EJRenderer
                 itemRenderer.createComponent(parent);
             }
             itemRenderer.getGuiComponent().setLayoutData(createBlockItemGridData(itemRenderer, blockRequiredItemProperties, itemRenderer.getGuiComponent()));
+            EJ_RWT.setTestId(itemRenderer.getGuiComponent(), blockRequiredItemProperties.getBlockProperties().getName()+"."+itemRenderer.getRegisteredItemName());
+            
             if (itemRenderer.getGuiComponentLabel() != null)
             {
                 itemRenderer.getGuiComponentLabel().setLayoutData(createBlockLableGridData(blockRequiredItemProperties));

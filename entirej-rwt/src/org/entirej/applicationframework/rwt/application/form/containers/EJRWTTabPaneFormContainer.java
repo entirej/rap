@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Adapter;
@@ -160,6 +161,8 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         CTabItem tabItem = new CTabItem(_folder, SWT.NONE);
         _tabPages.put(form, tabItem);
         tabItem.setData(form);
+        
+        EJ_RWT.setTestId(tabItem, form.getProperties().getName());
 
         EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
         final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(_folder, SWT.V_SCROLL | SWT.H_SCROLL);

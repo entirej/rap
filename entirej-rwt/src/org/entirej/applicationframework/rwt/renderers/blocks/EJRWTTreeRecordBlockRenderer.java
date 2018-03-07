@@ -1064,6 +1064,9 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
 
         final TreeColumn column = viewerColumn.getColumn();
 
+        
+        
+        
         _tableViewer.getTree().addListener(SWT.Resize, new Listener()
         {
 

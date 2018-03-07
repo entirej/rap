@@ -1299,6 +1299,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
                 TableViewerColumn viewerColumn = factory.createColumn(itemProps.getLabel(), displayedWidth, labelProvider, getComponentStyle(labelOrientation));
                 TableColumn column = viewerColumn.getColumn();
+                EJ_RWT.setTestId(column, blockProperties.getName()+"."+itemProps.getReferencedItemName());
                 column.setData("KEY", itemProps.getReferencedItemName());
                 column.setData("ITEM", item);
                 column.setToolTipText(itemProps.getHint());
