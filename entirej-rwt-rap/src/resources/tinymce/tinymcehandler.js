@@ -253,6 +253,8 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					{
 						this.element.style.visibility = "visible";
 					}
+
+					this.editor.setMode(this.readonly ? 'readonly' : 'design');
 				}catch(e)
 				{
 					//ignore

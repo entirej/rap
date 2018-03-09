@@ -665,7 +665,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
                     button.setSelection(false);
                 }
             }
-
+            EJ_RWT.setAttribute(_radioGroup, "ej-item-selection", String.valueOf(getValue()));
             // Add the listeners. These will be needed to trigger events within
             // EntireJ
             button.addFocusListener(this);
@@ -831,8 +831,10 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     public void valueChanged()
     {
         Object old = _baseValue;
-        _item.itemValueChaged(getValue());
+        Object value = getValue();
+        _item.itemValueChaged(value);
 
+        EJ_RWT.setAttribute(_radioGroup, "ej-item-selection", String.valueOf(value));
         _item.executeActionCommand();
         setMandatoryBorder(_mandatory);
     }

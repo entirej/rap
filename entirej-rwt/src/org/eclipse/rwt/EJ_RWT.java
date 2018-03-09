@@ -79,6 +79,21 @@ public class EJ_RWT
             exec("rap.getObject( '", id, "' ).", $el, ".attr( 'test-id', '", value + "' );");
         }
     }
+    
+    public static void setAttribute(Widget widget,String attid, String value)
+    {
+        if(!TESTMODE.get() && value !=null && widget!=null)
+            return ;
+        
+        if ( !widget.isDisposed())
+        {
+            
+            
+            String $el = widget instanceof Text ? "$input" : "$el";
+            String id = WidgetUtil.getId(widget);
+            exec("rap.getObject( '", id, "' ).", $el, ".attr( '"+attid+"', '", value + "' );");
+        }
+    }
 
     private static void exec(String... strings)
     {

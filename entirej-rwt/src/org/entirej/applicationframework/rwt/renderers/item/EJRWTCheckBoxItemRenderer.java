@@ -317,6 +317,7 @@ public class EJRWTCheckBoxItemRenderer extends EJRWTButtonItemRenderer
                         old = _checkedValue;
                         newVal =  _uncheckedValue;
                     }
+                    EJ_RWT.setAttribute(_button, "ej-item-selection", String.valueOf(newVal));
                     _item.itemValueChaged(newVal);
                     _item.executeActionCommand();
                    
@@ -361,6 +362,7 @@ public class EJRWTCheckBoxItemRenderer extends EJRWTButtonItemRenderer
         _mandatoryDecoration.hide();
         setInitialValue(_baseValue);
         _visualContext = new EJRWTItemRendererVisualContext(_button.getBackground(), _button.getForeground(), _button.getFont());
+        EJ_RWT.setAttribute(_button, "ej-item-selection", String.valueOf(getValue()));
     }
 
     private Object getValueAsObject(Class<?> datatypeClassName, String value)
