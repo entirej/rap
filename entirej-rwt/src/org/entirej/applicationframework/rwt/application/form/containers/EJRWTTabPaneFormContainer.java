@@ -133,6 +133,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
                 {
                     final EJInternalForm form = (EJInternalForm) selection.getData();
 
+                    EJ_RWT.setAttribute(_folder, "ej-item-selection", form.getProperties().getName());
                     Display.getDefault().asyncExec(new Runnable()
                     {
 
@@ -293,6 +294,8 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
                 EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
 
                 _folder.setSelection(_tabPages.get(form));
+
+                EJ_RWT.setAttribute(_folder, "ej-item-selection", form.getProperties().getName());
                 renderer.gainInitialFocus();
                 return form;
             }
@@ -310,6 +313,8 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
                 EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
 
                 _folder.setSelection(_tabPages.get(form));
+
+                EJ_RWT.setAttribute(_folder, "ej-item-selection", form.getProperties().getName());
                 renderer.gainInitialFocus();
                 return form;
             }

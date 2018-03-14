@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -103,6 +104,8 @@ public class EJRWTEntireJStackedPane extends Composite
     
     public void showPane(String pane)
     {
+
+        EJ_RWT.setAttribute(this, "ej-item-selection", pane);
         StackedPage control = _panes.get(pane);
         if (control != null)
         {

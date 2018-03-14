@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -249,6 +250,8 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
                 EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
 
                 _stackPane.showPane(_stackedPages.get(form));
+
+                EJ_RWT.setAttribute(_stackPane, "ej-item-selection", form.getProperties().getName());
                 renderer.gainInitialFocus();
 
                 form.focusGained();
@@ -272,6 +275,8 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
                 EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
 
                 _stackPane.showPane(_stackedPages.get(form));
+
+                EJ_RWT.setAttribute(_stackPane, "ej-item-selection", form.getProperties().getName());
                 renderer.gainInitialFocus();
 
                 form.focusGained();

@@ -20,6 +20,7 @@ package org.entirej.applicationframework.rwt.renderers.screen;
 
 import java.util.Collection;
 
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
@@ -287,8 +288,8 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
                 addExtraButton(parent, button3Label, ID_BUTTON_3);
                 addExtraButton(parent, button2Label, ID_BUTTON_2);
                 addExtraButton(parent, button1Label, ID_BUTTON_1);
-                createButton(parent, UPDATE_OK_ACTION_COMMAND, updateButtonLabel == null ? "Update" : updateButtonLabel, true);
-                createButton(parent, UPDATE_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false);
+                EJ_RWT.setTestId(createButton(parent, UPDATE_OK_ACTION_COMMAND, updateButtonLabel == null ? "Update" : updateButtonLabel, true),"ok");
+                EJ_RWT.setTestId(createButton(parent, UPDATE_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false),"cancel");
             }
 
             @Override
@@ -317,7 +318,8 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
                 {
                     return;
                 }
-                createButton(parent, id, label, false);
+                Button button = createButton(parent, id, label, false);
+                EJ_RWT.setTestId(button, "btn-"+id);
             }
 
             @Override

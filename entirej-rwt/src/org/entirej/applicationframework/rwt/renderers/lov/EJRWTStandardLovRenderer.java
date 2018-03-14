@@ -34,6 +34,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
@@ -167,7 +168,10 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
             @Override
             public void createBody(Composite parent)
             {
+
+                
                 GridLayout layout = new GridLayout();
+                EJ_RWT.setTestId(parent, _lovController.getProperties().getLovDefinition().getName());
                 layout.marginWidth = 0;
                 // layout.horizontalSpacing = 0;
                 layout.marginLeft = 0;
@@ -217,6 +221,9 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
                         return _tableViewer;
                     }
                 };
+                
+
+                EJ_RWT.setTestId(filterTree.getFilterControl(), "lov-search");
                 table = (_tableViewer = filterTree.getViewer()).getTable();
 
                 table.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
@@ -374,8 +381,9 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
             protected void createButtonsForButtonBar(Composite parent)
             {
 
-                createButton(parent, OK_ACTION_COMMAND, "OK", true);
-                createButton(parent, CANCEL_ACTION_COMMAND, "Cancel", false);
+
+                EJ_RWT.setTestId(createButton(parent, OK_ACTION_COMMAND, "OK", true),"ok");
+                EJ_RWT.setTestId(createButton(parent, CANCEL_ACTION_COMMAND, "Cancel", false),"cancel");
             }
 
             @Override

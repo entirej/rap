@@ -265,6 +265,8 @@ public class EJDrawerFolder extends Composite
             if (tab.page.getName().equals(pageName))
             {
                 tab.showTab(false);
+
+                EJ_RWT.setAttribute(this, "ej-item-selection", pageName);
             }
         }
 
@@ -282,6 +284,8 @@ public class EJDrawerFolder extends Composite
                 }
                 else
                     tab.shell.setVisible(visible);
+
+                EJ_RWT.setAttribute(this, "ej-item-selection", pageName);
             }
         }
 

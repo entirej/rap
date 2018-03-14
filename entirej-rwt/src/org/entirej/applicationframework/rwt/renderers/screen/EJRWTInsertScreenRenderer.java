@@ -20,6 +20,7 @@ package org.entirej.applicationframework.rwt.renderers.screen;
 
 import java.util.Collection;
 
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
@@ -290,8 +291,8 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
                 addExtraButton(parent, button3Label, ID_BUTTON_3);
                 addExtraButton(parent, button2Label, ID_BUTTON_2);
                 addExtraButton(parent, button1Label, ID_BUTTON_1);
-                createButton(parent, INSERT_OK_ACTION_COMMAND, insertButtonLabel == null ? "Insert" : insertButtonLabel, true);
-                createButton(parent, INSERT_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false);
+                EJ_RWT.setTestId(createButton(parent, INSERT_OK_ACTION_COMMAND, insertButtonLabel == null ? "Insert" : insertButtonLabel, true),"ok");
+                EJ_RWT.setTestId(createButton(parent, INSERT_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false),"cancel");
             }
 
             private void addExtraButton(Composite parent, String label, int id)
@@ -300,7 +301,8 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
                 {
                     return;
                 }
-                createButton(parent, id, label, false);
+                Button button = createButton(parent, id, label, false);
+                EJ_RWT.setTestId(button, "btn-"+id);
             }
 
             @Override

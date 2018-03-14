@@ -21,8 +21,8 @@ package org.eclipse.rwt;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
-import org.eclipse.rap.rwt.client.service.StartupParameters;
 import org.eclipse.rap.rwt.widgets.WidgetUtil;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
@@ -62,12 +62,26 @@ public class EJ_RWT
 
     public static final java.lang.String PROPERTY_CSS_KEY     = "CSS_KEY";
 
-    private static final AtomicBoolean TESTMODE = new AtomicBoolean(false); 
+    
+    
+    
+    
+    public static  class TextContext {
+        private  final AtomicBoolean TESTMODE = new AtomicBoolean(false); 
+        private TextContext() {
+          // prevent instantiation from outside
+        }
+
+        public static TextContext getInstance() {
+          return SingletonUtil.getSessionInstance( TextContext.class );
+        }
+
+      }
     
     
     public static void setTestId(Widget widget, String value)
     {
-        if(!TESTMODE.get() && value !=null && widget!=null)
+        if(!TextContext.getInstance().TESTMODE.get() && value !=null && widget!=null)
             return ;
         
         if ( !widget.isDisposed())
@@ -80,9 +94,11 @@ public class EJ_RWT
         }
     }
     
+   
+    
     public static void setAttribute(Widget widget,String attid, String value)
     {
-        if(!TESTMODE.get() && value !=null && widget!=null)
+        if(!TextContext.getInstance().TESTMODE.get() && value !=null && widget!=null)
             return ;
         
         if ( !widget.isDisposed())
@@ -110,6 +126,6 @@ public class EJ_RWT
     
     public static void setTestMode(boolean b)
     {
-        TESTMODE.set(b);
+        TextContext.getInstance().TESTMODE.set(b);
     }
 }

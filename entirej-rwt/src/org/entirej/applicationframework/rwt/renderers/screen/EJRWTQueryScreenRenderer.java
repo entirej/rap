@@ -20,6 +20,7 @@ package org.entirej.applicationframework.rwt.renderers.screen;
 
 import java.util.Collection;
 
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
@@ -285,9 +286,9 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
             @Override
             protected void createButtonsForButtonBar(Composite parent)
             {
-                createButton(parent, QUERY_OK_ACTION_COMMAND, queryButtonLabel == null ? "Query" : queryButtonLabel, true);
-                createButton(parent, QUERY_CLEAR_ACTION_COMMAND, clearButtonLabel == null ? "Clear" : clearButtonLabel, false);
-                createButton(parent, QUERY_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false);
+                EJ_RWT.setTestId(createButton(parent, QUERY_OK_ACTION_COMMAND, queryButtonLabel == null ? "Query" : queryButtonLabel, true),"ok");
+                EJ_RWT.setTestId(createButton(parent, QUERY_CLEAR_ACTION_COMMAND, clearButtonLabel == null ? "Clear" : clearButtonLabel, false),"clear");
+                EJ_RWT.setTestId(createButton(parent, QUERY_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false),"cancel");
             }
 
             

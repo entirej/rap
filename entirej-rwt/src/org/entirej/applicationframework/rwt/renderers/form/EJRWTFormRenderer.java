@@ -41,6 +41,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -909,6 +910,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 public void widgetSelected(SelectionEvent e)
                 {
                     canvasController.tabPageChanged(name, tabFolder.getActiveKey());
+
+                    EJ_RWT.setAttribute(cfolder, "ej-item-selection", tabFolder.getActiveKey());
                 }
             });
             folder = tabFolder;
@@ -1058,6 +1061,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             protected void selection(String page)
             {
                 canvasController.drawerPageChanged(name, page);
+
+                EJ_RWT.setAttribute(getFolder(), "ej-item-selection", page);
             }
         };
         //tabFolder.setDefaultWidth(canvasProperties.getWidth());
@@ -1740,7 +1745,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         {
                             return;
                         }
-                        createButton(parent, id, label, deafultButton);
+                        Button button = createButton(parent, id, label, deafultButton);
+                        EJ_RWT.setTestId(button, "btn-"+id);
 
                     }
 

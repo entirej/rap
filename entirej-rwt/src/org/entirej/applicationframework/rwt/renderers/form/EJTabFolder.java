@@ -46,6 +46,8 @@ class EJTabFolder implements ITabFolder
             lastSelection = pageName;
             cTabItem.createTabData();
             folder.setSelection(cTabItem.item);
+
+            EJ_RWT.setAttribute(folder, "ej-item-selection", pageName);
         }
 
     }

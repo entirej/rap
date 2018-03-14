@@ -1028,6 +1028,8 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 {
                     _comboField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
                 }
+
+                
                 _comboViewer = new ComboViewer(_comboField);
 
                 if (hint != null && hint.trim().length() > 0)
