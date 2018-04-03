@@ -44,6 +44,8 @@ public class EJRWTNumberItemRendererDefinition implements EJDevItemRendererDefin
     public static final String PROPERTY_DISPLAY_VAUE_AS_LABEL = "DISPLAY_VALUE_AS_LABEL";
     public static final String PROPERTY_CSS_KEY = "CSS_KEY";
 
+    public static final String PROPERTY_MESSAGE                  = "MESSAGE";
+
     public EJRWTNumberItemRendererDefinition()
     {
     }
@@ -110,6 +112,12 @@ public class EJRWTNumberItemRendererDefinition implements EJDevItemRendererDefin
         EJDevPropertyDefinition minValue = new EJDevPropertyDefinition(PROPERTY_MINVALUE, EJPropertyDefinitionType.FLOAT);
         minValue.setLabel("Minimum Value");
         minValue.setDescription("The minimum allowable value for this item");
+        
+        
+        EJDevPropertyDefinition message = new EJDevPropertyDefinition(PROPERTY_MESSAGE, EJPropertyDefinitionType.STRING);
+        message.setLabel("Message");
+        message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the field..");
+        
 
         mainGroup.addPropertyDefinition(format);
         mainGroup.addPropertyDefinition(textAlignment);
@@ -118,6 +126,7 @@ public class EJRWTNumberItemRendererDefinition implements EJDevItemRendererDefin
         mainGroup.addPropertyDefinition(customCSSKey);
         mainGroup.addPropertyDefinition(maxValue);
         mainGroup.addPropertyDefinition(minValue);
+        mainGroup.addPropertyDefinition(message);
 
         return mainGroup;
     }

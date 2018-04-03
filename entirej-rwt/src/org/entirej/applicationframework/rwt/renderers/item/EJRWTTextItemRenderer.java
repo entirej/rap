@@ -67,6 +67,7 @@ import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.enumerations.EJLovDisplayReason;
+import org.entirej.framework.core.enumerations.EJMessageLevel;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
@@ -107,6 +108,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     protected Object                          _baseValue;
     private EJMessage message;
     private EJRWTAbstractLabel labelField;
+    private String defaultMessage;
 
     protected boolean controlState(Control control)
     {
@@ -204,6 +206,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         _displayValueAsLabel = _rendererProps.getBooleanProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_DISPLAY_VAUE_AS_LABEL, false);
         _displayValueAsProtected = _rendererProps.getBooleanProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_DISPLAY_VAUE_AS_PROTECTED, false);
         final String caseProperty = _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_CASE);
+        defaultMessage = _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MESSAGE);
         if (caseProperty != null && caseProperty.trim().length() > 0)
         {
             if (caseProperty.equals(EJRWTTextItemRendererDefinitionProperties.PROPERTY_CASE_LOWER))
@@ -593,9 +596,13 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     public void setMessage(EJMessage message)
     {
         this.message = message;
+        
         if (_errorDecoration != null  && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
         {
-            ControlDecorationSupport.handleMessage(_errorDecoration, message);
+            if(message!=null && message.getLevel() == EJMessageLevel.HINT && _textField!=null && !_textField.isDisposed())
+                _textField.setMessage(message.getMessage());
+            else
+                ControlDecorationSupport.handleMessage(_errorDecoration, message);
         }
         
     }
@@ -606,6 +613,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         this.message = null;
         if (_errorDecoration != null  && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
         {
+            _textField.setMessage(defaultMessage==null?"":defaultMessage);
             _errorDecoration.setDescriptionText("");
             {
                 _errorDecoration.hide();
@@ -1017,6 +1025,8 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 });
             }
             setInitialValue(_baseValue);
+            _textField.setMessage(defaultMessage==null?"":defaultMessage);
+            setMessage(message);
         }
     }
     

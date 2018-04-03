@@ -222,6 +222,7 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
             @Override
             public void createBody(Composite parent)
             {
+                EJ_RWT.setTestId(parent, _block.getProperties().getName()+".query-screen");
                 parent.setLayout(new FillLayout());
                 final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 
@@ -286,9 +287,9 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
             @Override
             protected void createButtonsForButtonBar(Composite parent)
             {
-                EJ_RWT.setTestId(createButton(parent, QUERY_OK_ACTION_COMMAND, queryButtonLabel == null ? "Query" : queryButtonLabel, true),"ok");
-                EJ_RWT.setTestId(createButton(parent, QUERY_CLEAR_ACTION_COMMAND, clearButtonLabel == null ? "Clear" : clearButtonLabel, false),"clear");
-                EJ_RWT.setTestId(createButton(parent, QUERY_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false),"cancel");
+                EJ_RWT.setTestId(createButton(parent, QUERY_OK_ACTION_COMMAND, queryButtonLabel == null ? "Query" : queryButtonLabel, true),_block.getProperties().getName()+".ok");
+                EJ_RWT.setTestId(createButton(parent, QUERY_CLEAR_ACTION_COMMAND, clearButtonLabel == null ? "Clear" : clearButtonLabel, false),_block.getProperties().getName()+".clear");
+                EJ_RWT.setTestId(createButton(parent, QUERY_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false),_block.getProperties().getName()+".cancel");
             }
 
             

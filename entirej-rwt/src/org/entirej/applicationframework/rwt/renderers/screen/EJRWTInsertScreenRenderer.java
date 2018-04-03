@@ -221,6 +221,8 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
             @Override
             public void createBody(Composite parent)
             {
+                
+                EJ_RWT.setTestId(parent, _block.getProperties().getName()+".insert-screen");
                 parent.setLayout(new FillLayout());
                 final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 
@@ -302,7 +304,7 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
                     return;
                 }
                 Button button = createButton(parent, id, label, false);
-                EJ_RWT.setTestId(button, "btn-"+id);
+                EJ_RWT.setTestId(button, _block.getProperties().getName()+".btn-"+id);
             }
 
             @Override

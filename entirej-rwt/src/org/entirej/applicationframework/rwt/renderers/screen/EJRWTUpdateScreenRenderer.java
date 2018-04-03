@@ -237,6 +237,7 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
             @Override
             public void createBody(Composite parent)
             {
+                EJ_RWT.setTestId(parent, _block.getProperties().getName()+".update-screen");
                 parent.setLayout(new FillLayout());
                 final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 
@@ -288,8 +289,8 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
                 addExtraButton(parent, button3Label, ID_BUTTON_3);
                 addExtraButton(parent, button2Label, ID_BUTTON_2);
                 addExtraButton(parent, button1Label, ID_BUTTON_1);
-                EJ_RWT.setTestId(createButton(parent, UPDATE_OK_ACTION_COMMAND, updateButtonLabel == null ? "Update" : updateButtonLabel, true),"ok");
-                EJ_RWT.setTestId(createButton(parent, UPDATE_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false),"cancel");
+                EJ_RWT.setTestId(createButton(parent, UPDATE_OK_ACTION_COMMAND, updateButtonLabel == null ? "Update" : updateButtonLabel, true),_block.getProperties().getName()+".ok");
+                EJ_RWT.setTestId(createButton(parent, UPDATE_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false),_block.getProperties().getName()+".cancel");
             }
 
             @Override
@@ -319,7 +320,7 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
                     return;
                 }
                 Button button = createButton(parent, id, label, false);
-                EJ_RWT.setTestId(button, "btn-"+id);
+                EJ_RWT.setTestId(button, _block.getProperties().getName()+".btn-"+id);
             }
 
             @Override

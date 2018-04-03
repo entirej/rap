@@ -84,19 +84,19 @@ import org.entirej.framework.core.properties.interfaces.EJTabPageProperties;
 public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 {
 
-    private EJInternalForm                        _form;
-    private EJRWTEntireJGridPane                  _mainPane;
-    private LinkedList<String>                    _canvasesIds        = new LinkedList<String>();
-    private Map<String, CanvasHandler>            _canvases           = new HashMap<String, CanvasHandler>();
-    private Map<String, EJInternalBlock>          _blocks             = new HashMap<String, EJInternalBlock>();
-    private Map<String, ITabFolder>               _tabFolders         = new HashMap<String, ITabFolder>();
-    private Map<String, EJDrawerFolder>               _drawerFolders      = new HashMap<String, EJDrawerFolder>();
-    private Map<String, EJRWTEntireJStackedPane>  _stackedPanes       = new HashMap<String, EJRWTEntireJStackedPane>();
-    private Map<String, Composite>                _formPanes          = new HashMap<String, Composite>();
-    private Map<String, String>                   _tabFoldersCache    = new HashMap<String, String>();
-    private Map<String, String>                   _drawerFoldersCache = new HashMap<String, String>();
-    private Map<String, String>                   _stackedPanesCache  = new HashMap<String, String>();
-    private Map<String, EJEmbeddedFormController> _formPanesCache     = new HashMap<String, EJEmbeddedFormController>();
+    protected EJInternalForm                        _form;
+    protected EJRWTEntireJGridPane                  _mainPane;
+    protected LinkedList<String>                    _canvasesIds        = new LinkedList<String>();
+    protected Map<String, CanvasHandler>            _canvases           = new HashMap<String, CanvasHandler>();
+    protected Map<String, EJInternalBlock>          _blocks             = new HashMap<String, EJInternalBlock>();
+    protected Map<String, ITabFolder>               _tabFolders         = new HashMap<String, ITabFolder>();
+    protected Map<String, EJDrawerFolder>               _drawerFolders      = new HashMap<String, EJDrawerFolder>();
+    protected Map<String, EJRWTEntireJStackedPane>  _stackedPanes       = new HashMap<String, EJRWTEntireJStackedPane>();
+    protected Map<String, Composite>                _formPanes          = new HashMap<String, Composite>();
+    protected Map<String, String>                   _tabFoldersCache    = new HashMap<String, String>();
+    protected Map<String, String>                   _drawerFoldersCache = new HashMap<String, String>();
+    protected Map<String, String>                   _stackedPanesCache  = new HashMap<String, String>();
+    protected Map<String, EJEmbeddedFormController> _formPanesCache     = new HashMap<String, EJEmbeddedFormController>();
 
     @Override
     public void formCleared()
@@ -227,7 +227,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 EJRWTFormRenderer renderer = (EJRWTFormRenderer) formController.getEmbeddedForm().getRenderer();
                 final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
                 renderer.createControl(scrollComposite);
-                scrollComposite.setContent(renderer.getGuiComponent());
+                EJRWTEntireJGridPane entireJGridPane = renderer.getGuiComponent();
+                entireJGridPane.cleanLayout();
+                scrollComposite.setContent(entireJGridPane);
                 scrollComposite.setExpandHorizontal(true);
                 scrollComposite.setExpandVertical(true);
                 scrollComposite.setMinSize(formController.getEmbeddedForm().getProperties().getFormWidth(), formController.getEmbeddedForm().getProperties().getFormHeight());
@@ -367,7 +369,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         return _mainPane;
     }
 
-    private void setFocus()
+    protected void setFocus()
     {
         for (String canvasName : _canvasesIds)
         {
@@ -496,7 +498,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
     }
 
-    void createCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
+  protected   void createCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
     {
         switch (canvasProperties.getType())
         {
@@ -1567,9 +1569,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         return (EJRWTApplicationManager) _form.getFormController().getFrameworkManager().getApplicationManager();
     }
 
-    private final class PopupCanvasHandler implements CanvasHandler
+    public final class PopupCanvasHandler implements CanvasHandler
     {
-        EJRWTAbstractDialog      _popupDialog;
+        public EJRWTAbstractDialog      _popupDialog;
         final int                ID_BUTTON_1         = 1;
         final int                ID_BUTTON_2         = 2;
         final int                ID_BUTTON_3         = 3;
@@ -2013,7 +2015,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
     }
 
-    private interface CanvasHandler
+    public interface CanvasHandler
     {
         EJCanvasType getType();
 

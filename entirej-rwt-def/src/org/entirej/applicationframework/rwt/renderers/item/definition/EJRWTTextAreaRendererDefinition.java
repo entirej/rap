@@ -30,6 +30,7 @@ import static org.entirej.applicationframework.rwt.renderers.item.definition.EJR
 import static org.entirej.applicationframework.rwt.renderers.item.definition.EJRWTTextItemRendererDefinition.PROPERTY_MAXLENGTH;
 import static org.entirej.applicationframework.rwt.renderers.item.definition.EJRWTTextItemRendererDefinition.PROPERTY_WRAP;
 import static org.entirej.applicationframework.rwt.renderers.item.definition.EJRWTTextItemRendererDefinition.PROPERTY_CSS_KEY;
+import static org.entirej.applicationframework.rwt.renderers.item.definition.EJRWTTextItemRendererDefinition.PROPERTY_MESSAGE;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -114,13 +115,17 @@ public class EJRWTTextAreaRendererDefinition implements EJDevItemRendererDefinit
         customCSSKey.setLabel("Custom CSS Key");
         customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
 
-
+        EJDevPropertyDefinition message = new EJDevPropertyDefinition(PROPERTY_MESSAGE, EJPropertyDefinitionType.STRING);
+        message.setLabel("Message");
+        message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the field..");
+        
 
         mainGroup.addPropertyDefinition(maxLength);
         mainGroup.addPropertyDefinition(textCase);
         mainGroup.addPropertyDefinition(textAlignment);
         mainGroup.addPropertyDefinition(displayValueAsLabel);
         mainGroup.addPropertyDefinition(wrapText);
+        mainGroup.addPropertyDefinition(message);
         mainGroup.addPropertyDefinition(customCSSKey);
 
         return mainGroup;

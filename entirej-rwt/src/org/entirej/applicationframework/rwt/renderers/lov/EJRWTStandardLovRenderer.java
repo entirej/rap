@@ -171,7 +171,7 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
 
                 
                 GridLayout layout = new GridLayout();
-                EJ_RWT.setTestId(parent, _lovController.getProperties().getLovDefinition().getName());
+                EJ_RWT.setTestId(parent, "lov."+_lovController.getProperties().getLovDefinition().getName());
                 layout.marginWidth = 0;
                 // layout.horizontalSpacing = 0;
                 layout.marginLeft = 0;

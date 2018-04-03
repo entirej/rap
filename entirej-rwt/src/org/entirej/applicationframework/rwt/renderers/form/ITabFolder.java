@@ -3,7 +3,7 @@ package org.entirej.applicationframework.rwt.renderers.form;
 import org.eclipse.swt.widgets.Control;
 import org.entirej.framework.core.properties.interfaces.EJTabPageProperties;
 
-interface ITabFolder
+public interface ITabFolder
 {
 
     void showPage(String pageName);
