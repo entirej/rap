@@ -69,6 +69,7 @@ import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRend
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.html.EJRWTAbstractFilteredHtml.FilteredContentProvider;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTUpdateScreenRenderer;
@@ -175,6 +176,8 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     private boolean filterKeepOnRefresh;
 
     private EJRWTAbstractFilteredHtml filterHtml;
+
+    private String defaultMessage;
 
     protected void clearFilter()
     {
@@ -722,6 +725,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                         }
                     };
                     _browser = filterHtml.getViewer();
+
+                    defaultMessage = blockRendererProperties.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MESSAGE);
+                    if(defaultMessage!=null)
+                        filterHtml.getFilterControl().setMessage(defaultMessage);
                 }
                 else
                 {
@@ -877,6 +884,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                         }
                     };
                     _browser = filterHtml.getViewer();
+
+                    defaultMessage = blockRendererProperties.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MESSAGE);
+                    if(defaultMessage!=null)
+                        filterHtml.getFilterControl().setMessage(defaultMessage);
                     scrollComposite.setContent(filterHtml);
                     scrollComposite.setLayoutData(gridData);
                 }
@@ -1043,6 +1054,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 _browser = filterHtml.getViewer();
                 scrollComposite.setContent(filterHtml);
                 scrollComposite.setLayoutData(gridData);
+
+                defaultMessage = blockRendererProperties.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MESSAGE);
+                if(defaultMessage!=null)
+                    filterHtml.getFilterControl().setMessage(defaultMessage);
             }
             else
             {

@@ -158,6 +158,11 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
         filter.setLabel("Add Filter");
         filter.setDescription("If selected, the renderer will display a filter field above the table. This filter can then be used by users to filter table data");
         filter.setDefaultValue("false");
+        
+        EJDevPropertyDefinition message = new EJDevPropertyDefinition("MESSAGE", EJPropertyDefinitionType.STRING);
+        message.setLabel("Filter Message");
+        message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the filter.");
+        
 
         EJDevPropertyDefinition showcolorEffect = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.COLORING_EFFECT,
                 EJPropertyDefinitionType.BOOLEAN);
@@ -204,6 +209,7 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
         mainGroup.addPropertyDefinition(hideSelection);
         mainGroup.addPropertyDefinition(showTableBorder);
         mainGroup.addPropertyDefinition(filter);
+        mainGroup.addPropertyDefinition(message);
         mainGroup.addPropertyDefinition(showcolorEffect);
 
         EJDevPropertyDefinitionGroup sectionGroup = new EJDevPropertyDefinitionGroup("TITLE_BAR");

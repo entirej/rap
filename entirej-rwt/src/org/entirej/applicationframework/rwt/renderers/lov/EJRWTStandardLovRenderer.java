@@ -48,6 +48,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractFilteredTable;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractFilteredTable.FilteredContentProvider;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
@@ -149,6 +150,7 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
         {
             private static final long serialVersionUID = -4685316941898120169L;
             private EJRWTAbstractFilteredTable filterTree;
+            private String defaultMessage;
 
             @Override
             public boolean close()
@@ -188,6 +190,8 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
                 {
                     style = style | SWT.BORDER;
                 }
+                
+                defaultMessage = rendererProp.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MESSAGE);
 
                
                  ;
@@ -222,6 +226,8 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
                     }
                 };
                 
+                if(defaultMessage!=null)
+                    filterTree.getFilterControl().setMessage(defaultMessage);
 
                 EJ_RWT.setTestId(filterTree.getFilterControl(), "lov-search");
                 table = (_tableViewer = filterTree.getViewer()).getTable();

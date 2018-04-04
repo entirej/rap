@@ -87,7 +87,14 @@ public class EJRWTStandardLovRendererDefinition implements EJDevLovRendererDefin
         showVerticalLines.setLabel("Show Vertical Lines");
         showVerticalLines.setDescription("Indicates if vertical lines should be displayed within the lov");
         showVerticalLines.setDefaultValue("true");
+        
+        
+        EJDevPropertyDefinition message = new EJDevPropertyDefinition("MESSAGE", EJPropertyDefinitionType.STRING);
+        message.setLabel("Filter Message");
+        message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the filter..");
+        
 
+        mainGroup.addPropertyDefinition(message);
         mainGroup.addPropertyDefinition(showTableBorder);
         mainGroup.addPropertyDefinition(showTableHeader);
         mainGroup.addPropertyDefinition(showVerticalLines);

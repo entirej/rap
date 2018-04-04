@@ -153,6 +153,11 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         filter.setLabel("Add Filter");
         filter.setDescription("If selected, the renderer will display a filter field above the blocks data. This filter can then be used by users to filter the blocks displayed data");
         filter.setDefaultValue("false");
+        
+        EJDevPropertyDefinition message = new EJDevPropertyDefinition("MESSAGE", EJPropertyDefinitionType.STRING);
+        message.setLabel("Filter Message");
+        message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the filter.");
+        
 
         EJDevPropertyDefinition showVerticalLines = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.SHOW_VERTICAL_LINES,
                 EJPropertyDefinitionType.BOOLEAN);
@@ -179,6 +184,7 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         mainGroup.addPropertyDefinition(showTableBorder);
         mainGroup.addPropertyDefinition(showTableHeader);
         mainGroup.addPropertyDefinition(filter);
+        mainGroup.addPropertyDefinition(message);
         mainGroup.addPropertyDefinition(showVerticalLines);
         mainGroup.addPropertyDefinition(isFixedInTable);
         mainGroup.addPropertyDefinition(rowHeight);

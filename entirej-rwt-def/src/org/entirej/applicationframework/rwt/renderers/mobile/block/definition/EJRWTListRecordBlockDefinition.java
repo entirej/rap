@@ -156,6 +156,11 @@ public class EJRWTListRecordBlockDefinition implements EJDevBlockRendererDefinit
         filter.setLabel("Add Filter");
         filter.setDescription("If selected, the renderer will show Filter support");
         filter.setDefaultValue("false");
+        
+        EJDevPropertyDefinition message = new EJDevPropertyDefinition("MESSAGE", EJPropertyDefinitionType.STRING);
+        message.setLabel("Filter Message");
+        message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the filter.");
+        
 
         EJDevPropertyDefinition rawHeight = new EJDevPropertyDefinition(EJRWTListRecordBlockDefinitionProperties.ROW_HEIGHT, EJPropertyDefinitionType.INTEGER);
         rawHeight.setLabel("Raw Height");
@@ -166,6 +171,9 @@ public class EJRWTListRecordBlockDefinition implements EJDevBlockRendererDefinit
         mainGroup.addPropertyDefinition(allowRowSelection);
         mainGroup.addPropertyDefinition(rawHeight);
         mainGroup.addPropertyDefinition(filter);
+        mainGroup.addPropertyDefinition(message);
+        
+        
 
         EJDevPropertyDefinitionGroup sectionGroup = new EJDevPropertyDefinitionGroup("TITLE_BAR");
         sectionGroup.setLabel("Title Bar");

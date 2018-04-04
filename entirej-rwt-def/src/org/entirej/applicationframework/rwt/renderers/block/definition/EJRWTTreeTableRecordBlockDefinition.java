@@ -164,6 +164,11 @@ public class EJRWTTreeTableRecordBlockDefinition implements EJDevBlockRendererDe
         filter.setLabel("Add Filter");
         filter.setDescription("If selected, the renderer will show Filter support");
         filter.setDefaultValue("false");
+        
+        EJDevPropertyDefinition message = new EJDevPropertyDefinition("MESSAGE", EJPropertyDefinitionType.STRING);
+        message.setLabel("Filter Message");
+        message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the filter.");
+        
 
         EJDevPropertyDefinition showVerticalLines = new EJDevPropertyDefinition(EJRWTTreeTableBlockDefinitionProperties.SHOW_VERTICAL_LINES,
                 EJPropertyDefinitionType.BOOLEAN);
@@ -200,6 +205,7 @@ public class EJRWTTreeTableRecordBlockDefinition implements EJDevBlockRendererDe
         mainGroup.addPropertyDefinition(showTableBorder);
         mainGroup.addPropertyDefinition(showTableHeader);
         mainGroup.addPropertyDefinition(filter);
+        mainGroup.addPropertyDefinition(message);
         mainGroup.addPropertyDefinition(showVerticalLines);
 
         EJDevPropertyDefinitionGroup sectionGroup = new EJDevPropertyDefinitionGroup("TITLE_BAR");

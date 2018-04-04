@@ -130,6 +130,14 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         filter.setLabel("Add Filter");
         filter.setDescription("If selected, the renderer will display a filter field above the blocks data. This filter can then be used by users to filter the blocks displayed data");
         filter.setDefaultValue("false");
+        
+        EJDevPropertyDefinition message = new EJDevPropertyDefinition("MESSAGE", EJPropertyDefinitionType.STRING);
+        message.setLabel("Filter Message");
+        message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the filter.");
+        
+
+        mainGroup.addPropertyDefinition(message);
+        
         EJDevPropertyDefinition filterOnRefresh = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.FILTER_KEEP_ON_REFRESH, EJPropertyDefinitionType.BOOLEAN);
         filterOnRefresh.setLabel("Keep Filter on Refresh");
         filterOnRefresh.setDescription("If selected, the renderer will keep filter when  blocks data reloaded");
@@ -164,6 +172,7 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         mainGroup.addPropertyDefinitionList(list);
         mainGroup.addPropertyDefinition(textSelection);
         mainGroup.addPropertyDefinition(filter);
+        mainGroup.addPropertyDefinition(message);
         mainGroup.addPropertyDefinition(filterOnRefresh);
         mainGroup.addPropertyDefinition(showTableHeader);
         mainGroup.addPropertyDefinition(headerVA);

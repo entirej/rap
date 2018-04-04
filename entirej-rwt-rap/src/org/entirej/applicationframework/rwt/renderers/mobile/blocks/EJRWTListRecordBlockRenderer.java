@@ -85,6 +85,7 @@ import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRen
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTUpdateScreenRenderer;
@@ -142,6 +143,7 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
 
     private String filterText;
     private EJRWTAbstractFilteredTable filterTree;
+    private String defaultMessage;
 
     protected void clearFilter()
     {
@@ -921,6 +923,11 @@ public class EJRWTListRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 filterTree.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
             }
             table = (_tableViewer = filterTree.getViewer()).getTable();
+            
+
+            defaultMessage = rendererProp.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MESSAGE);
+            if(defaultMessage!=null)
+                filterTree.getFilterControl().setMessage(defaultMessage);
         }
         else
         {

@@ -83,6 +83,7 @@ import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRend
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTQueryScreenRenderer;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTUpdateScreenRenderer;
@@ -141,6 +142,8 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     private EJRWTAbstractFilteredTable filterTree;
 
     private String filterText;
+
+    private String defaultMessage;
 
     protected void clearFilter()
     {
@@ -848,6 +851,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 .getAllItemGroupProperties();
         final Table table;
         
+
         if (rendererProp.getBooleanProperty(EJRWTTreeBlockDefinitionProperties.FILTER, false))
         {
             if (allItemGroupProperties.size() > 0)
@@ -953,6 +957,11 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 filterTree.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
             }
             table = (_tableViewer = filterTree.getViewer()).getTable();
+            
+
+            defaultMessage = rendererProp.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MESSAGE);
+            if(defaultMessage!=null)
+                filterTree.getFilterControl().setMessage(defaultMessage);
         }
         else
         {
