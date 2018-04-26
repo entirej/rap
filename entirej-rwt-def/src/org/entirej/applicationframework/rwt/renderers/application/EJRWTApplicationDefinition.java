@@ -65,6 +65,7 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
     public static final String SERVICE_PATH                  = "SERVICE_PATH";
     public static final String SERVICE_NAME                  = "SERVICE_NAME";
     public static final String SERVICE_FORM                  = "SERVICE_FORM";
+    public static final String MNEMONIC                      = "MNEMONIC";
 
     public static final String LIVE_CONNECTION               = "LIVE_CONNECTION";
 
@@ -146,6 +147,16 @@ public class EJRWTApplicationDefinition implements EJApplicationDefinition
         liveConnection.setLabel("Keep live connection to server.");
         liveConnection.setDescription("Keep a live connection to the server so in the event of a session timeout, the timeout page will automatically be shown without any user interaction.");
 
+        
+        EJDevPropertyDefinition mnemonicSupport = new EJDevPropertyDefinition(MNEMONIC, EJPropertyDefinitionType.STRING);
+        mnemonicSupport.setLabel("Mnemonic Support");
+        mnemonicSupport.setDescription("The mnemonic key is indicated by an underlined character in the widget's text. Any character can be made a mnemonic by inserting an ampersand character (&) before it."
+                + " However, only a-z, A-Z and 0-9 will be recognized when the matching key is pressed."
+                + "eg: keys ALT , SHIFT+ALT etc....");
+        mnemonicSupport.setDefaultValue("ALT");
+        mainGroup.addPropertyDefinition(mnemonicSupport);
+
+        
         mainGroup.addPropertyDefinition(liveConnection);
         EJDevPropertyDefinition displayTabBorder = new EJDevPropertyDefinition(DISPLAY_TAB_BORDER, EJPropertyDefinitionType.BOOLEAN);
         displayTabBorder.setLabel("Display border on tabs");

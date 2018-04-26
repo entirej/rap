@@ -157,7 +157,14 @@ public class EJRWTComboBoxRendererDefinition implements EJDevItemRendererDefinit
         customCSSKey.setLabel("Custom CSS Key");
         customCSSKey
                 .setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
+        
+        
+        EJDevPropertyDefinition message = new EJDevPropertyDefinition("MESSAGE", EJPropertyDefinitionType.STRING);
+        message.setLabel("Message");
+        message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the field..");
+       
 
+        mainGroup.addPropertyDefinition(message);
         mainGroup.addPropertyDefinition(lovDefName);
         mainGroup.addPropertyDefinition(initialiseLov);
         mainGroup.addPropertyDefinition(autorefreshLov);

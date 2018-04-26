@@ -489,6 +489,11 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             display = new Display();
                         Shell shell = new Shell(display, SWT.NO_TRIM);
                         
+                        EJFrameworkExtensionProperties definedProperties = coreProperties.getApplicationDefinedProperties();
+                        String keyMnemonic = definedProperties.getStringProperty("MNEMONIC");
+                        if(keyMnemonic==null || keyMnemonic.isEmpty())
+                            keyMnemonic = "ALT";
+                        display.setData( RWT.MNEMONIC_ACTIVATOR, keyMnemonic);
                         //check test mode
                         
                         StartupParameters service = RWT.getClient().getService(StartupParameters.class);
@@ -573,7 +578,6 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                 e.printStackTrace();
                             }
 
-                        EJFrameworkExtensionProperties definedProperties = coreProperties.getApplicationDefinedProperties();
                         
                         if(definedProperties!=null && definedProperties.getBooleanProperty("LIVE_CONNECTION", false))
                             pushSession.start();
