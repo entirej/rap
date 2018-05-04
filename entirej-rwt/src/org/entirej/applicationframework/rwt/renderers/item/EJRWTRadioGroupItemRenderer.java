@@ -123,7 +123,23 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
 
     protected boolean controlState(Control control)
     {
-        return control != null && !control.isDisposed();
+         if(control != null && !control.isDisposed() ) {
+             for (RadioButtonValue buttonValue : _radioButtons.values())
+             {
+                 Button button = buttonValue.getButton();
+
+                 if (button.isDisposed())
+                 {
+                     return false;
+                 }
+                 
+             }
+                 return true;
+
+         }
+         
+         
+         return false;
     }
 
     @Override
@@ -298,7 +314,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     @Override
     public void setEditAllowed(boolean editAllowed)
     {
-        if (_radioGroup != null && !_radioGroup.isDisposed())
+        if (controlState(_radioGroup))
         {
             _radioGroup.setEnabled(editAllowed);
         }
@@ -368,7 +384,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
 
     protected void setMandatoryBorder(boolean req)
     {
-        if (_mandatoryDecoration == null|| _radioGroup.isDisposed() || _mandatoryDecoration.getControl().isDisposed())
+        if (_mandatoryDecoration == null|| !controlState(_radioGroup))
         {
             return;
         }
@@ -520,7 +536,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     public void setMessage(EJMessage message)
     {
         this.message = message;
-        if (_errorDecoration != null  && controlState(_radioGroup) && !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null  && controlState(_radioGroup))
         {
             ControlDecorationSupport.handleMessage(_errorDecoration, message);
         }
@@ -630,7 +646,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
 
         EJFrameworkExtensionPropertyList radioButtons = _rendererProps.getPropertyList(EJRWTRadioButtonItemRendererDefinitionProperties.PROPERTY_RADIO_BUTTONS);
         String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
-
+        _radioButtons.clear();
         for (EJFrameworkExtensionPropertyListEntry listEntry : radioButtons.getAllListEntries())
         {
             Object value = getValueAsObject(_item.getReferencedItemProperties().getDataTypeClass(),
