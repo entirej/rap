@@ -682,7 +682,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
                 @Override
                 public DateTime createText(Composite parent)
                 {
-                    int style = SWT.BORDER;
+                    int style = SWT.NONE;
                     String details = _rendererProps.getStringProperty(EJRWTDateTimeItemRendererDefinitionProperties.PROPERTY_DETAILS);
                     if (EJRWTDateTimeItemRendererDefinitionProperties.PROPERTY_DETAILS_LONG.equals(details))
                     {

@@ -126,7 +126,6 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
             return "";
         }
         
-        //@Override
         public Image getSrcImage(Object element)
         {
             if (element instanceof EJDataRecord)

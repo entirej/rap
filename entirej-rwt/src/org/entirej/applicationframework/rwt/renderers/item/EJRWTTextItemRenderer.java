@@ -879,7 +879,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 @Override
                 public Text createText(Composite parent)
                 {
-                    int style = SWT.BORDER;
+                    int style = SWT.NONE;
                     if (_displayValueAsProtected)
                     {
                         style = style | SWT.PASSWORD;
