@@ -578,6 +578,9 @@ public class EJRWTMessenger implements EJMessenger
                 @Override
                 protected Control createMessageArea(Composite composite)
                 {
+
+                    EJ_RWT.setTestId(composite, "msg.dialog");
+                    EJ_RWT.setAttribute(composite, "kind", ""+kind);
                     Control createMessageArea = super.createMessageArea(composite);
                     if(messageLabel!=null)
                         messageLabel.setData(EJ_RWT.MARKUP_ENABLED, true);
@@ -586,6 +589,7 @@ public class EJRWTMessenger implements EJMessenger
             };
             dialog.setBlockOnOpen(false);
             dialog.open();
+
 
         }
 
