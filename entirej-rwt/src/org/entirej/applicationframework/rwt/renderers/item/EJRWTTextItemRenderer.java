@@ -933,18 +933,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     final EJFrameworkExtensionProperties rendererProp = EJCoreProperties.getInstance().getApplicationDefinedProperties();
                     final EJFrameworkExtensionProperties propertyGroup = rendererProp.getPropertyGroup(EJRWTSingleRecordBlockDefinitionProperties.ACTION_GROUP);
 
-                    String lovKey = "SHIFT+ARROW_DOWN";
-                    if (propertyGroup != null)
-                    {
-                        lovKey = propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_LOV_KEY);
-                    }
-
-                    if (lovKey == null)
-                    {
-                        lovKey = "SHIFT+ARROW_DOWN";
-                    }
-
-                    String[] keys = new String[] { lovKey, "ENTER", "RETURN", "CR" };
+                    String[] keys = getActionKeys(propertyGroup).toArray(new String[0]);
                     label.setData(EJ_RWT.ACTIVE_KEYS, keys);
                     getTextControl().setData(EJ_RWT.ACTIVE_KEYS, keys);
                     addKeyListener(new KeyListener()
@@ -958,14 +947,19 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                                 _item.getItemLovController().displayLov(EJLovDisplayReason.LOV);
                             }
 
-                            if (arg0.keyCode == 13 && (SWT.MULTI != (_textField.getStyle() & SWT.MULTI) || (arg0.stateMask & SWT.CONTROL) != 0))
+                            else if (arg0.keyCode == 13 && (SWT.MULTI != (_textField.getStyle() & SWT.MULTI) || (arg0.stateMask & SWT.CONTROL) != 0))
                             {
                                 commitValue();
                             }
+                            else 
+                                keyAction(arg0);
 
                         }
 
                         
+
+                      
+
 
                         @Override
                         public void keyPressed(KeyEvent arg0)
@@ -974,7 +968,8 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     });
                     return label;
                 }
-            };
+
+                           };
 
             if (_maxLength > 0)
             {
@@ -1419,4 +1414,32 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     {
         return Collections.emptyList();
     }
+    
+    protected List<String> getActionKeys(final EJFrameworkExtensionProperties propertyGroup)
+    {
+        List<String> actions = new ArrayList<>(); 
+        String lovKey = "SHIFT+ARROW_DOWN";
+        if (propertyGroup != null)
+        {
+            lovKey = propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_LOV_KEY);
+        }
+
+        if (lovKey == null)
+        {
+            lovKey = "SHIFT+ARROW_DOWN";
+        }
+        actions.add(lovKey);
+        actions.add("ENTER");
+        actions.add("RETURN");
+        actions.add("CR");
+
+        return actions;
+    }
+    
+    protected void keyAction(KeyEvent event)
+    {
+        
+    }
+
+
 }

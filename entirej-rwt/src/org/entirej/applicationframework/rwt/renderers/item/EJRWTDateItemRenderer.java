@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 CRESOFT AG
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     CRESOFT AG - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 /**
  * 
@@ -24,8 +23,11 @@ package org.entirej.applicationframework.rwt.renderers.item;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
@@ -83,13 +85,12 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         return new Label(composite, SWT.RIGHT);
     }
 
-    
     public String getCSSKey()
     {
         return EJ_RWT.CSS_CV_ITEM_DATE;
 
     }
-    
+
     private Date converType(Date newValue)
     {
         if (newValue != null && !_itemProperties.getDataTypeClassName().equals(Date.class.getName()))
@@ -110,18 +111,123 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         }
         return newValue;
     }
-    
-    
-    
+
+    @Override
+    protected List<String> getActionKeys(EJFrameworkExtensionProperties propertyGroup)
+    {
+        List<String> actionKeys = super.getActionKeys(propertyGroup);
+        actionKeys.add("SHIFT+ARROW_UP");
+        actionKeys.add("SHIFT+ARROW_DOWN");
+        actionKeys.add("ALT+ARROW_UP");
+        actionKeys.add("ALT+ARROW_DOWN");
+        actionKeys.add("ARROW_DOWN");
+        actionKeys.add("ARROW_UP");
+        return actionKeys;
+    }
+
+    @Override
+    protected void keyAction(KeyEvent event)
+    {
+
+        if ((event.stateMask & SWT.SHIFT) != 0 && event.keyCode == SWT.ARROW_DOWN)
+        {
+
+            addMonth(getValue(), -1);
+
+        }
+        else if ((event.stateMask & SWT.ALT) != 0 && event.keyCode == SWT.ARROW_DOWN)
+        {
+
+            addYear(getValue(), -1);
+
+        }
+        else if (event.keyCode == SWT.ARROW_DOWN)
+        {
+
+            addDay(getValue(), -1);
+
+        }
+        else if ((event.stateMask & SWT.SHIFT) != 0 && event.keyCode == SWT.ARROW_UP)
+        {
+
+            addMonth(getValue(), 1);
+
+        }
+        else if ((event.stateMask & SWT.ALT) != 0 && event.keyCode == SWT.ARROW_UP)
+        {
+
+            addYear(getValue(), 1);
+
+        }
+        else if (event.keyCode == SWT.ARROW_UP)
+        {
+
+            Date value = getValue();
+            if (value == null)
+            {
+                value = java.sql.Date.valueOf(LocalDate.now());
+            }
+            addDay(value, 1);
+
+        }
+
+    }
+
+    private void addMonth(Date value, int i)
+    {
+
+        value = value == null ? new Date() : new Date(value.getTime());
+        LocalDate date = value.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (i > 0)
+            date = date.plusMonths(i);
+        else
+            date = date.minusMonths(-1 * i);
+
+        value = java.sql.Date.valueOf(date);
+        Date newValue = converType(value);
+        setValue(newValue);
+        _item.itemValueChaged(newValue);
+    }
+
+    private void addDay(Date value, int i)
+    {
+
+        value = value == null ? new Date() : new Date(value.getTime());
+        LocalDate date = value.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (i > 0)
+            date = date.plusDays(i);
+        else
+            date = date.minusDays(-1 * i);
+
+        value = java.sql.Date.valueOf(date);
+        Date newValue = converType(value);
+        setValue(newValue);
+        _item.itemValueChaged(newValue);
+    }
+
+    private void addYear(Date value, int i)
+    {
+        value = value == null ? new Date() : new Date(value.getTime());
+        LocalDate date = value.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (i > 0)
+            date = date.plusYears(i);
+        else
+            date = date.minusYears(-1 * i);
+
+        value = java.sql.Date.valueOf(date);
+        Date newValue = converType(value);
+        setValue(newValue);
+        _item.itemValueChaged(newValue);
+    }
+
     @Override
     public void refreshItemRendererProperty(String propertyName)
     {
-        
-        if(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
+
+        if (EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY.equals(propertyName))
         {
 
-            
-            if(controlState(_label) && _rendererProps!=null)
+            if (controlState(_label) && _rendererProps != null)
             {
                 String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
@@ -134,11 +240,11 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     _label.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_DATE);
                 }
             }
-           
-            if(controlState(_textField) && _rendererProps!=null)
+
+            if (controlState(_textField) && _rendererProps != null)
             {
                 String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
-                
+
                 if (customCSSKey != null && customCSSKey.trim().length() > 0)
                 {
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
@@ -148,10 +254,10 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_DATE);
                 }
             }
-            
+
         }
     }
-    
+
     @Override
     protected void setValueLabelAlign(final String alignmentProperty)
     {
@@ -219,14 +325,13 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     }
                     catch (ParseException e)
                     {
-                       
+
                         String format = _dateFormat.toFormatString();
-                        if(format==null || format.length()==0)
+                        if (format == null || format.length() == 0)
                         {
-                            format = "eg: "+_dateFormat.format(new Date());
+                            format = "eg: " + _dateFormat.format(new Date());
                         }
-                        _errorDecoration.setDescriptionText(String.format("Invalid Date format. Should be %s ",
-                                format));
+                        _errorDecoration.setDescriptionText(String.format("Invalid Date format. Should be %s ", format));
                         _errorDecoration.show();
                     }
                 }
@@ -291,8 +396,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             _modifyListener.enable = false;
             if (value != null && !Date.class.isAssignableFrom(value.getClass()))
             {
-                EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM, _item.getName(),
-                        Date.class.getName(), value.getClass().getName());
+                EJMessage message = EJMessageFactory.getInstance().createMessage(EJFrameworkMessage.INVALID_DATA_TYPE_FOR_ITEM, _item.getName(), Date.class.getName(), value.getClass().getName());
                 throw new IllegalArgumentException(message.getMessage());
             }
             _baseValue = value;
@@ -317,7 +421,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             _modifyListener.enable = true;
         }
     }
-    
+
     @Override
     public String formatValue(Object obj)
     {
@@ -353,64 +457,63 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         String format = rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_FORMAT);
         if (format == null || format.length() == 0)
         {
-            
+
             format = rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_LOCALE_FORMAT);
             if (format == null || format.length() == 0)
             {
-               
-                dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.SHORT,defaultLocale));
+
+                dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.SHORT, defaultLocale));
             }
             else
             {
-            
+
                 DateFormats formats = DateFormats.valueOf(format);
                 switch (formats)
                 {
                     case DATE_FULL:
-                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.FULL,defaultLocale));
+                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.FULL, defaultLocale));
                         break;
                     case DATE_LONG:
-                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.LONG,defaultLocale));
+                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.LONG, defaultLocale));
                         break;
                     case DATE_MEDIUM:
-                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.MEDIUM,defaultLocale));
+                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.MEDIUM, defaultLocale));
                         break;
                     case DATE_SHORT:
-                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.SHORT,defaultLocale));
+                        dateFormat = new MultiDateFormater(DateFormat.getDateInstance(DateFormat.SHORT, defaultLocale));
                         break;
                     case DATE_TIME_FULL:
-                        dateFormat = new MultiDateFormater(DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.FULL,defaultLocale));
-                        break;    
+                        dateFormat = new MultiDateFormater(DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, defaultLocale));
+                        break;
                     case DATE_TIME_LONG:
-                        dateFormat = new MultiDateFormater(DateFormat.getDateTimeInstance(DateFormat.LONG,DateFormat.LONG,defaultLocale));
-                        break;    
+                        dateFormat = new MultiDateFormater(DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, defaultLocale));
+                        break;
                     case DATE_TIME_MEDIUM:
-                        dateFormat = new MultiDateFormater(DateFormat.getDateTimeInstance(DateFormat.MEDIUM,DateFormat.MEDIUM,defaultLocale));
-                        break;    
+                        dateFormat = new MultiDateFormater(DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM, defaultLocale));
+                        break;
                     case DATE_TIME_SHORT:
-                        dateFormat = new MultiDateFormater(DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT,defaultLocale));
-                        break; 
-                        
+                        dateFormat = new MultiDateFormater(DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, defaultLocale));
+                        break;
+
                     case TIME_FULL:
-                        dateFormat = new MultiDateFormater(DateFormat.getTimeInstance(DateFormat.FULL,defaultLocale));
+                        dateFormat = new MultiDateFormater(DateFormat.getTimeInstance(DateFormat.FULL, defaultLocale));
                         break;
                     case TIME_LONG:
-                        dateFormat = new MultiDateFormater(DateFormat.getTimeInstance(DateFormat.LONG,defaultLocale));
+                        dateFormat = new MultiDateFormater(DateFormat.getTimeInstance(DateFormat.LONG, defaultLocale));
                         break;
                     case TIME_MEDIUM:
-                        dateFormat = new MultiDateFormater(DateFormat.getTimeInstance(DateFormat.MEDIUM,defaultLocale));
+                        dateFormat = new MultiDateFormater(DateFormat.getTimeInstance(DateFormat.MEDIUM, defaultLocale));
                         break;
                     case TIME_SHORT:
-                        dateFormat = new MultiDateFormater(DateFormat.getTimeInstance(DateFormat.SHORT,defaultLocale));
+                        dateFormat = new MultiDateFormater(DateFormat.getTimeInstance(DateFormat.SHORT, defaultLocale));
                         break;
-    
+
                     default:
                         dateFormat = new MultiDateFormater(DateFormat.getDateInstance());
                         break;
                 }
             }
-            
-            
+
         }
         else
         {
@@ -444,8 +547,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
 
             // convert to correct type if need
             value = converType(value);
-           
-            
+
         }
         catch (ParseException e)
         {
@@ -582,8 +684,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
 
                 return 0;
             }
-            
-            
+
         };
     }
 
@@ -604,15 +705,15 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         label.setImage(EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_DATE_SELECTION));
         label.addMouseListener(new MouseListener()
         {
-            private final DateFormat  format           = new SimpleDateFormat("yyyy/MM/dd");
+            private final DateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 
             private void selectDate(final Shell abstractDialog, final DateTime calendar)
             {
                 try
                 {
-                    Object old =_baseValue;
+                    Object old = _baseValue;
                     Date newValue = format.parse(String.format("%d/%d/%d", calendar.getYear(), calendar.getMonth() + 1, calendar.getDay()));
-                    
+
                     newValue = converType(newValue);
                     setValue(newValue);
                     _item.itemValueChaged(newValue);
@@ -629,12 +730,11 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             @Override
             public void mouseUp(MouseEvent arg0)
             {
-               
 
                 {
-                    
+
                     Shell shell = ((EJRWTApplicationManager) _item.getForm().getFrameworkManager().getApplicationManager()).getShell();
-                    final Shell abstractDialog = new Shell(shell, SWT.ON_TOP | SWT.APPLICATION_MODAL | SWT.TITLE);
+                    final Shell abstractDialog = new Shell(shell, SWT.ON_TOP | SWT.APPLICATION_MODAL | SWT.BORDER);
                     abstractDialog.setLayout(new GridLayout(3, false));
 
                     GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL);
@@ -648,7 +748,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                         {
                             try
                             {
-                                Object old =_baseValue;
+                                Object old = _baseValue;
                                 Date newValue = format.parse(format.format(new Date()));
                                 newValue = converType(newValue);
                                 setValue(newValue);
@@ -666,7 +766,6 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                             _item.gainFocus();
                         }
 
-                       
                     });
                     Link clear = new Link(abstractDialog, SWT.PUSH);
                     clear.setText("<A>Clear</A>");
@@ -675,7 +774,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                         @Override
                         public void widgetSelected(SelectionEvent e)
                         {
-                            Object old =_baseValue;
+                            Object old = _baseValue;
                             setValue(null);
                             _item.itemValueChaged(null);
 
@@ -788,8 +887,11 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     Point dialogSize = abstractDialog.getSize();
                     abstractDialog.setLocation(shellBounds.x + (shellBounds.width - dialogSize.x) / 2, shellBounds.y + (shellBounds.height - dialogSize.y) / 2);
                     abstractDialog.setText("Date Selection");
+                    Point display = _actionControl.toDisplay(0, 0);
+                    Rectangle bounds = _actionControl.getBounds();
+                    abstractDialog.setLocation(display.x, display.y + bounds.height);
                     abstractDialog.open();
-                    
+
                 }
             }
 
@@ -809,29 +911,28 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         return label;
     }
 
-     static class MultiDateFormater
+    static class MultiDateFormater
     {
 
-        
-        private final DateFormat dateFormat;
+        private final DateFormat         dateFormat;
         private final SimpleDateFormat[] formats;
 
         public MultiDateFormater(SimpleDateFormat... formats)
         {
             this.formats = formats;
-            dateFormat=null;
+            dateFormat = null;
         }
+
         public MultiDateFormater(DateFormat dateFormat)
         {
-            this.formats = new  SimpleDateFormat[0];
-            this.dateFormat=dateFormat;
+            this.formats = new SimpleDateFormat[0];
+            this.dateFormat = dateFormat;
         }
-        
 
         public Date parse(String text) throws ParseException
         {
 
-            if(dateFormat!=null)
+            if (dateFormat != null)
             {
                 return dateFormat.parse(text);
             }
@@ -891,43 +992,41 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
 
         public String format(Object value)
         {
-            if(dateFormat!=null)
+            if (dateFormat != null)
             {
                 return dateFormat.format(value);
             }
-            
+
             for (SimpleDateFormat format : formats)
             {
                 return format.format(value);
             }
             return "";
         }
-        
+
         public String toFormatString()
         {
             StringBuilder builder = new StringBuilder();
-            
-            if(dateFormat!=null && dateFormat instanceof SimpleDateFormat)
+
+            if (dateFormat != null && dateFormat instanceof SimpleDateFormat)
             {
-                builder.append(((SimpleDateFormat)dateFormat).toLocalizedPattern());
+                builder.append(((SimpleDateFormat) dateFormat).toLocalizedPattern());
             }
-            
+
             for (SimpleDateFormat format : formats)
             {
-                if(!builder.toString().isEmpty())
+                if (!builder.toString().isEmpty())
                 {
                     builder.append(" | ");
                 }
                 builder.append(format.toLocalizedPattern());
             }
-            
+
             return builder.toString();
         }
-        
-        
 
     }
-    
+
     enum DateFormats
     {
         DATE_LONG, DATE_MEDIUM, DATE_SHORT, DATE_FULL,
