@@ -170,14 +170,10 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 if (customCSSKey != null && customCSSKey.trim().length() > 0)
                 {
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
-                    _actionControl.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
                 }
                 else
                 {
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXT);
-                    _actionControl.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXT);
-                    
-                    
                 }
             }
 
@@ -726,7 +722,6 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             if (controlState(_textField))
             {
                 _textField.setBackground(background != null ? background : _visualContext.getBackgroundColor());
-                _actionControl.setBackground(background != null ? background : _visualContext.getBackgroundColor());
             }
         }
     }
@@ -891,13 +886,11 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     }
                     _textField = newTextField(parent, getComponentStyle(alignmentProp, style));
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, getCSSKey());
-                    this.setData(EJ_RWT.CUSTOM_VARIANT, getCSSKey());
                     String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
                     if (customCSSKey != null && customCSSKey.trim().length() > 0)
                     {
                         _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
-                        _actionControl.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
                     }
                     return _textField;
                 }

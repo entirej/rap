@@ -111,12 +111,10 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                 if (customCSSKey != null && customCSSKey.trim().length() > 0)
                 {
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
-                    _actionControl.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
                 }
                 else
                 {
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_NUMBER);
-                    _actionControl.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_NUMBER);
                 }
             }
 
