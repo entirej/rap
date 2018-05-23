@@ -44,7 +44,7 @@ public abstract class EJRWTAbstractActionText extends Composite implements Seria
 
     public EJRWTAbstractActionText(Composite parent)
     {
-        super(parent, SWT.NO_FOCUS|SWT.BORDER);
+        super(parent, SWT.NO_FOCUS);
         setData(EJ_RWT.CUSTOM_VARIANT, "itemgroupclear");
 
         int numColumns = 1;
