@@ -89,6 +89,44 @@ Composite[BORDER] {
 	border-radius: 2px;
 }
 
+Composite[BORDER].itemtext {
+	border: 1px solid #aaaaaa;
+    border-radius: 0;
+    box-shadow: inset 0 0 3px #bdbdbd;
+}
+Composite[BORDER].itemtextarea {
+	border: 1px solid #aaaaaa;
+    border-radius: 0;
+    box-shadow: inset 0 0 3px #bdbdbd;
+}
+Composite[BORDER].itemnumber {
+	border: 1px solid #aaaaaa;
+    border-radius: 0;
+    box-shadow: inset 0 0 3px #bdbdbd;
+}
+Composite[BORDER].itemdate {
+	border: 1px solid #aaaaaa;
+    border-radius: 0;
+    box-shadow: inset 0 0 3px #bdbdbd;
+}
+
+
+Composite[BORDER].itemdate:focused {
+	 border: 1px solid #4f7cb1;
+    box-shadow: 0 0 5px #4f7cb1;
+}
+Composite[BORDER].itemtext:focused {
+	 border: 1px solid #4f7cb1;
+    box-shadow: 0 0 5px #4f7cb1;
+}
+
+
+Composite[BORDER].itemdatetime {
+	border: 1px solid #aaaaaa;
+    border-radius: 0;
+    box-shadow: inset 0 0 3px #bdbdbd;
+}
+
 /* Button default theme */
 Button {
 	font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;

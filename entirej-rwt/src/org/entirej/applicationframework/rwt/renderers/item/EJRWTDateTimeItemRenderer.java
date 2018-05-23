@@ -161,10 +161,12 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
                 if (customCSSKey != null && customCSSKey.trim().length() > 0)
                 {
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                    _actionControl.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
                 }
                 else
                 {
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_DATETIME);
+                    _actionControl.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_DATETIME);
                 }
             }
             
@@ -556,6 +558,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
             if (controlState(_textField))
             {
                 _textField.setBackground(background != null ? background : _visualContext.getBackgroundColor());
+                _actionControl.setBackground(background != null ? background : _visualContext.getBackgroundColor());
             }
         }
     }
@@ -717,11 +720,13 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
 
                     _textField = newTextField(parent, style);
                     _textField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_DATETIME);
+                    setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_DATETIME);
                     String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
                     if (customCSSKey != null && customCSSKey.trim().length() > 0)
                     {
                         _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                        setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
                     }
                     
                     _textField.addSelectionListener(new SelectionAdapter()
