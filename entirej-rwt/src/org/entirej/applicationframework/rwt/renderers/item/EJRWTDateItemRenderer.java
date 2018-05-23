@@ -163,10 +163,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         {
 
             Date value = getValue();
-            if (value == null)
-            {
-                value = java.sql.Date.valueOf(LocalDate.now());
-            }
+            
             addDay(value, 1);
 
         }

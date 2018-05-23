@@ -26,6 +26,8 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1779,7 +1781,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             public void mouseUp(MouseEvent arg0)
             {
                 Shell shell = ((EJRWTApplicationManager) _item.getForm().getFrameworkManager().getApplicationManager()).getShell();
-                final Shell abstractDialog = new Shell(shell, SWT.ON_TOP | SWT.APPLICATION_MODAL | SWT.TITLE);
+                final Shell abstractDialog = new Shell(shell, SWT.ON_TOP | SWT.APPLICATION_MODAL |SWT.BORDER);
                 abstractDialog.setLayout(new GridLayout(3, false));
 
                 GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL);
@@ -1795,22 +1797,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         {
                             Object old = _baseValue.getValue();
                             Date newVal = format.parse(format.format(new Date()));
-                            if (newVal != null && !_itemProperties.getDataTypeClassName().equals(Date.class.getName()))
-                            {
-                                String dataTypeClass = _itemProperties.getDataTypeClassName();
-                                if (dataTypeClass.equals("java.sql.Date"))
-                                {
-                                    newVal = new java.sql.Date(newVal.getTime());
-                                }
-                                else if (dataTypeClass.equals("java.sql.Time"))
-                                {
-                                    newVal = new java.sql.Time(newVal.getTime());
-                                }
-                                else if (dataTypeClass.equals("java.sql.Timestamp"))
-                                {
-                                    newVal = new java.sql.Timestamp(newVal.getTime());
-                                }
-                            }
+                            newVal = convertDate(newVal);
                             setValue(newVal);
                             _item.itemValueChaged(getRealValue());
                         }
@@ -1825,6 +1812,8 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         }
                         _item.gainFocus();
                     }
+
+                   
                 });
                 Link clear = new Link(abstractDialog, SWT.PUSH);
                 clear.setText("<A>Clear</A>");
@@ -1941,10 +1930,10 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 });
 
                 abstractDialog.pack();
-                Rectangle shellBounds = shell.getBounds();
-                Point dialogSize = abstractDialog.getSize();
-                abstractDialog.setLocation(shellBounds.x + (shellBounds.width - dialogSize.x) / 2, shellBounds.y + (shellBounds.height - dialogSize.y) / 2);
-                abstractDialog.setText("Date Selection");
+                Point display = _actionControl.toDisplay(0, 0);
+                Rectangle bounds = _actionControl.getBounds();
+                abstractDialog.setLocation(display.x, display.y + bounds.height);
+               
                 abstractDialog.open();
             }
 
@@ -2098,7 +2087,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
     }
 
-    void connectLOVAction(final Text text)
+    void connectLOVAction(final Text text,EJRWTStackedItemRendererType type )
     {
         final EJFrameworkExtensionProperties rendererProp = EJCoreProperties.getInstance().getApplicationDefinedProperties();
         final EJFrameworkExtensionProperties propertyGroup = rendererProp.getPropertyGroup(EJRWTSingleRecordBlockDefinitionProperties.ACTION_GROUP);
@@ -2114,9 +2103,20 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             lovKey = "SHIFT+ARROW_DOWN";
         }
 
-        String[] keys = new String[] { lovKey, "ENTER", "RETURN", "CR" };
+        List<String> actions = new ArrayList<>();
+        
+        actions.add(lovKey);
+        actions.add("ENTER");
+        actions.add("RETURN");
+        actions.add( "CR");
+        
+        if(type==EJRWTStackedItemRendererType.DATE)
+        {
+            actions.addAll(getDateActionKeys(propertyGroup));
+        }
+        
 
-        text.setData(EJ_RWT.ACTIVE_KEYS, keys);
+        text.setData(EJ_RWT.ACTIVE_KEYS, actions.toArray( new String[0] ));
         text.addKeyListener(new KeyListener()
         {
             @Override
@@ -2128,7 +2128,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     _item.getItemLovController().displayLov(EJLovDisplayReason.LOV);
                 }
 
-                if (arg0.keyCode == 13 && (SWT.MULTI != (text.getStyle() & SWT.MULTI) || (arg0.stateMask & SWT.CONTROL) != 0))
+                else if (arg0.keyCode == 13 && (SWT.MULTI != (text.getStyle() & SWT.MULTI) || (arg0.stateMask & SWT.CONTROL) != 0))
                 {
                     if (_valueChanged)
                     {
@@ -2138,6 +2138,14 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         setMandatoryBorder(_mandatory);
                     }
                 }
+                else
+                {
+                    if(type == EJRWTStackedItemRendererType.DATE)
+                    {
+                        dateAction(arg0);
+                    }
+                }
+                
 
             }
 
@@ -2436,7 +2444,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         {
 
            final Text textField = new Text(stackedPane, SWT.BORDER);
-            connectLOVAction(textField);
+            connectLOVAction(textField,EJRWTStackedItemRendererType.TEXT);
             textField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXT);
             textField.setData(EJ_RWT.CUSTOM_VARIANT + "_DEF", EJ_RWT.CSS_CV_ITEM_TEXT);
             String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
@@ -2470,7 +2478,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         {
 
            final Text textField = new Text(stackedPane, SWT.BORDER | SWT.MULTI | SWT.WRAP);
-            connectLOVAction(textField);
+            connectLOVAction(textField,EJRWTStackedItemRendererType.TEXT);
             textField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXTAREA);
             textField.setData(EJ_RWT.CUSTOM_VARIANT + "_DEF", EJ_RWT.CSS_CV_ITEM_TEXTAREA);
             String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
@@ -2537,7 +2545,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     }
                 }
             });
-            connectLOVAction(textField);
+            connectLOVAction(textField,EJRWTStackedItemRendererType.NUMBER);
             textField.addModifyListener(_modifyListener);
             textField.addFocusListener(new FocusListener()
             {
@@ -2598,7 +2606,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             textField.setData(_item.getReferencedItemProperties().getName());
             textField.addFocusListener(this);
             String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
-            connectLOVAction(textField);
+            connectLOVAction(textField,EJRWTStackedItemRendererType.DATE);
             if (customCSSKey != null && customCSSKey.trim().length() > 0)
             {
                 textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
@@ -3149,6 +3157,141 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     {
         //TODO
         return Collections.emptyList();
+    }
+    
+    
+    protected List<String> getDateActionKeys(EJFrameworkExtensionProperties propertyGroup)
+    {
+        List<String> actionKeys = new ArrayList<>();
+        actionKeys.add("SHIFT+ARROW_UP");
+        actionKeys.add("SHIFT+ARROW_DOWN");
+        actionKeys.add("ALT+ARROW_UP");
+        actionKeys.add("ALT+ARROW_DOWN");
+        actionKeys.add("ARROW_DOWN");
+        actionKeys.add("ARROW_UP");
+        return actionKeys;
+    }
+
+    
+    Date valueToDate(Object value) {
+        if(value instanceof EJRWTStackedItemRendererValue) {
+            EJRWTStackedItemRendererValue rendererValue = (EJRWTStackedItemRendererValue) value;
+            return (Date) rendererValue.getValue();
+        }
+        
+        return null;
+    }
+    
+    protected void dateAction(KeyEvent event)
+    {
+
+        if ((event.stateMask & SWT.SHIFT) != 0 && event.keyCode == SWT.ARROW_DOWN)
+        {
+
+            addMonth(valueToDate(getValue()), -1);
+
+        }
+        else if ((event.stateMask & SWT.ALT) != 0 && event.keyCode == SWT.ARROW_DOWN)
+        {
+
+            addYear(valueToDate(getValue()), -1);
+
+        }
+        else if (event.keyCode == SWT.ARROW_DOWN)
+        {
+
+            addDay(valueToDate(getValue()), -1);
+
+        }
+        else if ((event.stateMask & SWT.SHIFT) != 0 && event.keyCode == SWT.ARROW_UP)
+        {
+
+            addMonth(valueToDate(getValue()), 1);
+
+        }
+        else if ((event.stateMask & SWT.ALT) != 0 && event.keyCode == SWT.ARROW_UP)
+        {
+
+            addYear(valueToDate(getValue()), 1);
+
+        }
+        else if (event.keyCode == SWT.ARROW_UP)
+        {
+
+            Date value = valueToDate(getValue());
+            
+            addDay(value, 1);
+
+        }
+
+    }
+
+    private void addMonth(Date value, int i)
+    {
+
+        value = value == null ? new Date() : new Date(value.getTime());
+        LocalDate date = value.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (i > 0)
+            date = date.plusMonths(i);
+        else
+            date = date.minusMonths(-1 * i);
+
+        value = java.sql.Date.valueOf(date);
+        Date newValue = convertDate(value);
+        setValue(newValue);
+        _item.itemValueChaged(newValue);
+    }
+
+    private void addDay(Date value, int i)
+    {
+
+        value = value == null ? new Date() : new Date(value.getTime());
+        LocalDate date = value.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (i > 0)
+            date = date.plusDays(i);
+        else
+            date = date.minusDays(-1 * i);
+
+        value = java.sql.Date.valueOf(date);
+        Date newValue = convertDate(value);
+        setValue(newValue);
+        _item.itemValueChaged(newValue);
+    }
+
+    private void addYear(Date value, int i)
+    {
+        value = value == null ? new Date() : new Date(value.getTime());
+        LocalDate date = value.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (i > 0)
+            date = date.plusYears(i);
+        else
+            date = date.minusYears(-1 * i);
+
+        value = java.sql.Date.valueOf(date);
+        Date newValue = convertDate(value);
+        setValue(newValue);
+        _item.itemValueChaged(newValue);
+    }
+    
+    private Date convertDate(Date newVal)
+    {
+        if (newVal != null && !_itemProperties.getDataTypeClassName().equals(Date.class.getName()))
+        {
+            String dataTypeClass = _itemProperties.getDataTypeClassName();
+            if (dataTypeClass.equals("java.sql.Date"))
+            {
+                newVal = new java.sql.Date(newVal.getTime());
+            }
+            else if (dataTypeClass.equals("java.sql.Time"))
+            {
+                newVal = new java.sql.Time(newVal.getTime());
+            }
+            else if (dataTypeClass.equals("java.sql.Timestamp"))
+            {
+                newVal = new java.sql.Timestamp(newVal.getTime());
+            }
+        }
+        return newVal;
     }
 
 }
