@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 CRESOFT AG
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     CRESOFT AG - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.html;
 
@@ -171,17 +170,19 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
     private List<EJDataRecord>                                _tableBaseRecords          = new ArrayList<EJDataRecord>();
 
-    private boolean textSelection;
+    private boolean                                           textSelection;
 
-    private boolean filterKeepOnRefresh;
+    private boolean                                           filterKeepOnRefresh;
 
-    private EJRWTAbstractFilteredHtml filterHtml;
+    private EJRWTAbstractFilteredHtml                         filterHtml;
 
-    private String defaultMessage;
+    private String                                            defaultMessage;
+
+    private Display                                           dispaly                    = Display.getDefault();
 
     protected void clearFilter()
     {
-        if (_filteredContentProvider != null )
+        if (_filteredContentProvider != null)
         {
             _filteredContentProvider.setFilter(null);
         }
@@ -218,9 +219,12 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public void blockCleared()
     {
-        if(!filterKeepOnRefresh)
-            clearFilter();
-        createHTML();
+        dispaly.asyncExec(() -> {
+
+            if (!filterKeepOnRefresh)
+                clearFilter();
+            createHTML();
+        });
 
     }
 
@@ -325,34 +329,36 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public void queryExecuted()
     {
-        currentRec = null;
 
-        activeSortColumn = null;
-        String filter = null;
-        if(filterKeepOnRefresh)
-        {
-            if (filterHtml != null)
+        dispaly.asyncExec(() -> {
+            currentRec = null;
+
+            activeSortColumn = null;
+            String filter = null;
+            if (filterKeepOnRefresh)
             {
-                filter =  filterHtml.getFilterString();
+                if (filterHtml != null)
+                {
+                    filter = filterHtml.getFilterString();
 
-               
+                }
             }
-        }
-        
+
             clearFilter();
-        
-        if (_filteredContentProvider != null && filterKeepOnRefresh)
-        {
-          
-            if (filterHtml != null)
-            {
-                filterHtml.setInitialText(filter);
 
-               
+            if (_filteredContentProvider != null && filterKeepOnRefresh)
+            {
+
+                if (filterHtml != null)
+                {
+                    filterHtml.setInitialText(filter);
+
+                }
+                _filteredContentProvider.setFilter(filter);
             }
-            _filteredContentProvider.setFilter(filter);
-        } 
-        createHTML();
+            createHTML();
+
+        });
 
     }
 
@@ -367,8 +373,8 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         if (_filteredContentProvider != null)
         {
             String filter = _filteredContentProvider.getFilter();
-            
-                clearFilter();
+
+            clearFilter();
             _filteredContentProvider.setFilter(filter);
         }
         createHTML();
@@ -493,12 +499,16 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public void recordSelected(EJDataRecord arg0)
     {
+
         currentRec = arg0;
 
-        if (_browser != null && !_browser.isDisposed() && currentRec != null)
-        {
-            _browser.setSelection(String.valueOf(getDisplayedRecordNumber(currentRec)));
-        }
+        dispaly.asyncExec(() -> {
+
+            if (_browser != null && !_browser.isDisposed() && currentRec != null)
+            {
+                _browser.setSelection(String.valueOf(getDisplayedRecordNumber(currentRec)));
+            }
+        });
     }
 
     @Override
@@ -623,7 +633,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         boolean filtered = blockRendererProperties.getBooleanProperty(EJRWTTreeBlockDefinitionProperties.FILTER, false);
         this.filterKeepOnRefresh = blockRendererProperties.getBooleanProperty(EJRWTTreeBlockDefinitionProperties.FILTER_KEEP_ON_REFRESH, false);
         this.textSelection = blockRendererProperties.getBooleanProperty(TEXT_SELECTION, false);
-        
+
         if (mainScreenProperties.getDisplayFrame())
         {
             String frameTitle = mainScreenProperties.getFrameTitle();
@@ -643,7 +653,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
                 if (filtered)
                 {
-                    filterHtml = new EJRWTAbstractFilteredHtml(group, SWT.NONE,textSelection)
+                    filterHtml = new EJRWTAbstractFilteredHtml(group, SWT.NONE, textSelection)
                     {
 
                         @Override
@@ -654,10 +664,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                         }
 
                         @Override
-                        protected EJRWTHtmlView doCreateTableViewer(Composite parent, int style,boolean textSelection)
+                        protected EJRWTHtmlView doCreateTableViewer(Composite parent, int style, boolean textSelection)
                         {
 
-                            return new EJRWTHtmlView(parent, SWT.NONE,textSelection)
+                            return new EJRWTHtmlView(parent, SWT.NONE, textSelection)
                             {
                                 private static final long serialVersionUID = 1L;
 
@@ -727,12 +737,12 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                     _browser = filterHtml.getViewer();
 
                     defaultMessage = blockRendererProperties.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MESSAGE);
-                    if(defaultMessage!=null)
+                    if (defaultMessage != null)
                         filterHtml.getFilterControl().setMessage(defaultMessage);
                 }
                 else
                 {
-                    _browser = new EJRWTHtmlView(group, SWT.NONE,textSelection)
+                    _browser = new EJRWTHtmlView(group, SWT.NONE, textSelection)
                     {
                         private static final long serialVersionUID = 1L;
 
@@ -803,7 +813,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
             {
                 if (filtered)
                 {
-                    filterHtml = new EJRWTAbstractFilteredHtml(scrollComposite, SWT.NONE,textSelection)
+                    filterHtml = new EJRWTAbstractFilteredHtml(scrollComposite, SWT.NONE, textSelection)
                     {
 
                         @Override
@@ -814,10 +824,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                         }
 
                         @Override
-                        protected EJRWTHtmlView doCreateTableViewer(Composite parent, int style,boolean textSelection)
+                        protected EJRWTHtmlView doCreateTableViewer(Composite parent, int style, boolean textSelection)
                         {
 
-                            return new EJRWTHtmlView(parent, SWT.NONE,textSelection)
+                            return new EJRWTHtmlView(parent, SWT.NONE, textSelection)
                             {
                                 private static final long serialVersionUID = 1L;
 
@@ -886,7 +896,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                     _browser = filterHtml.getViewer();
 
                     defaultMessage = blockRendererProperties.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MESSAGE);
-                    if(defaultMessage!=null)
+                    if (defaultMessage != null)
                         filterHtml.getFilterControl().setMessage(defaultMessage);
                     scrollComposite.setContent(filterHtml);
                     scrollComposite.setLayoutData(gridData);
@@ -895,7 +905,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 {
 
                     filterHtml = null;
-                    _browser = new EJRWTHtmlView(scrollComposite, SWT.BORDER,textSelection)
+                    _browser = new EJRWTHtmlView(scrollComposite, SWT.BORDER, textSelection)
                     {
 
                         private static final long serialVersionUID = 1L;
@@ -971,7 +981,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         {
             if (filtered)
             {
-                filterHtml = new EJRWTAbstractFilteredHtml(scrollComposite, SWT.NONE,textSelection)
+                filterHtml = new EJRWTAbstractFilteredHtml(scrollComposite, SWT.NONE, textSelection)
                 {
 
                     @Override
@@ -982,10 +992,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                     }
 
                     @Override
-                    protected EJRWTHtmlView doCreateTableViewer(Composite parent, int style,boolean  textSelection)
+                    protected EJRWTHtmlView doCreateTableViewer(Composite parent, int style, boolean textSelection)
                     {
 
-                        return new EJRWTHtmlView(parent, SWT.NONE,textSelection)
+                        return new EJRWTHtmlView(parent, SWT.NONE, textSelection)
                         {
                             private static final long serialVersionUID = 1L;
 
@@ -1056,13 +1066,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 scrollComposite.setLayoutData(gridData);
 
                 defaultMessage = blockRendererProperties.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MESSAGE);
-                if(defaultMessage!=null)
+                if (defaultMessage != null)
                     filterHtml.getFilterControl().setMessage(defaultMessage);
             }
             else
             {
                 filterHtml = null;
-                _browser = new EJRWTHtmlView(scrollComposite, SWT.NONE,textSelection)
+                _browser = new EJRWTHtmlView(scrollComposite, SWT.NONE, textSelection)
                 {
                     private static final long serialVersionUID = 1L;
 
@@ -1168,8 +1178,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
         if (_items.isEmpty())
         {
-            Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN)
-                    .getAllItemGroupProperties();
+            Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN).getAllItemGroupProperties();
 
             int cellSpacing = blockProperties.getBlockRendererProperties().getIntProperty(CELL_SPACING_PROPERTY, 0);
             int cellPadding = blockProperties.getBlockRendererProperties().getIntProperty(CELL_PADDING_PROPERTY, 0);
@@ -1299,12 +1308,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             {
                                 if (functionDef != null)
                                 {
-                                    header.append(String.format("<ejl><u %s class=\"%s, %s\"  ", "style=\"line-height: 100%\"",
-                                            ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
+                                    header.append(String.format("<ejl><u %s class=\"%s, %s\"  ", "style=\"line-height: 100%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
                                     header.append(functionDef).append(">");
                                 }
-                                header.append(!(extentionProperties.getBooleanProperty(ENABLE_MARKUP, false) || rendererProperties.getBooleanProperty(
-                                        "HTML_FORMAT", false)) ? ignoreHtml(itemProps.getLabel()) : itemProps.getLabel());
+                                header.append(!(extentionProperties.getBooleanProperty(ENABLE_MARKUP, false) || rendererProperties.getBooleanProperty("HTML_FORMAT", false)) ? ignoreHtml(itemProps.getLabel()) : itemProps.getLabel());
                                 if (sortInfo != null)
                                     header.append(String.format("<esh %s/>", sortInfo.id));
                             }
@@ -1381,7 +1388,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 }
                 else
                 {
-                   
+
                     for (EJDataRecord record : _block.getBlock().getRecords())
                     {
                         if (matchItem(record))
@@ -1480,18 +1487,12 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
             // builder.append("}");
             builder.append("td{");
             builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
-            builder.append(" -webkit-touch-callout: text;" + 
-                    "    -webkit-user-select: text;" + 
-                    "     -khtml-user-select: text;" + 
-                    "       -moz-user-select: text;" + 
-                    "        -ms-user-select: text;" + 
-                    "            user-select: text;" );
+            builder.append(" -webkit-touch-callout: text;" + "    -webkit-user-select: text;" + "     -khtml-user-select: text;" + "       -moz-user-select: text;" + "        -ms-user-select: text;" + "            user-select: text;");
             builder.append("}");
             builder.append("u.default {");
             builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("padding: 1px 2px 1px 0px;");
             builder.append("}");
-    
 
             builder.append("p{");
             builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
@@ -1622,20 +1623,17 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 boolean rowSelection = blockProperties.getBlockRendererProperties().getBooleanProperty(ROW_SELECTION, false);
                 String rowSelectionVA = blockProperties.getBlockRendererProperties().getStringProperty(ROW_SELECTION_VA);
 
-                String selectionTD = "<td width=1 class=\"rowindi\" style=\" border-left: 2px solid #4D90F0;\n"
-                        + "    background-color: #fafafa; visibility:hidden \"></td>";
+                String selectionTD = "<td width=1 class=\"rowindi\" style=\" border-left: 2px solid #4D90F0;\n" + "    background-color: #fafafa; visibility:hidden \"></td>";
 
                 if (rowSelectionVA != null && !rowSelectionVA.isEmpty())
                 {
-                    EJCoreVisualAttributeProperties selectVa = EJCoreProperties.getInstance().getVisualAttributesContainer()
-                            .getVisualAttributeProperties(rowSelectionVA);
+                    EJCoreVisualAttributeProperties selectVa = EJCoreProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(rowSelectionVA);
 
                     Color backgroundColor = selectVa.getBackgroundColor();
                     if (selectVa != null)
                     {
                         String hexString = toHex(backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue());
-                        selectionTD = "<td width=1 class=\"rowindi\" style=\" border-left: 2px solid " + hexString + ";\n"
-                                + "    background-color: #fafafa; visibility:hidden \"></td>";
+                        selectionTD = "<td width=1 class=\"rowindi\" style=\" border-left: 2px solid " + hexString + ";\n" + "    background-color: #fafafa; visibility:hidden \"></td>";
 
                     }
                 }
@@ -1646,7 +1644,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                     String str = String.valueOf(cellPadding);
                     tdStyle = String.format("padding: %spx %spx %spx %spx; ", str, str, str, str);
                 }
-                
+
                 builder.append("<table border=0 cellspacing=").append(cellSpacing).append(" width=\"100%\" >");
                 {
                     builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
@@ -1665,8 +1663,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             {
                                 header.append("&nbsp <img name=\"open\" ");
                                 header.append("src=\"");
-                                header.append(createImageUrl(activeSortColumn.direction == SortInfo.DIRECTION.ASC ? "resource/widget/rap/column/sort-indicator-up.png"
-                                        : "resource/widget/rap/column/sort-indicator-down.png"));
+                                header.append(createImageUrl(activeSortColumn.direction == SortInfo.DIRECTION.ASC ? "resource/widget/rap/column/sort-indicator-up.png" : "resource/widget/rap/column/sort-indicator-down.png"));
                                 header.append("\"");
                                 header.append(" >");
                             }
@@ -1700,8 +1697,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                         int rowid = 0;
                         for (EJDataRecord record : records)
                         {
-                            String trDef = String.format("<tr style=\"height: %spx\" recid=\"%s\" >", String.valueOf(charHeight),
-                                    String.valueOf(getDisplayedRecordNumber(record)));
+                            String trDef = String.format("<tr style=\"height: %spx\" recid=\"%s\" >", String.valueOf(charHeight), String.valueOf(getDisplayedRecordNumber(record)));
                             rowid++;
                             if (lastRowSpan > 1)
                             {
@@ -1808,21 +1804,19 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 }
                                 builder.append(">");
 
-                                String text = columnLabelProvider instanceof HtmlBaseColumnLabelProvider? ((HtmlBaseColumnLabelProvider)columnLabelProvider).getSrcText(record): columnLabelProvider.getText(record);
+                                String text = columnLabelProvider instanceof HtmlBaseColumnLabelProvider ? ((HtmlBaseColumnLabelProvider) columnLabelProvider).getSrcText(record) : columnLabelProvider.getText(record);
 
-                                boolean htmlformatting =   extentionProperties.getBooleanProperty(ENABLE_MARKUP, false) || rendererProperties.getBooleanProperty("HTML_FORMAT",
-                                        false);
+                                boolean htmlformatting = extentionProperties.getBooleanProperty(ENABLE_MARKUP, false) || rendererProperties.getBooleanProperty("HTML_FORMAT", false);
                                 if (!htmlformatting)
                                     text = ignoreHtml(text);
 
                                 if (actionDef != null && text != null && text.length() > 0)
                                 {
-                                    builder.append(String.format("<ejl><u %s class=\"%s, %s\"  ", "style=\"line-height: 100%;cursor: pointer; cursor: hand;\"",
-                                            ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
+                                    builder.append(String.format("<ejl><u %s class=\"%s, %s\"  ", "style=\"line-height: 100%;cursor: pointer; cursor: hand;\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
                                     builder.append(actionDef).append(">");
                                 }
 
-                                Image image = columnLabelProvider instanceof HtmlBaseColumnLabelProvider? ((HtmlBaseColumnLabelProvider)columnLabelProvider).getSrcImage(record) :columnLabelProvider.getImage(record);
+                                Image image = columnLabelProvider instanceof HtmlBaseColumnLabelProvider ? ((HtmlBaseColumnLabelProvider) columnLabelProvider).getSrcImage(record) : columnLabelProvider.getImage(record);
                                 if (image != null)
                                 {
                                     if (actionDef == null)
@@ -1843,19 +1837,21 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         builder.append(String.format("style=\"cursor: hand;\" class=\"%s \" %s  > </ejl>", styleClass, actionDef));
                                     }
                                 }
-                                // builder.append(String.format("<p class=\"default %s\">",
+                                // builder.append(String.format("<p
+                                // class=\"default %s\">",
                                 // styleClass));
 
-//                                if(textSelection && actionDef == null && !htmlformatting)
-//                                {
-//                                    builder.append("<input value=\"");
-//                                    builder.append(text);
-//                                    builder.append("\" ");
-//                                    builder.append("style=\"border:none;\"");
-//                                    builder.append(" readonly />");
-//                                }
-//                                else
-                                    builder.append(text);
+                                // if(textSelection && actionDef == null &&
+                                // !htmlformatting)
+                                // {
+                                // builder.append("<input value=\"");
+                                // builder.append(text);
+                                // builder.append("\" ");
+                                // builder.append("style=\"border:none;\"");
+                                // builder.append(" readonly />");
+                                // }
+                                // else
+                                builder.append(text);
                                 builder.append("</td>");
                             }
                             builder.append("</tr>");
@@ -1956,8 +1952,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         if (text == null || text.isEmpty())
             return text;
 
-        return replaceEach(text, new String[] { "&", "<", ">", "\"", "'", "/" }, new String[] { "&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;" }, false,
-                0);
+        return replaceEach(text, new String[] { "&", "<", ">", "\"", "'", "/" }, new String[] { "&amp;", "&lt;", "&gt;", "&quot;", "&#x27;", "&#x2F;" }, false, 0);
     }
 
     private static String replaceEach(String text, String[] searchList, String[] replacementList, boolean repeat, int timeToLive)
@@ -2158,8 +2153,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     public void keyReleased(KeyEvent arg0)
     {
         int keyCode = arg0.keyCode;
-        KeyInfo keyInfo = EJRWTKeysUtil
-                .toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
+        KeyInfo keyInfo = EJRWTKeysUtil.toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
 
         String actionID = _actionInfoMap.get(keyInfo);
         if (actionID != null)
@@ -2230,24 +2224,23 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         System.out.println(ignoreHtml("<html/>"));
     }
 
-    
     @Override
     public void setFilter(String filter)
     {
-        if(_filteredContentProvider!=null)
+        if (_filteredContentProvider != null)
         {
             _filteredContentProvider.setFilter(filter);
             createHTML();
         }
-        
+
     }
-    
+
     @Override
     public String getFilter()
     {
-       
-        return _filteredContentProvider!=null ? _filteredContentProvider.getFilter():null;
-       
+
+        return _filteredContentProvider != null ? _filteredContentProvider.getFilter() : null;
+
     }
-    
+
 }

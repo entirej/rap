@@ -135,6 +135,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     public static final String             VISUAL_ATTRIBUTE_PROPERTY = "VISUAL_ATTRIBUTE";
 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
+    private Display                        dispaly                   = Display.getDefault();
 
     @Override
     public void setFilter(String filter)
@@ -261,13 +262,17 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     @Override
     public void blockCleared()
     {
-        currentRecord = null;
-        _treeBaseRecords.clear();
 
-        if (_chartView != null && !_chartView.isDisposed())
-        {
-            _chartView.clear();
-        }
+        dispaly.asyncExec(() -> {
+
+            currentRecord = null;
+            _treeBaseRecords.clear();
+
+            if (_chartView != null && !_chartView.isDisposed())
+            {
+                _chartView.clear();
+            }
+        });
     }
 
     @Override
@@ -367,8 +372,10 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     @Override
     public void queryExecuted()
     {
+
         _treeBaseRecords.addAll(_block.getRecords());
         recordSelected(getFirstRecord());
+
     }
 
     public void pageRetrieved()
@@ -386,7 +393,11 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
     public void refresh()
     {
-        refresh(new Object());
+        dispaly.asyncExec(() -> {
+
+            refresh(new Object());
+
+        });
     }
 
     List<EJScreenItemController> getScreenItems()
@@ -451,9 +462,9 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                     ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
 
                     EJCoreVisualAttributeProperties attributeProperties = sItem.getItemRenderer().getVisualAttributeProperties();
-                    
+
                     EJCoreVisualAttributeProperties visualAttribute = ejDataRecord.getItem(sItem.getName()).getVisualAttribute();
-                    if(visualAttribute!=null)
+                    if (visualAttribute != null)
                     {
                         attributeProperties = visualAttribute;
                     }
@@ -620,7 +631,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     public EJDataRecord getFocusedRecord()
     {
 
-        return currentRecord!=null? currentRecord:getFirstRecord();
+        return currentRecord != null ? currentRecord : getFirstRecord();
     }
 
     @Override
@@ -870,10 +881,8 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         hookKeyListener(_mainPane);
         int style = SWT.NONE;
 
-
         Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN).getAllItemGroupProperties();
 
-    
         {
             _chartView = null;
             if (allItemGroupProperties.size() > 0)
@@ -1022,32 +1031,32 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 }
                 if (dataItem != null)
                 {
-//                    Collection<EJDataRecord> records = _block.getRecords();
-//                    Object lastVal=null;
-//                    for (EJDataRecord record : records)
-//                    {
-//                        Object value = record.getValue(dataItem.getName());
-//                        if(value==null)
-//                            value = lastVal;
-//                        
-//                        if ( 
-//                                value != null && value.equals(parameters.get("value").asDouble()))
-//                        {
-//                            currentRecord = record;
-//                            break;
-//                        }
-//                        lastVal = value;
-//
-//                    }
-                    
+                    // Collection<EJDataRecord> records = _block.getRecords();
+                    // Object lastVal=null;
+                    // for (EJDataRecord record : records)
+                    // {
+                    // Object value = record.getValue(dataItem.getName());
+                    // if(value==null)
+                    // value = lastVal;
+                    //
+                    // if (
+                    // value != null &&
+                    // value.equals(parameters.get("value").asDouble()))
+                    // {
+                    // currentRecord = record;
+                    // break;
+                    // }
+                    // lastVal = value;
+                    //
+                    // }
+
                     EJCoreMainScreenItemProperties mainScreenItemProperties = (EJCoreMainScreenItemProperties) dataItem.getProperties();
                     String action = mainScreenItemProperties.getBlockRendererRequiredProperties().getStringProperty("action");
                     if (action != null && !action.trim().isEmpty())
                     {
                         _block.executeActionCommand(action, EJScreenType.MAIN);
                     }
-                    
-                    
+
                 }
             }
         }

@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 CRESOFT AG
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     CRESOFT AG - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.blocks;
 
@@ -118,6 +117,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
 
     private List<String>                     _actionkeys        = new ArrayList<String>();
     private Map<KeyInfo, String>             _actionInfoMap     = new HashMap<EJRWTKeysUtil.KeyInfo, String>();
+    private Display                          dispaly            = Display.getDefault();
 
     protected EJInternalEditableBlock getBlock()
     {
@@ -183,8 +183,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         switch (managedItemPropertyType)
         {
             case EDIT_ALLOWED:
-                itemRenderer.setEditAllowed((itemRenderer.isReadOnly() || _block.getBlock().getProperties().isControlBlock())
-                        && itemRenderer.getItem().getProperties().isEditAllowed());
+                itemRenderer.setEditAllowed((itemRenderer.isReadOnly() || _block.getBlock().getProperties().isControlBlock()) && itemRenderer.getItem().getProperties().isEditAllowed());
                 break;
             case MANDATORY:
                 itemRenderer.setMandatory(itemRenderer.getItem().getProperties().isMandatory());
@@ -272,10 +271,15 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     @Override
     public void blockCleared()
     {
-        logger.trace("START blockCleared");
-        _mainItemRegister.clearRegisteredValues();
-        logger.trace("END blockCleared");
-        notifyStatus();
+
+        dispaly.asyncExec(() -> {
+
+            logger.trace("START blockCleared");
+            _mainItemRegister.clearRegisteredValues();
+            logger.trace("END blockCleared");
+            notifyStatus();
+
+        });
     }
 
     public void savePerformed()
@@ -301,24 +305,24 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             msg = "Are you sure you want to delete the current record?";
         }
         EJMessage message = new EJMessage(msg);
-        EJQuestion question = new EJQuestion(new EJForm(_block.getForm()), "DELETE_RECORD", "Delete", message, "Yes", "No"){
-            
+        EJQuestion question = new EJQuestion(new EJForm(_block.getForm()), "DELETE_RECORD", "Delete", message, "Yes", "No")
+        {
+
             @Override
             public void setAnswer(EJQuestionButton answerButton)
             {
-                
+
                 super.setAnswer(answerButton);
-                
+
                 if (EJQuestionButton.ONE == answerButton)
                 {
                     _block.getBlock().deleteRecord(recordToDelete);
                 }
                 _block.setRendererFocus(true);
             }
-            
+
         };
         _block.getForm().getMessenger().askQuestion(question);
-
 
     }
 
@@ -420,11 +424,15 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     @Override
     public void queryExecuted()
     {
-        if (getFocusedRecord() == null)
-        {
-            _mainItemRegister.register(getFirstRecord());
-        }
-        notifyStatus();
+
+        dispaly.asyncExec(() -> {
+            if (getFocusedRecord() == null)
+            {
+                _mainItemRegister.register(getFirstRecord());
+            }
+            notifyStatus();
+
+        });
     }
 
     @Override
@@ -463,24 +471,28 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     @Override
     public void recordSelected(EJDataRecord record)
     {
-        if (record != null)
-        {
-            logger.trace("START recordSelected");
-            synchronize();
 
-            _mainItemRegister.register(record);
-            Collection<EJManagedItemRendererWrapper> registeredRenderers = _mainItemRegister.getRegisteredRenderers();
-            for (EJManagedItemRendererWrapper wrapper : registeredRenderers)
+        dispaly.asyncExec(() -> {
+
+            if (record != null)
             {
-                if (wrapper.getUnmanagedRenderer() instanceof EJRWTComboItemRenderer)
+                logger.trace("START recordSelected");
+                synchronize();
+
+                _mainItemRegister.register(record);
+                Collection<EJManagedItemRendererWrapper> registeredRenderers = _mainItemRegister.getRegisteredRenderers();
+                for (EJManagedItemRendererWrapper wrapper : registeredRenderers)
                 {
-                    if (((EJRWTComboItemRenderer) wrapper.getUnmanagedRenderer()).isLovInitialiedOnValueSet())
-                        wrapper.getUnmanagedRenderer().refreshItemRenderer();
+                    if (wrapper.getUnmanagedRenderer() instanceof EJRWTComboItemRenderer)
+                    {
+                        if (((EJRWTComboItemRenderer) wrapper.getUnmanagedRenderer()).isLovInitialiedOnValueSet())
+                            wrapper.getUnmanagedRenderer().refreshItemRenderer();
+                    }
                 }
+                logger.trace("END recordSelected");
             }
-            logger.trace("END recordSelected");
-        }
-        notifyStatus();
+            notifyStatus();
+        });
     }
 
     private void refreshRecordInstanceVA(EJDataRecord record)
@@ -645,10 +657,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         {
             sectionProperties = brendererProperties.getPropertyGroup(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR);
         }
-        if (sectionProperties != null
-                && sectionProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE) != null
-                && !EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE_GROUP.equals(sectionProperties
-                        .getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE)))
+        if (sectionProperties != null && sectionProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE) != null
+                && !EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE_GROUP.equals(sectionProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE)))
         {
             int style = ExpandableComposite.TITLE_BAR;
 
@@ -679,27 +689,23 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             if (mainScreenProperties.getDisplayFrame() && frameTitle != null && frameTitle.length() > 0)
             {
 
-               
+                Group group = new Group(section, SWT.NONE);
 
+                group.setLayout(new FillLayout());
+                group.setLayoutData(gridData);
 
-                    Group group = new Group(section, SWT.NONE);
+                scrollComposite = new EJRWTScrolledComposite(group, SWT.V_SCROLL | SWT.H_SCROLL);
 
-                    group.setLayout(new FillLayout());
-                    group.setLayoutData(gridData);
-
-                    scrollComposite = new EJRWTScrolledComposite(group, SWT.V_SCROLL | SWT.H_SCROLL);
-
-                    _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
-                    group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
-                    _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
-                    group.setText(frameTitle);
-                    section.setClient(group);
-               
+                _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
+                group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+                _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
+                group.setText(frameTitle);
+                section.setClient(group);
 
             }
             else
             {
-                Composite composite = new Composite(blockCanvas, mainScreenProperties.getDisplayFrame()?SWT.BORDER:SWT.NONE);
+                Composite composite = new Composite(blockCanvas, mainScreenProperties.getDisplayFrame() ? SWT.BORDER : SWT.NONE);
                 composite.setLayout(new FillLayout());
                 scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
                 _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
@@ -709,8 +715,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 section.setClient(composite);
             }
 
-            final EJFrameworkExtensionPropertyList propertyList = sectionProperties
-                    .getPropertyList(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_ACTIONS);
+            final EJFrameworkExtensionPropertyList propertyList = sectionProperties.getPropertyList(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_ACTIONS);
 
             if (propertyList != null && propertyList.getAllListEntries().size() > 0)
             {
@@ -778,17 +783,16 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
 
                 group.setLayout(new FillLayout());
                 group.setLayoutData(gridData);
-                
-               
-                    group.setText(frameTitle);
-                
+
+                group.setText(frameTitle);
+
                 scrollComposite = new EJRWTScrolledComposite(group, SWT.V_SCROLL | SWT.H_SCROLL);
                 _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
 
             }
             else
             {
-                Composite composite = new Composite(blockCanvas, mainScreenProperties.getDisplayFrame()?SWT.BORDER:SWT.NONE);
+                Composite composite = new Composite(blockCanvas, mainScreenProperties.getDisplayFrame() ? SWT.BORDER : SWT.NONE);
                 composite.setLayout(new FillLayout());
                 scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
                 _mainPane = new EJRWTEntireJGridPane(scrollComposite, mainScreenProperties.getNumCols());
@@ -804,16 +808,11 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             EJFrameworkExtensionProperties propertyGroup = rendererProp.getPropertyGroup(EJRWTSingleRecordBlockDefinitionProperties.ACTION_GROUP);
             if (propertyGroup != null)
             {
-                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_QUERY_KEY),
-                        EJRWTSingleRecordBlockDefinitionProperties.ACTION_QUERY_KEY);
-                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_INSERT_KEY),
-                        EJRWTSingleRecordBlockDefinitionProperties.ACTION_INSERT_KEY);
-                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_UPDATE_KEY),
-                        EJRWTSingleRecordBlockDefinitionProperties.ACTION_UPDATE_KEY);
-                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_DELETE_KEY),
-                        EJRWTSingleRecordBlockDefinitionProperties.ACTION_DELETE_KEY);
-                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_REFRESH_KEY),
-                        EJRWTSingleRecordBlockDefinitionProperties.ACTION_REFRESH_KEY);
+                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_QUERY_KEY), EJRWTSingleRecordBlockDefinitionProperties.ACTION_QUERY_KEY);
+                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_INSERT_KEY), EJRWTSingleRecordBlockDefinitionProperties.ACTION_INSERT_KEY);
+                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_UPDATE_KEY), EJRWTSingleRecordBlockDefinitionProperties.ACTION_UPDATE_KEY);
+                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_DELETE_KEY), EJRWTSingleRecordBlockDefinitionProperties.ACTION_DELETE_KEY);
+                addActionKeyinfo(propertyGroup.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ACTION_REFRESH_KEY), EJRWTSingleRecordBlockDefinitionProperties.ACTION_REFRESH_KEY);
 
             }
         }
@@ -883,56 +882,52 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     private void createItemGroup(Composite parent, EJItemGroupProperties groupProperties)
     {
         EJRWTEntireJGridPane groupPane;
-        
-        if(groupProperties.isSeparator())
+
+        if (groupProperties.isSeparator())
         {
-            
-                int style = SWT.SEPARATOR;
 
-                if (groupProperties.getSeparatorOrientation() == EJSeparatorOrientation.HORIZONTAL)
-                {
-                    style = style | SWT.HORIZONTAL;
-                }
-                else
-                {
-                    style = style | SWT.VERTICAL;
-                }
+            int style = SWT.SEPARATOR;
 
-                Label layoutBody = new Label(parent, style);
-                layoutBody.setLayoutData(createItemGroupGridData(groupProperties));
+            if (groupProperties.getSeparatorOrientation() == EJSeparatorOrientation.HORIZONTAL)
+            {
+                style = style | SWT.HORIZONTAL;
+            }
+            else
+            {
+                style = style | SWT.VERTICAL;
+            }
 
-                switch (groupProperties.getSeparatorLineStyle())
-                {
-                    case DASHED:
-                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_dashed");
-                        break;
-                    case DOTTED:
-                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_dotted");
-                        break;
-                    case DOUBLE:
-                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_double");
-                        break;
+            Label layoutBody = new Label(parent, style);
+            layoutBody.setLayoutData(createItemGroupGridData(groupProperties));
 
-                    default:
-                        layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator");
-                        break;
-                }
-                return;
-            
+            switch (groupProperties.getSeparatorLineStyle())
+            {
+                case DASHED:
+                    layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_dashed");
+                    break;
+                case DOTTED:
+                    layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_dotted");
+                    break;
+                case DOUBLE:
+                    layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator_double");
+                    break;
+
+                default:
+                    layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, "separator");
+                    break;
+            }
+            return;
+
         }
         String frameTitle = groupProperties.getFrameTitle();
         EJFrameworkExtensionProperties rendererProperties = groupProperties.getRendererProperties();
-        
-        
-        
+
         boolean hasGroup = groupProperties.dispayGroupFrame() && frameTitle != null && frameTitle.length() > 0;
         if (hasGroup)
         {
 
-            if (rendererProperties != null
-                    && rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE) != null
-                    && !EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE_GROUP.equals(rendererProperties
-                            .getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE)))
+            if (rendererProperties != null && rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE) != null
+                    && !EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE_GROUP.equals(rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_MODE)))
             {
                 int style = ExpandableComposite.TITLE_BAR;
 
@@ -977,8 +972,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 // groupPane.getLayout().marginLeft = 5;
                 section.setClient(groupPane);
 
-                final EJFrameworkExtensionPropertyList propertyList = rendererProperties
-                        .getPropertyList(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_ACTIONS);
+                final EJFrameworkExtensionPropertyList propertyList = rendererProperties.getPropertyList(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_ACTIONS);
 
                 if (propertyList != null && propertyList.getAllListEntries().size() > 0)
                 {
@@ -1039,37 +1033,34 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             }
             else
             {
-                
-                
-                
-                
-                Composite group ;
-                
-                if(hasGroup)
+
+                Composite group;
+
+                if (hasGroup)
                 {
-                     Group g = new Group(parent, SWT.NONE);
+                    Group g = new Group(parent, SWT.NONE);
                     g.setText(frameTitle);
                     group = g;
                 }
                 else
                 {
-                    group = new Composite(parent,groupProperties.dispayGroupFrame()?SWT.BORDER: SWT.NONE);
+                    group = new Composite(parent, groupProperties.dispayGroupFrame() ? SWT.BORDER : SWT.NONE);
                 }
                 group.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_GROUP);
                 String customCSSKey = null;
-                if(rendererProperties!=null)
+                if (rendererProperties != null)
                 {
-                     customCSSKey = rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY);
+                    customCSSKey = rendererProperties.getStringProperty(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_CSS_KEY);
 
                     if (customCSSKey != null && customCSSKey.trim().length() > 0)
                     {
                         group.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
                     }
                 }
-                
+
                 group.setLayout(new FillLayout());
                 group.setLayoutData(createItemGroupGridData(groupProperties));
-               
+
                 parent = group;
                 hookKeyListener(group);
                 group.addMouseListener(new MouseAdapter()
@@ -1220,8 +1211,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         gridData.verticalSpan = blockRequiredItemProperties.getIntProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_YSPAN_PROPERTY, 1);
 
         gridData.verticalAlignment = SWT.CENTER;
-        if (gridData.verticalSpan > 1
-                || blockRequiredItemProperties.getBooleanProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_EXPAND_Y_PROPERTY, false))
+        if (gridData.verticalSpan > 1 || blockRequiredItemProperties.getBooleanProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_EXPAND_Y_PROPERTY, false))
         {
             gridData.verticalIndent = 2;
             gridData.verticalAlignment = SWT.TOP;
@@ -1232,10 +1222,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     private GridData createBlockItemGridData(EJRWTAppItemRenderer itemRenderer, EJFrameworkExtensionProperties blockRequiredItemProperties, Control control)
     {
 
-        boolean grabExcessVerticalSpace = blockRequiredItemProperties.getBooleanProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_EXPAND_Y_PROPERTY,
-                false);
-        boolean grabExcessHorizontalSpace = blockRequiredItemProperties.getBooleanProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_EXPAND_X_PROPERTY,
-                false);
+        boolean grabExcessVerticalSpace = blockRequiredItemProperties.getBooleanProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_EXPAND_Y_PROPERTY, false);
+        boolean grabExcessHorizontalSpace = blockRequiredItemProperties.getBooleanProperty(EJRWTSingleRecordBlockDefinitionProperties.MAIN_EXPAND_X_PROPERTY, false);
         GridData gridData;
         if (grabExcessVerticalSpace && grabExcessHorizontalSpace)
         {
@@ -1292,7 +1280,9 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             {
                 gridData.heightHint = displayedHeight;
             }
-        }else if (control instanceof EJRWTAbstractLabel) {
+        }
+        else if (control instanceof EJRWTAbstractLabel)
+        {
             gridData.heightHint = 20;
         }
 
@@ -1323,7 +1313,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     {
         if (itemProps.isSpacerItem())
         {
-            if(itemProps.isSeparator())
+            if (itemProps.isSeparator())
             {
                 int style = SWT.SEPARATOR;
 
@@ -1357,7 +1347,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 }
                 return;
             }
-            
+
             Label label = new Label(parent, SWT.NONE);
             label.setLayoutData(createBlockItemGridData(null, itemProps.getBlockRendererRequiredProperties(), label));
             return;
@@ -1397,14 +1387,12 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             {
                 itemRenderer.getGuiComponentLabel().setLayoutData(createBlockLableGridData(blockRequiredItemProperties));
             }
-            
-            EJ_RWT.setTestId(itemRenderer.getGuiComponent(), blockRequiredItemProperties.getBlockProperties().getName()+"."+itemRenderer.getRegisteredItemName());
-            
-            
+
+            EJ_RWT.setTestId(itemRenderer.getGuiComponent(), blockRequiredItemProperties.getBlockProperties().getName() + "." + itemRenderer.getRegisteredItemName());
+
             if (visualAttribute != null)
             {
-                EJCoreVisualAttributeProperties va = EJCoreProperties.getInstance().getVisualAttributesContainer()
-                        .getVisualAttributeProperties(visualAttribute);
+                EJCoreVisualAttributeProperties va = EJCoreProperties.getInstance().getVisualAttributesContainer().getVisualAttributeProperties(visualAttribute);
                 if (va != null)
                 {
                     itemRenderer.setInitialVisualAttribute(va);
@@ -1422,8 +1410,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             // Add the item to the pane according to its display coordinates.
             renderer.setMandatory(itemProperties.isMandatory());
             renderer.enableLovActivation(itemProperties.isLovNotificationEnabled());
-             
-            if(item.getProperties().getVisualAttributeProperties()!=null)
+
+            if (item.getProperties().getVisualAttributeProperties() != null)
             {
                 renderer.setVisualAttribute(item.getProperties().getVisualAttributeProperties());
             }
@@ -1448,8 +1436,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     public void keyReleased(KeyEvent arg0)
     {
         int keyCode = arg0.keyCode;
-        KeyInfo keyInfo = EJRWTKeysUtil
-                .toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
+        KeyInfo keyInfo = EJRWTKeysUtil.toKeyInfo(keyCode, (arg0.stateMask & SWT.SHIFT) != 0, (arg0.stateMask & SWT.CTRL) != 0, (arg0.stateMask & SWT.ALT) != 0);
 
         String actionID = _actionInfoMap.get(keyInfo);
         if (actionID != null)
@@ -1539,25 +1526,25 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
             }
         });
     }
-    
+
     @Override
     public void setFilter(String filter)
     {
         throw new IllegalStateException("not supported yet");
-//        this.filterText = filter;
-//        if(filterTree!=null)
-//        {
-//            filterTree.setFilterText(filter);
-//            filterTree.filter(filter);
-//        }
-        
+        // this.filterText = filter;
+        // if(filterTree!=null)
+        // {
+        // filterTree.setFilterText(filter);
+        // filterTree.filter(filter);
+        // }
+
     }
-    
+
     @Override
     public String getFilter()
     {
         throw new IllegalStateException("not supported yet");
-       // return filterText;
-       
+        // return filterText;
+
     }
 }

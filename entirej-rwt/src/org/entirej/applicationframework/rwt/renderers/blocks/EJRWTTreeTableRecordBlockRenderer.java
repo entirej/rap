@@ -141,10 +141,11 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     private FilteredContentProvider        _filteredContentProvider;
 
-    
-    private String filterText;
+    private Display                        dispaly          = Display.getDefault();
 
-    private EJRWTAbstractFilteredTree filterTree;
+    private String                         filterText;
+
+    private EJRWTAbstractFilteredTree      filterTree;
 
     protected void clearFilter()
     {
@@ -153,6 +154,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             _filteredContentProvider.setFilter(null);
         }
     }
+
     protected void applyFileter()
     {
         if (filterText != null && !filterText.isEmpty())
@@ -166,7 +168,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public void setFilter(String filter)
     {
         this.filterText = filter;
-        if(filterText!=null && !filterText.isEmpty())
+        if (filterText != null && !filterText.isEmpty())
         {
             applyFileter();
         }
@@ -175,16 +177,16 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             filterTree.clearText();
             clearFilter();
         }
-        
+
     }
-    
+
     @Override
     public String getFilter()
     {
         return filterText;
-       
+
     }
-    
+
     @Override
     public void refreshBlockProperty(EJManagedBlockProperty managedBlockPropertyType)
     {
@@ -311,12 +313,16 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     @Override
     public void blockCleared()
     {
-        if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
-        {
-            clearFilter();
-            _tableViewer.setInput(new Object());
-            applyFileter();
-        }
+
+        dispaly.asyncExec(() -> {
+
+            if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
+            {
+                clearFilter();
+                _tableViewer.setInput(new Object());
+                applyFileter();
+            }
+        });
     }
 
     @Override
@@ -432,13 +438,18 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     @Override
     public void queryExecuted()
     {
-        if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
-        {
-            clearFilter();
-            _tableViewer.setInput(new Object());
-            applyFileter();
-        }
-        selectFirst();
+
+        dispaly.asyncExec(() -> {
+            if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
+            {
+                clearFilter();
+                _tableViewer.setInput(new Object());
+                applyFileter();
+            }
+            selectFirst();
+
+        });
+
     }
 
     public void pageRetrieved()
@@ -497,7 +508,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             }
         }
     }
-    
+
     public void filaterData(Object input)
     {
         if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
@@ -506,9 +517,9 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
             if (treeview != null)
             {
                 Object[] expanded = treeview.getExpandedElements();
-                
+
                 treeview.getControl().setRedraw(false);
-               
+
                 _tableViewer.setInput(input);
                 treeview.setExpandedElements(expanded);
                 treeview.getControl().setRedraw(true);
@@ -539,10 +550,14 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     @Override
     public void recordSelected(EJDataRecord record)
     {
-        if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
-        {
-            _tableViewer.setSelection(record != null ? new StructuredSelection(record) : new StructuredSelection(), true);
-        }
+
+        dispaly.asyncExec(() -> {
+            if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
+            {
+                _tableViewer.setSelection(record != null ? new StructuredSelection(record) : new StructuredSelection(), true);
+            }
+
+        });
     }
 
     @Override
@@ -1188,13 +1203,13 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
         _tableViewer.setContentProvider(_filteredContentProvider = new FilteredContentProvider()
         {
-            private List<EJDataRecord>              root     = new ArrayList<EJDataRecord>();
-            private Map<Object, Object>             indexMap = new HashMap<Object, Object>();
+            private List<EJDataRecord>              root         = new ArrayList<EJDataRecord>();
+            private Map<Object, Object>             indexMap     = new HashMap<Object, Object>();
             private Map<Object, Object>             fullindexMap = new HashMap<Object, Object>();
-            private Map<Object, List<EJDataRecord>> cmap     = new HashMap<Object, List<EJDataRecord>>();
+            private Map<Object, List<EJDataRecord>> cmap         = new HashMap<Object, List<EJDataRecord>>();
 
-            private List<EJDataRecord>              froot    = new ArrayList<EJDataRecord>();
-            private Map<Object, List<EJDataRecord>> fcmap    = new HashMap<Object, List<EJDataRecord>>();
+            private List<EJDataRecord>              froot        = new ArrayList<EJDataRecord>();
+            private Map<Object, List<EJDataRecord>> fcmap        = new HashMap<Object, List<EJDataRecord>>();
 
             boolean matchItem(EJDataRecord rec)
             {
@@ -1272,7 +1287,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     {
                         Object rV = record.getValue(rid);
                         Object pV = record.getValue(pid);
-                        if(pV!=null)
+                        if (pV != null)
                         {
                             fullindexMap.put(pV, record);
                         }
@@ -1332,18 +1347,18 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 }
 
             }
+
             private void addParents(EJDataRecord record)
             {
-                if (record!=null)
+                if (record != null)
                 {
-                    
-                    
+
                     EJDataRecord parent = (EJDataRecord) getParent(record);
-                    
+
                     if (parent != null && !root.contains(parent))
                     {
                         Object rV = parent.getValue(rid);
-                        if(rV!=null)
+                        if (rV != null)
                         {
                             List<EJDataRecord> list = fcmap.get(rV);
                             if (list == null)
@@ -1351,11 +1366,11 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                                 list = new ArrayList<EJDataRecord>();
                                 fcmap.put(rV, list);
                             }
-                            if(!list.contains(parent))
+                            if (!list.contains(parent))
                                 list.add(parent);
                             addParents(parent);
                         }
-                        
+
                     }
                 }
 
@@ -1584,7 +1599,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
                 TreeViewerColumn viewerColumn = factory.createColumn(itemProps.getLabel(), displayedWidth, labelProvider, getComponentStyle(labelOrientation));
                 TreeColumn column = viewerColumn.getColumn();
-                EJ_RWT.setTestId(column, blockProperties.getName()+"."+itemProps.getReferencedItemName());
+                EJ_RWT.setTestId(column, blockProperties.getName() + "." + itemProps.getReferencedItemName());
                 column.setData("KEY", itemProps.getReferencedItemName());
                 column.setData("VIEWER", viewerColumn);
                 column.setData("ITEM", item);
@@ -1720,6 +1735,5 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
         }
         return SWT.LEFT;
     }
-    
 
 }

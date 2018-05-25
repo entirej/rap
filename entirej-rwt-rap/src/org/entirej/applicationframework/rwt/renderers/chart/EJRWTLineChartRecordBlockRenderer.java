@@ -163,6 +163,8 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
 
+    private Display                        dispaly                   = Display.getDefault();
+
     @Override
     public void setFilter(String filter)
     {
@@ -279,7 +281,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
         options.getGridLines().setDisplay(blockProperties.getBlockRendererProperties().getBooleanProperty("gridLines", options.getGridLines().isDisplay()));
-        
+
         xAxisColumn = blockProperties.getBlockRendererProperties().getStringProperty(X_AXIS_COLUMN);
 
         EJItemGroupPropertiesContainer container = blockProperties.getScreenItemGroupContainer(EJScreenType.MAIN);
@@ -319,10 +321,15 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     @Override
     public void blockCleared()
     {
-        if (_chartView != null && !_chartView.isDisposed())
-        {
-            _chartView.clear();
-        }
+
+        dispaly.asyncExec(() -> {
+            if (_chartView != null && !_chartView.isDisposed())
+            {
+                _chartView.clear();
+            }
+
+        });
+
     }
 
     @Override
@@ -440,7 +447,12 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     public void refresh()
     {
-        refresh(new Object());
+        dispaly.asyncExec(() -> {
+
+            refresh(new Object());
+
+        });
+
     }
 
     List<EJScreenItemController> getScreenItems()
@@ -520,7 +532,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                             }
                             set.put(sItem.getName(), val);
                             EJCoreVisualAttributeProperties visualAttribute = ejDataRecord.getItem(sItem.getName()).getVisualAttribute();
-                            if(visualAttribute==null)
+                            if (visualAttribute == null)
                                 visualAttribute = sItem.getItemRenderer().getVisualAttributeProperties();
                             setVa.put(sItem.getName(), visualAttribute);
                         }
@@ -551,7 +563,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 {
                     Map<String, Float> map = dataset.get(object);
                     Map<String, EJCoreVisualAttributeProperties> mapVa = datasetVa.get(object);
-                    if (map == null || mapVa==null)
+                    if (map == null || mapVa == null)
                         continue;
 
                     row.add(map.get(sItem.getName()));
@@ -559,7 +571,6 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
                 }
 
-               
                 float[] floatArray = new float[row.size()];
                 ChartStyle[] styleArray = new ChartStyle[row.size()];
                 int i = 0;
@@ -567,7 +578,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 for (Float f : row)
                 {
                     floatArray[i] = (f != null ? f : 0);
-                    
+
                     ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
 
                     EJCoreVisualAttributeProperties attributeProperties = rowVa.get(i);
@@ -587,7 +598,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     }
                     styleArray[i] = colors;
                     i++;
-                    
+
                 }
                 /*
                  * String pointStyle = "circle";
@@ -603,7 +614,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
 
                 EJCoreVisualAttributeProperties attributeProperties = sItem.getItemRenderer().getVisualAttributeProperties();
-                
+
                 if (attributeProperties != null)
                 {
                     if (attributeProperties.getForegroundColor() != null)
@@ -619,7 +630,6 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                     }
                 }
 
-                
                 info.setLabel(label);
                 info.setChartStyle(colors);
                 info.setHidden(!sItem.isVisible());
@@ -636,7 +646,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 info.setLineWidth(mainScreenItemProperties.getBlockRendererRequiredProperties().getIntProperty(LINE_WIDTH, info.getLineWidth()));
                 info.setLineTension(mainScreenItemProperties.getBlockRendererRequiredProperties().getFloatProperty(LINE_TENSION, (float) info.getLineTension()));
                 info.setSteppedLine(mainScreenItemProperties.getBlockRendererRequiredProperties().getStringProperty(STEPPED_LINE));
-                chartRowData.addRow(info, floatArray,styleArray);
+                chartRowData.addRow(info, floatArray, styleArray);
                 // chartRowData.addRow(floatArray, colors);
             }
 
@@ -1037,14 +1047,10 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         }
 
         hookKeyListener(_mainPane);
-        int style = SWT.NONE ;
-
-      
+        int style = SWT.NONE;
 
         Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN).getAllItemGroupProperties();
 
-       
-        
         {
             _chartView = null;
             if (allItemGroupProperties.size() > 0)
@@ -1382,19 +1388,18 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
             if (dataItem != null)
             {
                 Collection<EJDataRecord> records = _block.getRecords();
-                Object lastVal=null;
+                Object lastVal = null;
                 for (EJDataRecord record : records)
                 {
                     Object value = record.getValue(dataItem.getName());
-                    if(value==null)
+                    if (value == null)
                         value = lastVal;
-                    if(value instanceof BigDecimal)
+                    if (value instanceof BigDecimal)
                     {
-                        value = ((BigDecimal)value).doubleValue();
+                        value = ((BigDecimal) value).doubleValue();
                     }
-                    
-                    if (record.getValue(xAxisColumn) != null && getStrValue(record.getValue(xAxisColumn)).equals(parameters.get("label").asString()) && 
-                            value != null && value.equals(parameters.get("value").asDouble()))
+
+                    if (record.getValue(xAxisColumn) != null && getStrValue(record.getValue(xAxisColumn)).equals(parameters.get("label").asString()) && value != null && value.equals(parameters.get("value").asDouble()))
                     {
                         currentRec = record;
                         break;
