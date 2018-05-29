@@ -452,17 +452,16 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     @Override
     public void recordDeleted(int dataBlockRecordNumber)
     {
+       refresh();
+    }
+
+    public void refresh()
+    {
         dispaly.asyncExec(() -> {
 
             refresh();
         });
 
-    }
-
-    public void refresh()
-    {
-
-        refresh(new Object());
     }
 
     List<EJScreenItemController> getScreenItems()
