@@ -38,6 +38,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.rwt.EJRWTAsync;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
@@ -314,7 +315,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     public void blockCleared()
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
             if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
             {
                 clearFilter();
@@ -436,7 +437,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     public void queryExecuted()
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
 
             if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
             {
@@ -507,7 +508,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     public void recordSelected(EJDataRecord record)
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
             if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
             {
                 _tableViewer.setSelection(record != null ? new StructuredSelection(record) : new StructuredSelection(), true);

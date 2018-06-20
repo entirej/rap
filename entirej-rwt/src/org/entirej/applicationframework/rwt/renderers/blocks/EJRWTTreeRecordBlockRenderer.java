@@ -44,6 +44,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.rwt.EJRWTAsync;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -293,7 +294,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
     @Override
     public void blockCleared()
     {
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
             if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
             {
                 clearFilter();
@@ -419,7 +420,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
     public void queryExecuted()
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
 
             if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
             {
@@ -530,7 +531,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
     public void recordSelected(final EJDataRecord record)
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
             if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
             {
                 if (record != null && record == getFocusedRecord())
@@ -1023,6 +1024,8 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 }
             }
         }
+
+        table.setData(EJ_RWT.MARKUP_ENABLED, rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, false));
 
         table.addFocusListener(new FocusListener()
         {

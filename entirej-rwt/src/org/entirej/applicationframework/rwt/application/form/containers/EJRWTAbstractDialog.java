@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
-public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Serializable
+public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Serializable,ITrayPane
 {
     private Shell _parent;
     private int   _selectedButtonId = -1;

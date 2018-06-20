@@ -38,6 +38,7 @@ import org.eclipse.rap.chartjs.pie.PieChartOptions;
 import org.eclipse.rap.chartjs.pie.PieChartRowData;
 import org.eclipse.rap.chartjs.pie.PieChartRowData.RowInfo;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rwt.EJRWTAsync;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -263,7 +264,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     public void blockCleared()
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
 
             currentRecord = null;
             _treeBaseRecords.clear();
@@ -393,7 +394,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
     public void refresh()
     {
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
 
             refresh(new Object());
 

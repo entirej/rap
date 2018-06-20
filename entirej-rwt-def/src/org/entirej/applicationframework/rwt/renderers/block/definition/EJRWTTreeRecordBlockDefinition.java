@@ -197,6 +197,12 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
         visualAttribute.setLabel("Visual Attribute");
         visualAttribute.setDescription("The background, foreground and font attributes applied for screen item");
         visualAttribute.setMandatory(false);
+        
+        
+        EJDevPropertyDefinition htmlFormat = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, EJPropertyDefinitionType.BOOLEAN);
+        htmlFormat.setLabel("XHTML Formatting");
+        htmlFormat.setDescription("If this property is set, the Table formats certain XHTML tags ");
+        
 
         mainGroup.addPropertyDefinition(visualAttribute);
         mainGroup.addPropertyDefinition(relationItem);
@@ -204,6 +210,7 @@ public class EJRWTTreeRecordBlockDefinition implements EJDevBlockRendererDefinit
       
         mainGroup.addPropertyDefinition(imageItem);
         mainGroup.addPropertyDefinition(expandLevel);
+        mainGroup.addPropertyDefinition(htmlFormat);
         mainGroup.addPropertyDefinition(doubleClickActionCommand);
         mainGroup.addPropertyDefinition(clickActionCommand);
         mainGroup.addPropertyDefinition(hideSelection);

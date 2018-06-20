@@ -41,6 +41,7 @@ import org.eclipse.rap.chartjs.line.LineChart;
 import org.eclipse.rap.chartjs.line.LineChartOptions;
 import org.eclipse.rap.chartjs.line.LineChartRowData;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rwt.EJRWTAsync;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -322,7 +323,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public void blockCleared()
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
             if (_chartView != null && !_chartView.isDisposed())
             {
                 _chartView.clear();
@@ -447,7 +448,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     public void refresh()
     {
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
 
             refresh(new Object());
 

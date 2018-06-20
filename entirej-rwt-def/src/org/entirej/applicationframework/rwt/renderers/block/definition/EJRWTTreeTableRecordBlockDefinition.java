@@ -195,12 +195,20 @@ public class EJRWTTreeTableRecordBlockDefinition implements EJDevBlockRendererDe
         EJDevPropertyDefinition expandLevel = new EJDevPropertyDefinition(EJRWTTreeTableBlockDefinitionProperties.NODE_EXPAND_LEVEL,
                 EJPropertyDefinitionType.INTEGER);
         expandLevel.setLabel("Expand Level");
+        
+        
+        EJDevPropertyDefinition htmlFormat = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, EJPropertyDefinitionType.BOOLEAN);
+        htmlFormat.setLabel("XHTML Formatting");
+        htmlFormat.setDescription("If this property is set, the Table formats certain XHTML tags ");
+        
+
         // expandLevel.setDescription("item that provide node images [ url / byte array ].");
         mainGroup.addPropertyDefinition(relationItem);
         mainGroup.addPropertyDefinition(parentItem);
         
         mainGroup.addPropertyDefinition(imageItem);
         mainGroup.addPropertyDefinition(expandLevel);
+        mainGroup.addPropertyDefinition(htmlFormat);
         mainGroup.addPropertyDefinition(doubleClickActionCommand);
         mainGroup.addPropertyDefinition(showTableBorder);
         mainGroup.addPropertyDefinition(showTableHeader);

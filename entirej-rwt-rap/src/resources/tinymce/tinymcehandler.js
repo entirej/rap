@@ -51,6 +51,9 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			this.elementReadonly.style.left = '0px';
 			this.elementReadonly.style.right = '0px';
 			this.elementReadonly.style.visibility = "hidden";// visible
+			this.elementReadonly.style["z-index"] = "2147483647";// visible
+			this.elementReadonly.style["background-color"] = "white";// visible
+			
 
 			this.parent.append(this.elementReadonly);
 			
@@ -114,11 +117,8 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					if (this._text && (this._enable != undefined && !this._enable))
 					{
 						this.elementReadonly.innerHTML = this._text;
+						this.elementReadonly.style.font= this._font;
 						
-						async(this, function() { // Needed by IE for some reason
-							
-							this.elementReadonly.style.font= font;
-						});
 						this.elementReadonly.style.visibility = "visible";
 					}
 					
@@ -151,7 +151,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 						    'insertdatetime table contextmenu paste   wordcount'
 						  ],
 						  
-						  toolbar: 'insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+						  toolbar: 'insert | undo redo |  formatselect | bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
 						  
 						  setup: this.setEditorSetup});
 				} else {
@@ -168,7 +168,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 						    'insertdatetime table contextmenu paste   wordcount'
 						  ],
 						  
-						  toolbar: 'insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+						  toolbar: 'insert | undo redo |  formatselect | bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
 						  
 						  setup: this.setEditorSetup});
 					

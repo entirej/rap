@@ -39,6 +39,7 @@ import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.eclipse.rwt.EJRWTAsync;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -219,7 +220,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public void blockCleared()
     {
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
 
             if (!filterKeepOnRefresh)
                 clearFilter();
@@ -330,7 +331,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     public void queryExecuted()
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
             currentRec = null;
 
             activeSortColumn = null;
@@ -502,7 +503,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
         currentRec = arg0;
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
 
             if (_browser != null && !_browser.isDisposed() && currentRec != null)
             {

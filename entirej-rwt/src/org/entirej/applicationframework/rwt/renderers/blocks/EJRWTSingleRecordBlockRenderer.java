@@ -26,6 +26,7 @@ import java.util.Map;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.rwt.EJRWTAsync;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -272,7 +273,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     public void blockCleared()
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
 
             logger.trace("START blockCleared");
             _mainItemRegister.clearRegisteredValues();
@@ -425,7 +426,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     public void queryExecuted()
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
             if (getFocusedRecord() == null)
             {
                 _mainItemRegister.register(getFirstRecord());
@@ -472,7 +473,6 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     public void recordSelected(EJDataRecord record)
     {
 
-        dispaly.asyncExec(() -> {
 
             if (record != null)
             {
@@ -492,7 +492,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
                 logger.trace("END recordSelected");
             }
             notifyStatus();
-        });
+        
     }
 
     private void refreshRecordInstanceVA(EJDataRecord record)

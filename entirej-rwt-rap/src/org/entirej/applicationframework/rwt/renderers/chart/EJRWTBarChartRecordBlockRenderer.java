@@ -41,6 +41,7 @@ import org.eclipse.rap.chartjs.bar.BarChart;
 import org.eclipse.rap.chartjs.bar.BarChartOptions;
 import org.eclipse.rap.chartjs.bar.BarChartRowData;
 import org.eclipse.rap.json.JsonObject;
+import org.eclipse.rwt.EJRWTAsync;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -334,7 +335,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     @Override
     public void blockCleared()
     {
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
 
             if (_chartView != null && !_chartView.isDisposed())
             {
@@ -457,9 +458,9 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
     public void refresh()
     {
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
 
-            refresh();
+            refresh(new Object());
         });
 
     }

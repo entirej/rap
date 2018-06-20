@@ -53,6 +53,7 @@ import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbs
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTDialogTray;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTTrayDialog.TrayLocation;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTTrayPane;
+import org.entirej.applicationframework.rwt.application.form.containers.ITrayPane;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJStackedPane;
 import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
@@ -90,7 +91,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     protected Map<String, CanvasHandler>            _canvases           = new HashMap<String, CanvasHandler>();
     protected Map<String, EJInternalBlock>          _blocks             = new HashMap<String, EJInternalBlock>();
     protected Map<String, ITabFolder>               _tabFolders         = new HashMap<String, ITabFolder>();
-    protected Map<String, EJDrawerFolder>               _drawerFolders      = new HashMap<String, EJDrawerFolder>();
+    protected Map<String, EJDrawerFolder>           _drawerFolders      = new HashMap<String, EJDrawerFolder>();
     protected Map<String, EJRWTEntireJStackedPane>  _stackedPanes       = new HashMap<String, EJRWTEntireJStackedPane>();
     protected Map<String, Composite>                _formPanes          = new HashMap<String, Composite>();
     protected Map<String, String>                   _tabFoldersCache    = new HashMap<String, String>();
@@ -178,27 +179,27 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     @Override
     public void showStackedPage(final String canvasName, final String pageName)
     {
-//        Display.getDefault().asyncExec(new Runnable()
-//        {
-//
-//            @Override
-//            public void run()
-//            {
-                if (canvasName != null && pageName != null)
-                {
-                    EJRWTEntireJStackedPane cardPane = _stackedPanes.get(canvasName);
-                    if (cardPane != null && !cardPane.isDisposed())
-                    {
-                        cardPane.showPane(pageName);
-                    }
-                    else
-                    {
-                        _stackedPanesCache.put(canvasName, pageName);
-                    }
-                }
+        // Display.getDefault().asyncExec(new Runnable()
+        // {
+        //
+        // @Override
+        // public void run()
+        // {
+        if (canvasName != null && pageName != null)
+        {
+            EJRWTEntireJStackedPane cardPane = _stackedPanes.get(canvasName);
+            if (cardPane != null && !cardPane.isDisposed())
+            {
+                cardPane.showPane(pageName);
+            }
+            else
+            {
+                _stackedPanesCache.put(canvasName, pageName);
+            }
+        }
 
-//            }
-//        });
+        // }
+        // });
 
     }
 
@@ -317,7 +318,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
     }
-    
+
     @Override
     public void setDrawerPageVisible(String canvasName, String pageName, boolean visible)
     {
@@ -329,7 +330,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 tabPane.setTabPageVisible(pageName, visible);
             }
         }
-        
+
     }
 
     @Override
@@ -344,18 +345,18 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             _form.getFrameworkManager().handleException(e);
         }
-        
+
         Display.getDefault().asyncExec(new Runnable()
         {
-            
+
             @Override
             public void run()
             {
                 setFocus();
-                
+
             }
         });
-        
+
     }
 
     @Override
@@ -498,7 +499,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
     }
 
-  protected   void createCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
+    protected void createCanvas(Composite parent, EJCanvasProperties canvasProperties, EJCanvasController canvasController)
     {
         switch (canvasProperties.getType())
         {
@@ -590,6 +591,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (trayPane != null && !trayPane.isDisposed())
                 {
                     trayPane.closeTray();
+                }
+
+            }
+
+            @Override
+            public void setTrayContent(String id)
+            {
+                if (id == null && trayPane.getTray() != null)
+                {
+                    trayPane.closeTray();
+                    return;
+                }
+
+                if (id != null)
+                {
+                    createFormTray(_form, canvasProperties, trayPane, id);
+
                 }
 
             }
@@ -756,7 +774,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         stackedPane.setLayout(new FillLayout());
         stackedPane.setLayoutData(createCanvasGridData(canvasProperties));
 
-        EJ_RWT.setTestId(trayPane, _form.getProperties().getName()+"."+canvasProperties.getName());
+        EJ_RWT.setTestId(trayPane, _form.getProperties().getName() + "." + canvasProperties.getName());
         _formPanes.put(name, stackedPane);
         trayPane.initBase(stackedPane);
         _canvasesIds.add(name);
@@ -772,6 +790,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (trayPane != null && !trayPane.isDisposed())
                 {
                     trayPane.closeTray();
+                }
+
+            }
+
+            @Override
+            public void setTrayContent(String id)
+            {
+                if (id == null && trayPane.getTray() != null)
+                {
+                    trayPane.closeTray();
+                    return;
+                }
+
+                if (id != null)
+                {
+                    createFormTray(_form, canvasProperties, trayPane, id);
+
                 }
 
             }
@@ -895,29 +930,28 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
 
-        EJ_RWT.setTestId(trayPane, _form.getProperties().getName()+"."+canvasProperties.getName());
+        EJ_RWT.setTestId(trayPane, _form.getProperties().getName() + "." + canvasProperties.getName());
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
         parent = trayPane;
 
         ITabFolder folder = null;
-        
-            CTabFolder cfolder = new CTabFolder(parent, style);
 
-            cfolder.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
-            final EJTabFolder tabFolder = new EJTabFolder(this, cfolder, canvasController);
-            trayPane.initBase(tabFolder.getFolder());
-            cfolder.addSelectionListener(new SelectionAdapter()
+        CTabFolder cfolder = new CTabFolder(parent, style);
+
+        cfolder.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
+        final EJTabFolder tabFolder = new EJTabFolder(this, cfolder, canvasController);
+        trayPane.initBase(tabFolder.getFolder());
+        cfolder.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
             {
-                @Override
-                public void widgetSelected(SelectionEvent e)
-                {
-                    canvasController.tabPageChanged(name, tabFolder.getActiveKey());
+                canvasController.tabPageChanged(name, tabFolder.getActiveKey());
 
-                    EJ_RWT.setAttribute(cfolder, "ej-item-selection", tabFolder.getActiveKey());
-                }
-            });
-            folder = tabFolder;
-       
+                EJ_RWT.setAttribute(cfolder, "ej-item-selection", tabFolder.getActiveKey());
+            }
+        });
+        folder = tabFolder;
 
         CanvasHandler canvasHandler = new CanvasHandler()
         {
@@ -931,6 +965,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (trayPane != null && !trayPane.isDisposed())
                 {
                     trayPane.closeTray();
+                }
+
+            }
+
+            @Override
+            public void setTrayContent(String id)
+            {
+                if (id == null && trayPane.getTray() != null)
+                {
+                    trayPane.closeTray();
+                    return;
+                }
+
+                if (id != null)
+                {
+                    createFormTray(_form, canvasProperties, trayPane, id);
+
                 }
 
             }
@@ -1039,26 +1090,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         _canvasesIds.add(name);
     }
+
     private void createDrawerCanvas(Composite parent, final EJCanvasProperties canvasProperties, final EJCanvasController canvasController)
     {
         int style = SWT.NONE;
-        
-       
-        
-       
+
         final String name = canvasProperties.getName();
-        
+
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
-        EJ_RWT.setTestId(trayPane, _form.getProperties().getName()+"."+canvasProperties.getName());
+        EJ_RWT.setTestId(trayPane, _form.getProperties().getName() + "." + canvasProperties.getName());
         parent = trayPane;
-        
+
         EJDrawerFolder folder = null;
-        
-        
-        
-        final EJDrawerFolder tabFolder = new EJDrawerFolder(this,  canvasController,parent,style){
-            
+
+        final EJDrawerFolder tabFolder = new EJDrawerFolder(this, canvasController, parent, style)
+        {
+
             @Override
             protected void selection(String page)
             {
@@ -1067,19 +1115,18 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 EJ_RWT.setAttribute(getFolder(), "ej-item-selection", page);
             }
         };
-        //tabFolder.setDefaultWidth(canvasProperties.getWidth());
+        // tabFolder.setDefaultWidth(canvasProperties.getWidth());
         tabFolder.setPosition(canvasProperties.getDrawerPosition());
         tabFolder.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         trayPane.initBase(tabFolder.getFolder());
-        
+
         folder = tabFolder;
-        
-        
+
         CanvasHandler canvasHandler = new CanvasHandler()
         {
-            
+
             private Collection<EJMessage> msgs;
-            
+
             @Override
             public void clearCanvasMessages()
             {
@@ -1088,25 +1135,42 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 {
                     trayPane.closeTray();
                 }
-                
+
             }
-            
+
+            @Override
+            public void setTrayContent(String id)
+            {
+                if (id == null && trayPane.getTray() != null)
+                {
+                    trayPane.closeTray();
+                    return;
+                }
+
+                if (id != null)
+                {
+                    createFormTray(_form, canvasProperties, trayPane, id);
+
+                }
+
+            }
+
             @Override
             public void setCanvasMessages(Collection<EJMessage> messages)
             {
                 this.msgs = messages;
                 if (trayPane != null && !trayPane.isDisposed())
                 {
-                    
+
                     if (trayPane.getTray() != null)
                     {
                         trayPane.closeTray();
                     }
-                    
+
                     {
                         MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
                         {
-                            
+
                             @Override
                             void close()
                             {
@@ -1114,14 +1178,14 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 {
                                     trayPane.closeTray();
                                 }
-                                
+
                             }
-                            
+
                         };
                         messageTray.setMessages(msgs);
-                        
+
                         TrayLocation location = TrayLocation.RIGHT;
-                        
+
                         switch (canvasProperties.getMessagePosition())
                         {
                             case BOTTOM:
@@ -1136,24 +1200,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             case TOP:
                                 location = TrayLocation.TOP;
                                 break;
-                                
+
                             default:
                                 break;
                         }
-                        
+
                         trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneSize());
                     }
-                    
+
                 }
-                
+
             }
-            
+
             @Override
             public void add(EJInternalBlock block)
             {
-                
+
             }
-            
+
             @Override
             public EJCanvasType getType()
             {
@@ -1165,34 +1229,34 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
         }
-        
+
         _drawerFolders.put(name, folder);
         folder.getFolder().setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-        
+
         Collection<EJDrawerPageProperties> allTabPageProperties = canvasProperties.getDrawerPageContainer().getAllDrawerPageProperties();
         int index = 0;
         for (EJDrawerPageProperties page : allTabPageProperties)
         {
-            
+
             DrawerTab tab = folder.newTab(page);
             if (page.isVisible())
             {
-                
+
                 tab.create(index == 0);
             }
             tab.setIndex(index);
             index++;
-            
+
             folder.put(page.getName(), tab);
-            
+
         }
-        
+
         if (_drawerFoldersCache.containsKey(name))
         {
             folder.showPage(_drawerFoldersCache.get(name));
             _drawerFoldersCache.remove(name);
         }
-        
+
         _canvasesIds.add(name);
     }
 
@@ -1233,7 +1297,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
 
-        EJ_RWT.setTestId(trayPane, _form.getProperties().getName()+"."+canvasProperties.getName());
+        EJ_RWT.setTestId(trayPane, _form.getProperties().getName() + "." + canvasProperties.getName());
         parent = trayPane;
 
         String frameTitle = canvasProperties.getGroupFrameTitle();
@@ -1252,11 +1316,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         groupPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         if (canvasProperties.getDisplayGroupFrame())
         {
-           //.cleanLayoutTop();
+            // .cleanLayoutTop();
         }
         else
         {
-          //  groupPane.cleanLayout();
+            // groupPane.cleanLayout();
         }
 
         groupPane.setPaneName(canvasProperties.getName());
@@ -1278,6 +1342,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (trayPane != null && !trayPane.isDisposed())
                 {
                     trayPane.closeTray();
+                }
+
+            }
+
+            @Override
+            public void setTrayContent(String id)
+            {
+                if (id == null && trayPane.getTray() != null)
+                {
+                    trayPane.closeTray();
+                    return;
+                }
+
+                if (id != null)
+                {
+                    createFormTray(_form, canvasProperties, trayPane, id);
+
                 }
 
             }
@@ -1409,13 +1490,13 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
 
-        EJ_RWT.setTestId(trayPane, _form.getProperties().getName()+"."+canvasProperties.getName());
+        EJ_RWT.setTestId(trayPane, _form.getProperties().getName() + "." + canvasProperties.getName());
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
         parent = trayPane;
         SashForm layoutBody = new SashForm(parent, canvasProperties.getSplitOrientation() == EJCanvasSplitOrientation.HORIZONTAL ? SWT.HORIZONTAL : SWT.VERTICAL);
         trayPane.initBase(layoutBody);
         layoutBody.setLayoutData(createCanvasGridData(canvasProperties));
-        
+
         CanvasHandler canvasHandler = new CanvasHandler()
         {
 
@@ -1428,6 +1509,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (trayPane != null && !trayPane.isDisposed())
                 {
                     trayPane.closeTray();
+                }
+
+            }
+
+            @Override
+            public void setTrayContent(String id)
+            {
+                if (id == null && trayPane.getTray() != null)
+                {
+                    trayPane.closeTray();
+                    return;
+                }
+
+                if (id != null)
+                {
+                    createFormTray(_form, canvasProperties, trayPane, id);
+
                 }
 
             }
@@ -1571,23 +1669,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
     public final class PopupCanvasHandler implements CanvasHandler
     {
-        public EJRWTAbstractDialog      _popupDialog;
-        final int                ID_BUTTON_1         = 1;
-        final int                ID_BUTTON_2         = 2;
-        final int                ID_BUTTON_3         = 3;
-        final EJCanvasProperties canvasProperties;
-        final EJCanvasController canvasController;
+        public EJRWTAbstractDialog _popupDialog;
+        final int                  ID_BUTTON_1         = 1;
+        final int                  ID_BUTTON_2         = 2;
+        final int                  ID_BUTTON_3         = 3;
+        final EJCanvasProperties   canvasProperties;
+        final EJCanvasController   canvasController;
 
-        boolean                  popupButton1        = true;
-        boolean                  popupButton2        = true;
-        boolean                  popupButton3        = true;
-        boolean                  popupButtonVisible1 = true;
-        boolean                  popupButtonVisible2 = true;
-        boolean                  popupButtonVisible3 = true;
-        String                   button1Label;
-        String                   button2Label;
-        String                   button3Label;
-        Collection<EJMessage>    msgs;
+        boolean                    popupButton1        = true;
+        boolean                    popupButton2        = true;
+        boolean                    popupButton3        = true;
+        boolean                    popupButtonVisible1 = true;
+        boolean                    popupButtonVisible2 = true;
+        boolean                    popupButtonVisible3 = true;
+        String                     button1Label;
+        String                     button2Label;
+        String                     button3Label;
+        Collection<EJMessage>      msgs;
 
         public PopupCanvasHandler(EJCanvasProperties canvasProperties, EJCanvasController canvasController)
         {
@@ -1603,6 +1701,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         public void add(EJInternalBlock block)
         {
             // ignore
+        }
+
+        @Override
+        public void setTrayContent(String id)
+        {
+            if (id == null && _popupDialog.getTray() != null)
+            {
+                _popupDialog.closeTray();
+                return;
+            }
+
+            if (id != null)
+            {
+                createFormTray(_form, canvasProperties, _popupDialog, id);
+
+            }
+
         }
 
         @Override
@@ -1748,7 +1863,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             return;
                         }
                         Button button = createButton(parent, id, label, deafultButton);
-                        EJ_RWT.setTestId(button, "btn-"+id);
+                        EJ_RWT.setTestId(button, "btn-" + id);
 
                     }
 
@@ -1773,20 +1888,20 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             case ID_BUTTON_1:
                             {
                                 msgs = null;
-                                Display.getDefault().asyncExec(()->canvasController.closePopupCanvas(name, EJPopupButton.ONE));
-                                
+                                Display.getDefault().asyncExec(() -> canvasController.closePopupCanvas(name, EJPopupButton.ONE));
+
                                 break;
                             }
                             case ID_BUTTON_2:
                             {
                                 msgs = null;
-                                Display.getDefault().asyncExec(()->canvasController.closePopupCanvas(name, EJPopupButton.TWO));
+                                Display.getDefault().asyncExec(() -> canvasController.closePopupCanvas(name, EJPopupButton.TWO));
                                 break;
                             }
                             case ID_BUTTON_3:
                             {
                                 msgs = null;
-                                Display.getDefault().asyncExec(()->canvasController.closePopupCanvas(name, EJPopupButton.THREE));
+                                Display.getDefault().asyncExec(() -> canvasController.closePopupCanvas(name, EJPopupButton.THREE));
 
                                 break;
                             }
@@ -2021,6 +2136,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         void setCanvasMessages(Collection<EJMessage> messages);
 
+        void setTrayContent(String id);
+
         void clearCanvasMessages();
 
         void add(EJInternalBlock block);
@@ -2086,8 +2203,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
         return null;
     }
-    
-    
+
     @Override
     public String getDisplayedDrawerPage(String key)
     {
@@ -2136,6 +2252,16 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             canvasHandler.setCanvasMessages(messages);
         }
 
+    }
+
+    @Override
+    public void setTrayContent(String canvasName, String id)
+    {
+        CanvasHandler canvasHandler = _canvases.get(canvasName);
+        if (canvasHandler != null)
+        {
+            canvasHandler.setTrayContent(id);
+        }
     }
 
     @Override
@@ -2208,6 +2334,51 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
         return null;
+    }
+
+    public static class FormCanvasTray extends EJRWTDialogTray
+    {
+
+        EJInternalForm               parentForm;
+        private final String         formId;
+        private EJRWTEntireJGridPane composite;
+
+        public FormCanvasTray(EJInternalForm parentForm, String formId)
+        {
+            this.parentForm = parentForm;
+            this.formId = formId;
+        }
+
+        @Override
+        protected Control createContents(Composite parent)
+        {
+            if (composite == null || composite.isDisposed())
+            {
+
+                composite = new EJRWTEntireJGridPane(parent, 1);
+                composite.cleanLayout();
+
+                // load given form
+
+                EJEmbeddedFormController formController = new EJEmbeddedFormController(parentForm.getFrameworkManager(), parentForm.getFormController(), formId, null, null);
+                EJRWTFormRenderer renderer = (EJRWTFormRenderer) formController.getEmbeddedForm().getRenderer();
+                final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
+                renderer.createControl(scrollComposite);
+                EJRWTEntireJGridPane entireJGridPane = renderer.getGuiComponent();
+                entireJGridPane.cleanLayout();
+                scrollComposite.setContent(entireJGridPane);
+                scrollComposite.setExpandHorizontal(true);
+                scrollComposite.setExpandVertical(true);
+                scrollComposite.setMinSize(formController.getEmbeddedForm().getProperties().getFormWidth(), formController.getEmbeddedForm().getProperties().getFormHeight());
+                scrollComposite.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL));
+                composite.layout(true);
+                composite.redraw();
+                composite.addDisposeListener(e -> formController.getEmbeddedForm().close());
+            }
+
+            return composite;
+        }
+
     }
 
     public static abstract class MessageTray extends EJRWTDialogTray
@@ -2392,6 +2563,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
     }
+
     @Override
     public void setDrawerPageBadge(String canvasName, String tabPageName, String badge)
     {
@@ -2407,9 +2579,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             // _tabFoldersCache.put(canvasName, tabPageName);
             // }
         }
-        
+
     }
-    
-    
+
+    private static void createFormTray(EJInternalForm parentForm, EJCanvasProperties canvasProperties, final ITrayPane trayPane, String id)
+    {
+        FormCanvasTray formCanvasTray = new FormCanvasTray(parentForm, id);
+
+        EJRWTDialogTray tray = trayPane.getTray();
+        if (tray != null)
+        {
+            trayPane.closeTray();
+        }
+        trayPane.openTray(TrayLocation.RIGHT, formCanvasTray, 400);// TODO: add
+                                                                   // size for
+                                                                   // try and
+                                                                   // location
+
+    }
 
 }

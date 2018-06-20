@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Sash;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTTrayDialog.TrayLocation;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 
-public  class EJRWTTrayPane extends EJRWTEntireJGridPane
+public  class EJRWTTrayPane extends EJRWTEntireJGridPane implements ITrayPane
 {
 
    
@@ -57,12 +57,10 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane
     }
     
     
-    /**
-     * Closes this dialog's tray, disposing its widgets.
-     * 
-     * @throws IllegalStateException
-     *             if the tray was not open
+    /* (non-Javadoc)
+     * @see org.entirej.applicationframework.rwt.application.form.containers.ITrayPane#closeTray()
      */
+    @Override
     public void closeTray() throws IllegalStateException
     {
         if (getTray() == null)
@@ -102,29 +100,19 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane
         return layout;
     }
 
-    /**
-     * Returns the tray currently shown in the dialog, or <code>null</code> if
-     * there is no tray.
-     * 
-     * @return the dialog's current tray, or <code>null</code> if there is none
+    /* (non-Javadoc)
+     * @see org.entirej.applicationframework.rwt.application.form.containers.ITrayPane#getTray()
      */
+    @Override
     public EJRWTDialogTray getTray()
     {
         return tray;
     }
 
-    /**
-     * Constructs the tray's widgets and displays the tray in this dialog. The
-     * dialog's size will be adjusted to accommodate the tray.
-     * 
-     * @param tray
-     *            the tray to show in this dialog
-     * @throws IllegalStateException
-     *             if the dialog already has a tray open
-     * @throws UnsupportedOperationException
-     *             if the dialog does not support trays, for example if it uses
-     *             a custom layout.
+    /* (non-Javadoc)
+     * @see org.entirej.applicationframework.rwt.application.form.containers.ITrayPane#openTray(org.entirej.applicationframework.rwt.application.form.containers.EJRWTTrayDialog.TrayLocation, org.entirej.applicationframework.rwt.application.form.containers.EJRWTDialogTray, int)
      */
+    @Override
     public void openTray(final TrayLocation location, EJRWTDialogTray tray, int size) throws IllegalStateException, UnsupportedOperationException
     {
         if (tray == null)

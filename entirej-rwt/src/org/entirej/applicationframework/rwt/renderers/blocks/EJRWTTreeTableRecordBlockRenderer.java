@@ -43,6 +43,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.TreeViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.rwt.EJRWTAsync;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -83,6 +84,7 @@ import org.entirej.applicationframework.rwt.application.components.actions.EJRWT
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeTableBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.screen.EJRWTInsertScreenRenderer;
@@ -314,7 +316,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public void blockCleared()
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
 
             if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
             {
@@ -439,7 +441,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public void queryExecuted()
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
             if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
             {
                 clearFilter();
@@ -551,7 +553,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public void recordSelected(EJDataRecord record)
     {
 
-        dispaly.asyncExec(() -> {
+        EJRWTAsync.runUISafe(dispaly,() -> {
             if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
             {
                 _tableViewer.setSelection(record != null ? new StructuredSelection(record) : new StructuredSelection(), true);
@@ -985,6 +987,8 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 table.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
             }
         }
+
+        table.setData(EJ_RWT.MARKUP_ENABLED, _rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, false));
 
         table.setLinesVisible(_rendererProp.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.SHOW_VERTICAL_LINES, true));
         table.setHeaderVisible(_rendererProp.getBooleanProperty(EJRWTTreeTableBlockDefinitionProperties.SHOW_HEADING_PROPERTY, true));
