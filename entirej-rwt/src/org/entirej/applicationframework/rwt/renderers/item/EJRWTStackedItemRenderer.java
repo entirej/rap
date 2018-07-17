@@ -1543,28 +1543,28 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
     private void setStackHintMessage()
     {
-        String msg = defaultMessage!=null ? defaultMessage: "";
+        String msg = defaultMessage != null ? defaultMessage : "";
         if (message != null || message.getLevel() == EJMessageLevel.HINT)
             msg = message.getMessage();
-        EJRWTStackedItemRendererType[] values = EJRWTStackedItemRendererType.values();
-        for (EJRWTStackedItemRendererType type : values)
+        boolean setOnField = false;
+        if (_baseValue != null)
         {
-            Control control = stackedPane.getControl(type.name());
+            Control control = stackedPane.getControl(_baseValue.getConfig().getType().name());
             if (control != null && controlState(control))
             {
 
                 if (control instanceof Text)
                 {
                     ((Text) control).setMessage(msg);
-                }
-                else if (control instanceof Combo)
-                {
-                    // ((Combo) control).setMessage(""); not impl
+                    setOnField = true;
                 }
 
-                // check_box/combo
             }
+
         }
+
+        if (!setOnField)
+            ControlDecorationSupport.handleMessage(_errorDecoration, message);
 
     }
 
@@ -1573,7 +1573,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     {
         this.message = null;
         setStackHintMessage();
-        
+
         if (_errorDecoration != null && controlState(stackedPane) && !_errorDecoration.getControl().isDisposed())
         {
             _errorDecoration.setDescriptionText("");
