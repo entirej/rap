@@ -168,19 +168,19 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.jface</artifactId>
-			<version>3.4.0</version>
+			<version>3.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.forms</artifactId>
-			<version>3.4.0</version>
+			<version>3.5.0</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui.forms_3.4.0.20171017-0945.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui</artifactId>
-			<version>3.4.0</version>
+			<version>3.5.0</version>
 			<scope>system</scope>
 			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.ui_3.4.0.20171017-0945.jar</systemPath>
 		</dependency>
@@ -215,12 +215,12 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt</artifactId>
-			<version>3.4.0</version>
+			<version>3.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt.osgi</artifactId>
-			<version>3.4.0</version>
+			<version>3.5.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.tomcat</groupId>
