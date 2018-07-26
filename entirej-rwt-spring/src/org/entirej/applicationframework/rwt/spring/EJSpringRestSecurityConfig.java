@@ -9,6 +9,7 @@ import org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityContext;
 import org.entirej.framework.core.EJFrameworkInitialiser;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +17,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.session.web.http.HeaderHttpSessionStrategy;
+import org.springframework.session.web.http.HttpSessionStrategy;
 
 @Configuration
 @EnableWebSecurity
@@ -128,6 +131,11 @@ public class EJSpringRestSecurityConfig extends WebSecurityConfigurerAdapter
         }
         configs.add(EJSpringSecurityConfig.class);
         return configs.toArray(new Class<?>[configs.size()]);
+    }
+    
+    @Bean
+    public HttpSessionStrategy httpSessionStrategy() {
+        return new HeaderHttpSessionStrategy();
     }
 
 }
