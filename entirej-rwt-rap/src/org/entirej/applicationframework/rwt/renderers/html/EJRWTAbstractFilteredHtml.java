@@ -1,22 +1,23 @@
 /*******************************************************************************
  * Copyright 2013 CRESOFT AG
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     CRESOFT AG - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.html;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.rwt.EJ_RWT;
@@ -41,28 +42,29 @@ import org.entirej.applicationframework.rwt.component.EJRWTHtmlView;
 
 public abstract class EJRWTAbstractFilteredHtml extends Composite
 {
-    private Text        _filterText;
+    private Text          _filterText;
     private EJRWTHtmlView _tableViewer;
-    private Composite   _filterComposite;
-    private Composite   _parent;
-    private Composite   _treeComposite;
+    private Composite     _filterComposite;
+    private Composite     _parent;
+    private Composite     _treeComposite;
+    private AtomicBoolean fireActions = new AtomicBoolean(true);
 
-    public EJRWTAbstractFilteredHtml(Composite parent, int treeStyle,boolean textSelect)
+    public EJRWTAbstractFilteredHtml(Composite parent, int treeStyle, boolean textSelect)
     {
         super(parent, SWT.NONE);
         setData(EJ_RWT.CUSTOM_VARIANT, "itemgroupclear");
-        
+
         this._parent = parent;
-        init(treeStyle,textSelect);
+        init(treeStyle, textSelect);
     }
 
-    protected void init(int treeStyle,boolean textSelect)
+    protected void init(int treeStyle, boolean textSelect)
     {
-        createControl(_parent, treeStyle,textSelect);
+        createControl(_parent, treeStyle, textSelect);
         setFont(_parent.getFont());
     }
 
-    protected void createControl(Composite parent, int treeStyle,boolean textSelect)
+    protected void createControl(Composite parent, int treeStyle, boolean textSelect)
     {
         GridLayout layout = new GridLayout();
         layout.marginHeight = 0;
@@ -89,7 +91,7 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
         _treeComposite.setLayout(treeCompositeLayout);
         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
         _treeComposite.setLayoutData(data);
-        createHtmlViewControl(_treeComposite, treeStyle,textSelect);
+        createHtmlViewControl(_treeComposite, treeStyle, textSelect);
     }
 
     protected Composite createFilterControls(Composite parent)
@@ -98,18 +100,18 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
         return parent;
     }
 
-    protected Control createHtmlViewControl(Composite parent, int style,boolean textSelect)
+    protected Control createHtmlViewControl(Composite parent, int style, boolean textSelect)
     {
-        _tableViewer = doCreateTableViewer(parent, style,textSelect);
+        _tableViewer = doCreateTableViewer(parent, style, textSelect);
         GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
         _tableViewer.setLayoutData(data);
 
         return _tableViewer;
     }
 
-    protected EJRWTHtmlView doCreateTableViewer(Composite parent, int style,boolean textSelect)
+    protected EJRWTHtmlView doCreateTableViewer(Composite parent, int style, boolean textSelect)
     {
-        return new EJRWTHtmlView(parent, style,textSelect);
+        return new EJRWTHtmlView(parent, style, textSelect);
     }
 
     protected void createFilterText(Composite parent)
@@ -175,6 +177,7 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
             @Override
             public void modifyText(ModifyEvent e)
             {
+
                 textChanged();
             }
         });
@@ -189,6 +192,7 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
                     if (e.detail == SWT.ICON_CANCEL)
                     {
                         clearText();
+                        textChanged();
                     }
                 }
             });
@@ -218,7 +222,8 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
      */
     protected void textChanged()
     {
-        filter(getFilterString());
+        if (fireActions.get())
+            filter(getFilterString());
     }
 
     public abstract void filter(String filter);
@@ -227,10 +232,17 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
     {
         if (getFilterString() != null && getFilterString().trim().length() > 0)
         {
-            setFilterText("");
+            try
+            {
+                fireActions.set(false);
+                setFilterText("");
+            }
+            finally
+            {
+                fireActions.set(true);
+            }
         }
     }
-   
 
     protected void setFilterText(String string)
     {
@@ -258,7 +270,15 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
 
     public void setInitialText(String text)
     {
-        setFilterText(text);
+        try
+        {
+            fireActions.set(false);
+            setFilterText(text);
+        }
+        finally
+        {
+            fireActions.set(true);
+        }
     }
 
     protected void selectAll()
@@ -282,7 +302,6 @@ public abstract class EJRWTAbstractFilteredHtml extends Composite
         {
             return filter;
         }
-        
-        
+
     }
 }
