@@ -11,6 +11,8 @@ public interface ITabFolder
     void setTabPageVisible(String pageName, boolean visible);
 
     Control getFolder();
+    
+    boolean canFireEvent();
 
     interface ITab
     {

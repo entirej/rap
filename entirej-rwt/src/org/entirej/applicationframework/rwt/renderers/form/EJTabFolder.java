@@ -28,6 +28,8 @@ class EJTabFolder implements ITabFolder
     final EJCanvasController canvasController;
     final Map<String, Tab>   tabPages = new HashMap<String, Tab>();
 
+    private AtomicBoolean fireEvents = new AtomicBoolean(true);
+    
     private String lastSelection;
     
     EJTabFolder(EJRWTFormRenderer ejrwtFormRenderer, CTabFolder folder, EJCanvasController canvasController)
@@ -38,16 +40,28 @@ class EJTabFolder implements ITabFolder
         this.canvasController = canvasController;
     }
 
+    @Override
+    public boolean canFireEvent()
+    {
+        return fireEvents.get();
+    }
+    
     public void showPage(String pageName)
     {
-        Tab cTabItem = tabPages.get(pageName);
-        if (cTabItem != null && cTabItem.item != null)
-        {
-            lastSelection = pageName;
-            cTabItem.createTabData();
-            folder.setSelection(cTabItem.item);
-
-            EJ_RWT.setAttribute(folder, "ej-item-selection", pageName);
+        try {
+            fireEvents.set(false);
+            Tab cTabItem = tabPages.get(pageName);
+            if (cTabItem != null && cTabItem.item != null)
+            {
+                lastSelection = pageName;
+                cTabItem.createTabData();
+                folder.setSelection(cTabItem.item);
+    
+                EJ_RWT.setAttribute(folder, "ej-item-selection", pageName);
+            }
+        }
+        finally {
+            fireEvents.set(true);
         }
 
     }
