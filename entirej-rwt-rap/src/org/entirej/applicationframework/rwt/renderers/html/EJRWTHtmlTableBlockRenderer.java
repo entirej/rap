@@ -181,6 +181,8 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
     private Display                                           dispaly                    = Display.getDefault();
 
+    private String serviceHandlerUrl;
+
     protected void clearFilter()
     {
         if (_filteredContentProvider != null)
@@ -318,6 +320,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         _queryScreenRenderer = new EJRWTQueryScreenRenderer();
         _insertScreenRenderer = new EJRWTInsertScreenRenderer();
         _updateScreenRenderer = new EJRWTUpdateScreenRenderer();
+         serviceHandlerUrl = RWT.getServiceManager().getServiceHandlerUrl(VACSSServiceHandler.SERVICE_HANDLER);
     }
 
     @Override
@@ -1649,7 +1652,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 builder.append("<table border=0 cellspacing=").append(cellSpacing).append(" width=\"100%\" >");
                 {
                     builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
-                    builder.append(createVACSSUrl());
+                    builder.append(serviceHandlerUrl);
                     builder.append("\">");
                     int charHeight = EJRWTImageRetriever.getGraphicsProvider().getCharHeight(Display.getDefault().getSystemFont());
 
@@ -2119,11 +2122,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         return caze;
     }
 
-    private String createVACSSUrl()
-    {
 
-        return RWT.getServiceManager().getServiceHandlerUrl(VACSSServiceHandler.SERVICE_HANDLER);
-    }
 
     public static class VACSSServiceHandler implements ServiceHandler
     {

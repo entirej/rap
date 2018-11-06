@@ -268,7 +268,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                             
                             
                             
-                            Object value = getValue();
+                            Object value = toValue();
                             if (value != null)
                             {
                                 if(controlState(_textField))
@@ -279,6 +279,9 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                                 if(controlState(_textField))
                                     _textField.setText("");
                             }
+
+
+                            valueChanged();
                         }
                         finally
                         {
@@ -456,6 +459,13 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
             return _baseValue;
         }
 
+        Number value = toValue();
+
+        return _baseValue = value;
+    }
+
+    private Number toValue()
+    {
         Number value = null;
         try
         {
@@ -468,7 +478,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
 
         if (value == null)
         {
-            return _baseValue = value;
+            return value;
         }
         try
         {
@@ -491,8 +501,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         {
             nfe.printStackTrace();
         }
-
-        return _baseValue = value;
+        return value;
     }
 
     @Override

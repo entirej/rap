@@ -342,7 +342,22 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                 try
                 {
                     _modifyListener.enable = false;
-                    Object value = getValue();
+                    Date value = null;
+                    try
+                    {
+                        if (_textField.getText() != null)
+                        {
+                            value = _dateFormat.parse(_textField.getText());
+                        }
+
+                        // convert to correct type if need
+                        value = converType(value);
+
+                    }
+                    catch (ParseException e)
+                    {
+                        // ignore error
+                    }
                     if (value != null)
                     {
                         _textField.setText(_dateFormat.format(value));
@@ -351,6 +366,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     {
                         _textField.setText("");
                     }
+                    valueChanged();
                 }
                 finally
                 {
