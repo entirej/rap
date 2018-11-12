@@ -66,9 +66,9 @@ public class EJRWTNotifierDialog
     private static final int   FINAL_ALPHA   = 225;
 
     // title foreground color
-    private static Color       _titleFgColor = ColorCache.getColor(40, 73, 97);
+    //private static Color       _titleFgColor = ColorCache.getColor(40, 73, 97);
     // text foreground color
-    private static Color       _fgColor      = _titleFgColor;
+    //private static Color       _fgColor      = _titleFgColor;
 
     // contains list of all active popup shells
     private static List<Shell> _activeShells = new ArrayList<Shell>();
@@ -81,7 +81,7 @@ public class EJRWTNotifierDialog
      * @param message
      * @param type
      */
-    public static void notify(final String title, final String message, final Image image, final int width, final int height, final boolean autoHide)
+    public static void notify(final String title, final String message, final Image image,String csstag, final int width, final int height, final boolean autoHide)
     {
         Display.getCurrent().asyncExec(new Runnable()
         {
@@ -91,7 +91,7 @@ public class EJRWTNotifierDialog
             {
                 final Shell _shell = new Shell(Display.getDefault().getActiveShell(), SWT.NO_FOCUS | SWT.NO_TRIM);
                 _shell.setLayout(new FillLayout());
-                _shell.setForeground(_fgColor);
+               // _shell.setForeground(_fgColor);
                 _shell.setBackgroundMode(SWT.INHERIT_DEFAULT);
                 _shell.addListener(SWT.Dispose, new Listener()
                 {
@@ -104,7 +104,7 @@ public class EJRWTNotifierDialog
                 });
 
                 final Composite inner = new Composite(_shell, SWT.BORDER);
-                inner.setData(EJ_RWT.CUSTOM_VARIANT, "notifierDialog");
+                _shell.setData(EJ_RWT.CUSTOM_VARIANT, "notifierDialog"+csstag);
                 GridLayout gl = new GridLayout(3, false);
                 gl.marginLeft = 5;
                 gl.marginTop = 0;
@@ -134,17 +134,19 @@ public class EJRWTNotifierDialog
                 }
                 gc.dispose();
 
-                CLabel imgLabel = new CLabel(inner, SWT.NONE);
+                Label imgLabel = new Label(inner, SWT.NONE);
                 imgLabel.setLayoutData(new GridData(GridData.FILL | GridData.FILL));
                 imgLabel.setImage(image);
 
-                CLabel titleLabel = new CLabel(inner, SWT.NONE);
+                Label titleLabel = new Label(inner, SWT.NONE);
+                titleLabel.setData(EJ_RWT.CUSTOM_VARIANT, "notifierDialogTitle"+csstag);
+                
                 titleLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_CENTER));
                 titleLabel.setText(title);
-                titleLabel.setForeground(_titleFgColor);
-                Font f = titleLabel.getFont();
-                FontData fd = f.getFontData()[0];
-                titleLabel.setFont(new Font(Display.getDefault(), new FontData(fd.getName(), fd.getHeight(), SWT.BOLD)));
+               // titleLabel.setForeground(_titleFgColor);
+//                Font f = titleLabel.getFont();
+//                FontData fd = f.getFontData()[0];
+//                titleLabel.setFont(new Font(Display.getDefault(), new FontData(fd.getName(), fd.getHeight(), SWT.BOLD)));
 
                 final CLabel closeLabel = new CLabel(inner, SWT.NONE);
                 closeLabel.setLayoutData(new GridData(GridData.FILL | GridData.FILL));
@@ -159,12 +161,14 @@ public class EJRWTNotifierDialog
                 });
 
                 Label text = new Label(inner, SWT.WRAP);
+                text.setData(EJ_RWT.CUSTOM_VARIANT, "notifierDialogText"+csstag);
 
-                text.setFont(new Font(Display.getDefault(), new FontData(fd.getName(), fd.getHeight() - 2, SWT.NONE)));
+
+              //  text.setFont(new Font(Display.getDefault(), new FontData(fd.getName(), fd.getHeight() - 2, SWT.NONE)));
                 GridData gd = new GridData(GridData.FILL_BOTH);
                 gd.horizontalSpan = 3;
                 text.setLayoutData(gd);
-                text.setForeground(_fgColor);
+                //text.setForeground(_fgColor);
                 text.setText(message);
 
                 _shell.setSize(width, height);

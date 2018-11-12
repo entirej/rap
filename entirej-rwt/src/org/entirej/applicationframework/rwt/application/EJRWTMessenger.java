@@ -66,7 +66,7 @@ public class EJRWTMessenger implements EJMessenger
                 logger.debug(message.getMessage());
                 break;
             case HINT:
-                EJRWTNotifierDialog.notify("Hint", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_INFO), contex.hintWidth,
+                EJRWTNotifierDialog.notify("Hint", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_INFO),"Hint", contex.hintWidth,
                         contex.hintHeight, contex.hintNotificationAutoHide);
                 break;
             case MESSAGE:
@@ -75,14 +75,14 @@ public class EJRWTMessenger implements EJMessenger
                 {
                     case BOTH:
                         EJMessageDialog.openInformation(manager.getShell(), "Message", message.getMessage());
-                        EJRWTNotifierDialog.notify("Message", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_INFO), contex.infoWidth,
+                        EJRWTNotifierDialog.notify("Message", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_INFO),"Hint", contex.infoWidth,
                                 contex.infoHeight, contex.infoNotificationAutoHide);
                         break;
                     case DIALOG:
                         EJMessageDialog.openInformation(manager.getShell(), "Message", message.getMessage());
                         break;
                     case NOTFICATION:
-                        EJRWTNotifierDialog.notify("Message", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_INFO), contex.infoWidth,
+                        EJRWTNotifierDialog.notify("Message", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_INFO),"Hint", contex.infoWidth,
                                 contex.infoHeight, contex.infoNotificationAutoHide);
                         break;
                 }
@@ -93,14 +93,14 @@ public class EJRWTMessenger implements EJMessenger
                 {
                     case BOTH:
                         EJMessageDialog.openWarning(manager.getShell(), "Warning", message.getMessage());
-                        EJRWTNotifierDialog.notify("Warning", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_WARNING), contex.warnWidth,
+                        EJRWTNotifierDialog.notify("Warning", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_WARNING),"Warn", contex.warnWidth,
                                 contex.warnHeight, contex.warnNotificationAutoHide);
                         break;
                     case DIALOG:
                         EJMessageDialog.openWarning(manager.getShell(), "Warning", message.getMessage());
                         break;
                     case NOTFICATION:
-                        EJRWTNotifierDialog.notify("Warning", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_WARNING), contex.warnWidth,
+                        EJRWTNotifierDialog.notify("Warning", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_WARNING),"Warn", contex.warnWidth,
                                 contex.warnHeight, contex.warnNotificationAutoHide);
                         break;
 
@@ -112,14 +112,14 @@ public class EJRWTMessenger implements EJMessenger
                 {
                     case BOTH:
                         EJMessageDialog.openWarning(manager.getShell(), "Error", message.getMessage());
-                        EJRWTNotifierDialog.notify("Error", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_ERROR), contex.errorWidth,
+                        EJRWTNotifierDialog.notify("Error", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_ERROR),"Error", contex.errorWidth,
                                 contex.errorHeight, contex.errorNotificationAutoHide);
                         break;
                     case DIALOG:
                         EJMessageDialog.openWarning(manager.getShell(), "Error", message.getMessage());
                         break;
                     case NOTFICATION:
-                        EJRWTNotifierDialog.notify("Error", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_ERROR), contex.errorWidth,
+                        EJRWTNotifierDialog.notify("Error", message.getMessage(), EJRWTImageRetriever.get(EJRWTImageRetriever.IMG_ERROR),"Error", contex.errorWidth,
                                 contex.errorHeight, contex.errorNotificationAutoHide);
                         break;
 

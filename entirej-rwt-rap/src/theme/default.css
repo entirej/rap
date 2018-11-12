@@ -367,6 +367,8 @@ Label {
 	text-shadow: none;
 }
 
+
+
 Label[BORDER] {
 	border: 1px solid #bdbdbd;
 	border-radius: 2px;
@@ -1872,10 +1874,47 @@ Composite.drawer_select {
 }
 
 
-Composite.notifierDialog {
+Shell.notifierDialogHint {
 	border: 1px solid #bdbdbd;
 	border-radius: 2px;
 	background-color: #F5F5F5;
+}
+
+Label.notifierDialogTitleHint {
+    font: bold 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Label.notifierDialogTextHint {
+    font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+
+Shell.notifierDialogError {
+    border: 1px solid #bdbdbd;
+    border-radius: 2px;
+    background-color: #F5F5F5;
+}
+
+Label.notifierDialogTitleError {
+    font: bold 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Label.notifierDialogTextError {
+    font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Shell.notifierDialogWarn {
+    border: 1px solid #bdbdbd;
+    border-radius: 2px;
+    background-color: #F5F5F5;
+}
+
+Label.notifierDialogTitleWarn {
+    font: bold 12px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+}
+
+Label.notifierDialogTextWarn {
+    font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
 
 /*EJ Item Group related theming*/
