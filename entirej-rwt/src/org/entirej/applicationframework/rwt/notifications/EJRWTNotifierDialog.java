@@ -25,14 +25,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
@@ -70,8 +69,21 @@ public class EJRWTNotifierDialog
     // text foreground color
     //private static Color       _fgColor      = _titleFgColor;
 
-    // contains list of all active popup shells
-    private static List<Shell> _activeShells = new ArrayList<Shell>();
+    
+    private static class SessionSingleton {
+
+        // contains list of all active popup shells
+        private  List<Shell> _activeShells = new ArrayList<Shell>();
+        private SessionSingleton() {
+          // prevent instantiation from outside
+        }
+
+        private static SessionSingleton getInstance() {
+          return SingletonUtil.getSessionInstance( SessionSingleton.class );
+        }
+
+        // other methods ...
+      }
 
     /**
      * Creates and shows a notification dialog with a specific title, message
@@ -98,8 +110,8 @@ public class EJRWTNotifierDialog
                     @Override
                     public void handleEvent(Event event)
                     {
-                        if (_activeShells != null && _shell != null)
-                            _activeShells.remove(_shell);
+                        if (SessionSingleton.getInstance()._activeShells != null && _shell != null)
+                            SessionSingleton.getInstance()._activeShells.remove(_shell);
                     }
                 });
 
@@ -184,9 +196,9 @@ public class EJRWTNotifierDialog
                 int startY = clientArea.y + clientArea.height - (height + 2);
 
                 // move other shells up
-                if (!_activeShells.isEmpty())
+                if (!SessionSingleton.getInstance()._activeShells.isEmpty())
                 {
-                    List<Shell> modifiable = new ArrayList<Shell>(_activeShells);
+                    List<Shell> modifiable = new ArrayList<Shell>(SessionSingleton.getInstance()._activeShells);
                     Collections.reverse(modifiable);
                     for (Shell shell : modifiable)
                     {
@@ -194,7 +206,7 @@ public class EJRWTNotifierDialog
                         shell.setLocation(curLoc.x, curLoc.y - 100);
                         if (curLoc.y - 100 < 0)
                         {
-                            _activeShells.remove(shell);
+                            SessionSingleton.getInstance()._activeShells.remove(shell);
                             shell.dispose();
                         }
                     }
@@ -204,7 +216,7 @@ public class EJRWTNotifierDialog
                 _shell.setAlpha(0);
                 _shell.setVisible(true);
 
-                _activeShells.add(_shell);
+                SessionSingleton.getInstance()._activeShells.add(_shell);
 
                 fadeIn(_shell, autoHide);
 
@@ -302,7 +314,7 @@ public class EJRWTNotifierDialog
                         _shell.setAlpha(0);
 
                         _shell.dispose();
-                        _activeShells.remove(_shell);
+                        SessionSingleton.getInstance()._activeShells.remove(_shell);
                         return;
                     }
 
