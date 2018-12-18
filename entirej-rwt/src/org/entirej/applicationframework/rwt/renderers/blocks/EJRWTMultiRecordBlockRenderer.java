@@ -232,6 +232,42 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 }
             }
         }
+        else if (EJManagedScreenProperty.LABEL.equals(managedItemPropertyType))
+        {
+            
+                if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
+                {
+                    TableColumn[] columns = _tableViewer.getTable().getColumns();
+                    for (TableColumn tableColumn : columns)
+                    {
+                        if (itemName.equals(tableColumn.getData("KEY")))
+                        {
+                            EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemName);
+                            tableColumn.setText(item.getProperties().getLabel());
+                            break;
+                        }
+                    }
+                }
+            
+        }
+        else if (EJManagedScreenProperty.HINT.equals(managedItemPropertyType))
+        {
+            
+            if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
+            {
+                TableColumn[] columns = _tableViewer.getTable().getColumns();
+                for (TableColumn tableColumn : columns)
+                {
+                    if (itemName.equals(tableColumn.getData("KEY")))
+                    {
+                        EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemName);
+                        tableColumn.setToolTipText(item.getProperties().getHint());
+                        break;
+                    }
+                }
+            }
+            
+        }
         else if (EJManagedScreenProperty.SCREEN_ITEM_VISUAL_ATTRIBUTE.equals(managedItemPropertyType))
         {
             EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemName);

@@ -181,7 +181,19 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
     private Display                                           dispaly                    = Display.getDefault();
 
-    private String serviceHandlerUrl;
+    private String                                            serviceHandlerUrl;
+
+    private boolean                                           addHeader;
+
+    private int                                               cellPadding;
+
+    private int                                               cellSpacing;
+
+    private boolean                                           rowSelection;
+
+    private String                                            valueVA;
+
+    private String filter;
 
     protected void clearFilter()
     {
@@ -222,7 +234,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public void blockCleared()
     {
-        EJRWTAsync.runUISafe(dispaly,() -> {
+        EJRWTAsync.runUISafe(dispaly, () -> {
 
             if (!filterKeepOnRefresh)
                 clearFilter();
@@ -320,7 +332,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         _queryScreenRenderer = new EJRWTQueryScreenRenderer();
         _insertScreenRenderer = new EJRWTInsertScreenRenderer();
         _updateScreenRenderer = new EJRWTUpdateScreenRenderer();
-         serviceHandlerUrl = RWT.getServiceManager().getServiceHandlerUrl(VACSSServiceHandler.SERVICE_HANDLER);
+        serviceHandlerUrl = RWT.getServiceManager().getServiceHandlerUrl(VACSSServiceHandler.SERVICE_HANDLER);
     }
 
     @Override
@@ -334,7 +346,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     public void queryExecuted()
     {
 
-        EJRWTAsync.runUISafe(dispaly,() -> {
+        EJRWTAsync.runUISafe(dispaly, () -> {
             currentRec = null;
 
             activeSortColumn = null;
@@ -506,7 +518,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
         currentRec = arg0;
 
-        EJRWTAsync.runUISafe(dispaly,() -> {
+        EJRWTAsync.runUISafe(dispaly, () -> {
 
             if (_browser != null && !_browser.isDisposed() && currentRec != null)
             {
@@ -558,6 +570,26 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 createHTML();
             }
         }
+        else if (EJManagedScreenProperty.LABEL.equals(managedItemPropertyType))
+        {
+            createHeader();
+            createHTML();
+
+        }
+        else if (EJManagedScreenProperty.HINT.equals(managedItemPropertyType))
+        {
+
+            createHeader();
+            createHTML();
+
+        }
+        else if (EJManagedScreenProperty.VISIBLE.equals(managedItemPropertyType))
+        {
+
+            createHeader();
+            createHTML();
+
+        }
 
     }
 
@@ -593,7 +625,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         EJMainScreenProperties mainScreenProperties = blockProperties.getMainScreenProperties();
 
         EJFrameworkExtensionProperties blockRendererProperties = blockProperties.getBlockRendererProperties();
-        boolean addHeader = true;
+        addHeader = true;
         if (blockRendererProperties != null)
         {
             addHeader = blockRendererProperties.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.SHOW_HEADING_PROPERTY, true);
@@ -1179,158 +1211,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
             }
 
         });
-
-        if (_items.isEmpty())
-        {
-            Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN).getAllItemGroupProperties();
-
-            int cellSpacing = blockProperties.getBlockRendererProperties().getIntProperty(CELL_SPACING_PROPERTY, 0);
-            int cellPadding = blockProperties.getBlockRendererProperties().getIntProperty(CELL_PADDING_PROPERTY, 0);
-            String paddingStyle = "";
-            if (cellPadding > 0)
-            {
-                String str = String.valueOf(cellPadding);
-                paddingStyle += String.format("padding: %spx %spx %spx %spx; ", str, str, str, str);
-            }
-
-            StringBuilder header = new StringBuilder("<thead><tr>");
-
-            boolean rowSelection = blockProperties.getBlockRendererProperties().getBooleanProperty(ROW_SELECTION, false);
-
-            String selectionTD = "<th width=1 ></td>";
-            if (rowSelection)
-            {
-                header.append(selectionTD);
-            }
-            for (EJItemGroupProperties groupProperties : allItemGroupProperties)
-            {
-                Collection<EJScreenItemProperties> itemProperties = groupProperties.getAllItemProperties();
-                for (EJScreenItemProperties screenItemProperties : itemProperties)
-                {
-                    EJCoreMainScreenItemProperties itemProps = (EJCoreMainScreenItemProperties) screenItemProperties;
-
-                    EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemProps.getReferencedItemName());
-                    EJManagedItemRendererWrapper renderer = item.getManagedItemRenderer();
-                    if (renderer != null)
-                    {
-                        EJRWTAppItemRenderer itemRenderer = (EJRWTAppItemRenderer) renderer.getUnmanagedRenderer();
-
-                        ColumnLabelProvider labelProvider = itemRenderer.createColumnLabelProvider(itemProps, item);
-                        _items.add(itemProps);
-                        _itemLabelProviders.put(itemProps.getReferencedItemName(), labelProvider);
-
-                        if (addHeader)
-                        {
-
-                            String styleClass = "default_all";
-                            EJFrameworkExtensionProperties rendererProperties = item.getReferencedItemProperties().getItemRendererProperties();
-                            EJFrameworkExtensionProperties extentionProperties = itemProps.getBlockRendererRequiredProperties();
-                            int width = -1;
-                            if (width == -1)
-                            {
-                                width = extentionProperties.getIntProperty(DISPLAY_WIDTH_PROPERTY, 0);
-                            }
-
-                            header.append("<th ");
-
-                            if (width > 0)
-                            {
-                                Font font = labelProvider.getFont(new Object());
-
-                                if (font == null)
-                                    font = _browser.getFont();
-                                if (font != null)
-                                {
-                                    float avgCharWidth = RWTUtils.getAvgCharWidth(font);
-                                    if (avgCharWidth > 0)
-                                    {
-                                        if (width != 1)
-                                        {
-                                            // add +1 padding
-                                            width = ((int) (((width + 1) * avgCharWidth)));
-                                        }
-                                    }
-                                }
-
-                                header.append(String.format(" width=%s ", width));
-                            }
-                            header.append(" ");
-
-                            String alignment = null;
-
-                            String alignmentProperty = rendererProperties.getStringProperty(PROPERTY_ALIGNMENT);
-                            if (alignmentProperty == null)
-                            {
-                                alignmentProperty = rendererProperties.getStringProperty("ALLIGNMENT");
-                            }
-                            alignment = getComponentAlignment(alignmentProperty);
-
-                            SortInfo sortInfo = null;
-                            if (extentionProperties.getBooleanProperty(ALLOW_ROW_SORTING, true))
-                            {
-                                EJRWTAbstractTableSorter columnSorter = itemRenderer.getColumnSorter(itemProps, item);
-                                if (columnSorter != null)
-                                {
-                                    _itemSortProviders.put(itemProps.getReferencedItemName(), columnSorter);
-                                    sortInfo = new SortInfo();
-                                    sortInfo.columnName = itemProps.getReferencedItemName();
-                                    _sortContext.put(sortInfo.id, sortInfo);
-                                }
-                            }
-
-                            String functionDef = null;
-                            if (sortInfo != null)
-                            {
-                                functionDef = String.format("em='esort' earg='%s' ", sortInfo.id);
-                            }
-
-                            String valueVA = blockProperties.getBlockRendererProperties().getStringProperty(HEADER_VA);
-                            if (valueVA != null && valueVA.length() > 0)
-                            {
-                                styleClass = valueVA;
-                                valueVA = rendererProperties.getStringProperty(HEADER_VA);
-                                if (valueVA != null && valueVA.length() > 0)
-                                    styleClass = valueVA;
-                            }
-                            header.append(String.format(" class=\"%s\" ", styleClass));
-                            if (alignment != null)
-                            {
-                                header.append(String.format(" align=\'%s\'", alignment));
-                            }
-
-                            if (paddingStyle != null)
-                            {
-                                header.append(String.format(" style=\'%s\'", paddingStyle));
-                            }
-                            if (itemProps.getHint() != null && !itemProps.getHint().isEmpty())
-                            {
-                                header.append(String.format(" title=\'%s\'", itemProps.getHint()));
-                            }
-                            header.append("> ");
-
-                            if (itemProps.getLabel() != null)
-                            {
-                                if (functionDef != null)
-                                {
-                                    header.append(String.format("<ejl><u %s class=\"%s, %s\"  ", "style=\"line-height: 100%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
-                                    header.append(functionDef).append(">");
-                                }
-                                header.append(!(extentionProperties.getBooleanProperty(ENABLE_MARKUP, false) || rendererProperties.getBooleanProperty("HTML_FORMAT", false)) ? ignoreHtml(itemProps.getLabel()) : itemProps.getLabel());
-                                if (sortInfo != null)
-                                    header.append(String.format("<esh %s/>", sortInfo.id));
-                            }
-                            header.append("</th>");
-                        }
-                    }
-                }
-            }
-
-            if (addHeader)
-            {
-                header.append("</tr></thead>");
-                _headerTag = header.toString();
-            }
-        }
+        createHeader();
         hookKeyListener(_browser);
 
         final EJRWTAbstractFilteredHtml _filterHtml = filterHtml;
@@ -1405,6 +1286,13 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
             }
         };
 
+        if (filterHtml != null && filter!=null)
+        {
+            filterHtml.setInitialText(filter);
+
+        }
+        _filteredContentProvider.setFilter(filter);
+        
         createHTML();
 
     }
@@ -1608,6 +1496,169 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         return builder.toString().toUpperCase();
     }
 
+    private void createHeader()
+    {
+        _items.clear();
+        _sortContext.clear();
+        _itemLabelProviders.clear();
+        _itemSortProviders.clear();
+        if (_items.isEmpty())
+        {
+            Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN).getAllItemGroupProperties();
+
+            cellSpacing = _block.getProperties().getBlockRendererProperties().getIntProperty(CELL_SPACING_PROPERTY, 0);
+            cellPadding = _block.getProperties().getBlockRendererProperties().getIntProperty(CELL_PADDING_PROPERTY, 0);
+            String paddingStyle = "";
+            if (cellPadding > 0)
+            {
+                String str = String.valueOf(cellPadding);
+                paddingStyle += String.format("padding: %spx %spx %spx %spx; ", str, str, str, str);
+            }
+
+            StringBuilder header = new StringBuilder("<thead><tr>");
+
+            rowSelection = _block.getProperties().getBlockRendererProperties().getBooleanProperty(ROW_SELECTION, false);
+
+            String selectionTD = "<th width=1 ></td>";
+            if (rowSelection)
+            {
+                header.append(selectionTD);
+            }
+            for (EJItemGroupProperties groupProperties : allItemGroupProperties)
+            {
+                Collection<EJScreenItemProperties> itemProperties = groupProperties.getAllItemProperties();
+                for (EJScreenItemProperties screenItemProperties : itemProperties)
+                {
+                    EJCoreMainScreenItemProperties itemProps = (EJCoreMainScreenItemProperties) screenItemProperties;
+
+                    EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemProps.getReferencedItemName());
+                    if(!item.isVisible())
+                        continue;
+                        
+                    EJManagedItemRendererWrapper renderer = item.getManagedItemRenderer();
+                    if (renderer != null)
+                    {
+                        EJRWTAppItemRenderer itemRenderer = (EJRWTAppItemRenderer) renderer.getUnmanagedRenderer();
+
+                        ColumnLabelProvider labelProvider = itemRenderer.createColumnLabelProvider(itemProps, item);
+                        _items.add(itemProps);
+                        _itemLabelProviders.put(itemProps.getReferencedItemName(), labelProvider);
+
+                        if (addHeader)
+                        {
+
+                            String styleClass = "default_all";
+                            EJFrameworkExtensionProperties rendererProperties = item.getReferencedItemProperties().getItemRendererProperties();
+                            EJFrameworkExtensionProperties extentionProperties = itemProps.getBlockRendererRequiredProperties();
+                            int width = -1;
+                            if (width == -1)
+                            {
+                                width = extentionProperties.getIntProperty(DISPLAY_WIDTH_PROPERTY, 0);
+                            }
+
+                            header.append("<th ");
+
+                            if (width > 0)
+                            {
+                                Font font = labelProvider.getFont(new Object());
+
+                                if (font == null)
+                                    font = _browser.getFont();
+                                if (font != null)
+                                {
+                                    float avgCharWidth = RWTUtils.getAvgCharWidth(font);
+                                    if (avgCharWidth > 0)
+                                    {
+                                        if (width != 1)
+                                        {
+                                            // add +1 padding
+                                            width = ((int) (((width + 1) * avgCharWidth)));
+                                        }
+                                    }
+                                }
+
+                                header.append(String.format(" width=%s ", width));
+                            }
+                            header.append(" ");
+
+                            String alignment = null;
+
+                            String alignmentProperty = rendererProperties.getStringProperty(PROPERTY_ALIGNMENT);
+                            if (alignmentProperty == null)
+                            {
+                                alignmentProperty = rendererProperties.getStringProperty("ALLIGNMENT");
+                            }
+                            alignment = getComponentAlignment(alignmentProperty);
+
+                            SortInfo sortInfo = null;
+                            if (extentionProperties.getBooleanProperty(ALLOW_ROW_SORTING, true))
+                            {
+                                EJRWTAbstractTableSorter columnSorter = itemRenderer.getColumnSorter(itemProps, item);
+                                if (columnSorter != null)
+                                {
+                                    _itemSortProviders.put(itemProps.getReferencedItemName(), columnSorter);
+                                    sortInfo = new SortInfo();
+                                    sortInfo.columnName = itemProps.getReferencedItemName();
+                                    _sortContext.put(sortInfo.id, sortInfo);
+                                }
+                            }
+
+                            String functionDef = null;
+                            if (sortInfo != null)
+                            {
+                                functionDef = String.format("em='esort' earg='%s' ", sortInfo.id);
+                            }
+
+                            valueVA = _block.getProperties().getBlockRendererProperties().getStringProperty(HEADER_VA);
+                            if (valueVA != null && valueVA.length() > 0)
+                            {
+                                styleClass = valueVA;
+                                valueVA = rendererProperties.getStringProperty(HEADER_VA);
+                                if (valueVA != null && valueVA.length() > 0)
+                                    styleClass = valueVA;
+                            }
+                            header.append(String.format(" class=\"%s\" ", styleClass));
+                            if (alignment != null)
+                            {
+                                header.append(String.format(" align=\'%s\'", alignment));
+                            }
+
+                            if (paddingStyle != null)
+                            {
+                                header.append(String.format(" style=\'%s\'", paddingStyle));
+                            }
+                            if (itemProps.getHint() != null && !itemProps.getHint().isEmpty())
+                            {
+                                header.append(String.format(" title=\'%s\'", itemProps.getHint()));
+                            }
+                            header.append("> ");
+
+                            if (itemProps.getLabel() != null)
+                            {
+                                if (functionDef != null)
+                                {
+                                    header.append(String.format("<ejl><u %s class=\"%s, %s\"  ", "style=\"line-height: 100%\"", ("default_all".equals(styleClass) ? "default_link_fg" : "default_link"), styleClass));
+                                    header.append(functionDef).append(">");
+                                }
+                                header.append(!(extentionProperties.getBooleanProperty(ENABLE_MARKUP, false) || rendererProperties.getBooleanProperty("HTML_FORMAT", false)) ? ignoreHtml(itemProps.getLabel()) : itemProps.getLabel());
+                                if (sortInfo != null)
+                                    header.append(String.format("<esh %s/>", sortInfo.id));
+                            }
+                            header.append("</th>");
+                        }
+                    }
+                }
+            }
+
+            if (addHeader)
+            {
+                header.append("</tr></thead>");
+                _headerTag = header.toString();
+            }
+        }
+
+    }
+
     private void createHTML()
     {
 
@@ -1720,6 +1771,8 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             }
                             for (EJCoreMainScreenItemProperties item : _items)
                             {
+                                if (!item.isVisible())
+                                    continue;
                                 String styleClass = (rowid % 2) != 0 ? oddVA : evenVA;
 
                                 String actionDef = null;
@@ -2122,8 +2175,6 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         return caze;
     }
 
-
-
     public static class VACSSServiceHandler implements ServiceHandler
     {
         public static final String       STYLE_DEF       = getStyleDef();
@@ -2227,6 +2278,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public void setFilter(String filter)
     {
+        this.filter =filter;
         if (_filteredContentProvider != null)
         {
             _filteredContentProvider.setFilter(filter);
