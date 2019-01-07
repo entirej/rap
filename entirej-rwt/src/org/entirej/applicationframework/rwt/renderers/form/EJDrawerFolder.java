@@ -75,11 +75,12 @@ public class EJDrawerFolder extends Composite
         seprator.setLayoutData(lineData);
     }
 
-    public void addSeperator()
+    public Label addSeperator()
     {
-        new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL);
+        Label label = new Label(this, SWT.SEPARATOR | SWT.HORIZONTAL);
         lineData.verticalSpan++;
         layout(true);
+        return label;
     }
 
     public void setPosition(EJCanvasDrawerPosition position)
@@ -106,18 +107,30 @@ public class EJDrawerFolder extends Composite
     class TabButton extends Composite
     {
        
+        
         private int         mouse            = 0;
         private boolean     selection        = false;
         private String      text             = "";
         int                 index            = 0;
         String              badge            = null;
         private Canvas      canvas;
+        private GridData layoutData;
+        private GridData emptyLayoutData;
 
         public TabButton(Composite parent, int style)
         {
             super(parent, style);
             setLayout(new FillLayout());
             redrawCanvas();
+            
+            {
+                
+                GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+                data.heightHint = 0;
+                data.widthHint = 0;
+                emptyLayoutData =data;
+               
+            }
 
         }
 
@@ -203,12 +216,15 @@ public class EJDrawerFolder extends Composite
             GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
             data.heightHint = ((int) EJRWTImageRetriever.getGraphicsProvider().getAvgCharWidth(getFont()) * (string.length() + 10));
             data.widthHint = getParent().getBounds().width;
+            layoutData = data;
             setLayoutData(data);
             redrawCanvas();
         }
 
         public void paint(PaintEvent e)
         {
+            if(!isVisible())
+                return;
 
             int offset = 5;
             e.gc.setAdvanced(true);
@@ -278,12 +294,16 @@ public class EJDrawerFolder extends Composite
         {
             if (tab.page.getName().equals(pageName))
             {
-                if (visible)
-                {
-                    tab.showTab(false);
-                }
-                else
+                tab.rotatingButton.setVisible(visible);
+                tab.rotatingSep.setVisible(visible);
+                
+                if (!visible)
+                
                     tab.shell.setVisible(visible);
+                
+                tab.rotatingButton.setLayoutData(visible? tab.rotatingButton.layoutData:tab.rotatingButton.emptyLayoutData);
+
+                tab.rotatingButton.getParent().layout(true, true);
 
                 EJ_RWT.setAttribute(this, "ej-item-selection", pageName);
             }
@@ -341,6 +361,7 @@ public class EJDrawerFolder extends Composite
         EJRWTEntireJGridPane   composite;
         final AtomicBoolean    init = new AtomicBoolean(true);
         private TabButton      rotatingButton;
+        private Label      rotatingSep;
         protected long      deactive;
 
         DrawerTab(EJDrawerPageProperties page)
@@ -430,7 +451,7 @@ public class EJDrawerFolder extends Composite
 
             rotatingButton = new TabButton(EJDrawerFolder.this, SWT.None);
             EJ_RWT.setTestId(rotatingButton, page.getName());
-            addSeperator();
+            rotatingSep=addSeperator();
             if (position == EJCanvasDrawerPosition.RIGHT && tabPages.size() == 0)
             {
                 // seprator.dispose();
