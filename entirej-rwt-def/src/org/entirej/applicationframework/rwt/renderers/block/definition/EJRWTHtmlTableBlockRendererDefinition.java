@@ -134,9 +134,7 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         EJDevPropertyDefinition message = new EJDevPropertyDefinition("MESSAGE", EJPropertyDefinitionType.STRING);
         message.setLabel("Filter Message");
         message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the filter.");
-        
 
-        mainGroup.addPropertyDefinition(message);
         
         EJDevPropertyDefinition filterOnRefresh = new EJDevPropertyDefinition(EJRWTTreeBlockDefinitionProperties.FILTER_KEEP_ON_REFRESH, EJPropertyDefinitionType.BOOLEAN);
         filterOnRefresh.setLabel("Keep Filter on Refresh");

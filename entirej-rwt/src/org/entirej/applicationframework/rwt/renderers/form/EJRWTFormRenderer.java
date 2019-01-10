@@ -1111,7 +1111,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             @Override
             protected void selection(String page)
             {
-                canvasController.drawerPageChanged(name, page);
+                if(canFireEvent())
+                    canvasController.drawerPageChanged(name, page);
 
                 EJ_RWT.setAttribute(getFolder(), "ej-item-selection", page);
             }
@@ -2581,6 +2582,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             // }
         }
 
+    }
+    @Override
+    public void setDrawerPageBadgeVisualAttribute(String canvasName, String tabPageName, String visualAttributeName)
+    {
+        if (canvasName != null && tabPageName != null)
+        {
+            EJDrawerFolder tabPane = _drawerFolders.get(canvasName);
+            if (tabPane != null)
+            {
+                tabPane.setDrawerPageBadgeVa(tabPageName, visualAttributeName);
+            }
+            // else
+            // {
+            // _tabFoldersCache.put(canvasName, tabPageName);
+            // }
+        }
+        
     }
 
     private static void createFormTray(EJInternalForm parentForm, EJCanvasProperties canvasProperties, final ITrayPane trayPane, String id)

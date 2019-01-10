@@ -2,6 +2,7 @@ package org.entirej.applicationframework.rwt.renderers.form;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.rwt.EJ_RWT;
@@ -33,22 +34,25 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
+import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.data.controllers.EJCanvasController;
 import org.entirej.framework.core.enumerations.EJCanvasDrawerPosition;
+import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
 import org.entirej.framework.core.properties.containers.interfaces.EJCanvasPropertiesContainer;
 import org.entirej.framework.core.properties.interfaces.EJCanvasProperties;
 import org.entirej.framework.core.properties.interfaces.EJDrawerPageProperties;
 
 public class EJDrawerFolder extends Composite
 {
-    private final Color SYSTEM_COLOR_RED = new Color(Display.getCurrent(), 221, 0, 0);
+    private final Color            SYSTEM_COLOR_RED = new Color(Display.getCurrent(), 221, 0, 0);
     private DrawerTab              active;
     EJRWTFormRenderer              ejrwtFormRenderer;
 
-    private EJCanvasDrawerPosition position = EJCanvasDrawerPosition.LEFT;
+    private EJCanvasDrawerPosition position         = EJCanvasDrawerPosition.LEFT;
+    private AtomicBoolean          fireEvents       = new AtomicBoolean(true);
 
     final EJCanvasController       canvasController;
-    final Map<String, DrawerTab>   tabPages = new HashMap<String, DrawerTab>();
+    final Map<String, DrawerTab>   tabPages         = new HashMap<String, DrawerTab>();
     private GridData               lineData;
     private Composite              seprator;
 
@@ -73,6 +77,11 @@ public class EJDrawerFolder extends Composite
         seprator = new Composite(this, SWT.NONE);
         seprator.setData(EJ_RWT.CUSTOM_VARIANT, "drawer_base");
         seprator.setLayoutData(lineData);
+    }
+
+    public boolean canFireEvent()
+    {
+        return fireEvents.get();
     }
 
     public Label addSeperator()
@@ -106,34 +115,33 @@ public class EJDrawerFolder extends Composite
 
     class TabButton extends Composite
     {
-       
-        
-        private int         mouse            = 0;
-        private boolean     selection        = false;
-        private String      text             = "";
-        int                 index            = 0;
-        String              badge            = null;
-        private Canvas      canvas;
-        private GridData layoutData;
-        private GridData emptyLayoutData;
+
+        private int                            mouse     = 0;
+        private boolean                        selection = false;
+        private String                         text      = "";
+        int                                    index     = 0;
+        String                                 badge     = null;
+        private Canvas                         canvas;
+        private GridData                       layoutData;
+        private GridData                       emptyLayoutData;
+        public EJCoreVisualAttributeProperties va;
 
         public TabButton(Composite parent, int style)
         {
             super(parent, style);
             setLayout(new FillLayout());
             redrawCanvas();
-            
+
             {
-                
+
                 GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
                 data.heightHint = 0;
                 data.widthHint = 0;
-                emptyLayoutData =data;
-               
+                emptyLayoutData = data;
+
             }
 
         }
-
 
         @Override
         public void setData(Object data)
@@ -223,7 +231,7 @@ public class EJDrawerFolder extends Composite
 
         public void paint(PaintEvent e)
         {
-            if(!isVisible())
+            if (!isVisible())
                 return;
 
             int offset = 5;
@@ -234,11 +242,11 @@ public class EJDrawerFolder extends Composite
             {
                 Color color = e.gc.getForeground();
                 Color bgColor = e.gc.getBackground();
-                e.gc.setBackground(SYSTEM_COLOR_RED);
-                e.gc.fillOval(p.y-4, 3, 14, 14);
+                e.gc.setBackground(Optional.ofNullable(EJRWTVisualAttributeUtils.INSTANCE.getBackground(va)).orElse(SYSTEM_COLOR_RED));
+                e.gc.fillOval(p.y - 4, 3, 14, 14);
 
-                e.gc.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
-                e.gc.drawText(badge, p.y , 3, true);
+                e.gc.setForeground(Optional.ofNullable(EJRWTVisualAttributeUtils.INSTANCE.getForeground(va)).orElse(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE)));
+                e.gc.drawText(badge, p.y, 5, true);
                 e.gc.setForeground(color);
                 e.gc.setBackground(bgColor);
                 offset += 14;
@@ -276,14 +284,23 @@ public class EJDrawerFolder extends Composite
 
     public void showPage(String pageName)
     {
-        for (DrawerTab tab : tabPages.values())
+        try
         {
-            if (tab.page.getName().equals(pageName))
+            fireEvents.set(false);
+            for (DrawerTab tab : tabPages.values())
             {
-                tab.showTab(false);
+                if (tab.page.getName().equals(pageName))
+                {
+                    tab.showTab(false);
 
-                EJ_RWT.setAttribute(this, "ej-item-selection", pageName);
+                    EJ_RWT.setAttribute(this, "ej-item-selection", pageName);
+                }
             }
+        }
+
+        finally
+        {
+            fireEvents.set(true);
         }
 
     }
@@ -296,12 +313,12 @@ public class EJDrawerFolder extends Composite
             {
                 tab.rotatingButton.setVisible(visible);
                 tab.rotatingSep.setVisible(visible);
-                
+
                 if (!visible)
-                
+
                     tab.shell.setVisible(visible);
-                
-                tab.rotatingButton.setLayoutData(visible? tab.rotatingButton.layoutData:tab.rotatingButton.emptyLayoutData);
+
+                tab.rotatingButton.setLayoutData(visible ? tab.rotatingButton.layoutData : tab.rotatingButton.emptyLayoutData);
 
                 tab.rotatingButton.getParent().layout(true, true);
 
@@ -361,8 +378,8 @@ public class EJDrawerFolder extends Composite
         EJRWTEntireJGridPane   composite;
         final AtomicBoolean    init = new AtomicBoolean(true);
         private TabButton      rotatingButton;
-        private Label      rotatingSep;
-        protected long      deactive;
+        private Label          rotatingSep;
+        protected long         deactive;
 
         DrawerTab(EJDrawerPageProperties page)
         {
@@ -376,28 +393,30 @@ public class EJDrawerFolder extends Composite
             shell = new Shell(current, SWT.RESIZE | SWT.ON_TOP);
             shell.addListener(SWT.Deactivate, new Listener()
             {
-                
+
                 @Override
                 public void handleEvent(Event event)
                 {
-                   if(shell.isVisible() )
-                   {
-                      
-                       
-                       Display.getDefault().asyncExec(new Runnable()
+                    if (shell.isVisible())
                     {
-                        
-                        @Override
-                        public void run()
+
+                        Display.getDefault().asyncExec(new Runnable()
                         {
-                            shell.setVisible(false);
-                            // selection(null);
-                            active.rotatingButton.setSelection(false);
-                            active.deactive = System.currentTimeMillis();
-                        }
-                    });
-                   }
-                    
+
+                            @Override
+                            public void run()
+                            {
+                                shell.setVisible(false);
+                                // selection(null);
+                                if (active != null)
+                                {
+                                    active.rotatingButton.setSelection(false);
+                                    active.deactive = System.currentTimeMillis();
+                                }
+                            }
+                        });
+                    }
+
                 }
             });
             shell.setLayout(new FillLayout());
@@ -448,10 +467,11 @@ public class EJDrawerFolder extends Composite
             composite = new EJRWTEntireJGridPane(shell, page.getNumCols(), SWT.BORDER);
 
             composite.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
+            shell.setData(EJ_RWT.CUSTOM_VARIANT, "drawer");
 
             rotatingButton = new TabButton(EJDrawerFolder.this, SWT.None);
             EJ_RWT.setTestId(rotatingButton, page.getName());
-            rotatingSep=addSeperator();
+            rotatingSep = addSeperator();
             if (position == EJCanvasDrawerPosition.RIGHT && tabPages.size() == 0)
             {
                 // seprator.dispose();
@@ -491,40 +511,77 @@ public class EJDrawerFolder extends Composite
                 active.shell.setVisible(false);
                 active.rotatingButton.setSelection(false);
             }
-            
-            if(Math.abs(deactive-System.currentTimeMillis())<300)
-            {
-                return;//avoid close events
-            }
-            active = this;
-            active.rotatingButton.setSelection(true);
 
-            if (toggle && shell.isVisible())
+            if (active == this || Math.abs(deactive - System.currentTimeMillis()) < 300)
             {
-                shell.setVisible(false);
-                // selection(null);
                 active.rotatingButton.setSelection(false);
+                active.deactive = System.currentTimeMillis();
+                active = null;
+                return;// avoid close events
             }
-            else
-            {
 
-                Point point = EJDrawerFolder.this.toDisplay(0, 0);
-                Rectangle bounds = EJDrawerFolder.this.getBounds();
+            Display.getDefault().asyncExec(() -> {
 
-                if (position == EJCanvasDrawerPosition.RIGHT)
-                    shell.setLocation((point.x + bounds.width) - 1, point.y);
-                if (position == EJCanvasDrawerPosition.LEFT)
-                    shell.setLocation((point.x - page.getDrawerWidth()) + 1, point.y);
-                shell.setSize(page.getDrawerWidth(), bounds.height);
-                shell.open();
-                selection(active.page.getName());
-            }
+                active = this;
+                active.rotatingButton.setSelection(true);
+
+                if (toggle && shell.isVisible())
+                {
+                    shell.setVisible(false);
+                    // selection(null);
+                    active.rotatingButton.setSelection(false);
+                }
+                else
+                {
+
+                    Point point = EJDrawerFolder.this.toDisplay(0, 0);
+                    Rectangle bounds = EJDrawerFolder.this.getBounds();
+
+                    if (position == EJCanvasDrawerPosition.RIGHT)
+                        shell.setLocation((point.x + bounds.width) - 1, point.y);
+                    if (position == EJCanvasDrawerPosition.LEFT)
+                        shell.setLocation((point.x - page.getDrawerWidth()) + 1, point.y);
+                    shell.setSize(page.getDrawerWidth(), bounds.height);
+                    shell.open();
+                    selection(active.page.getName());
+                }
+
+            });
         }
 
         public void setIndex(int index)
         {
             this.index = index;
 
+        }
+
+    }
+
+    public void setDrawerPageBadgeVa(String tabPageName, String visualAttributeName)
+    {
+        EJCoreVisualAttributeProperties vaProperties;
+        if (visualAttributeName == null || visualAttributeName.trim().length() == 0)
+        {
+            vaProperties = null;
+
+        }
+        else
+        {
+            vaProperties = ejrwtFormRenderer.getForm().getVisualAttribute(visualAttributeName);
+            if (vaProperties == null)
+            {
+                throw new IllegalArgumentException("There is no visual attribute with the name " + visualAttributeName + " on this form.");
+            }
+        }
+
+        for (DrawerTab tab : tabPages.values())
+        {
+            if (tab.page.getName().equals(tabPageName))
+            {
+                tab.rotatingButton.va = vaProperties;
+                tab.rotatingButton.redrawCanvas();
+                break;
+            }
         }
 
     }
