@@ -1613,13 +1613,16 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     protected void setMandatoryBorder(boolean req)
     {
 
-        if (req && (getValue() == null || _baseValue.getValue() == null))
+        if(controlState(_mandatoryDecoration.getControl()))
         {
-            _mandatoryDecoration.show();
-        }
-        else
-        {
-            _mandatoryDecoration.hide();
+            if (req && (getValue() == null || _baseValue.getValue() == null))
+            {
+                _mandatoryDecoration.show();
+            }
+            else
+            {
+                _mandatoryDecoration.hide();
+            }
         }
     }
 

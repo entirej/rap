@@ -18,6 +18,7 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Transform;
@@ -242,13 +243,24 @@ public class EJDrawerFolder extends Composite
             {
                 Color color = e.gc.getForeground();
                 Color bgColor = e.gc.getBackground();
+                Font font = e.gc.getFont();
                 e.gc.setBackground(Optional.ofNullable(EJRWTVisualAttributeUtils.INSTANCE.getBackground(va)).orElse(SYSTEM_COLOR_RED));
-                e.gc.fillOval(p.y - 4, 3, 14, 14);
 
-                e.gc.setForeground(Optional.ofNullable(EJRWTVisualAttributeUtils.INSTANCE.getForeground(va)).orElse(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE)));
+                Font vaFont = EJRWTVisualAttributeUtils.INSTANCE.getFont(va, null);
+                int bubbleSize = 14;
+                if(vaFont!=null)
+                {
+                     e.gc.setFont(vaFont);
+                     bubbleSize = EJRWTImageRetriever.getGraphicsProvider().getCharHeight(vaFont)+3;
+                }
+                e.gc.fillOval(p.y - 4, 3, bubbleSize, bubbleSize);
+                e.gc.setFont(vaFont);
+
+                e.gc.setForeground(Optional.ofNullable(EJRWTVisualAttributeUtils.INSTANCE.getForeground(va)).orElse(va!=null?color : Display.getCurrent().getSystemColor(SWT.COLOR_WHITE)));
                 e.gc.drawText(badge, p.y, 5, true);
                 e.gc.setForeground(color);
                 e.gc.setBackground(bgColor);
+                e.gc.setFont(font);
                 offset += 14;
             }
 
