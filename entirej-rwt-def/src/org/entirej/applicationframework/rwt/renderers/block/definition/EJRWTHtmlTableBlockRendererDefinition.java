@@ -104,6 +104,13 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("HTML Table Block");
 
+        
+        EJDevPropertyDefinition doubleClickActionCommand = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.DOUBLE_CLICK_ACTION_COMMAND,
+                EJPropertyDefinitionType.ACTION_COMMAND);
+        doubleClickActionCommand.setLabel("Double Click Action Command");
+        doubleClickActionCommand.setDescription("Add an action command that will be sent to the action processor when a user double clicks on this block");
+
+        
         EJDevPropertyDefinitionList list = new EJDevPropertyDefinitionList(ACTIONS, "Actions");
         EJDevPropertyDefinition actionkey = new EJDevPropertyDefinition(ACTION_KEY, EJPropertyDefinitionType.STRING);
         actionkey.setLabel("Action Key");
@@ -167,6 +174,7 @@ public class EJRWTHtmlTableBlockRendererDefinition implements EJDevBlockRenderer
         EJDevPropertyDefinition rowSelectionVA = new EJDevPropertyDefinition(ROW_SELECTION_VA, EJPropertyDefinitionType.VISUAL_ATTRIBUTE);
         rowSelectionVA.setLabel("Row Selection Indicator VA");
 
+        mainGroup.addPropertyDefinition(doubleClickActionCommand);
         mainGroup.addPropertyDefinitionList(list);
         mainGroup.addPropertyDefinition(textSelection);
         mainGroup.addPropertyDefinition(filter);

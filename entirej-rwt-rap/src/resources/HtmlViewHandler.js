@@ -19,7 +19,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
   }
 
   entirej.HtmlView = function( properties ) {
-    bindAll( this, [ "layout", "onRender","ej_action","ej_select",'ej_scroll','ej_text_select' ] );
+    bindAll( this, [ "layout", "onRender","ej_action","ej_select","ej_dblclick",'ej_scroll','ej_text_select' ] );
     this.parent = rap.getObject( properties.parent );
     this.document = document;
     this.window = window;
@@ -95,35 +95,85 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         
         
         if(target && target.hasAttribute && target.hasAttribute('recid'))
-    	{
-        	
-       	 var elemsnts= this.element.getElementsByClassName("rowindi");
-         if(elemsnts)
-     	{
-         	
-         	for(var i =0;i<elemsnts.length;i++)
-         	{
-         		var elm = elemsnts[i];
-         		if(elm.parentNode == target)
-         			{
-         			elm.style.visibility = "visible";
-         			}
-         		else
-         			elm.style.visibility = "hidden";
-         	}
-     	}
+	    	{
+	        	
+	       	 var elemsnts= this.element.getElementsByClassName("rowindi");
+	         if(elemsnts)
+	     	{
+	         	
+	         	for(var i =0;i<elemsnts.length;i++)
+	         	{
+	         		var elm = elemsnts[i];
+	         		if(elm.parentNode == target)
+	         			{
+	         			elm.style.visibility = "visible";
+	         			}
+	         		else
+	         			elm.style.visibility = "hidden";
+	         	}
+	     	}
+	        
+	    	
+	    	
+	    	
+	
+	        	
+	        	var remoteObject = rap.getRemoteObject(this);
+	        	var args = {};
+	        	args['0']=target.getAttribute('recid');
+	        	
+	        	remoteObject.call('eselect',args);
+	    	}
+    },
+    ej_dblclick : function(event) {
+    	
+    	var target;
+       
+          target = event.target;
         
-    	
-    	
-    	
-
-        	
-        	var remoteObject = rap.getRemoteObject(this);
-        	var args = {};
-        	args['0']=target.getAttribute('recid');
-        	
-        	remoteObject.call('eselect',args);
-    	}
+        
+        while(true) {
+          if(target.parentNode == null) {
+            break;
+          }
+          if(target.parentNode && target.parentNode.nodeName == "TR") {
+        	  target =  target.parentNode ;
+            break;
+          }
+          target =  target.parentNode ;
+        }
+        
+        
+        if(target && target.hasAttribute && target.hasAttribute('recid'))
+	    	{
+	        	
+	       	 var elemsnts= this.element.getElementsByClassName("rowindi");
+	         if(elemsnts)
+	     	{
+	         	
+	         	for(var i =0;i<elemsnts.length;i++)
+	         	{
+	         		var elm = elemsnts[i];
+	         		if(elm.parentNode == target)
+	         			{
+	         			elm.style.visibility = "visible";
+	         			}
+	         		else
+	         			elm.style.visibility = "hidden";
+	         	}
+	     	}
+	        
+	    	
+	    	
+	    	
+	
+	        	
+	        	var remoteObject = rap.getRemoteObject(this);
+	        	var args = {};
+	        	args['0']=target.getAttribute('recid');
+	        	
+	        	remoteObject.call('edblclick',args);
+	    	}
     },
     
     
@@ -207,7 +257,9 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         	{
         		
         		var func = this.ej_select;
+        		var dbfunc = this.ej_dblclick;
         		elemsnts[i].onclick =  func;
+        		elemsnts[i].ondblclick =  dbfunc;
         	}
     	}
         
