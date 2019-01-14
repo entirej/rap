@@ -2436,6 +2436,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                 GridData layoutData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL);
                 scrollComposite.setLayoutData(layoutData);
+                
                 shell.cleanLayoutVertical();
 
                 // add close button
@@ -2512,10 +2513,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     @Override
                     public void controlResized(ControlEvent e)
                     {
-                        Point computeSize = shell.computeSize(composite.getBounds().width, SWT.DEFAULT);
-                        computeSize.x = computeSize.x - 5;
-                        shell.setSize(computeSize);
+                        calculateSize();
                     }
+
+                    
 
                     @Override
                     public void controlMoved(ControlEvent e)
@@ -2524,8 +2525,16 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                     }
                 });
+                calculateSize();
                 scrollComposite.setContent(shell);
             }
+        }
+        
+        private void calculateSize()
+        {
+            Point computeSize = shell.computeSize(composite.getBounds().width, SWT.DEFAULT);
+            computeSize.x = computeSize.x - 5;
+            shell.setSize(computeSize);
         }
 
         void clear()
