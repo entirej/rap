@@ -2402,6 +2402,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         protected Control createContents(Composite parent)
         {
             this.parent = parent;
+            parent.addControlListener(new ControlListener()
+            {
+
+                @Override
+                public void controlResized(ControlEvent e)
+                {
+                    calculateSize();
+                }
+
+                
+
+                @Override
+                public void controlMoved(ControlEvent e)
+                {
+                    // TODO Auto-generated method stub
+
+                }
+            });
 
             setMessages(msgs);
             return composite;
@@ -2427,6 +2445,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 {
 
                     composite = new EJRWTEntireJGridPane(parent, 1);
+                    composite.addControlListener(new ControlListener()
+                    {
+
+                        @Override
+                        public void controlResized(ControlEvent e)
+                        {
+                            calculateSize();
+                        }
+
+                        
+
+                        @Override
+                        public void controlMoved(ControlEvent e)
+                        {
+                            // TODO Auto-generated method stub
+
+                        }
+                    });
                     composite.cleanLayout();
                 }
 
@@ -2507,24 +2543,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     composite.layout(true);
                 }
 
-                composite.addControlListener(new ControlListener()
-                {
-
-                    @Override
-                    public void controlResized(ControlEvent e)
-                    {
-                        calculateSize();
-                    }
-
-                    
-
-                    @Override
-                    public void controlMoved(ControlEvent e)
-                    {
-                        // TODO Auto-generated method stub
-
-                    }
-                });
+                
                 calculateSize();
                 scrollComposite.setContent(shell);
             }
@@ -2532,9 +2551,13 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         
         private void calculateSize()
         {
-            Point computeSize = shell.computeSize(composite.getBounds().width, SWT.DEFAULT);
-            computeSize.x = computeSize.x - 5;
-            shell.setSize(computeSize);
+            if(shell!=null && !shell.isDisposed() && !parent.isDisposed())
+            {
+                Point computeSize = shell.computeSize(composite.getBounds().width, SWT.DEFAULT);
+                computeSize.x = computeSize.x - 5;
+                computeSize.y = Math.max(computeSize.y - 20,Math.max(computeSize.y,parent.getBounds().height-100) );
+                shell.setSize(computeSize);
+            }
         }
 
         void clear()
