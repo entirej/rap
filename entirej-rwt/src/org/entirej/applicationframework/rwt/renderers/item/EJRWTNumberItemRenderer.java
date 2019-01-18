@@ -261,6 +261,8 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                     @Override
                     public void run()
                     {
+                        if(!controlState(_textField))
+                            return;
                         try
                         {
                             _modifyListener.enable = false;
@@ -466,6 +468,8 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
 
     private Number toValue()
     {
+        if(!controlState(_textField))
+            return (Number) _baseValue;
         Number value = null;
         try
         {

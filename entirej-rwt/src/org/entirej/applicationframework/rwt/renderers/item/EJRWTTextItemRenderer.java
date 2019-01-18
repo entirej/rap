@@ -631,9 +631,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
 
             if (_valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base))))
-                _item.itemValueChaged(value);
-            _valueChanged = false;
-            _oldvalue = null;
+                commitValue();
         }
         else
         {
