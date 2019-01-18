@@ -201,15 +201,14 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
             
             if (value != null && value.doubleValue() > maxValue.doubleValue())
             {
-                value = (Number) _oldvalue;
-                _textField.setText(_oldvalue != null ? _decimalFormatter.format(_oldvalue) : "");
+                value = toValue(maxValue);
+                setValue(value);
                 _item.getForm().getFrameworkManager().handleException(new EJApplicationException(String.format("The maximum allowable value: %s", _decimalFormatter.format(maxValue.doubleValue()))), true);
             }
             if (value != null && value.doubleValue() < minValue.doubleValue())
             {
-                value = (Number) _oldvalue;
-                _textField.setText(_oldvalue != null ? _decimalFormatter.format(_oldvalue) : "");
-
+                value = toValue(minValue);
+                setValue(value);
                 _item.getForm().getFrameworkManager().handleException(new EJApplicationException(String.format("The minimum allowable value: %s", _decimalFormatter.format(minValue.doubleValue()))), true);
             }
             
@@ -480,6 +479,11 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
             // ignore error
         }
 
+        return toValue(value);
+    }
+
+    private Number toValue(Number value)
+    {
         if (value == null)
         {
             return value;
