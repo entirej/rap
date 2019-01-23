@@ -560,6 +560,24 @@ public class EJDrawerFolder extends Composite
 
             });
         }
+        
+        private void closeTab()
+        {
+            if (shell != null && shell.isVisible() )
+            {
+                shell.setVisible(false);
+                rotatingButton.setSelection(false);
+            }
+
+            if (active == this )
+            {
+                
+                active.deactive = System.currentTimeMillis();
+                active = null;
+                return;// avoid close events
+            }
+
+        }
 
         public void setIndex(int index)
         {
@@ -596,5 +614,33 @@ public class EJDrawerFolder extends Composite
             }
         }
 
+    }
+
+    public void closePage(String pageName)
+    {
+        try
+        {
+            fireEvents.set(false);
+            for (DrawerTab tab : tabPages.values())
+            {
+                if (tab.page.getName().equals(pageName))
+                {
+                    tab.closeTab();
+
+                    EJ_RWT.setAttribute(this, "ej-item-selection", "");
+                }
+            }
+        }
+
+        finally
+        {
+            fireEvents.set(true);
+        }
+        
+    }
+
+    public void closeActivePage()
+    {
+        closePage(getActiveKey());
     }
 }

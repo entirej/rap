@@ -304,6 +304,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
     }
+    @Override
+    public void closeDrawerPage(String canvasName, String pageName)
+    {
+        if (canvasName != null && pageName != null)
+        {
+            EJDrawerFolder tabPane = _drawerFolders.get(canvasName);
+            if (tabPane != null)
+            {
+                tabPane.closePage(pageName);
+            }
+            else
+            {
+                _drawerFoldersCache.remove(canvasName);
+            }
+        }
+        
+    }
 
     @Override
     public void setTabPageVisible(String canvasName, String pageName, boolean visible)
@@ -2647,6 +2664,12 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                                                    // try and
                                                                    // location
 
+    }
+
+    public void closesDrawerPages()
+    {
+       
+        
     }
 
 }
