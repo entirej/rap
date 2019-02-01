@@ -159,6 +159,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
     @Override
     public EJInternalForm addForm(EJInternalForm form)
     {
+        deselectForm(getActiveForm());
         CTabItem tabItem = new CTabItem(_folder, SWT.NONE);
         _tabPages.put(form, tabItem);
         tabItem.setData(form);
@@ -235,6 +236,9 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
     @Override
     public void closeForm(EJInternalForm form)
     {
+        if(getActiveForm()==form)
+            deselectForm(form);
+        
         if(_formPopup!=null && _formPopup.getPopupController().getPopupForm().equals(form))
         {
             
@@ -263,6 +267,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
 
     public boolean closeAllForms()
     {
+        deselectForm(getActiveForm());
         Collection<EJInternalForm> opendForms = getAllForms();
         for (EJInternalForm form : opendForms)
         {
@@ -291,6 +296,8 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         {
             if (form.getProperties().getName().equalsIgnoreCase(key))
             {
+                EJInternalForm activeForm = getActiveForm();
+                deselectForm(activeForm);
                 EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
 
                 _folder.setSelection(_tabPages.get(form));
@@ -303,6 +310,13 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         return null;
     }
     
+    void deselectForm(EJInternalForm aform) {
+        if(aform!=null) {
+            EJRWTFormRenderer renderer = (EJRWTFormRenderer) aform.getRenderer();
+            renderer.closesDrawerPages();
+        }
+    }
+    
     @Override
     public EJInternalForm switchToForm(EJInternalForm aform)
     {
@@ -310,6 +324,8 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         {
             if (form.equals(aform))
             {
+                EJInternalForm activeForm = getActiveForm();
+                deselectForm(activeForm);
                 EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
 
                 _folder.setSelection(_tabPages.get(form));

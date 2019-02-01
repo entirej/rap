@@ -197,7 +197,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         if (_valueChanged)
         {
             _valueChanged = false;
-            Number value = (Number) getValue();
+            Number value = controlState(_textField)? toValue():(Number) _baseValue;
             
             if (value != null && value.doubleValue() > maxValue.doubleValue())
             {

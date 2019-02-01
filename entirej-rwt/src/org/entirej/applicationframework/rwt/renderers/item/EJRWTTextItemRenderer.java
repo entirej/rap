@@ -625,11 +625,11 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     public void valueChanged()
     {
         Object base = _baseValue;
-        Object value = getValue();
+        String value = controlState(_textField)? _textField.getText(): (String) _baseValue;
 
         if (!_textField.isFocusControl())
         {
-
+            _valueChanged =true;
             if (_valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base))))
                 commitValue();
         }
@@ -1029,7 +1029,13 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         if (_valueChanged)
         {
             _valueChanged = false;
-            _item.itemValueChaged(getValue());
+            String value = controlState(_textField)? _textField.getText(): (String) _baseValue;
+
+            if (value == null || value.length() == 0)
+            {
+                value = null;
+            }
+            _item.itemValueChaged(value);
             _oldvalue=null;
             setMandatoryBorder(_mandatory);
         }

@@ -641,6 +641,12 @@ public class EJDrawerFolder extends Composite
 
     public void closeActivePage()
     {
-        closePage(getActiveKey());
+        if (active != null && active.shell.isVisible() )
+        {
+            active.shell.setVisible(false);
+            active.rotatingButton.setSelection(false);
+            active.deactive = System.currentTimeMillis();
+            active = null;
+        }
     }
 }

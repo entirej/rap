@@ -2669,7 +2669,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     public void closesDrawerPages()
     {
        
-        
+        _drawerFolders.values().forEach(d->d.closeActivePage());
     }
 
 }
