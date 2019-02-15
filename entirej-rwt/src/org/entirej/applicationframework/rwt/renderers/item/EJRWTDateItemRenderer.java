@@ -551,22 +551,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             return (Date) _baseValue;
         }
 
-        Date value = null;
-        try
-        {
-            if (_textField.getText() != null)
-            {
-                value = _dateFormat.parse(_textField.getText());
-            }
-
-            // convert to correct type if need
-            value = converType(value);
-
-        }
-        catch (ParseException e)
-        {
-            // ignore error
-        }
+        Date value = toValue();
 
         _baseValue = value;
 
