@@ -66,6 +66,7 @@ import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
+import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.EJMessageFactory;
 import org.entirej.framework.core.data.EJDataRecord;
@@ -571,6 +572,46 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
 
         return value;
     }
+    
+    private Date toValue()
+    {
+        if(!controlState(_textField))
+            return (Date) _baseValue;
+        Date value = null;
+        try
+        {
+            if (_textField.getText() != null)
+            {
+                value = _dateFormat.parse(_textField.getText());
+            }
+
+            // convert to correct type if need
+            value = converType(value);
+
+        }
+        catch (ParseException e)
+        {
+            // ignore error
+        }
+        
+        return value;
+    }
+    
+    
+    protected void commitValue()
+    {
+        if (_valueChanged)
+        {
+            _valueChanged = false;
+            Date value = controlState(_textField)? toValue():(Date) _baseValue;
+            
+            
+            _item.itemValueChaged(value);
+            _oldvalue=null;
+            setMandatoryBorder(_mandatory);
+        }
+    }
+    
 
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)
