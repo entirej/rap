@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Serializable,ITrayPane
@@ -113,17 +114,26 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
         // size.
         GridLayout layout = new GridLayout();
         layout.numColumns = 0; // this is incremented by createButton
-        layout.makeColumnsEqualWidth = true;
+        layout.makeColumnsEqualWidth = false;
         layout.marginWidth = 0;
         layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
         layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
         layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
         composite.setLayout(layout);
         GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END
-                        | GridData.VERTICAL_ALIGN_CENTER);
+                        | GridData.VERTICAL_ALIGN_CENTER|GridData.GRAB_HORIZONTAL);
         
         composite.setLayoutData(data);
         composite.setFont(parent.getFont());
+        
+       // create help control if needed
+        if (isHelpAvailable())
+        {
+            data = new GridData(SWT.FILL, SWT.CENTER, true, false);
+            composite.setLayoutData(data);
+            Control helpControl = createHelpControl(composite);
+            helpControl.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING|GridData.GRAB_HORIZONTAL));
+        }
         
         // Add the buttons to the button bar.
         createButtonsForButtonBar(composite);

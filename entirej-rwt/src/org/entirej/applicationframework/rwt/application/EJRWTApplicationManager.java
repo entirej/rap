@@ -36,6 +36,7 @@ import org.entirej.applicationframework.rwt.application.interfaces.EJRWTApplicat
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormContainer;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderers.form.EJRWTFormRenderer;
+import org.entirej.framework.core.EJActionProcessorException;
 import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJFrameworkManager;
 import org.entirej.framework.core.EJManagedFrameworkConnection;
@@ -80,6 +81,9 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     private EJApplicationActionProcessor actionProcessor = null;
 
     private static final Logger          logger          = LoggerFactory.getLogger(EJRWTApplicationManager.class);
+    
+    private boolean helpSupported = false;
+    private boolean helpActive = false;
 
     public EJRWTApplicationManager()
     {
@@ -770,6 +774,40 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     {
         _applicationContainer.setTabPageEnable(name,tabPageName,enable);
         
+    }
+
+    public boolean isHelpSupported()
+    {
+        return helpSupported;
+    }
+
+    public void setHelpSupported(boolean helpSupported)
+    {
+        this.helpSupported = helpSupported;
+        
+    }
+
+    public boolean isHelpActive()
+    {
+        return helpActive;
+    }
+
+    public void setHelpActive(boolean helpActive)
+    {
+        this.helpActive = helpActive;
+        
+        EJApplicationActionProcessor applicationActionProcessor = getApplicationActionProcessor();
+        
+        if(applicationActionProcessor!=null) {
+            try
+            {
+                applicationActionProcessor.executeActionCommand(this, helpActive ?"HELP_ACTIVE":"HELP_INACTIVE");
+            }
+            catch (EJActionProcessorException e)
+            {
+                handleException(e);
+            }
+        }
     }
 
 }

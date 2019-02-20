@@ -253,6 +253,25 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                     {
                         private static final long serialVersionUID = -4685316941898120169L;
 
+                        
+                        @Override
+                        protected boolean isHelpActive()
+                        {
+                            return _applicationManager.isHelpActive();
+                        }
+                        
+                        @Override
+                        public boolean isHelpAvailable()
+                        {
+                            return _applicationManager.isHelpSupported();
+                        }
+                        
+                        @Override
+                        protected void helpPressed(boolean active)
+                        {
+                            _applicationManager.setHelpActive(active);
+                        }
+                        
                         @Override
                         public void createBody(Composite parent)
                         {

@@ -1725,7 +1725,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         @Override
         public void setTrayContent(String id)
         {
-            if (id == null && _popupDialog.getTray() != null)
+            if (id == null && _popupDialog!=null &&_popupDialog.getTray() != null)
             {
                 _popupDialog.closeTray();
                 return;
@@ -1813,7 +1813,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             final int width = canvasProperties.getWidth();
             final int height = canvasProperties.getHeight();
             final int numCols = canvasProperties.getNumCols();
-
+            final EJRWTApplicationManager applicationManager = (EJRWTApplicationManager) _form.getFrameworkManager().getApplicationManager();
+            
             if (_popupDialog == null || _popupDialog.getShell() == null || _popupDialog.getShell().isDisposed())
             {
 
@@ -1821,6 +1822,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 {
                     private static final long serialVersionUID = -4685316941898120169L;
 
+                    protected boolean isHelpActive()
+                    {
+                        return applicationManager.isHelpActive();
+                    }
+                    
+                    @Override
+                    public boolean isHelpAvailable()
+                    {
+                        return applicationManager.isHelpSupported();
+                    }
+                    
+                    @Override
+                    protected void helpPressed(boolean active)
+                    {
+                        applicationManager.setHelpActive(active);
+                    }
+                    
                     @Override
                     public void createBody(Composite parent)
                     {

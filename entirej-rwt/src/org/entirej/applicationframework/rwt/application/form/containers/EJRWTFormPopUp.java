@@ -26,9 +26,12 @@ import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
+import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
+import org.entirej.applicationframework.rwt.application.EJRWTMessenger;
 import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppFormRenderer;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
+import org.entirej.framework.core.interfaces.EJApplicationManager;
 import org.entirej.framework.core.renderers.EJManagedFormRendererWrapper;
 
 public class EJRWTFormPopUp
@@ -55,8 +58,27 @@ public class EJRWTFormPopUp
         final int width = _popupController.getPopupForm().getProperties().getFormWidth();
         EJManagedFormRendererWrapper wrapper  = _popupController.getPopupForm().getManagedRenderer();
         final EJRWTAppFormRenderer formRenderer = (EJRWTAppFormRenderer) wrapper.getUnmanagedRenderer();
+        final EJRWTApplicationManager applicationManager = (EJRWTApplicationManager) _popupController.getPopupForm().getFrameworkManager().getApplicationManager();
         _popupDialog = new EJRWTAbstractDialog(_mainShell)
         {
+            @Override
+            protected boolean isHelpActive()
+            {
+                return applicationManager.isHelpActive();
+            }
+            
+            @Override
+            public boolean isHelpAvailable()
+            {
+                return applicationManager.isHelpSupported();
+            }
+            
+            @Override
+            protected void helpPressed(boolean active)
+            {
+                applicationManager.setHelpActive(active);
+            }
+            
             @Override
             public void createBody(Composite parent)
             {

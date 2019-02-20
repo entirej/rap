@@ -91,8 +91,7 @@ public abstract class EJRWTTrayDialog extends Dialog
     
     protected TrayLocation  location      = TrayLocation.RIGHT;
 
-    private static boolean  dialogHelpAvailable;
-
+   
     /**
      * The dialog's tray (null if none).
      */
@@ -330,15 +329,21 @@ public abstract class EJRWTTrayDialog extends Dialog
         });
         fHelpButton = new ToolItem(toolBar, SWT.CHECK);
         fHelpButton.setImage(image);
+        fHelpButton.setSelection(isHelpActive());
         fHelpButton.setToolTipText(JFaceResources.getString("helpToolTip")); //$NON-NLS-1$
         fHelpButton.addSelectionListener(new SelectionAdapter()
         {
             public void widgetSelected(SelectionEvent e)
             {
-                helpPressed();
+                helpPressed(fHelpButton.getSelection());
             }
         });
         return toolBar;
+    }
+
+    protected boolean isHelpActive()
+    {
+        return false;
     }
 
     /*
@@ -355,7 +360,7 @@ public abstract class EJRWTTrayDialog extends Dialog
         {
             public void widgetSelected(SelectionEvent e)
             {
-                helpPressed();
+                helpPressed(fHelpButton.getSelection());
             }
         });
         return link;
@@ -421,40 +426,10 @@ public abstract class EJRWTTrayDialog extends Dialog
         return tray;
     }
 
-    /*
-     * Called when the help control is invoked. This emulates the keyboard
-     * context help behavior (e.g. F1 on Windows). It traverses the widget tree
-     * upward until it finds a widget that has a help listener on it, then
-     * invokes a help event on that widget. If the help tray is already open, it
-     * closes it and doesn't invoke any help listener.
-     */
-    private void helpPressed()
+    
+    protected void helpPressed(boolean active)
     {
-        if (getTray() == null || fHelpButton != null && fHelpButton.getSelection())
-        { // help button was not selected before
-            if (getShell() != null)
-            {
-                Control c = getShell().getDisplay().getFocusControl();
-                while (c != null)
-                {
-                    if (c.isListening(SWT.Help))
-                    {
-                        c.notifyListeners(SWT.Help, new Event());
-                        break;
-                    }
-                    c = c.getParent();
-                }
-                if (fHelpButton != null && getTray() != null)
-                {
-                    fHelpButton.setSelection(true);
-                }
-            }
-
-        }
-        else
-        {
-            closeTray();
-        }
+        
     }
 
     /**
@@ -651,23 +626,10 @@ public abstract class EJRWTTrayDialog extends Dialog
      *         show it by default, <code>false</code> otherwise.
      * @since 3.2
      */
-    public static boolean isDialogHelpAvailable()
+    public  boolean isDialogHelpAvailable()
     {
-        return dialogHelpAvailable;
+        return false;
     }
 
-    /**
-     * Sets whether JFace dialogs that support help control should show the
-     * control by default. If set to <code>false</code>, help control can still
-     * be shown on a per-dialog basis.
-     * 
-     * @param helpAvailable
-     *            <code>true</code> to show the help control, <code>false</code>
-     *            otherwise.
-     * @since 3.2
-     */
-    public static void setDialogHelpAvailable(boolean helpAvailable)
-    {
-        dialogHelpAvailable = helpAvailable;
-    }
+    
 }

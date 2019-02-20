@@ -219,6 +219,23 @@ public class EJRWTQueryScreenRenderer extends EJRWTAbstractScreenRenderer implem
         {
             private static final long serialVersionUID = -4685316941898120169L;
 
+            protected boolean isHelpActive()
+            {
+                return getRWTManager().isHelpActive();
+            }
+            
+            @Override
+            public boolean isHelpAvailable()
+            {
+                return getRWTManager().isHelpSupported();
+            }
+            
+            @Override
+            protected void helpPressed(boolean active)
+            {
+                getRWTManager().setHelpActive(active);
+            }
+            
             @Override
             public void createBody(Composite parent)
             {

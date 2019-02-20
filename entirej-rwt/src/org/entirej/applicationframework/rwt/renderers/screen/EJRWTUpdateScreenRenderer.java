@@ -234,6 +234,24 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
 
         _updateDialog = new EJRWTAbstractDialog(getRWTManager().getShell())
         {
+            
+            protected boolean isHelpActive()
+            {
+                return getRWTManager().isHelpActive();
+            }
+            
+            @Override
+            public boolean isHelpAvailable()
+            {
+                return getRWTManager().isHelpSupported();
+            }
+            
+            @Override
+            protected void helpPressed(boolean active)
+            {
+                getRWTManager().setHelpActive(active);
+            }
+            
             @Override
             public void createBody(Composite parent)
             {
