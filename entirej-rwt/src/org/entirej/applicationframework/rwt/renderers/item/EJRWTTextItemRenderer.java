@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 CRESOFT AG
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     CRESOFT AG - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.item;
 
@@ -30,7 +29,12 @@ import java.util.List;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
@@ -51,6 +55,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionText;
@@ -106,25 +111,26 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     private EJRWTItemRendererVisualContext    _visualContext;
 
     protected Object                          _baseValue;
-    private EJMessage message;
-    private EJRWTAbstractLabel labelField;
-    private String defaultMessage;
+    private EJMessage                         message;
+    private EJRWTAbstractLabel                labelField;
+    private String                            defaultMessage;
+    private boolean editAllowed;
 
     protected boolean controlState(Control control)
     {
         return control != null && !control.isDisposed();
 
     }
-    
-     @Override
+
+    @Override
     public String formatValue(Object obj)
     {
         return obj.toString();
     }
-    
+
     public String getDisplayValue()
     {
-        if(controlState(_textField) )
+        if (controlState(_textField))
         {
             return _textField.getText();
         }
@@ -351,7 +357,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             return _textField.getEditable();
         }
 
-        return false;
+        return editAllowed;
     }
 
     public boolean isLovActivated()
@@ -427,6 +433,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     @Override
     public void setEditAllowed(boolean editAllowed)
     {
+        this.editAllowed = editAllowed;
         if (_displayValueAsLabel)
         {
             return;
@@ -503,8 +510,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     {
                         if (_maxLength > 0 && value.toString().length() > _maxLength)
                         {
-                            EJMessage message = new EJMessage("The value for item, " + _item.getReferencedItemProperties().getBlockName() + "."
-                                    + _item.getReferencedItemProperties().getName() + " is too long for its field definition.");
+                            EJMessage message = new EJMessage("The value for item, " + _item.getReferencedItemProperties().getBlockName() + "." + _item.getReferencedItemProperties().getName() + " is too long for its field definition.");
                             throw new EJApplicationException(message);
                         }
                     }
@@ -546,7 +552,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
             _actionControl.setVisible(visible);
         }
-        
+
     }
 
     @Override
@@ -590,52 +596,51 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
         fireTextChange();
     }
-    
-    
+
     @Override
     public void setMessage(EJMessage message)
     {
         this.message = message;
-        
-        if (_errorDecoration != null  && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
+
+        if (_errorDecoration != null && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
         {
-            if(message!=null && message.getLevel() == EJMessageLevel.HINT && _textField!=null && !_textField.isDisposed())
+            if (message != null && message.getLevel() == EJMessageLevel.HINT && _textField != null && !_textField.isDisposed())
                 _textField.setMessage(message.getMessage());
             else
                 ControlDecorationSupport.handleMessage(_errorDecoration, message);
         }
-        
+
     }
 
     @Override
     public void clearMessage()
     {
         this.message = null;
-        if (_errorDecoration != null  && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
         {
-            _textField.setMessage(defaultMessage==null?"":defaultMessage);
+            _textField.setMessage(defaultMessage == null ? "" : defaultMessage);
             _errorDecoration.setDescriptionText("");
             {
                 _errorDecoration.hide();
             }
         }
-        
+
     }
 
     public void valueChanged()
     {
         Object base = _baseValue;
-        String value = controlState(_textField)? _textField.getText(): (String) _baseValue;
+        String value = controlState(_textField) ? _textField.getText() : (String) _baseValue;
 
         if (!_textField.isFocusControl())
         {
-            _valueChanged =true;
+            _valueChanged = true;
             if (_valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base))))
                 commitValue();
         }
         else
         {
-            if(_oldvalue==null)
+            if (_oldvalue == null)
             {
                 _oldvalue = base;
             }
@@ -681,7 +686,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             @Override
             public void run()
             {
-               commitValue();
+                commitValue();
                 _item.itemFocusLost();
 
             }
@@ -784,7 +789,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
     protected Label newVlaueLabel(Composite composite)
     {
-        return new Label(composite, SWT.NONE|SWT.WRAP);
+        return new Label(composite, SWT.NONE | SWT.WRAP);
     }
 
     protected Text newTextField(Composite composite, int style)
@@ -810,6 +815,61 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         return text;
     }
 
+    protected TextCellEditor newTextCellEditor(final Composite viewer, int style)
+    {
+        String alignmentProperty = _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_ALIGNMENT);
+        if (_displayValueAsProtected)
+        {
+            style = style | SWT.PASSWORD;
+        }
+
+        TextCellEditor textEditor = new TextCellEditor(viewer, getComponentStyle(alignmentProperty, style));
+        String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+        if (customCSSKey != null && customCSSKey.trim().length() > 0)
+        {
+            textEditor.getControl().setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+        }
+
+        ((Text) textEditor.getControl()).setMessage(defaultMessage == null ? "" : defaultMessage);
+
+        if (_maxLength > 0)
+        {
+            ((Text) textEditor.getControl()).setTextLimit(_maxLength);
+        }
+
+        if (message != null && message.getLevel() == EJMessageLevel.HINT && _textField != null && !_textField.isDisposed())
+            ((Text) textEditor.getControl()).setMessage(message.getMessage());
+
+        if (_valueCase != null && _valueCase != VALUE_CASE.DEFAULT)
+        {
+
+            ((Text) textEditor.getControl()).addVerifyListener(new VerifyListener()
+            {
+                @Override
+                public void verifyText(VerifyEvent event)
+                {
+                    String caseValue = toCaseValue(event.text);
+                    if (!event.text.equals(caseValue))
+                    {
+                        event.text = caseValue;
+                    }
+                }
+            });
+        }
+
+        return textEditor;
+    }
+    
+    protected Object toValueFromCell(Object value)
+    {
+        if (value == null || ((String)value).length() == 0)
+        {
+            value = null;
+        }
+        return value;
+    }
+
     public Control createCustomButtonControl(Composite parent)
     {
         return null;
@@ -828,24 +888,23 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
         if (_displayValueAsLabel)
         {
-            
-           
-             labelField = new EJRWTAbstractLabel(composite)
+
+            labelField = new EJRWTAbstractLabel(composite)
             {
-                
+
                 @Override
                 public Label createLabel(Composite parent)
                 {
                     return _valueLabel = newVlaueLabel(parent);
                 }
-                
+
                 @Override
                 public Control createCustomActionLabel(Composite parent)
                 {
                     // TODO Auto-generated method stub
                     return null;
                 }
-                
+
                 @Override
                 public Control createActionLabel(Composite parent)
                 {
@@ -949,15 +1008,10 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                             {
                                 commitValue();
                             }
-                            else 
+                            else
                                 keyAction(arg0);
 
                         }
-
-                        
-
-                      
-
 
                         @Override
                         public void keyPressed(KeyEvent arg0)
@@ -967,7 +1021,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     return label;
                 }
 
-                           };
+            };
 
             if (_maxLength > 0)
             {
@@ -988,13 +1042,12 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             _errorDecoration.setImage(getDecorationImage(FieldDecorationRegistry.DEC_ERROR));
             _mandatoryDecoration.setImage(getDecorationImage(FieldDecorationRegistry.DEC_REQUIRED));
             _mandatoryDecoration.setShowHover(true);
-            _mandatoryDecoration.setDescriptionText(_screenItemProperties.getLabel() == null || _screenItemProperties.getLabel().isEmpty() ? "Required Item"
-                    : String.format("%s is required", _screenItemProperties.getLabel()));
+            _mandatoryDecoration.setDescriptionText(_screenItemProperties.getLabel() == null || _screenItemProperties.getLabel().isEmpty() ? "Required Item" : String.format("%s is required", _screenItemProperties.getLabel()));
             if (_isValid)
             {
                 _errorDecoration.hide();
             }
-            if (message!=null)
+            if (message != null)
             {
                 setMessage(message);
             }
@@ -1018,25 +1071,24 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 });
             }
             setInitialValue(_baseValue);
-            _textField.setMessage(defaultMessage==null?"":defaultMessage);
+            _textField.setMessage(defaultMessage == null ? "" : defaultMessage);
             setMessage(message);
         }
     }
-    
-    
+
     protected void commitValue()
     {
         if (_valueChanged)
         {
             _valueChanged = false;
-            String value = controlState(_textField)? _textField.getText(): (String) _baseValue;
+            String value = controlState(_textField) ? _textField.getText() : (String) _baseValue;
 
             if (value == null || value.length() == 0)
             {
                 value = null;
             }
             _item.itemValueChaged(value);
-            _oldvalue=null;
+            _oldvalue = null;
             setMandatoryBorder(_mandatory);
         }
     }
@@ -1120,20 +1172,70 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     private static class TextHtmlEscapeSupport extends ColumnLabelProvider implements HtmlEscapeSupport
     {
         protected boolean escapeHtml;
+
         @Override
         public void setEscape()
         {
             escapeHtml = true;
-            
+
         }
-        
+
     }
-    
-    
+
+    @Override
+    public EditingSupport createColumnEditingSupport(final Object viewer, EJScreenItemProperties item, EJScreenItemController controller)
+    {
+        return new EditingSupport((ColumnViewer) viewer)
+        {
+
+            @Override
+            protected void setValue(Object element, Object value)
+            {
+                if (element instanceof EJDataRecord)
+                {
+                    value = toValueFromCell(value);
+                    ((EJDataRecord) element).setValue(item.getReferencedItemName(), value);
+                    ((ColumnViewer) viewer).refresh(element);
+                }
+            }
+
+           
+
+            @Override
+            protected Object getValue(Object element)
+            {
+                if (element instanceof EJDataRecord)
+                {
+                    EJDataRecord record = (EJDataRecord) element;
+                    Object value = record.getValue(item.getReferencedItemName());
+                    if (value instanceof String)
+                    {
+                        return value.toString();
+                    }
+                }
+                return "";
+            }
+
+            @Override
+            protected CellEditor getCellEditor(Object element)
+            {
+                TextCellEditor textEditor = newTextCellEditor((Composite) ((ColumnViewer) viewer).getControl(), SWT.NONE);
+
+                return textEditor;
+            }
+
+            @Override
+            protected boolean canEdit(Object element)
+            {
+                return isEditAllowed();
+            }
+        };
+    }
+
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)
     {
-        ColumnLabelProvider provider = new TextHtmlEscapeSupport() 
+        ColumnLabelProvider provider = new TextHtmlEscapeSupport()
         {
             @Override
             public Color getBackground(Object element)
@@ -1206,41 +1308,44 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 }
                 return "";
             }
-            
+
             String check(String text)
             {
-                if(escapeHtml && text!=null && !text.isEmpty())
+                if (escapeHtml && text != null && !text.isEmpty())
                 {
-                   return escapeHtml(text); 
+                    return escapeHtml(text);
                 }
                 return text;
             }
-            
-             String escapeHtml(String string) {
+
+            String escapeHtml(String string)
+            {
                 StringBuilder escapedTxt = new StringBuilder();
-                for (int i = 0; i < string.length(); i++) {
+                for (int i = 0; i < string.length(); i++)
+                {
                     char tmp = string.charAt(i);
-                    switch (tmp) {
-                    case '<':
-                        escapedTxt.append("&lt;");
-                        break;
-                    case '>':
-                        escapedTxt.append("&gt;");
-                        break;
-                    case '&':
-                        escapedTxt.append("&amp;");
-                        break;
-                    case '"':
-                        escapedTxt.append("&quot;");
-                        break;
-                    case '\'':
-                        escapedTxt.append("&#x27;");
-                        break;
-                    case '/':
-                        escapedTxt.append("&#x2F;");
-                        break;
-                    default:
-                        escapedTxt.append(tmp);
+                    switch (tmp)
+                    {
+                        case '<':
+                            escapedTxt.append("&lt;");
+                            break;
+                        case '>':
+                            escapedTxt.append("&gt;");
+                            break;
+                        case '&':
+                            escapedTxt.append("&amp;");
+                            break;
+                        case '"':
+                            escapedTxt.append("&quot;");
+                            break;
+                        case '\'':
+                            escapedTxt.append("&#x27;");
+                            break;
+                        case '/':
+                            escapedTxt.append("&#x2F;");
+                            break;
+                        default:
+                            escapedTxt.append(tmp);
                     }
                 }
                 return escapedTxt.toString();
@@ -1314,10 +1419,10 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
                         if (value1 instanceof String && value2 instanceof String)
                         {
-                           
+
                             try
                             {
-                                
+
                                 Number dv1 = frm.parse((String) value1);
                                 Number dv2 = frm.parse((String) value2);
 
@@ -1338,8 +1443,9 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 }
                 return 0;
             }
+
             @Override
-            public int compareDate(Viewer viewer, Object e1, Object e2,DateFormat format)
+            public int compareDate(Viewer viewer, Object e1, Object e2, DateFormat format)
             {
                 if (e1 instanceof EJDataRecord && e2 instanceof EJDataRecord)
                 {
@@ -1347,7 +1453,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                     EJDataRecord d2 = (EJDataRecord) e2;
                     if (d1 != null && d2 != null)
                     {
-                        
+
                         Object value1 = d1.getValue(item.getReferencedItemName());
                         Object value2 = d2.getValue(item.getReferencedItemName());
                         if (value1 == null && value2 == null)
@@ -1362,24 +1468,24 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                         {
                             return 1;
                         }
-                        
+
                         if (value1 instanceof String && value2 instanceof String)
                         {
                             try
                             {
                                 Date dv1 = format.parse((String) value1);
                                 Date dv2 = format.parse((String) value2);
-                                
+
                                 return dv1.compareTo(dv2);
                             }
-                            
+
                             catch (ParseException e)
                             {
-                                //ignore 
+                                // ignore
                             }
                         }
                         return compareCollator.compare(value1, value2);
-                        
+
                     }
                 }
                 return 0;
@@ -1412,16 +1518,16 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             listener.changed();
         }
     }
-    
+
     @Override
     public List<Object> getValidValues()
     {
         return Collections.emptyList();
     }
-    
+
     protected List<String> getActionKeys(final EJFrameworkExtensionProperties propertyGroup)
     {
-        List<String> actions = new ArrayList<>(); 
+        List<String> actions = new ArrayList<>();
         String lovKey = "SHIFT+ARROW_DOWN";
         if (propertyGroup != null)
         {
@@ -1439,11 +1545,10 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
         return actions;
     }
-    
+
     protected void keyAction(KeyEvent event)
     {
-        
-    }
 
+    }
 
 }

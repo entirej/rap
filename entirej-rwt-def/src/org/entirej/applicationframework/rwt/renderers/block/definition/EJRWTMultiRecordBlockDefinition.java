@@ -154,6 +154,10 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         filter.setDescription("If selected, the renderer will display a filter field above the blocks data. This filter can then be used by users to filter the blocks displayed data");
         filter.setDefaultValue("false");
         
+        EJDevPropertyDefinition inplaceEditMode = new EJDevPropertyDefinition("INPEDIT_MODE", EJPropertyDefinitionType.BOOLEAN);
+        inplaceEditMode.setLabel("Inplace Edit mode");
+       inplaceEditMode.setDefaultValue("false");
+        
         EJDevPropertyDefinition message = new EJDevPropertyDefinition("MESSAGE", EJPropertyDefinitionType.STRING);
         message.setLabel("Filter Message");
         message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the filter.");
@@ -181,6 +185,7 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         
 
         mainGroup.addPropertyDefinition(doubleClickActionCommand);
+        mainGroup.addPropertyDefinition(inplaceEditMode);
         mainGroup.addPropertyDefinition(showTableBorder);
         mainGroup.addPropertyDefinition(showTableHeader);
         mainGroup.addPropertyDefinition(filter);

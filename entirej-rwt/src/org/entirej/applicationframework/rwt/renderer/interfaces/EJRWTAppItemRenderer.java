@@ -19,6 +19,8 @@
 package org.entirej.applicationframework.rwt.renderer.interfaces;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.EditingSupport;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -75,6 +77,10 @@ public interface EJRWTAppItemRenderer extends EJItemRenderer
     public void setInitialVisualAttribute(EJCoreVisualAttributeProperties va);
 
     ColumnLabelProvider createColumnLabelProvider(EJScreenItemProperties item, EJScreenItemController controller);
+    
+    default EditingSupport createColumnEditingSupport(Object viewer, EJScreenItemProperties item, EJScreenItemController controller) {
+        return null;
+    }
 
     EJRWTAbstractTableSorter getColumnSorter(EJScreenItemProperties item, EJScreenItemController controller);
     

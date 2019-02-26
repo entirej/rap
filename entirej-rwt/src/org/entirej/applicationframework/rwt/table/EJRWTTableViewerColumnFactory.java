@@ -33,6 +33,11 @@ public class EJRWTTableViewerColumnFactory
         super();
         this._viewer = viewer;
     }
+    
+    public TableViewer getViewer()
+    {
+        return _viewer;
+    }
 
     public TableViewerColumn createColumn(String header, int width, ColumnLabelProvider provider)
     {
