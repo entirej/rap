@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
@@ -79,6 +80,7 @@ import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
 public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
 {
     private MultiDateFormater _dateFormat;
+    private MultiDateFormater format;
 
     @Override
     protected Label newVlaueLabel(Composite composite)
@@ -401,6 +403,46 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         }
         return _textField;
     }
+    
+    @Override
+    protected TextCellEditor newTextCellEditor(Composite viewer, int style)
+    {
+        // TODO Auto-generated method stub
+        return super.newTextCellEditor(viewer, style);
+    }
+    
+    @Override
+    protected Object toValueFromCell(Object v,Object baseValue)
+    {
+        if(v==null || ((String)v).trim().isEmpty())
+            return null ;      
+       
+        Date value =(Date) baseValue;
+        try
+        {
+           
+                value = _dateFormat.parse((String) v);
+            
+
+            // convert to correct type if need
+            value = converType(value);
+
+        }
+        catch (ParseException e)
+        {
+            String format = _dateFormat.toFormatString();
+            if (format == null || format.length() == 0)
+            {
+                format = "eg: " + _dateFormat.format(new Date());
+            }
+            _item.getForm().getFrameworkManager().handleException(new EJApplicationException(String.format("Invalid Date format. Should be %s ", format)));
+        }
+        
+        
+        return value;
+        
+        
+    }
 
     @Override
     public void setValue(Object value)
@@ -596,12 +638,19 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             setMandatoryBorder(_mandatory);
         }
     }
-    
+    protected String toTexttValue(Object value)
+    {
+        if (value != null && format!=null)
+        {
+            return format.format(value);
+        }
+        return "";
+    }
 
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)
     {
-        final MultiDateFormater format = createDateFormat(controller);
+         format = createDateFormat(controller);
         ColumnLabelProvider provider = new ColumnLabelProvider()
         {
             @Override
@@ -670,10 +719,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     EJDataRecord record = (EJDataRecord) element;
                     Object value = record.getValue(item.getReferencedItemName());
 
-                    if (value != null)
-                    {
-                        return format.format(value);
-                    }
+                    return toTexttValue(value);
                 }
                 return "";
             }

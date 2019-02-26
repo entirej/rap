@@ -861,7 +861,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         return textEditor;
     }
     
-    protected Object toValueFromCell(Object value)
+    protected Object toValueFromCell(Object value,Object baseValue)
     {
         if (value == null || ((String)value).length() == 0)
         {
@@ -1193,7 +1193,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             {
                 if (element instanceof EJDataRecord)
                 {
-                    value = toValueFromCell(value);
+                    value = toValueFromCell(value,((EJDataRecord) element).getValue(item.getReferencedItemName()));
                     ((EJDataRecord) element).setValue(item.getReferencedItemName(), value);
                     ((ColumnViewer) viewer).refresh(element);
                 }
@@ -1208,10 +1208,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 {
                     EJDataRecord record = (EJDataRecord) element;
                     Object value = record.getValue(item.getReferencedItemName());
-                    if (value instanceof String)
-                    {
-                        return value.toString();
-                    }
+                    return toTexttValue(value);
                 }
                 return "";
             }
@@ -1230,6 +1227,15 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 return isEditAllowed();
             }
         };
+    }
+    
+    protected String toTexttValue(Object value)
+    {
+        if (value instanceof String)
+        {
+            return value.toString();
+        }
+        return "";
     }
 
     @Override
@@ -1301,13 +1307,12 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 {
                     EJDataRecord record = (EJDataRecord) element;
                     Object value = record.getValue(item.getReferencedItemName());
-                    if (value instanceof String)
-                    {
-                        return check(value.toString());
-                    }
+                    return check(toTexttValue(value));
                 }
                 return "";
             }
+
+            
 
             String check(String text)
             {

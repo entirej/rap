@@ -897,8 +897,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
         Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN).getAllItemGroupProperties();
         final Table table;
-        this.inplaceEditMode  = rendererProp.getBooleanProperty("INPEDIT_MODE", true);
-        inplaceEditMode = true;
+        this.inplaceEditMode  = rendererProp.getBooleanProperty("INPEDIT_MODE", false);
         if(inplaceEditMode) {
             style = style| SWT.SINGLE;
         }

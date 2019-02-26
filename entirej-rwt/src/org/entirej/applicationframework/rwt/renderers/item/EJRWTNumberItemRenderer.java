@@ -23,9 +23,11 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.Locale;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
@@ -59,6 +61,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
     private NUMBER_TYPE   _numberType;
     private Number        maxValue;
     private Number        minValue;
+    private DecimalFormat format;
 
     public enum NUMBER_TYPE
     {
@@ -169,17 +172,16 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         }
         return style;
     }
-    
-    
+
     @Override
     public boolean isValid()
     {
-        
+
         boolean valid = super.isValid();
-        if(valid)
+        if (valid)
         {
             Number number = (Number) getValue();
-            if (number  != null && number.doubleValue() > maxValue.doubleValue())
+            if (number != null && number.doubleValue() > maxValue.doubleValue())
             {
                 return false;
             }
@@ -191,14 +193,13 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         return valid;
     }
 
-    
     protected void commitValue()
     {
         if (_valueChanged)
         {
             _valueChanged = false;
-            Number value = controlState(_textField)? toValue():(Number) _baseValue;
-            
+            Number value = controlState(_textField) ? toValue() : (Number) _baseValue;
+
             if (value != null && value.doubleValue() > maxValue.doubleValue())
             {
                 value = toValue(maxValue);
@@ -211,20 +212,66 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                 setValue(value);
                 _item.getForm().getFrameworkManager().handleException(new EJApplicationException(String.format("The minimum allowable value: %s", _decimalFormatter.format(minValue.doubleValue()))), true);
             }
-            
-            
+
             _item.itemValueChaged(value);
-            _oldvalue=null;
+            _oldvalue = null;
             setMandatoryBorder(_mandatory);
         }
     }
-    
+
+    @Override
+    protected TextCellEditor newTextCellEditor(Composite viewer, int style)
+    {
+
+        return super.newTextCellEditor(viewer, style);
+    }
+
+    @Override
+    protected Object toValueFromCell(Object v, Object baseValue)
+    {
+        if (maxValue == null && minValue == null)
+        {
+            maxValue = _rendererProps.getFloatProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MAXVALUE, Float.MAX_VALUE);
+            minValue = _rendererProps.getFloatProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MINVALUE, Float.MIN_VALUE*-1);
+        }
+        if (v == null || ((String) v).trim().isEmpty())
+            return null;
+
+        Number value = (Number) baseValue;
+        try
+        {
+            value = _decimalFormatter.parse((String) v);
+        }
+        catch (ParseException e)
+        {
+            String format = "eg: " + _decimalFormatter.toPattern();
+
+            _item.getForm().getFrameworkManager().handleException(new EJApplicationException(String.format("Invalid Number format. Should be %s ", format)));
+        }
+
+        if (value != null && value.doubleValue() > maxValue.doubleValue())
+        {
+            value = toValue(maxValue);
+            setValue(value);
+            _item.getForm().getFrameworkManager().handleException(new EJApplicationException(String.format("The maximum allowable value: %s", _decimalFormatter.format(maxValue.doubleValue()))), true);
+        }
+        if (value != null && value.doubleValue() < minValue.doubleValue())
+        {
+            value = toValue(minValue);
+            setValue(value);
+            _item.getForm().getFrameworkManager().handleException(new EJApplicationException(String.format("The minimum allowable value: %s", _decimalFormatter.format(minValue.doubleValue()))), true);
+        }
+
+        return toValue(value);
+
+    }
+
     @Override
     protected Text newTextField(Composite composite, int style)
     {
 
         maxValue = _rendererProps.getFloatProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MAXVALUE, Float.MAX_VALUE);
-        minValue = _rendererProps.getFloatProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MINVALUE, Float.MIN_VALUE);
+        minValue = _rendererProps.getFloatProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MINVALUE, Float.MIN_VALUE*-1);
         _textField = new Text(composite, style);
         _textField.addModifyListener(new ModifyListener()
         {
@@ -237,7 +284,6 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                     {
                         Number number = _decimalFormatter.parse(_textField.getText());
 
-                       
                     }
                     catch (ParseException e)
                     {
@@ -260,27 +306,23 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                     @Override
                     public void run()
                     {
-                        if(!controlState(_textField))
+                        if (!controlState(_textField))
                             return;
                         try
                         {
                             _modifyListener.enable = false;
-                            
-                            
-                            
-                            
+
                             Object value = toValue();
                             if (value != null)
                             {
-                                if(controlState(_textField))
+                                if (controlState(_textField))
                                     _textField.setText(_decimalFormatter.format(value));
                             }
                             else
                             {
-                                if(controlState(_textField))
+                                if (controlState(_textField))
                                     _textField.setText("");
                             }
-
 
                             valueChanged();
                         }
@@ -314,7 +356,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                 @Override
                 public void focusGained(FocusEvent arg0)
                 {
-                    if(controlState(_textField))
+                    if (controlState(_textField))
                         _textField.selectAll();
                 }
             });
@@ -467,7 +509,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
 
     private Number toValue()
     {
-        if(!controlState(_textField))
+        if (!controlState(_textField))
             return (Number) _baseValue;
         Number value = null;
         try
@@ -512,11 +554,20 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         return value;
     }
 
+    protected String toTexttValue(Object value)
+    {
+        if (value != null && value instanceof Number && format != null)
+        {
+            return format.format(value);
+        }
+        return "";
+    }
+
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)
     {
         NUMBER_TYPE numberType = getNumberType(controller);
-        final DecimalFormat format = createFormatter(controller, numberType);
+        format = createFormatter(controller, numberType);
         ColumnLabelProvider provider = new ColumnLabelProvider()
         {
             @Override
@@ -584,10 +635,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                 {
                     EJDataRecord record = (EJDataRecord) element;
                     Object value = record.getValue(item.getReferencedItemName());
-                    if (value != null && value instanceof Number)
-                    {
-                        return format.format(value);
-                    }
+                    return toTexttValue(value);
                 }
                 return "";
             }
