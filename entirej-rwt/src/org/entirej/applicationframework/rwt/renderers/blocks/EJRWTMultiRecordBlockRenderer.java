@@ -1204,6 +1204,15 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
                     cursor.setVisible(false);
                 }
+                
+                @Override
+                public void mouseUp(MouseEvent e)
+                {
+                    int column = cursor.getColumn();
+                    _tableViewer.editElement(getFocusedRecord(), column);
+
+                    cursor.setVisible(false);
+                }
             });
 
             _tableViewer.getTable().addFocusListener(new FocusListener()
@@ -1410,7 +1419,10 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                         .getManagedActionController()
                         .getUnmanagedController().postItemChanged(_block.getFormController().getEJForm(), _block.getProperties().getName(),
                                 key, EJScreenType.MAIN);
+                        record.valueChanged(key, value);
                         copy.copyValuesToRecord(record);
+                        _block.getDataBlock().recordUpdated(record);
+                        
                         factory.getViewer().refresh(record);
                     }catch (Exception e) {
                         _block.getForm().getFrameworkManager().handleException(e);
