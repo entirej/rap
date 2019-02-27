@@ -157,7 +157,7 @@ public class EJRWTMultiRecordBlockDefinition implements EJDevBlockRendererDefini
         EJDevPropertyDefinition inplaceEditMode = new EJDevPropertyDefinition("INPEDIT_MODE", EJPropertyDefinitionType.BOOLEAN);
         inplaceEditMode.setLabel("Inplace Edit mode");
        inplaceEditMode.setDefaultValue("false");
-        
+//        
         EJDevPropertyDefinition message = new EJDevPropertyDefinition("MESSAGE", EJPropertyDefinitionType.STRING);
         message.setLabel("Filter Message");
         message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the filter.");

@@ -26,8 +26,8 @@ import java.util.Map;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.EditingSupport;
@@ -39,7 +39,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
-import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.rwt.EJRWTAsync;
 import org.eclipse.rwt.EJ_RWT;
@@ -54,6 +53,8 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Point;
@@ -83,6 +84,7 @@ import org.entirej.applicationframework.rwt.application.components.actions.EJRWT
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer.BlockEditContext;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTMultiRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeBlockDefinitionProperties;
@@ -99,8 +101,10 @@ import org.entirej.applicationframework.rwt.table.HtmlBaseColumnLabelProvider;
 import org.entirej.applicationframework.rwt.table.HtmlEscapeSupport;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
+import org.entirej.applicationframework.rwt.utils.TableCursor;
 import org.entirej.framework.core.EJForm;
 import org.entirej.framework.core.EJMessage;
+import org.entirej.framework.core.EJRecord;
 import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.data.controllers.EJEditableBlockController;
 import org.entirej.framework.core.data.controllers.EJQuestion;
@@ -150,7 +154,9 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
     private Display                    dispaly           = Display.getDefault();
 
-    private boolean inplaceEditMode;
+    private boolean                    inplaceEditMode;
+
+    private TableCursor                cursor;
 
     protected void clearFilter()
     {
@@ -200,6 +206,12 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     @Override
     public void refreshBlockRendererProperty(String propertyName)
     {
+
+        EJBlockProperties blockProperties = _block.getProperties();
+        EJFrameworkExtensionProperties rendererProp = blockProperties.getBlockRendererProperties();
+        if("INPEDIT_MODE".equalsIgnoreCase(propertyName)) {
+            this.inplaceEditMode = rendererProp.getBooleanProperty("INPEDIT_MODE", false);
+        }
     }
 
     @Override
@@ -239,25 +251,25 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
         }
         else if (EJManagedScreenProperty.LABEL.equals(managedItemPropertyType))
         {
-            
-                if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
+
+            if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
+            {
+                TableColumn[] columns = _tableViewer.getTable().getColumns();
+                for (TableColumn tableColumn : columns)
                 {
-                    TableColumn[] columns = _tableViewer.getTable().getColumns();
-                    for (TableColumn tableColumn : columns)
+                    if (itemName.equals(tableColumn.getData("KEY")))
                     {
-                        if (itemName.equals(tableColumn.getData("KEY")))
-                        {
-                            EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemName);
-                            tableColumn.setText(item.getProperties().getLabel());
-                            break;
-                        }
+                        EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemName);
+                        tableColumn.setText(item.getProperties().getLabel());
+                        break;
                     }
                 }
-            
+            }
+
         }
         else if (EJManagedScreenProperty.HINT.equals(managedItemPropertyType))
         {
-            
+
             if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
             {
                 TableColumn[] columns = _tableViewer.getTable().getColumns();
@@ -271,7 +283,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                     }
                 }
             }
-            
+
         }
         else if (EJManagedScreenProperty.SCREEN_ITEM_VISUAL_ATTRIBUTE.equals(managedItemPropertyType))
         {
@@ -356,7 +368,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     public void blockCleared()
     {
 
-        EJRWTAsync.runUISafe(dispaly,() -> {
+        EJRWTAsync.runUISafe(dispaly, () -> {
             if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
             {
                 clearFilter();
@@ -478,7 +490,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     public void queryExecuted()
     {
 
-        EJRWTAsync.runUISafe(dispaly,() -> {
+        EJRWTAsync.runUISafe(dispaly, () -> {
 
             if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
             {
@@ -549,7 +561,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     public void recordSelected(EJDataRecord record)
     {
 
-        EJRWTAsync.runUISafe(dispaly,() -> {
+        EJRWTAsync.runUISafe(dispaly, () -> {
             if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
             {
                 _tableViewer.setSelection(record != null ? new StructuredSelection(record) : new StructuredSelection(), true);
@@ -897,9 +909,10 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
         Collection<EJItemGroupProperties> allItemGroupProperties = _block.getProperties().getScreenItemGroupContainer(EJScreenType.MAIN).getAllItemGroupProperties();
         final Table table;
-        this.inplaceEditMode  = rendererProp.getBooleanProperty("INPEDIT_MODE", false);
-        if(inplaceEditMode) {
-            style = style| SWT.SINGLE;
+        this.inplaceEditMode = rendererProp.getBooleanProperty("INPEDIT_MODE", false);
+        if (inplaceEditMode)
+        {
+            style = style | SWT.HIDE_SELECTION;
         }
         if (rendererProp.getBooleanProperty(EJRWTTreeBlockDefinitionProperties.FILTER, false))
         {
@@ -997,6 +1010,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                     protected TableViewer doCreateTableViewer(Composite parent, int style)
                     {
                         return _tableViewer = new TableViewer(parent, style);
+
                     }
                 };
 
@@ -1151,6 +1165,66 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 }
             }
         });
+
+        if (inplaceEditMode)
+        {
+            cursor = new TableCursor(table, SWT.BORDER);
+
+            cursor.addSelectionListener(new SelectionAdapter()
+            {
+                // when the TableEditor is over a cell, select the corresponding
+                // row in
+                // the table
+                public void widgetSelected(SelectionEvent e)
+                {
+                    table.setSelection(new TableItem[] { cursor.getRow() });
+                }
+
+                // when the user hits "ENTER" in the TableCursor, pop up a text
+                // editor so that
+                // they can change the text of the cell
+                public void widgetDefaultSelected(SelectionEvent e)
+                {
+
+                    int column = cursor.getColumn();
+                    _tableViewer.editElement(getFocusedRecord(), column);
+
+                    cursor.setVisible(false);
+
+                }
+            });
+
+            cursor.addMouseListener(new MouseAdapter()
+            {
+                @Override
+                public void mouseDoubleClick(MouseEvent e)
+                {
+                    int column = cursor.getColumn();
+                    _tableViewer.editElement(getFocusedRecord(), column);
+
+                    cursor.setVisible(false);
+                }
+            });
+
+            _tableViewer.getTable().addFocusListener(new FocusListener()
+            {
+
+                @Override
+                public void focusLost(FocusEvent event)
+                {
+
+                }
+
+                @Override
+                public void focusGained(FocusEvent event)
+                {
+                    cursor.setVisible(true);
+
+                }
+            });
+
+        }
+
         table.addMouseListener(new MouseAdapter()
         {
             @Override
@@ -1313,7 +1387,38 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
             EJFrameworkExtensionProperties blockProperties = itemProps.getBlockRendererRequiredProperties();
             EJRWTAppItemRenderer itemRenderer = (EJRWTAppItemRenderer) renderer.getUnmanagedRenderer();
             ColumnLabelProvider labelProvider = itemRenderer.createColumnLabelProvider(itemProps, item);
-            EditingSupport editingSupport = inplaceEditMode?itemRenderer.createColumnEditingSupport(factory.getViewer(),itemProps, item):null;
+            BlockEditContext context = new BlockEditContext()
+            {
+                
+                @Override
+                public void set(String key, Object value,EJDataRecord record)
+                {
+                    try
+                    {
+                        EJDataRecord copy = record.copy();
+                        copy.setValue(key, value);
+                        _block
+                        .getFormController()
+                        .getManagedActionController()
+                        .getUnmanagedController()
+                        .validateItem(_block.getFormController().getEJForm(), _block.getProperties().getName(),
+                                key, EJScreenType.MAIN, new EJRecord(copy));
+                        
+                        
+                        _block
+                        .getFormController()
+                        .getManagedActionController()
+                        .getUnmanagedController().postItemChanged(_block.getFormController().getEJForm(), _block.getProperties().getName(),
+                                key, EJScreenType.MAIN);
+                        copy.copyValuesToRecord(record);
+                        factory.getViewer().refresh(record);
+                    }catch (Exception e) {
+                        _block.getForm().getFrameworkManager().handleException(e);
+                    }
+                    
+                }
+            };
+            EditingSupport editingSupport = inplaceEditMode ? itemRenderer.createColumnEditingSupport(context,factory.getViewer(), itemProps, item) : null;
             if (labelProvider != null)
             {
                 String labelOrientation = blockProperties.getStringProperty(EJRWTMultiRecordBlockDefinitionProperties.COLUMN_ALIGNMENT);
@@ -1352,8 +1457,9 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 }
 
                 TableViewerColumn viewerColumn = factory.createColumn(itemProps.getLabel(), displayedWidth, labelProvider, getComponentStyle(labelOrientation));
-                
-                if(editingSupport!=null) {
+
+                if (editingSupport != null)
+                {
                     itemRenderer.setEditAllowed(inplaceEditMode);
                     viewerColumn.setEditingSupport(editingSupport);
                 }
@@ -1365,9 +1471,6 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
                 ColumnInfo info = new ColumnInfo();
                 column.setData("INFO", info);
-                
-                
-                
 
                 column.setMoveable(blockProperties.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ALLOW_COLUMN_REORDER, true));
                 column.setResizable(info.resizable = blockProperties.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ALLOW_COLUMN_RESIZE, true));

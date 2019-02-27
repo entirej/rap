@@ -61,6 +61,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractActionText;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractLabel;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
+import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer.BlockEditContext;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
@@ -1183,7 +1184,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     }
 
     @Override
-    public EditingSupport createColumnEditingSupport(final Object viewer, EJScreenItemProperties item, EJScreenItemController controller)
+    public EditingSupport createColumnEditingSupport(final BlockEditContext context ,final Object viewer, EJScreenItemProperties item, EJScreenItemController controller)
     {
         return new EditingSupport((ColumnViewer) viewer)
         {
@@ -1194,8 +1195,8 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 if (element instanceof EJDataRecord)
                 {
                     value = toValueFromCell(value,((EJDataRecord) element).getValue(item.getReferencedItemName()));
-                    ((EJDataRecord) element).setValue(item.getReferencedItemName(), value);
-                    ((ColumnViewer) viewer).refresh(element);
+                    
+                    context.set(item.getReferencedItemName(), value,(EJDataRecord)element);
                 }
             }
 

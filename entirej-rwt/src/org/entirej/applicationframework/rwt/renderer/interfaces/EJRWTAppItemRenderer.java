@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
+import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
 import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
@@ -78,12 +79,16 @@ public interface EJRWTAppItemRenderer extends EJItemRenderer
 
     ColumnLabelProvider createColumnLabelProvider(EJScreenItemProperties item, EJScreenItemController controller);
     
-    default EditingSupport createColumnEditingSupport(Object viewer, EJScreenItemProperties item, EJScreenItemController controller) {
+    default EditingSupport createColumnEditingSupport(BlockEditContext context, Object viewer, EJScreenItemProperties item, EJScreenItemController controller) {
         return null;
     }
 
     EJRWTAbstractTableSorter getColumnSorter(EJScreenItemProperties item, EJScreenItemController controller);
     
     String formatValue(Object obj);
+    
+    public static interface BlockEditContext {
+        void set(String key,Object value,EJDataRecord record);
+    }
 
 }
