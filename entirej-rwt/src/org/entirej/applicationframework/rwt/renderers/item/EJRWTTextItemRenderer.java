@@ -115,7 +115,8 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     private EJMessage                         message;
     private EJRWTAbstractLabel                labelField;
     private String                            defaultMessage;
-    private boolean editAllowed;
+    private boolean                           editAllowed;
+    protected boolean                         cellEditAllowed  = true;
 
     protected boolean controlState(Control control)
     {
@@ -435,6 +436,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     public void setEditAllowed(boolean editAllowed)
     {
         this.editAllowed = editAllowed;
+        this.cellEditAllowed = editAllowed;
         if (_displayValueAsLabel)
         {
             return;
@@ -861,10 +863,10 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
         return textEditor;
     }
-    
-    protected Object toValueFromCell(Object value,Object baseValue)
+
+    protected Object toValueFromCell(Object value, Object baseValue)
     {
-        if (value == null || ((String)value).length() == 0)
+        if (value == null || ((String) value).length() == 0)
         {
             value = null;
         }
@@ -1184,7 +1186,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     }
 
     @Override
-    public EditingSupport createColumnEditingSupport(final BlockEditContext context ,final Object viewer, EJScreenItemProperties item, EJScreenItemController controller)
+    public EditingSupport createColumnEditingSupport(final BlockEditContext context, final Object viewer, EJScreenItemProperties item, EJScreenItemController controller)
     {
         return new EditingSupport((ColumnViewer) viewer)
         {
@@ -1194,13 +1196,11 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             {
                 if (element instanceof EJDataRecord)
                 {
-                    value = toValueFromCell(value,((EJDataRecord) element).getValue(item.getReferencedItemName()));
-                    
-                    context.set(item.getReferencedItemName(), value,(EJDataRecord)element);
+                    value = toValueFromCell(value, ((EJDataRecord) element).getValue(item.getReferencedItemName()));
+
+                    context.set(item.getReferencedItemName(), value, (EJDataRecord) element);
                 }
             }
-
-           
 
             @Override
             protected Object getValue(Object element)
@@ -1225,11 +1225,11 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             @Override
             protected boolean canEdit(Object element)
             {
-                return isEditAllowed();
+                return cellEditAllowed;
             }
         };
     }
-    
+
     protected String toTexttValue(Object value)
     {
         if (value instanceof String)
@@ -1312,8 +1312,6 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 }
                 return "";
             }
-
-            
 
             String check(String text)
             {

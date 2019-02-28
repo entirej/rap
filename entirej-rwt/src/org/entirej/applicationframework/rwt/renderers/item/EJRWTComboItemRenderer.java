@@ -142,7 +142,9 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     private EJMessage                         message;
     private ComboBoxValue                     emptyValue       = new ComboBoxValue();
     private String                            defaultMessage;
-    private boolean editAllowed;
+    private boolean                           editAllowed;
+
+    protected boolean                         cellEditAllowed  = true;
 
     protected boolean controlState(Control control)
     {
@@ -576,7 +578,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         {
             lovController.executeQuery(new EJItemLovController(_item.getBlock().getBlockController().getFormController(), _item, ((EJCoreItemProperties) _itemProperties).getLovMappingPropertiesOnUpdate()));
 
-            if (!_item.getProperties().isMandatory() ||(defaultMessage!=null && !defaultMessage.isEmpty()) )
+            if (!_item.getProperties().isMandatory() || (defaultMessage != null && !defaultMessage.isEmpty()))
             {
                 emptyValue = new ComboBoxValue(null, defItemName);
                 _comboValues.add(emptyValue);
@@ -691,6 +693,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public void setEditAllowed(boolean editAllowed)
     {
         this.editAllowed = editAllowed;
+        this.cellEditAllowed = editAllowed;
         if (controlState(_comboField))
         {
             _comboField.setEnabled(editAllowed);
@@ -1427,12 +1430,11 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
             return value.toString();
         }
     }
-    
-    
+
     @Override
-    public EditingSupport createColumnEditingSupport(final BlockEditContext context ,final Object viewer, EJScreenItemProperties item, EJScreenItemController controller)
+    public EditingSupport createColumnEditingSupport(final BlockEditContext context, final Object viewer, EJScreenItemProperties item, EJScreenItemController controller)
     {
-        
+
         if (!_lovInitialied.get())
         {
             _lovInitialied.set(true);
@@ -1448,7 +1450,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 }
             });
         }
-        
+
         return new EditingSupport((ColumnViewer) viewer)
         {
 
@@ -1457,19 +1459,17 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
             {
                 if (element instanceof EJDataRecord)
                 {
-                    
-                     value = value instanceof ComboBoxValue?  ((ComboBoxValue)value).getItemValue():null;
-                    
-                    context.set(item.getReferencedItemName(), value,(EJDataRecord)element);
-                    
-                    if (  value instanceof ComboBoxValue)
+
+                    value = value instanceof ComboBoxValue ? ((ComboBoxValue) value).getItemValue() : null;
+
+                    context.set(item.getReferencedItemName(), value, (EJDataRecord) element);
+
+                    if (value instanceof ComboBoxValue)
                     {
-                        ((ComboBoxValue)value).populateReturnItems(_item.getBlock().getBlockController(), _item.getScreenType());
+                        ((ComboBoxValue) value).populateReturnItems(_item.getBlock().getBlockController(), _item.getScreenType());
                     }
                 }
             }
-
-           
 
             @Override
             protected Object getValue(Object element)
@@ -1506,7 +1506,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
                         return boxValue;
                     }
                 }
-          
+
                 return null;
             }
 
@@ -1517,11 +1517,11 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
 
                 int style = SWT.READ_ONLY;
                 style = getComponentStyle(alignmentProperty, style);
-                
-                ComboBoxViewerCellEditor textEditor = new ComboBoxViewerCellEditor((Composite) ((ColumnViewer) viewer).getControl(),style);
+
+                ComboBoxViewerCellEditor textEditor = new ComboBoxViewerCellEditor((Composite) ((ColumnViewer) viewer).getControl(), style);
                 textEditor.getViewer().getCCombo().setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_COMBOBOX);
                 String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
-                
+
                 if (customCSSKey != null && customCSSKey.trim().length() > 0)
                 {
                     textEditor.getViewer().getCCombo().setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
@@ -1534,12 +1534,10 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
             @Override
             protected boolean canEdit(Object element)
             {
-                return isEditAllowed();
+                return cellEditAllowed;
             }
         };
     }
-    
-    
 
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)

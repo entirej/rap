@@ -324,6 +324,19 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 }
             }
         }
+        else if (EJManagedScreenProperty.EDIT_ALLOWED.equals(managedItemPropertyType))
+        {
+            EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemName);
+            EJManagedItemRendererWrapper renderer = item.getManagedItemRenderer();
+            if (renderer != null)
+            {
+                EJRWTAppItemRenderer itemRenderer = (EJRWTAppItemRenderer) renderer.getUnmanagedRenderer();
+                itemRenderer.setEditAllowed( itemRenderer.getItem().getProperties().isEditAllowed());
+                
+            }
+           
+            
+        }
     }
 
     @Override
@@ -1477,7 +1490,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
                 if (editingSupport != null)
                 {
-                    itemRenderer.setEditAllowed(inplaceEditMode);
+                    
                     viewerColumn.setEditingSupport(editingSupport);
                 }
                 TableColumn column = viewerColumn.getColumn();
