@@ -37,8 +37,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.jface.viewers.ColumnViewer;
+import org.eclipse.jface.viewers.ComboBoxViewerCellEditor;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -138,6 +142,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     private EJMessage                         message;
     private ComboBoxValue                     emptyValue       = new ComboBoxValue();
     private String                            defaultMessage;
+    private boolean editAllowed;
 
     protected boolean controlState(Control control)
     {
@@ -605,7 +610,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         {
             return _comboField.isEnabled();
         }
-        return false;
+        return editAllowed;
     }
 
     @Override
@@ -685,6 +690,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public void setEditAllowed(boolean editAllowed)
     {
+        this.editAllowed = editAllowed;
         if (controlState(_comboField))
         {
             _comboField.setEnabled(editAllowed);
@@ -1421,6 +1427,119 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
             return value.toString();
         }
     }
+    
+    
+    @Override
+    public EditingSupport createColumnEditingSupport(final BlockEditContext context ,final Object viewer, EJScreenItemProperties item, EJScreenItemController controller)
+    {
+        
+        if (!_lovInitialied.get())
+        {
+            _lovInitialied.set(true);
+            Display.getDefault().asyncExec(new Runnable()
+            {
+
+                @Override
+                public void run()
+                {
+                    _loadComboBoxValues();
+                    refreshCombo();
+
+                }
+            });
+        }
+        
+        return new EditingSupport((ColumnViewer) viewer)
+        {
+
+            @Override
+            protected void setValue(Object element, Object value)
+            {
+                if (element instanceof EJDataRecord)
+                {
+                    
+                     value = value instanceof ComboBoxValue?  ((ComboBoxValue)value).getItemValue():null;
+                    
+                    context.set(item.getReferencedItemName(), value,(EJDataRecord)element);
+                    
+                    if (  value instanceof ComboBoxValue)
+                    {
+                        ((ComboBoxValue)value).populateReturnItems(_item.getBlock().getBlockController(), _item.getScreenType());
+                    }
+                }
+            }
+
+           
+
+            @Override
+            protected Object getValue(Object element)
+            {
+                if (element instanceof EJDataRecord)
+                {
+                    EJDataRecord record = (EJDataRecord) element;
+                    Object value = record.getValue(item.getReferencedItemName());
+
+                    if (value != null && _comboValues != null && !_comboValues.isEmpty())
+                    {
+                        ComboBoxValue boxValue = null;
+
+                        for (ComboBoxValue val : _comboValues)
+                        {
+                            if (val.getItemValue() == null && value == null)
+                            {
+                                boxValue = val;
+                                break;
+                            }
+
+                            if (val.getItemValue() == null)
+                            {
+                                continue;
+                            }
+
+                            if (val.getItemValue().equals(value))
+                            {
+                                boxValue = val;
+                                break;
+                            }
+                        }
+
+                        return boxValue;
+                    }
+                }
+          
+                return null;
+            }
+
+            @Override
+            protected CellEditor getCellEditor(Object element)
+            {
+                String alignmentProperty = _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_ALIGNMENT);
+
+                int style = SWT.READ_ONLY;
+                style = getComponentStyle(alignmentProperty, style);
+                
+                ComboBoxViewerCellEditor textEditor = new ComboBoxViewerCellEditor((Composite) ((ColumnViewer) viewer).getControl(),style);
+                textEditor.getViewer().getCCombo().setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_COMBOBOX);
+                String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+                
+                if (customCSSKey != null && customCSSKey.trim().length() > 0)
+                {
+                    textEditor.getViewer().getCCombo().setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+                }
+                textEditor.getViewer().setContentProvider(new ArrayContentProvider());
+                textEditor.getViewer().setInput(_comboValues);
+                return textEditor;
+            }
+
+            @Override
+            protected boolean canEdit(Object element)
+            {
+                return isEditAllowed();
+            }
+        };
+    }
+    
+    
 
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)

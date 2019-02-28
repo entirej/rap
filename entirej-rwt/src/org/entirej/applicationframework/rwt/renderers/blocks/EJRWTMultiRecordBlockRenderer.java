@@ -1404,6 +1404,11 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 {
                     try
                     {
+                        
+                        Object old = record.getValue(key);
+                        if(old==value ||(old!=null && old.equals(value)))
+                            return;
+                        
                         EJDataRecord copy = record.copy();
                         copy.setValue(key, value);
                         _block
