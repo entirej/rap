@@ -178,6 +178,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         tabItem.setText(coreFormProperties.getTitle() == null ? coreFormProperties.getName() : coreFormProperties.getTitle());
         tabItem.setControl(scrollComposite);
         _folder.setSelection(tabItem);
+        EJ_RWT.setAttribute(_folder, "ej-item-selection", form.getProperties().getName());
         renderer.gainInitialFocus();
         return form;
     }

@@ -1099,6 +1099,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             folder.put(page.getName(), tab);
 
         }
+        
+        EJ_RWT.setAttribute(cfolder, "ej-item-selection", tabFolder.getActiveKey());
 
         if (_tabFoldersCache.containsKey(name))
         {
@@ -1269,7 +1271,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             folder.put(page.getName(), tab);
 
         }
-
+        EJ_RWT.setAttribute(folder, "ej-item-selection", folder.getActiveKey());
         if (_drawerFoldersCache.containsKey(name))
         {
             folder.showPage(_drawerFoldersCache.get(name));
@@ -1830,7 +1832,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     @Override
                     public boolean isHelpAvailable()
                     {
-                        return applicationManager.isHelpSupported();
+                        return applicationManager.isHelpSupported() && hasPopupButtons();//show only if other buttons added 
                     }
                     
                     @Override
@@ -1892,10 +1894,25 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         setButtonVisible(ID_BUTTON_3, popupButtonVisible3);
 
                     }
+                    
+                    boolean hasPopupButtons() {
+                        return canAddButton(button1Label) ||
+                                canAddButton(button2Label)||
+                                canAddButton(button3Label);
+                    }
+                    
+                    boolean canAddButton(String label) {
+                        if (label == null || label.length() == 0)
+                        {
+                            return false;
+                        }
+                        
+                        return true;
+                    }
 
                     private void addExtraButton(Composite parent, String label, int id, boolean deafultButton)
                     {
-                        if (label == null || label.length() == 0)
+                        if (canAddButton(label))
                         {
                             return;
                         }

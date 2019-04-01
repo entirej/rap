@@ -91,6 +91,7 @@ public class EJRWTEntireJStackedPane extends Composite
         {
             _stackLayout.topControl = control.getControl();
             active = key;
+            EJ_RWT.setAttribute(this, "ej-item-selection", key);
         }
         _panes.put(key, control);
         _pages.add(control);

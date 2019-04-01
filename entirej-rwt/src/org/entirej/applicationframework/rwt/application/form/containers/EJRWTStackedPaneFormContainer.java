@@ -137,6 +137,7 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
             }
         });
         _stackPane.showPane(name);
+        EJ_RWT.setAttribute(_stackPane, "ej-item-selection", name);
         renderer.gainInitialFocus();
 
         form.focusGained();
