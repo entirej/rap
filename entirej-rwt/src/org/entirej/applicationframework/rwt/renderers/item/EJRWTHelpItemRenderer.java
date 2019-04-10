@@ -164,7 +164,7 @@ public class EJRWTHelpItemRenderer implements EJRWTAppItemRenderer, Serializable
 
     protected boolean controlState(ToolItem control)
     {
-        return control != null && !control.isDisposed();
+        return control != null && _button.getControl()!=null && !control.isDisposed();
 
     }
 
@@ -274,23 +274,28 @@ public class EJRWTHelpItemRenderer implements EJRWTAppItemRenderer, Serializable
                 cursor.dispose();
             }
         });
-        _button = new ToolItem(toolBar, SWT.CHECK);
-        _button.setImage(image);
-        _button.setSelection(isHelpActive());
-        _button.setToolTipText(JFaceResources.getString("helpToolTip")); //$NON-NLS-1$
-        _button.addSelectionListener(new SelectionAdapter()
+        
+        if(_applicationManager.isHelpSupported())
         {
-            public void widgetSelected(SelectionEvent e)
+            _button = new ToolItem(toolBar, SWT.CHECK);
+            _button.setImage(image);
+           
+            _button.setSelection(isHelpActive());
+            _button.setToolTipText(JFaceResources.getString("helpToolTip")); //$NON-NLS-1$
+            _button.addSelectionListener(new SelectionAdapter()
             {
-                helpPressed(_button.getSelection());
-            }
-
-            private void helpPressed(boolean selection)
-            {
-                _applicationManager.setHelpActive(selection);
-                
-            }
-        });
+                public void widgetSelected(SelectionEvent e)
+                {
+                    helpPressed(_button.getSelection());
+                }
+    
+                private void helpPressed(boolean selection)
+                {
+                    _applicationManager.setHelpActive(selection);
+                    
+                }
+            });
+        }
         return toolBar;
     }
 

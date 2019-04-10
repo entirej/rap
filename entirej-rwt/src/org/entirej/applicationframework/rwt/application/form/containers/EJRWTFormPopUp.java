@@ -70,7 +70,7 @@ public class EJRWTFormPopUp
             @Override
             public boolean isHelpAvailable()
             {
-                return applicationManager.isHelpSupported();
+                return false;//applicationManager.isHelpSupported();
             }
             
             @Override

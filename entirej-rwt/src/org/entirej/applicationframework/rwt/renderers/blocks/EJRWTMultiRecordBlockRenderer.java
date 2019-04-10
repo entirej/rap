@@ -158,6 +158,8 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
 
     private TableCursor                cursor;
 
+    private EJDataRecord _focusedRecord;
+
     protected void clearFilter()
     {
         if (_filteredContentProvider != null)
@@ -380,7 +382,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     @Override
     public void blockCleared()
     {
-
+        _focusedRecord = null;
         EJRWTAsync.runUISafe(dispaly, () -> {
             if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
             {
@@ -502,7 +504,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     @Override
     public void queryExecuted()
     {
-
+        _focusedRecord = null;
         EJRWTAsync.runUISafe(dispaly, () -> {
 
             if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
@@ -573,7 +575,8 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
     @Override
     public void recordSelected(EJDataRecord record)
     {
-
+        _focusedRecord = record;
+        
         EJRWTAsync.runUISafe(dispaly, () -> {
             if (_tableViewer != null && !_tableViewer.getTable().isDisposed())
             {
@@ -651,6 +654,9 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                     _focusedRecord = (EJDataRecord) firstElement;
                 }
             }
+        }
+        else {
+            _focusedRecord = this._focusedRecord!=null ? this._focusedRecord: getFirstRecord();;
         }
         return _focusedRecord;
     }
@@ -1344,6 +1350,7 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                 if (focusedRecord != null)
                 {
                     _block.newRecordInstance(focusedRecord);
+                    _focusedRecord = focusedRecord;
 
                 }
                 notifyStatus();

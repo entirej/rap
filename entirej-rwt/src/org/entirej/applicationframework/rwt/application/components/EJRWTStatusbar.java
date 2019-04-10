@@ -282,7 +282,7 @@ public class EJRWTStatusbar implements EJRWTAppComponentRenderer
             gridData.grabExcessVerticalSpace = true;
             gridData.horizontalAlignment = SWT.FILL;
             control.setLayoutData(gridData);
-
+            control.setData(EJ_RWT.MARKUP_ENABLED,true);
             boolean expand = Boolean.valueOf(entry.getProperty(EXPAND_X));
             if (expand)
             {

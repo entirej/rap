@@ -1912,7 +1912,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                     private void addExtraButton(Composite parent, String label, int id, boolean deafultButton)
                     {
-                        if (canAddButton(label))
+                        if (!canAddButton(label))
                         {
                             return;
                         }
