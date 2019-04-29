@@ -341,7 +341,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                             }
                                             catch (Exception e)
                                             {
-                                                e.printStackTrace();
+                                                fileUpload.getForm().handleException(e);
                                             }
                                             
                                         }
@@ -363,7 +363,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                             }
                                             catch (Exception e)
                                             {
-                                                e.printStackTrace();
+                                                fileUpload.getForm().handleException(e);
                                             }
                                             
                                         }

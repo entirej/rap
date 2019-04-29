@@ -33,6 +33,8 @@ public class EJRWTStatusbarRendererDefinition implements EJDevAppComponentRender
     public static final String SECTIONS                  = "SECTIONS";
     public static final String EXPAND_X                  = "EXPAND_X";
     public static final String PARAMETER                 = "PARAMETER";
+    public static final String TOOLTIP_PARAMETER         = "TOOLTIP_PARAMETER";
+    public static final String ICON_PARAMETER            = "ICON_PARAMETER";
     public static final String WIDTH                     = "WIDTH";
     public static final String VISUAL_ATTRIBUTE_PROPERTY = "VISUAL_ATTRIBUTE";
     public static final String ACTION                    = "ACTION";
@@ -51,16 +53,17 @@ public class EJRWTStatusbarRendererDefinition implements EJDevAppComponentRender
         EJDevPropertyDefinitionList list = new EJDevPropertyDefinitionList(SECTIONS, "Sections");
         // TODO: write Section description
 
-        EJDevPropertyDefinition paramater = new EJDevPropertyDefinition(PARAMETER, EJPropertyDefinitionType.APPLICATION_PARAMETER);// TODO:
-        // add
-        // parameter
-        // selection
-        // support
+        EJDevPropertyDefinition paramater = new EJDevPropertyDefinition(PARAMETER, EJPropertyDefinitionType.APPLICATION_PARAMETER);
         paramater.setLabel("Paramater");
-        paramater.setDescription("Application Paramater that this section represent.");// TODO:
-                                                                                       // fix
-                                                                                       // this
-                                                                                       // description
+        paramater.setDescription("Application Paramater that this section represent.");
+
+        EJDevPropertyDefinition tooltipParamater = new EJDevPropertyDefinition(TOOLTIP_PARAMETER, EJPropertyDefinitionType.APPLICATION_PARAMETER);
+        tooltipParamater.setLabel("Tooltip Paramater");
+        tooltipParamater.setDescription("Application Paramater that this section tooltip represent.");
+        
+        EJDevPropertyDefinition iconParamater = new EJDevPropertyDefinition(ICON_PARAMETER, EJPropertyDefinitionType.APPLICATION_PARAMETER);
+        iconParamater.setLabel("Icon Paramater");
+        iconParamater.setDescription("Application Paramater that this section Icon represent.");
 
         EJDevPropertyDefinition action = new EJDevPropertyDefinition(ACTION, EJPropertyDefinitionType.ACTION_COMMAND);
 
@@ -91,6 +94,8 @@ public class EJRWTStatusbarRendererDefinition implements EJDevAppComponentRender
         textAlignment.setDefaultValue(PROPERTY_ALIGNMENT_LEFT);
 
         list.addPropertyDefinition(paramater);
+        list.addPropertyDefinition(tooltipParamater);
+        list.addPropertyDefinition(iconParamater);
         list.addPropertyDefinition(displayedWidth);
         list.addPropertyDefinition(expandHorizontally);
         list.addPropertyDefinition(textAlignment);

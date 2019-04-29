@@ -167,7 +167,7 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                                             }
                                             catch (Exception e)
                                             {
-                                                e.printStackTrace();
+                                                fileUpload.getForm().handleException(e);
                                             }
                                             
                                         }
@@ -189,7 +189,7 @@ public abstract class EJRWTMobileApplicationLauncher extends EJRWTApplicationLau
                                             }
                                             catch (Exception e)
                                             {
-                                                e.printStackTrace();
+                                                fileUpload.getForm().handleException(e);
                                             }
                                             
                                         }

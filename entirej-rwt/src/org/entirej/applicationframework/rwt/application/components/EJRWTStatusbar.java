@@ -25,6 +25,7 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -32,6 +33,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
+import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTAppComponentRenderer;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTLabelItemRendererDefinitionProperties;
@@ -56,6 +58,9 @@ public class EJRWTStatusbar implements EJRWTAppComponentRenderer
     public static final String  SECTIONS                  = "SECTIONS";
     public static final String  EXPAND_X                  = "EXPAND_X";
     public static final String  PARAMETER                 = "PARAMETER";
+
+    public static final String TOOLTIP_PARAMETER         = "TOOLTIP_PARAMETER";
+    public static final String ICON_PARAMETER            = "ICON_PARAMETER";
     public static final String  WIDTH                     = "WIDTH";
     public static final String  VISUAL_ATTRIBUTE_PROPERTY = "VISUAL_ATTRIBUTE";
     public static final String  ACTION                    = "ACTION";
@@ -106,42 +111,47 @@ public class EJRWTStatusbar implements EJRWTAppComponentRenderer
             {
 
                 final Link linkField;
-               
+                final Label image ;
                 String alignmentProperty = entry.getProperty(PROPERTY_ALIGNMENT);
                 // use workaround to make sure link also provide alignment
                 if (alignmentProperty != null && alignmentProperty.trim().length() > 0)
                 {
                     if (alignmentProperty.equals(PROPERTY_ALIGNMENT_LEFT))
                     {
+                        image =  new Label(panel, SWT.NONE);
                         control = linkField = new Link(panel, style);
                     }
                     else if (alignmentProperty.equals(PROPERTY_ALIGNMENT_RIGHT))
                     {
-                        EJRWTEntireJGridPane sub = new EJRWTEntireJGridPane(panel, 3);
+                        EJRWTEntireJGridPane sub = new EJRWTEntireJGridPane(panel, 4);
                         control = sub;
                         sub.cleanLayout();
                         new Label(sub, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
 
                         new Label(sub, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
+                        image =  new Label(sub, SWT.NONE);
                         linkField = new Link(sub, style);
                     }
                     else if (alignmentProperty.equals(PROPERTY_ALIGNMENT_CENTER))
                     {
-                        EJRWTEntireJGridPane sub = new EJRWTEntireJGridPane(panel, 3);
+                        EJRWTEntireJGridPane sub = new EJRWTEntireJGridPane(panel, 4);
                         control = sub;
                         sub.cleanLayout();
                         new Label(sub, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
+                        image =  new Label(sub, SWT.NONE);
                         linkField = new Link(sub, style);
                         new Label(sub, SWT.NONE).setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, true, true));
 
                     }
                     else
                     {
+                        image =  new Label(panel, SWT.NONE);
                         control = linkField = new Link(panel, style);
                     }
                 }
                 else
                 {
+                    image =  new Label(panel, SWT.NONE);
                     control = linkField = new Link(panel, style);
                 }
                 
@@ -167,6 +177,52 @@ public class EJRWTStatusbar implements EJRWTAppComponentRenderer
                         });
                     }
 
+                }
+                
+                String tooltipParamName = entry.getProperty(TOOLTIP_PARAMETER);
+                if (tooltipParamName != null && tooltipParamName.length() > 0)
+                {
+                    
+                    final EJApplicationLevelParameter applicationLevelParameter = manager.getApplicationLevelParameter(tooltipParamName);
+                    if (applicationLevelParameter != null)
+                    {
+                        Object value = applicationLevelParameter.getValue();
+                        linkField.setToolTipText(value == null ? "" : value.toString());
+                        applicationLevelParameter.addParameterChangedListener(new ParameterChangedListener()
+                        {
+                            
+                            @Override
+                            public void parameterChanged(String parameterName, Object oldValue, Object newValue)
+                            {
+                                linkField.setToolTipText(newValue == null ? "" : newValue.toString());
+                                
+                            }
+                        });
+                    }
+                    
+                }
+                
+                String imageParamName = entry.getProperty(ICON_PARAMETER);
+                if (imageParamName != null && imageParamName.length() > 0)
+                {
+                    
+                    final EJApplicationLevelParameter applicationLevelParameter = manager.getApplicationLevelParameter(imageParamName);
+                    if (applicationLevelParameter != null)
+                    {
+                        Object value = applicationLevelParameter.getValue();
+                        image.setImage(updateImage(manager,( String)value));
+                        applicationLevelParameter.addParameterChangedListener(new ParameterChangedListener()
+                        {
+                            
+                            @Override
+                            public void parameterChanged(String parameterName, Object oldValue, Object newValue)
+                            {
+                                image.setImage(updateImage(manager,( String)oldValue));
+                                
+                            }
+                        });
+                    }
+                    
                 }
                 
                 if(actionProcessor!=null)
@@ -247,6 +303,50 @@ public class EJRWTStatusbar implements EJRWTAppComponentRenderer
                     }
 
                 }
+                String tooltipParamName = entry.getProperty(TOOLTIP_PARAMETER);
+                if (tooltipParamName != null && tooltipParamName.length() > 0)
+                {
+                    
+                    final EJApplicationLevelParameter applicationLevelParameter = manager.getApplicationLevelParameter(tooltipParamName);
+                    if (applicationLevelParameter != null)
+                    {
+                        Object value = applicationLevelParameter.getValue();
+                        section.setToolTipText(value == null ? "" : value.toString());
+                        applicationLevelParameter.addParameterChangedListener(new ParameterChangedListener()
+                        {
+                            
+                            @Override
+                            public void parameterChanged(String parameterName, Object oldValue, Object newValue)
+                            {
+                                section.setToolTipText(newValue == null ? "" : newValue.toString());
+                                
+                            }
+                        });
+                    }
+                    
+                }
+                String imageParamName = entry.getProperty(ICON_PARAMETER);
+                if (imageParamName != null && imageParamName.length() > 0)
+                {
+                    
+                    final EJApplicationLevelParameter applicationLevelParameter = manager.getApplicationLevelParameter(imageParamName);
+                    if (applicationLevelParameter != null)
+                    {
+                        Object value = applicationLevelParameter.getValue();
+                        section.setImage(updateImage(manager,( String)value));
+                        applicationLevelParameter.addParameterChangedListener(new ParameterChangedListener()
+                        {
+                            
+                            @Override
+                            public void parameterChanged(String parameterName, Object oldValue, Object newValue)
+                            {
+                                section.setImage(updateImage(manager,( String)oldValue));
+                                
+                            }
+                        });
+                    }
+                    
+                }
                
 
                 // set VA
@@ -307,6 +407,31 @@ public class EJRWTStatusbar implements EJRWTAppComponentRenderer
 
         }
 
+    }
+    
+    private Image updateImage(EJRWTApplicationManager manager, String imagePath)
+    {
+        if (imagePath != null && !imagePath.isEmpty())
+        {
+            try
+            {
+                final Image image = EJRWTImageRetriever.get(imagePath);
+                if (image != null)
+                {
+                  return image;
+                }
+                
+                else
+                {
+                    throw new IllegalArgumentException("Image not found at : " + imagePath);
+                }
+            }
+            catch (Exception e)
+            {
+                manager.getFrameworkManager().handleException(e);
+            }
+        }
+        return null;
     }
 
     protected int getComponentStyle(String alignmentProperty, int style)
