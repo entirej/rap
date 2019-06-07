@@ -48,6 +48,7 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
     private EJRWTFormPopUp                  _formPopup;
     private Map<EJInternalForm, String>     _stackedPages          = new HashMap<EJInternalForm, String>();
     private List<EJRWTFormSelectedListener> _formSelectedListeners = new ArrayList<EJRWTFormSelectedListener>(1);
+    private EJRWTFormModal _formModel;
 
     @Override
     public void createContainer(EJRWTApplicationManager manager, Composite parent, EJFrameworkExtensionProperties rendererprop)
@@ -154,6 +155,13 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
         _formPopup = new EJRWTFormPopUp(_manager.getShell(), popupController);
         _formPopup.showForm();
     }
+    
+    @Override
+    public void openModelForm(EJInternalForm form)
+    {
+        _formModel = new EJRWTFormModal(_manager.getShell(), form);
+        _formPopup.showForm();
+    }
 
     @Override
     public void popupFormClosed()
@@ -189,6 +197,15 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
     @Override
     public EJInternalForm getActiveForm()
     {
+        if(_formModel!=null)
+        {
+            return _formModel.getForm();
+        }
+        if(_formPopup!=null)
+        {
+            return _formPopup.getPopupController().getPopupForm();
+        }
+        
         if (_stackPane != null)
         {
             return getFormByPage(_stackPane.getActiveControlKey());
@@ -204,6 +221,13 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
             
             _formPopup.close();
             _formPopup = null;
+            return;
+        }
+        if(_formModel!=null && _formModel.getForm().equals(form))
+        {
+            
+            _formModel.close();
+            _formModel = null;
             return;
         }
         

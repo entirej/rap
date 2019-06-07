@@ -343,7 +343,17 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         {
             throw new IllegalStateException("Unable to open a form until the application has been built");
         }
-        _applicationContainer.add(form);
+        if(blocking)
+        {
+            _applicationContainer.getFormContainer().openModelForm(form);
+        }
+        else 
+        {
+            
+            _applicationContainer.add(form);
+        }
+        
+        
     }
 
     /**

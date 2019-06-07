@@ -241,6 +241,14 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                     // ignore
 
                 }
+                
+                
+                @Override
+                public void openModelForm(EJInternalForm form)
+                {
+                    addForm(form);
+                    
+                }
 
                 @Override
                 public EJInternalForm addForm(final EJInternalForm form)

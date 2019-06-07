@@ -30,7 +30,7 @@ import org.entirej.framework.dev.renderer.definition.interfaces.EJDevAppComponen
 public class EJRWTBannerRendererDefinition implements EJDevAppComponentRendererDefinition
 {
 
-    public static final String IMAGE_PARAM                = "IMAGE_PARAM";
+    public static final String IMAGE_PARAM               = "IMAGE_PARAM";
     public static final String IMAGE_PATH                = "IMAGE_PATH";
     public static final String PROPERTY_ALIGNMENT        = "ALIGNMENT";
     public static final String PROPERTY_ALIGNMENT_LEFT   = "LEFT";

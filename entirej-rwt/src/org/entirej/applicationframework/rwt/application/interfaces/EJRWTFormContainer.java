@@ -117,4 +117,6 @@ public interface EJRWTFormContainer extends Serializable
     public EJInternalForm switchToForm(EJInternalForm form);
 
     public void updateFormTitle(EJInternalForm form);
+
+    public void openModelForm(EJInternalForm form);
 }

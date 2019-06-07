@@ -53,6 +53,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
     private EJRWTApplicationManager         _manager;
     private CTabFolder                      _folder;
     private EJRWTFormPopUp                  _formPopup;
+    private EJRWTFormModal                  _formModel;
     private Map<EJInternalForm, CTabItem>   _tabPages              = new HashMap<EJInternalForm, CTabItem>();
     private List<EJRWTFormSelectedListener> _formSelectedListeners = new ArrayList<EJRWTFormSelectedListener>(1);
 
@@ -189,6 +190,13 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         _formPopup = new EJRWTFormPopUp(_manager.getShell(), popupController);
         _formPopup.showForm();
     }
+    
+    @Override
+    public void openModelForm(EJInternalForm form)
+    {
+        _formModel = new EJRWTFormModal(_manager.getShell(), form);
+        _formPopup.showForm();
+    }
 
     @Override
     public void popupFormClosed()
@@ -198,6 +206,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
             _formPopup.close();
             _formPopup = null;
         }
+        
     }
 
     @Override
@@ -223,6 +232,15 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
     @Override
     public EJInternalForm getActiveForm()
     {
+        if(_formModel!=null)
+        {
+            return _formModel.getForm();
+        }
+        if(_formPopup!=null)
+        {
+            return _formPopup.getPopupController().getPopupForm();
+        }
+        
         if (_folder != null)
         {
             CTabItem selection = _folder.getSelection();
@@ -245,6 +263,13 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
             
             _formPopup.close();
             _formPopup = null;
+            return;
+        }
+        if(_formModel!=null && _formModel.getForm().equals(form))
+        {
+            
+            _formModel.close();
+            _formModel = null;
             return;
         }
         
