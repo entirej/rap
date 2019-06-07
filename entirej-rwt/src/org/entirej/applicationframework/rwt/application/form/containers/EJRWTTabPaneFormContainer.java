@@ -195,7 +195,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
     public void openModelForm(EJInternalForm form)
     {
         _formModel = new EJRWTFormModal(_manager.getShell(), form);
-        _formPopup.showForm();
+        _formModel.showForm();
     }
 
     @Override
