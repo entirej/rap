@@ -18,6 +18,7 @@
 package org.entirej.applicationframework.rwt.renderers.chart;
 
 import java.awt.Color;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -50,6 +51,8 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -73,7 +76,9 @@ import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRen
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeTableBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.html.EJRWTHtmlTableBlockRenderer;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
+import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
 import org.entirej.framework.core.EJForm;
 import org.entirej.framework.core.EJMessage;
@@ -124,6 +129,11 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
     public final String                    SHOW_LEGEND               = "showLegend";
     public final String                    LEGEND_POSITION           = "legendPosition";
+
+    public final String                    LBL_VIEW_TYPE             = "lblViewType";
+    public final String                    LBL_VIEW_POS              = "lblViewPos";
+    public final String                    LBL_VIEW_ARC              = "lblViewArc";
+    public final String                    LBL_VIEW_VA               = "lblViewVA";
 
     public final String                    LABLE_COLUMN              = "lblColumn";
     public final String                    VIEW_TYPE                 = "viewType";
@@ -255,6 +265,52 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
+        
+        EJFrameworkExtensionProperties propertyGroup = blockProperties.getBlockRendererProperties().getPropertyGroup("LBL_CONFIG");
+        
+        options.getPlugins().getLabels().setArc(propertyGroup.getBooleanProperty(LBL_VIEW_ARC, options.getPlugins().getLabels().isArc()));
+        options.getPlugins().getLabels().setRender(propertyGroup.getStringProperty(LBL_VIEW_TYPE));
+        options.getPlugins().getLabels().setPosition(propertyGroup.getStringProperty(LBL_VIEW_POS));
+        
+        String va = propertyGroup.getStringProperty(LBL_VIEW_VA);
+        
+        if(va!=null && !va.isEmpty())
+        {
+            EJCoreVisualAttributeProperties visualAttributeProperties = _block.getForm().getVisualAttribute(va);
+            if(visualAttributeProperties!=null) {
+                if (visualAttributeProperties.getForegroundColor() != null)
+                {
+                    Color color = visualAttributeProperties.getForegroundColor();
+                    options.getPlugins().getLabels().setFontColor(EJRWTHtmlTableBlockRenderer.toHex(color.getRed(), color.getGreen(), color.getBlue() ));
+                }
+                
+                
+                
+                Font vaFont = EJRWTVisualAttributeUtils.INSTANCE.getFont(visualAttributeProperties, null);
+                if (vaFont != null && vaFont.getFontData().length > 0)
+                {
+                    FontData fontData = vaFont.getFontData()[0];
+                   
+                    if ((fontData.getStyle() & SWT.BOLD) != 0)
+                    {
+                        options.getPlugins().getLabels().setFontStyle("bold");
+                    }
+                    if ((fontData.getStyle() & SWT.ITALIC) != 0)
+                    {
+                        options.getPlugins().getLabels().setFontStyle("italic");
+                    }
+
+                    options.getPlugins().getLabels().setFontSize(fontData.getHeight());
+                    options.getPlugins().getLabels().setFontFamily(fontData.getName());
+
+
+                }
+            }
+            
+            
+        }
+        
+        //TODO:VA settings 
 
         labelColumn = blockProperties.getBlockRendererProperties().getStringProperty(LABLE_COLUMN);
 
@@ -264,7 +320,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     public void blockCleared()
     {
 
-        EJRWTAsync.runUISafe(dispaly,() -> {
+        EJRWTAsync.runUISafe(dispaly, () -> {
 
             currentRecord = null;
             _treeBaseRecords.clear();
@@ -394,7 +450,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
     public void refresh()
     {
-        EJRWTAsync.runUISafe(dispaly,() -> {
+        EJRWTAsync.runUISafe(dispaly, () -> {
 
             refresh(new Object());
 
@@ -491,6 +547,12 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                     Object yvalue = ejDataRecord.getValue(sItem.getName());
 
                     double val = 0;
+
+                    if (yvalue instanceof String)
+                    {
+                        yvalue = new BigDecimal((String) yvalue);
+
+                    }
                     if (yvalue instanceof Number)
                     {
 
@@ -505,6 +567,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 // rowInfo.setHidden(hidden);
                 rowInfo.setChartStyle(styles);
                 rowInfo.setBorderWidth(widths);
+                rowInfo.setHidden(hidden);
 
                 rowInfo.setAction("_pie_select");
                 chartRowData.addRow(rowInfo, data);

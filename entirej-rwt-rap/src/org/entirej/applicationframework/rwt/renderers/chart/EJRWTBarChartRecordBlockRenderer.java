@@ -528,6 +528,11 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                             Object yvalue = ejDataRecord.getValue(sItem.getName());
 
                             Float val = null;
+                            if (yvalue instanceof String)
+                            {
+                                yvalue = new BigDecimal((String)yvalue);
+
+                            }
                             if (yvalue instanceof Number)
                             {
                                 lastVal.put(sItem.getName(), (Number) yvalue);

@@ -25,6 +25,10 @@ public interface EJRWTChartBlockDefinitionProperties
     public final String        LEGEND_POSITION           = "legendPosition";
     public final String        LABLE_COLUMN              = "lblColumn";
     public final String        VIEW_TYPE                 = "viewType";
+    public final String        LBL_VIEW_TYPE             = "lblViewType";
+    public final String        LBL_VIEW_POS              = "lblViewPos";
+    public final String        LBL_VIEW_ARC              = "lblViewArc";
+    public final String        LBL_VIEW_VA               = "lblViewVA";
     public final String        X_AXIS_COLUMN             = "xAxisColumn";
     public final String        MULTI                     = "multi";
 

@@ -517,7 +517,11 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                         if (!sItem.isSpacerItem())
                         {
                             Object yvalue = ejDataRecord.getValue(sItem.getName());
+                            if (yvalue instanceof String)
+                            {
+                                yvalue = new BigDecimal((String)yvalue);
 
+                            }
                             Float val = null;
                             if (yvalue instanceof Number)
                             {
