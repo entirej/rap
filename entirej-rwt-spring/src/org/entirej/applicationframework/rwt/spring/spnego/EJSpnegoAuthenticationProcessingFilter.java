@@ -103,7 +103,7 @@ public class EJSpnegoAuthenticationProcessingFilter extends SpnegoAuthentication
                 String url = getCustomRedirectUrl(request);
                 if(url==null)
                 {
-                    url=  request.getContextPath()+"/login.html";
+                    url=  request.getContextPath()+"/login";
                 }
                 ((HttpServletResponse) response).sendRedirect(url);
                 return;
