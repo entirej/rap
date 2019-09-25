@@ -374,12 +374,13 @@ Label[BORDER] {
 	border-radius: 2px;
 }
 
+
 Label-SeparatorLine {
-	background-image: none;
-	background-color: transparent;
-	border-top: 1px solid #a4a4a4;
-	border-radius: 0px;
-	width: 1px;
+  background-image: none;
+  background-color: #d2d2d2;
+  border: none;
+  border-radius: 0;
+  width: 1px;
 }
 
 Label-SeparatorLine[SHADOW_IN] {
@@ -1939,6 +1940,7 @@ Label-SeparatorLine.separator{
 	background-image: none;
 	background-color: transparent;
 	border-top: 1px solid #bdbdbd;
+	border-left: 1px solid #bdbdbd;
 	border-radius: 0px;
 	width: 1px;
     
@@ -1951,6 +1953,7 @@ Label-SeparatorLine.separator_dashed{
 	background-image: none;
 	background-color: transparent;
 	border-top: 1px dashed #bdbdbd;
+	border-left: 1px dashed #bdbdbd;
 	border-radius: 0px;
 	width: 1px;
 }
@@ -1962,6 +1965,7 @@ Label-SeparatorLine.separator_dotted{
 	background-image: none;
 	background-color: transparent;
 	border-top: 1px dotted #bdbdbd;
+	border-left: 1px dotted #bdbdbd;
 	border-radius: 0px;
 	width: 1px;
 }
@@ -1972,6 +1976,7 @@ Label-SeparatorLine.separator_double{
 	background-image: none;
 	background-color: transparent;
 	border-top: 1px double #bdbdbd;
+	border-left: 1px double #bdbdbd;
 	border-radius: 0px;
 	width: 1px;
 }

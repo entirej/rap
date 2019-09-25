@@ -26,6 +26,17 @@ public class EJRwtSpringAuthUtil
             executor.execute(browserText);
         }
     }
+    
+    public static void changePassword(String url)
+    {
+     
+        String browserText = MessageFormat.format("parent.window.location.href = \"{0}\";", url);
+        JavaScriptExecutor executor = RWT.getClient().getService(JavaScriptExecutor.class);
+        if (executor != null)
+        {
+            executor.execute(browserText);
+        }
+    }
 
     public static void logout()
     {
