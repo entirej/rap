@@ -65,7 +65,8 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane implements ITrayPane
     {
         if (getTray() == null)
         {
-            throw new IllegalStateException("Tray was not open"); //$NON-NLS-1$
+            return;
+            //throw new IllegalStateException("Tray was not open"); //$NON-NLS-1$
         }
 
         trayControl.dispose();
