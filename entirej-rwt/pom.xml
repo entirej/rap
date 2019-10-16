@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.entirej</groupId>
@@ -165,8 +166,8 @@
 			<artifactId>app</artifactId>
 			<version>1.0.0-v20070606</version>
 		</dependency>
-		
-			<dependency>
+
+		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt.osgi</artifactId>
 			<version>3.5.0</version>
@@ -175,6 +176,12 @@
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt</artifactId>
 			<version>3.5.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.ziplet</groupId>
+			<artifactId>ziplet</artifactId>
+			<version>2.4.1</version>
 		</dependency>
 	</dependencies>
 
@@ -187,11 +194,11 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
-		
-            <repository>
-                <id>maven-eclipse-repo</id>
-                <url>http://maven-eclipse.github.io/maven</url>
-            </repository>
+
+		<repository>
+			<id>maven-eclipse-repo</id>
+			<url>http://maven-eclipse.github.io/maven</url>
+		</repository>
 	</repositories>
 
 
