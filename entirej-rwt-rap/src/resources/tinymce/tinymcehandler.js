@@ -53,6 +53,8 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			this.elementReadonly.style.visibility = "hidden";// visible
 			this.elementReadonly.style["z-index"] = "2147483647";// visible
 			this.elementReadonly.style["background-color"] = "white";// visible
+			this.elementReadonly.style["font-family"] = "Verdana,Arial,Helvetica,sans-serif";// visible
+			this.elementReadonly.style["font-size"] = "11px";
 			
 
 			this.parent.append(this.elementReadonly);
