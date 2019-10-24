@@ -123,7 +123,8 @@ public class EJRWTStackedPaneFormContainer implements EJRWTFormContainer, EJRWTA
         _stackedPages.put(form, name);
 
         final EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
-        renderer.createControl(_stackPane);
+        renderer.init();
+        renderer.create(_stackPane);
         _stackPane.add(name, new EJRWTEntireJStackedPane.StackedPage()
         {
             @Override

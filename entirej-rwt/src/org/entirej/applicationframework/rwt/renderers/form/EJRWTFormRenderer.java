@@ -108,7 +108,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     @Override
     public void formClosed()
     {
-        _mainPane.dispose();
+        if(_mainPane!=null)
+            _mainPane.dispose();
     }
 
     @Override
@@ -210,38 +211,45 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             throw new EJApplicationException("No embedded form controller has been passed to openEmbeddedForm");
         }
-
+        EJRWTFormRenderer renderer = (EJRWTFormRenderer) formController.getEmbeddedForm().getRenderer();
+        renderer.init();
         if (formController.getCanvasName() != null)
         {
             Composite composite = _formPanes.get(formController.getCanvasName());
             if (composite != null)
             {
-                Control[] children = composite.getChildren();
-                for (Control control : children)
-                {
-                    if (!control.isDisposed())
-                    {
-                        control.dispose();
-                    }
-                }
-
-                EJRWTFormRenderer renderer = (EJRWTFormRenderer) formController.getEmbeddedForm().getRenderer();
-                final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
-                renderer.createControl(scrollComposite);
-                EJRWTEntireJGridPane entireJGridPane = renderer.getGuiComponent();
-                entireJGridPane.cleanLayout();
-                scrollComposite.setContent(entireJGridPane);
-                scrollComposite.setExpandHorizontal(true);
-                scrollComposite.setExpandVertical(true);
-                scrollComposite.setMinSize(formController.getEmbeddedForm().getProperties().getFormWidth(), formController.getEmbeddedForm().getProperties().getFormHeight());
-                composite.layout(true);
-                composite.redraw();
+                createEmbededFormUI(formController, renderer, composite);
             }
             else
             {
                 _formPanesCache.put(formController.getCanvasName(), formController);
             }
         }
+    }
+
+    private void createEmbededFormUI(EJEmbeddedFormController formController, EJRWTFormRenderer renderer, Composite composite)
+    {
+        Control[] children = composite.getChildren();
+        for (Control control : children)
+        {
+            if (!control.isDisposed())
+            {
+                control.dispose();
+            }
+        }
+
+            
+        final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
+            
+        renderer.create(scrollComposite);
+        EJRWTEntireJGridPane entireJGridPane = renderer.getGuiComponent();
+        entireJGridPane.cleanLayout();
+        scrollComposite.setContent(entireJGridPane);
+        scrollComposite.setExpandHorizontal(true);
+        scrollComposite.setExpandVertical(true);
+        scrollComposite.setMinSize(formController.getEmbeddedForm().getProperties().getFormWidth(), formController.getEmbeddedForm().getProperties().getFormHeight());
+        composite.layout(true);
+        composite.redraw();
     }
 
     @Override
@@ -349,11 +357,12 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
     }
-
+    
     @Override
-    public void createControl(final Composite parent)
+    public void init()
     {
-        setupGui(parent);
+       
+        
         try
         {
             _form.getFormController().formInitialised();
@@ -362,6 +371,15 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             _form.getFrameworkManager().handleException(e);
         }
+        
+    }
+
+    @Override
+    public void create(final Composite parent)
+    {
+        
+        setupGui(parent);
+        
 
         Display.getDefault().asyncExec(new Runnable()
         {
@@ -903,14 +921,25 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
         }
 
-        if (canvasProperties.getReferredFormId() != null && canvasProperties.getReferredFormId().length() > 0)
-        {
-            _form.openEmbeddedForm(canvasProperties.getReferredFormId(), name, null);
-        }
+       
         if (_formPanesCache.containsKey(name))
         {
-            openEmbeddedForm(_formPanesCache.get(name));
-            _formPanesCache.remove(name);
+            EJEmbeddedFormController formController = _formPanesCache.get(name);
+            Composite composite = _formPanes.get(formController.getCanvasName());
+            if (composite != null)
+            {
+                EJRWTFormRenderer renderer = (EJRWTFormRenderer) formController.getEmbeddedForm().getRenderer();
+                createEmbededFormUI(formController, renderer, composite);
+                _formPanesCache.remove(name);
+            }
+            
+        }
+        else
+        {
+            if (canvasProperties.getReferredFormId() != null && canvasProperties.getReferredFormId().length() > 0)
+            {
+                _form.openEmbeddedForm(canvasProperties.getReferredFormId(), name, null);
+            }
         }
     }
 
@@ -2215,7 +2244,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             EJCanvasProperties properties = EJRWTCanvasRetriever.getCanvas(_form.getProperties(), key);
             if (properties != null && properties.getType() == EJCanvasType.STACKED)
             {
-                if (properties.getInitialStackedPageName() != null || !properties.getInitialStackedPageName().isEmpty())
+                if (properties.getInitialStackedPageName() != null && !properties.getInitialStackedPageName().isEmpty())
                 {
                     return properties.getInitialStackedPageName();
                 }
@@ -2417,7 +2446,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 EJEmbeddedFormController formController = new EJEmbeddedFormController(parentForm.getFrameworkManager(), parentForm.getFormController(), formId, null, null);
                 EJRWTFormRenderer renderer = (EJRWTFormRenderer) formController.getEmbeddedForm().getRenderer();
                 final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL | SWT.H_SCROLL);
-                renderer.createControl(scrollComposite);
+                renderer.init();
+                renderer.create(scrollComposite);
                 EJRWTEntireJGridPane entireJGridPane = renderer.getGuiComponent();
                 entireJGridPane.cleanLayout();
                 scrollComposite.setContent(entireJGridPane);

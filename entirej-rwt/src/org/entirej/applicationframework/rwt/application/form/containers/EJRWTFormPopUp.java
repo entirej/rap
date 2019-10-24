@@ -84,7 +84,8 @@ public class EJRWTFormPopUp
             {
                 parent.setLayout(new FillLayout());
                 final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
-                formRenderer.createControl(scrollComposite);
+                formRenderer.init();
+                formRenderer.create(scrollComposite);
                 scrollComposite.setContent(formRenderer.getGuiComponent());
                 scrollComposite.setExpandHorizontal(true);
                 scrollComposite.setExpandVertical(true);

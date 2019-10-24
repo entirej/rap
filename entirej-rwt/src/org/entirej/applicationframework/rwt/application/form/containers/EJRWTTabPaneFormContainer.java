@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
@@ -32,11 +33,16 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabFolder2Adapter;
 import org.eclipse.swt.custom.CTabFolderEvent;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.custom.ScrolledComposite;import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTAppComponentRenderer;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormContainer;
@@ -56,6 +62,9 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
     private EJRWTFormModal                  _formModel;
     private Map<EJInternalForm, CTabItem>   _tabPages              = new HashMap<EJInternalForm, CTabItem>();
     private List<EJRWTFormSelectedListener> _formSelectedListeners = new ArrayList<EJRWTFormSelectedListener>(1);
+    
+    private AtomicBoolean uiReady = new AtomicBoolean(false);
+    private List<Runnable> uiActions = new ArrayList<>();
 
     @Override
     public void createContainer(EJRWTApplicationManager manager, Composite parent, EJFrameworkExtensionProperties rendererprop)
@@ -88,7 +97,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         return SWT.TOP;
     }
 
-    public Composite createContainer(Composite parent)
+    public Composite createContainer(final Composite parent)
     {
         if (_folder != null)
         {
@@ -99,7 +108,26 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         int style = SWT.FLAT | SWT.BORDER | getTabOrientation() | SWT.CLOSE;
 
         _folder = new CTabFolder(parent, style);
-
+        parent.addControlListener(new ControlListener()
+        {
+          
+            @Override
+            public void controlResized(ControlEvent e)
+            {
+                parent.removeControlListener(this);
+                uiReady.set(true);
+                uiActions.forEach(Display.getDefault()::asyncExec);
+                uiActions.clear();
+            }
+            
+            @Override
+            public void controlMoved(ControlEvent e)
+            {
+                // TODO Auto-generated method stub
+                
+            }
+        });
+        
         _folder.addCTabFolder2Listener(new CTabFolder2Adapter()
         {
             @Override
@@ -167,21 +195,51 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         
         EJ_RWT.setTestId(tabItem, form.getProperties().getName());
 
+        
+        final EJCoreFormProperties coreFormProperties = form.getProperties();
+        tabItem.setText(coreFormProperties.getTitle() == null ? coreFormProperties.getName() : coreFormProperties.getTitle());
+       
+        _folder.setSelection(tabItem);
+        EJ_RWT.setAttribute(_folder, "ej-item-selection", form.getProperties().getName());
         EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
+        
+        renderer.init();
+        if(uiReady.get())
+        {
+            createFormUI(form, tabItem, renderer);
+        }
+        else
+        {
+            uiActions.add(new Runnable()
+            {
+                
+                @Override
+                public void run()
+                {
+                    createFormUI(form, tabItem, renderer);
+                    
+                }
+            });
+        }
+        
+       
+        return form;
+    }
+
+    private void createFormUI(EJInternalForm form, CTabItem tabItem, EJRWTFormRenderer renderer)
+    {
+        if(tabItem.isDisposed())
+            return;
+        
         final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(_folder, SWT.V_SCROLL | SWT.H_SCROLL);
-        renderer.createControl(scrollComposite);
+        renderer.create(scrollComposite);
         scrollComposite.setContent(renderer.getGuiComponent());
         scrollComposite.setExpandHorizontal(true);
         scrollComposite.setExpandVertical(true);
         scrollComposite.setMinSize(form.getProperties().getFormWidth(), form.getProperties().getFormHeight());
-
-        final EJCoreFormProperties coreFormProperties = form.getProperties();
-        tabItem.setText(coreFormProperties.getTitle() == null ? coreFormProperties.getName() : coreFormProperties.getTitle());
         tabItem.setControl(scrollComposite);
-        _folder.setSelection(tabItem);
-        EJ_RWT.setAttribute(_folder, "ej-item-selection", form.getProperties().getName());
+        
         renderer.gainInitialFocus();
-        return form;
     }
 
     @Override

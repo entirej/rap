@@ -24,7 +24,9 @@ import org.entirej.framework.core.renderers.interfaces.EJFormRenderer;
 
 public interface EJRWTAppFormRenderer extends EJFormRenderer
 {
-    void createControl(Composite parent);
+    void create(Composite parent);
+    void init();
+    
 
     /**
      * Returns the GUI object that is responsible for the display of this form

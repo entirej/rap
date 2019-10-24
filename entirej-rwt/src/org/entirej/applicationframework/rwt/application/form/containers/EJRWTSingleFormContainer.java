@@ -82,7 +82,8 @@ public class EJRWTSingleFormContainer implements EJRWTAppComponentRenderer
                         composite.setData(EJ_RWT.CUSTOM_VARIANT, style);
                     composite.setLayout(fillLayout);
                     EJRWTAppFormRenderer renderer = (EJRWTAppFormRenderer) _form.getRenderer();
-                    renderer.createControl(composite);
+                    renderer.init();
+                    renderer.create(composite);
                     EJRWTEntireJGridPane gridPane = (EJRWTEntireJGridPane) renderer.getGuiComponent();
                     gridPane.cleanLayout();
                     gridPane.addFocusListener(new FocusListener()

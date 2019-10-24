@@ -259,7 +259,8 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             {
 
                 EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
-                renderer.createControl(parent);
+                renderer.init();
+                renderer.create(parent);
                 EJRWTEntireJGridPane gridPane = renderer.getGuiComponent();
                 gridPane.cleanLayout();
                 embeddedForms.add(form);
