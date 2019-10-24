@@ -75,11 +75,15 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 		setEditorSetup : function( e) {
 			this.editor = e;
 			e.on('init', this.onReady);
+			
+			
+			
 		},
-		onReady : function() {
+		onReady : function(ed) {
 			// TODO [tb] : on IE 7/8 the iframe and body has to be made
 			// transparent explicitly
 			this.ready = true;
+	        ed.target.editorCommands.execCommand("fontSize", false, "11px");
 			var area = this.parent.getClientArea();
 			
 			try
@@ -150,8 +154,9 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 						    'searchreplace visualblocks ',
 						    'insertdatetime table contextmenu paste   wordcount'
 						  ],
-						  
-						  toolbar: 'insert | undo redo |  formatselect | bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+						  content_style: '',
+						  fontsize_formats: "8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px",
+						  toolbar: 'insert | undo redo |  formatselect | sizeselect fontselect fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
 						  
 						  setup: this.setEditorSetup});
 				} else {
@@ -167,9 +172,9 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 						    'searchreplace visualblocks ',
 						    'insertdatetime table contextmenu paste   wordcount'
 						  ],
-						  
-						  toolbar: 'insert | undo redo |  formatselect | bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
-						  
+						  fontsize_formats: "8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px",
+						  toolbar: 'insert | undo redo |  formatselect | sizeselect fontselect fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+						  content_style: '',
 						  setup: this.setEditorSetup});
 					
 				}
