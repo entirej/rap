@@ -63,6 +63,9 @@ public class EJRWTTinymceEditor extends Composite
     private static final String    REMOTE_TYPE        = "eclipsesource.TinymceEditor";
 
     private String                 text               = "";
+    private String                 contentCss         = "resources/tinymce/ej/content.ej.css"; 
+    
+    
     private final RemoteObject     remoteObject;
 
     private final OperationHandler operationHandler   = new AbstractOperationHandler()
@@ -95,6 +98,10 @@ public class EJRWTTinymceEditor extends Composite
         remoteObject.set("inline", inline);
         remoteObject.set("removeToolbar", removeToolbar);
         remoteObject.set("profile", profile == null ? "Standard" : profile);
+        //remoteObject.set("font", getCssFont());
+        remoteObject.set("contentCss", contentCss=read( contentCss));
+        
+        
 
     }
 
@@ -168,7 +175,38 @@ public class EJRWTTinymceEditor extends Composite
             inputStream.close();
         }
     }
+    
+    @SuppressWarnings("resource")
+    private static String read(String fileName) 
+    {
+        ClassLoader classLoader = EJRWTTinymceEditor.class.getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream( fileName);
+        if (inputStream == null)
+        {
+           return "";
+        }
+        try (java.util.Scanner s = new java.util.Scanner(inputStream).useDelimiter("\\A");)
+        {
+            
+            return s.hasNext() ? s.next().replaceAll("\\R+", " ") : "";
+        }
+        finally
+        {
+            try
+            {
+                inputStream.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+  
 
+    
+   
+    
     // //////////////////
     // overwrite methods
 
@@ -211,6 +249,17 @@ public class EJRWTTinymceEditor extends Composite
         }
         this.text = text;
         remoteObject.set("text", text);
+    }
+    
+    public void setContentCss(String contentCss)
+    {
+        this.contentCss = contentCss;
+        if(contentCss!=null) {
+            
+            this.contentCss = read( contentCss);
+        }
+        remoteObject.set("contentCss", this.contentCss);
+        
     }
 
     public String getText()

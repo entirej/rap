@@ -25,6 +25,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 		this.parent = rap.getObject(properties.parent);
 		this.inline = properties.inline;
 		this.profile = properties.profile;
+		this.contentCss = properties.contentCss;
 		this.removeToolbar = properties.removeToolbar;
 		this.readonly = false;
 		this.element = document.createElement("div");
@@ -156,7 +157,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 						    'searchreplace visualblocks ',
 						    'insertdatetime table contextmenu paste   wordcount'
 						  ],
-						  content_style: '',
+						  content_style: this.contentCss,
 						  fontsize_formats: "8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px",
 						  toolbar: 'insert | undo redo |  formatselect | sizeselect fontselect fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
 						  
@@ -176,7 +177,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 						  ],
 						  fontsize_formats: "8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px",
 						  toolbar: 'insert | undo redo |  formatselect | sizeselect fontselect fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
-						  content_style: '',
+						  content_style: this.contentCss,
 						  setup: this.setEditorSetup});
 					
 				}
