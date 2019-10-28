@@ -35,37 +35,15 @@ public class EJRWTTinymceEditor extends Composite
     private static final String    REGISTER_PATH      = "tinymceeditor/";
 
     private static final String[]  RESOURCE_FILES     = { "tinymce.min.js", "tinymcehandler.js" };
-    private static final String[]  RESOURCE_FILES_SUB = {
-            "plugins/visualblocks/css/visualblocks.css",
-            "skins/lightgray/content.inline.min.css",
-            "skins/lightgray/content.min.css",
-            "skins/lightgray/content.mobile.min.css",
-            "skins/lightgray/skin.min.css",
-            "skins/lightgray/skin.mobile.min.css",
-            "skins/lightgray/fonts/tinymce-mobile.woff",
-            "skins/lightgray/fonts/tinymce-small.eot",
-            "skins/lightgray/fonts/tinymce-small.svg",
-            "skins/lightgray/fonts/tinymce-small.ttf",
-            "skins/lightgray/fonts/tinymce-small.woff",
-            "skins/lightgray/fonts/tinymce.eot",
-            "skins/lightgray/fonts/tinymce.svg",
-            "skins/lightgray/fonts/tinymce.ttf",
-            "skins/lightgray/fonts/tinymce.woff",
-            "skins/lightgray/img/anchor.gif",
-            "skins/lightgray/img/loader.gif",
-            "skins/lightgray/img/object.gif",
-            "skins/lightgray/img/trans.gif",
-            "themes/inlite/theme.min.js",
-            "themes/mobile/theme.min.js",
-            "themes/modern/theme.min.js",
-            };
-    
+    private static final String[]  RESOURCE_FILES_SUB = { "plugins/visualblocks/css/visualblocks.css", "skins/lightgray/content.inline.min.css", "skins/lightgray/content.min.css", "skins/lightgray/content.mobile.min.css", "skins/lightgray/skin.min.css", "skins/lightgray/skin.mobile.min.css",
+            "skins/lightgray/fonts/tinymce-mobile.woff", "skins/lightgray/fonts/tinymce-small.eot", "skins/lightgray/fonts/tinymce-small.svg", "skins/lightgray/fonts/tinymce-small.ttf", "skins/lightgray/fonts/tinymce-small.woff", "skins/lightgray/fonts/tinymce.eot", "skins/lightgray/fonts/tinymce.svg",
+            "skins/lightgray/fonts/tinymce.ttf", "skins/lightgray/fonts/tinymce.woff", "skins/lightgray/img/anchor.gif", "skins/lightgray/img/loader.gif", "skins/lightgray/img/object.gif", "skins/lightgray/img/trans.gif", "themes/inlite/theme.min.js", "themes/mobile/theme.min.js", "themes/modern/theme.min.js", };
+
     private static final String    REMOTE_TYPE        = "eclipsesource.TinymceEditor";
 
     private String                 text               = "";
-    private String                 contentCss         = "resources/tinymce/ej/content.ej.css"; 
-    
-    
+    private String                 contentCss         = "";
+
     private final RemoteObject     remoteObject;
 
     private final OperationHandler operationHandler   = new AbstractOperationHandler()
@@ -87,7 +65,7 @@ public class EJRWTTinymceEditor extends Composite
                                                           }
                                                       };
 
-    public EJRWTTinymceEditor(Composite parent, int style, boolean inline, String profile, boolean removeToolbar)
+    public EJRWTTinymceEditor(Composite parent, int style, boolean inline, String profile, boolean removeToolbar, String contentCssFile)
     {
         super(parent, style);
 
@@ -98,10 +76,10 @@ public class EJRWTTinymceEditor extends Composite
         remoteObject.set("inline", inline);
         remoteObject.set("removeToolbar", removeToolbar);
         remoteObject.set("profile", profile == null ? "Standard" : profile);
-        //remoteObject.set("font", getCssFont());
-        remoteObject.set("contentCss", contentCss=read( contentCss));
-        
-        
+        // remoteObject.set("font", getCssFont());
+        remoteObject.set("contentCss", contentCss = read(contentCssFile == null 
+                || contentCssFile.isEmpty() ?
+                        "resources/tinymce/ej/content.ej.css" : contentCssFile));
 
     }
 
@@ -129,14 +107,12 @@ public class EJRWTTinymceEditor extends Composite
                 {
                     register(resourceManager, fileName);
                 }
-                
+
                 for (String fileName : RESOURCE_FILES_SUB)
                 {
                     register(resourceManager, fileName);
                 }
-               
 
-               
             }
             catch (IOException ioe)
             {
@@ -149,12 +125,13 @@ public class EJRWTTinymceEditor extends Composite
     {
         ClientFileLoader jsLoader = RWT.getClient().getService(ClientFileLoader.class);
         ResourceManager resourceManager = RWT.getResourceManager();
-       // jsLoader.requireJs(resourceManager.getLocation(REGISTER_PATH + "jquery-3.3.1.min.js"));
+        // jsLoader.requireJs(resourceManager.getLocation(REGISTER_PATH +
+        // "jquery-3.3.1.min.js"));
         jsLoader.requireJs(resourceManager.getLocation(REGISTER_PATH + "tinymcehandler.js"));
 
         jsLoader.requireJs(resourceManager.getLocation(REGISTER_PATH + "tinymce.min.js"));
-        //jsLoader.requireJs(resourceManager.getLocation(REGISTER_PATH + "jquery.tinymce.min.js"));
-   
+        // jsLoader.requireJs(resourceManager.getLocation(REGISTER_PATH +
+        // "jquery.tinymce.min.js"));
 
     }
 
@@ -175,19 +152,19 @@ public class EJRWTTinymceEditor extends Composite
             inputStream.close();
         }
     }
-    
+
     @SuppressWarnings("resource")
-    private static String read(String fileName) 
+    private static String read(String fileName)
     {
         ClassLoader classLoader = EJRWTTinymceEditor.class.getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream( fileName);
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
         if (inputStream == null)
         {
-           return "";
+            return "";
         }
         try (java.util.Scanner s = new java.util.Scanner(inputStream).useDelimiter("\\A");)
         {
-            
+
             return s.hasNext() ? s.next().replaceAll("\\R+", " ") : "";
         }
         finally
@@ -202,11 +179,7 @@ public class EJRWTTinymceEditor extends Composite
             }
         }
     }
-  
 
-    
-   
-    
     // //////////////////
     // overwrite methods
 
@@ -250,16 +223,17 @@ public class EJRWTTinymceEditor extends Composite
         this.text = text;
         remoteObject.set("text", text);
     }
-    
+
     public void setContentCss(String contentCss)
     {
         this.contentCss = contentCss;
-        if(contentCss!=null) {
-            
-            this.contentCss = read( contentCss);
+        if (contentCss != null)
+        {
+
+            this.contentCss = read(contentCss);
         }
         remoteObject.set("contentCss", this.contentCss);
-        
+
     }
 
     public String getText()

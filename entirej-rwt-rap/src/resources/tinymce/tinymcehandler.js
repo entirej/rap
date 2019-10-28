@@ -53,9 +53,6 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			this.elementReadonly.style.right = '0px';
 			this.elementReadonly.style.visibility = "hidden";// visible
 			this.elementReadonly.style["z-index"] = "2147483647";// visible
-			this.elementReadonly.style["background-color"] = "white";// visible
-			this.elementReadonly.style["font-family"] = "Verdana,Arial,Helvetica,sans-serif";// visible
-			this.elementReadonly.style["font-size"] = "11px";
 			
 
 			this.parent.append(this.elementReadonly);
@@ -86,7 +83,6 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			// TODO [tb] : on IE 7/8 the iframe and body has to be made
 			// transparent explicitly
 			this.ready = true;
-	        ed.target.editorCommands.execCommand("fontSize", false, "11px");
 			var area = this.parent.getClientArea();
 			
 			try
@@ -218,8 +214,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			if (this.ready) {
 				async(this, function() { // Needed by IE for some reason
 					//this.element.style.font = font;
-					if(this.removeToolbar)
-						this.elementReadonly.style.font= font;
+					
 				});
 			} else {
 				this._font = font;
@@ -240,8 +235,6 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				readOnlyDoc.contentDocument.head.innerHTML = editorDoc.head.innerHTML;
 				
 			} ;
-			
-			//editorContent.get 
 			
 		}
 		,

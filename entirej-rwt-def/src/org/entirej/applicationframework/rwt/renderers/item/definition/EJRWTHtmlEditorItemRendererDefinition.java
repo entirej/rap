@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 CRESOFT AG
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     CRESOFT AG - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.item.definition;
 
@@ -38,12 +37,13 @@ import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendere
 public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererDefinition
 {
 
-    public static final String PROPERTY_CSS_KEY          = "CSS_KEY";
-    public static final String PROPERTY_INLINE_KEY       = "INLINE";
-    public static final String PROPERTY_PROFILE_KEY      = "PROFILE";
-    public static final String PROPERTY_PROFILE_BASIC    = "Basic";
-    public static final String PROPERTY_PROFILE_STANDARD = "Standard";
-    public static final String PROPERTY_PROFILE_FULL     = "Full";
+    public static final String PROPERTY_CSS_KEY            = "CSS_KEY";
+    public static final String PROPERTY_INLINE_KEY         = "INLINE";
+    public static final String PROPERTY_PROFILE_KEY        = "PROFILE";
+    public static final String PROPERTY_PROFILE_BASIC      = "Basic";
+    public static final String PROPERTY_PROFILE_STANDARD   = "Standard";
+    public static final String PROPERTY_PROFILE_FULL       = "Full";
+    public static final String PROPERTY_CSS_PATH           = "CSS_PATH";
 
     public static final String PROPERTY_REMOVE_TOOLBAR_KEY = "REMOVE_TOOLBAR";
 
@@ -78,17 +78,23 @@ public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererD
 
         EJDevPropertyDefinition customCSSKey = new EJDevPropertyDefinition(PROPERTY_CSS_KEY, EJPropertyDefinitionType.STRING);
         customCSSKey.setLabel("Custom CSS Key");
-        customCSSKey
-                .setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
+        customCSSKey.setDescription("Indicates custom CSS key in project CSS file that can customize  item look and feel. Please refer to Entirej RWT CSS guide.");
 
         mainGroup.addPropertyDefinition(customCSSKey);
 
+        
+        EJDevPropertyDefinition cssPath = new EJDevPropertyDefinition(PROPERTY_CSS_PATH, EJPropertyDefinitionType.PROJECT_FILE);
+        cssPath.setLabel("Editor Content CSS path");
+        mainGroup.addPropertyDefinition(cssPath);
+        
         EJDevPropertyDefinition inlineMode = new EJDevPropertyDefinition(PROPERTY_INLINE_KEY, EJPropertyDefinitionType.BOOLEAN);
         inlineMode.setLabel("Inline mode");
         inlineMode.setDescription("Indicates if this item should edit with inline toolbar");
         inlineMode.setDefaultValue("false");
         mainGroup.addPropertyDefinition(inlineMode);
+
         
+
         EJDevPropertyDefinition removeToolbar = new EJDevPropertyDefinition(PROPERTY_REMOVE_TOOLBAR_KEY, EJPropertyDefinitionType.BOOLEAN);
         removeToolbar.setLabel("Hide toolbar when disabled");
         removeToolbar.setDefaultValue("false");

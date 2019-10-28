@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 CRESOFT AG
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     CRESOFT AG - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.html;
 
@@ -52,21 +51,22 @@ import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
 
 public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusListener, Serializable
 {
-    public static final String PROPERTY_INLINE_KEY = "INLINE";
-    public static final String PROPERTY_REMOVE_TOOLBAR_KEY = "REMOVE_TOOLBAR";
-    
-    public static final String PROPERTY_PROFILE_KEY      = "PROFILE";
-    public static final String PROPERTY_PROFILE_BASIC    = "Basic";
-    public static final String PROPERTY_PROFILE_STANDARD = "Standard";
-    public static final String PROPERTY_PROFILE_FULL     = "Full";
+    public static final String                PROPERTY_INLINE_KEY         = "INLINE";
+    public static final String                PROPERTY_REMOVE_TOOLBAR_KEY = "REMOVE_TOOLBAR";
+
+    public static final String                PROPERTY_PROFILE_KEY        = "PROFILE";
+    public static final String                PROPERTY_PROFILE_BASIC      = "Basic";
+    public static final String                PROPERTY_PROFILE_STANDARD   = "Standard";
+    public static final String                PROPERTY_PROFILE_FULL       = "Full";
+    public static final String                PROPERTY_CSS_PATH           = "CSS_PATH";
     protected EJFrameworkExtensionProperties  _rendererProps;
     protected EJScreenItemController          _item;
     protected EJScreenItemProperties          _screenItemProperties;
     protected EJItemProperties                _itemProperties;
     protected String                          _registeredItemName;
-    protected EJRWTTinymceEditor                   _textField;
+    protected EJRWTTinymceEditor              _textField;
     protected Label                           _label;
-    protected boolean                         _isValid = true;
+    protected boolean                         _isValid                    = true;
     protected boolean                         _mandatory;
 
     protected EJCoreVisualAttributeProperties _visualAttributeProperties;
@@ -76,25 +76,24 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
     private EJRWTItemRendererVisualContext    _visualContext;
 
     protected Object                          _baseValue;
-    private EJMessage message;
+    private EJMessage                         message;
 
     protected boolean controlState(Control control)
     {
         return control != null && !control.isDisposed();
 
     }
-    
+
     @Override
     public String formatValue(Object obj)
     {
         // TODO Auto-generated method stub
         return null;
     }
-    
-   
+
     public String getDisplayValue()
     {
-        return (String)getValue();
+        return (String) getValue();
     }
 
     public String getCSSKey()
@@ -363,7 +362,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
                 if (controlState(_textField))
                 {
 
-                    _textField.setText(value==null ? "" :(value.toString()));
+                    _textField.setText(value == null ? "" : (value.toString()));
                     setMandatoryBorder(_mandatory);
                 }
             }
@@ -428,30 +427,30 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
         }
 
     }
-    
+
     @Override
     public void setMessage(EJMessage message)
     {
         this.message = message;
-        if (_errorDecoration != null  && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
         {
             ControlDecorationSupport.handleMessage(_errorDecoration, message);
         }
-        
+
     }
 
     @Override
     public void clearMessage()
     {
         this.message = null;
-        if (_errorDecoration != null  && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null && controlState(_textField) && !_errorDecoration.getControl().isDisposed())
         {
             _errorDecoration.setDescriptionText("");
             {
                 _errorDecoration.hide();
             }
         }
-        
+
     }
 
     public void valueChanged()
@@ -467,12 +466,12 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
     protected void setMandatoryBorder(boolean req)
     {
 
-        if(_textField.isDisposed() )
+        if (_textField.isDisposed())
         {
             return;
         }
-        
-        if (req && getValue() == null )
+
+        if (req && getValue() == null)
         {
             _mandatoryDecoration.show();
         }
@@ -602,18 +601,23 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
         {
 
             composite.setData(EJ_RWT.CUSTOM_VARIANT, "html");
-            _textField = new EJRWTTinymceEditor(composite, SWT.NONE,_rendererProps.getBooleanProperty(PROPERTY_INLINE_KEY, false),
-                    
-                    _rendererProps.getStringProperty(PROPERTY_PROFILE_KEY),_rendererProps.getBooleanProperty(PROPERTY_REMOVE_TOOLBAR_KEY, false)){
-                
+            _textField = new EJRWTTinymceEditor(composite, SWT.NONE, _rendererProps.getBooleanProperty(PROPERTY_INLINE_KEY, false),
+
+                    _rendererProps.getStringProperty(PROPERTY_PROFILE_KEY), _rendererProps.getBooleanProperty(PROPERTY_REMOVE_TOOLBAR_KEY, false),_rendererProps.getStringProperty(PROPERTY_CSS_PATH))
+            {
+
+                /**
+                 * 
+                 */
+                private static final long serialVersionUID = 1L;
 
                 protected void textValueChanged()
                 {
-                   _item.itemValueChaged(_textField.getText());
-                    
+                    _item.itemValueChaged(_textField.getText());
+
                 }
             };
-            
+
             _textField.setData(EJ_RWT.CUSTOM_VARIANT, "html");
             _textField.setData(EJ_RWT.CUSTOM_VARIANT, getCSSKey());
             String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
@@ -637,13 +641,12 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
             _errorDecoration.setImage(getDecorationImage(FieldDecorationRegistry.DEC_ERROR));
             _mandatoryDecoration.setImage(getDecorationImage(FieldDecorationRegistry.DEC_REQUIRED));
             _mandatoryDecoration.setShowHover(true);
-            _mandatoryDecoration.setDescriptionText(_screenItemProperties.getLabel() == null || _screenItemProperties.getLabel().isEmpty() ? "Required Item"
-                    : String.format("%s is required", _screenItemProperties.getLabel()));
+            _mandatoryDecoration.setDescriptionText(_screenItemProperties.getLabel() == null || _screenItemProperties.getLabel().isEmpty() ? "Required Item" : String.format("%s is required", _screenItemProperties.getLabel()));
             if (_isValid)
             {
                 _errorDecoration.hide();
             }
-            if (message!=null)
+            if (message != null)
             {
                 setMessage(message);
             }
@@ -693,18 +696,17 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
         _label.setText(_screenItemProperties.getLabel() == null ? "" : _screenItemProperties.getLabel());
     }
 
-
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)
     {
-        
+
         return null;
     }
 
     @Override
     public EJRWTAbstractTableSorter getColumnSorter(final EJScreenItemProperties item, EJScreenItemController controller)
     {
-       return null;
+        return null;
     }
 
     @Override
@@ -712,7 +714,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
     {
         return false;
     }
-    
+
     @Override
     public List<Object> getValidValues()
     {
