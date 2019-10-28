@@ -119,18 +119,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			if (this.element.parentNode) {
 				rap.off("render", this.onRender);
 				
-				if(this.removeToolbar )
-				{
-					if (this._text && (this._enable != undefined && !this._enable))
-					{
-						this.elementReadonly.innerHTML = this._text;
-						this.elementReadonly.style.font= this._font;
-						
-						this.elementReadonly.style.visibility = "visible";
-					}
-					
-					
-				}
+				
 				
 				
 
@@ -212,7 +201,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				    this.editor.setContent(text);
 					if(this.removeToolbar && this.readonly  )
 					{
-						this.elementReadonly.innerHTML = ( text);
+						this.copyHtmlToReadOnly();
 					}
 				}catch(e)
 				{
@@ -236,6 +225,26 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				this._font = font;
 			}
 		},
+		
+		copyHtmlToReadOnly (){
+			var editorContent = this.element.parentElement.getElementsByClassName("mce-edit-area")[0];
+			this.elementReadonly.innerHTML = '';
+			var readOnly = editorContent.cloneNode(true);
+			this.elementReadonly.append(readOnly);
+			
+			var editorDoc =editorContent.getElementsByTagName("iframe")[0].contentDocument.cloneNode(true);
+			var readOnlyDoc =readOnly.getElementsByTagName("iframe")[0];
+			
+			readOnlyDoc.onload = function () { 
+				readOnlyDoc.contentDocument.body.innerHTML = editorDoc.body.innerHTML;
+				readOnlyDoc.contentDocument.head.innerHTML = editorDoc.head.innerHTML;
+				
+			} ;
+			
+			//editorContent.get 
+			
+		}
+		,
 
 		setEnable : function(enable) {
 			if (this.ready) {
@@ -251,8 +260,9 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 							this.elementReadonly.innerHTML = '';
 						} else {
 		
-							this.elementReadonly.innerHTML = (this.editor.getContent());
+							
 							this.element.style.visibility = "hidden";
+							this.copyHtmlToReadOnly();
 							this.elementReadonly.style.visibility = "visible";
 		
 						}	
