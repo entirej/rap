@@ -59,6 +59,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
     public static final String                PROPERTY_PROFILE_STANDARD   = "Standard";
     public static final String                PROPERTY_PROFILE_FULL       = "Full";
     public static final String                PROPERTY_CSS_PATH           = "CSS_PATH";
+    public static final String                PROPERTY_CONFIG_PATH        = "CONFIG_PATH";
     protected EJFrameworkExtensionProperties  _rendererProps;
     protected EJScreenItemController          _item;
     protected EJScreenItemProperties          _screenItemProperties;
@@ -603,7 +604,10 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
             composite.setData(EJ_RWT.CUSTOM_VARIANT, "html");
             _textField = new EJRWTTinymceEditor(composite, SWT.NONE, _rendererProps.getBooleanProperty(PROPERTY_INLINE_KEY, false),
 
-                    _rendererProps.getStringProperty(PROPERTY_PROFILE_KEY), _rendererProps.getBooleanProperty(PROPERTY_REMOVE_TOOLBAR_KEY, false),_rendererProps.getStringProperty(PROPERTY_CSS_PATH))
+                    _rendererProps.getStringProperty(PROPERTY_PROFILE_KEY),
+                    _rendererProps.getBooleanProperty(PROPERTY_REMOVE_TOOLBAR_KEY, false),
+                    _rendererProps.getStringProperty(PROPERTY_CSS_PATH),
+                    _rendererProps.getStringProperty(PROPERTY_CONFIG_PATH))
             {
 
                 /**

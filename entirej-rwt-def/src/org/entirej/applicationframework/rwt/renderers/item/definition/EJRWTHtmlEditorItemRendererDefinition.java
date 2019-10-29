@@ -44,6 +44,7 @@ public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererD
     public static final String PROPERTY_PROFILE_STANDARD   = "Standard";
     public static final String PROPERTY_PROFILE_FULL       = "Full";
     public static final String PROPERTY_CSS_PATH           = "CSS_PATH";
+    public static final String PROPERTY_CONFIG_PATH           = "CONFIG_PATH";
 
     public static final String PROPERTY_REMOVE_TOOLBAR_KEY = "REMOVE_TOOLBAR";
 
@@ -87,6 +88,8 @@ public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererD
         cssPath.setLabel("Editor Content CSS path");
         mainGroup.addPropertyDefinition(cssPath);
         
+        
+        
         EJDevPropertyDefinition inlineMode = new EJDevPropertyDefinition(PROPERTY_INLINE_KEY, EJPropertyDefinitionType.BOOLEAN);
         inlineMode.setLabel("Inline mode");
         inlineMode.setDescription("Indicates if this item should edit with inline toolbar");
@@ -99,14 +102,19 @@ public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererD
         removeToolbar.setLabel("Hide toolbar when disabled");
         removeToolbar.setDefaultValue("false");
         mainGroup.addPropertyDefinition(removeToolbar);
+        
+        
+        EJDevPropertyDefinition configPath = new EJDevPropertyDefinition(PROPERTY_CONFIG_PATH, EJPropertyDefinitionType.PROJECT_FILE);
+        configPath.setLabel("Editor Config path");
+        mainGroup.addPropertyDefinition(configPath);
 
-        EJDevPropertyDefinition profile = new EJDevPropertyDefinition(PROPERTY_PROFILE_KEY, EJPropertyDefinitionType.STRING);
-        profile.setLabel("Toolbar Profile");
-        profile.addValidValue(PROPERTY_PROFILE_BASIC, PROPERTY_PROFILE_BASIC);
-        profile.addValidValue(PROPERTY_PROFILE_STANDARD, PROPERTY_PROFILE_STANDARD);
-        profile.addValidValue(PROPERTY_PROFILE_FULL, PROPERTY_PROFILE_FULL);
-        profile.setDefaultValue(PROPERTY_PROFILE_STANDARD);
-        mainGroup.addPropertyDefinition(profile);
+//        EJDevPropertyDefinition profile = new EJDevPropertyDefinition(PROPERTY_PROFILE_KEY, EJPropertyDefinitionType.STRING);
+//        profile.setLabel("Toolbar Profile");
+//        profile.addValidValue(PROPERTY_PROFILE_BASIC, PROPERTY_PROFILE_BASIC);
+//        profile.addValidValue(PROPERTY_PROFILE_STANDARD, PROPERTY_PROFILE_STANDARD);
+//        profile.addValidValue(PROPERTY_PROFILE_FULL, PROPERTY_PROFILE_FULL);
+//        profile.setDefaultValue(PROPERTY_PROFILE_STANDARD);
+//        mainGroup.addPropertyDefinition(profile);
         return mainGroup;
     }
 

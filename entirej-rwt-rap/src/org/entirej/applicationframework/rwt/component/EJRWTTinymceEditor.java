@@ -11,6 +11,8 @@ package org.entirej.applicationframework.rwt.component;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -31,6 +33,10 @@ import org.eclipse.swt.widgets.Layout;
 public class EJRWTTinymceEditor extends Composite
 {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private static final String    RESOURCES_PATH     = "resources/tinymce/";
     private static final String    REGISTER_PATH      = "tinymceeditor/";
 
@@ -42,13 +48,17 @@ public class EJRWTTinymceEditor extends Composite
     private static final String    REMOTE_TYPE        = "eclipsesource.TinymceEditor";
 
     private String                 text               = "";
-    private String                 contentCss         = "";
 
     private final RemoteObject     remoteObject;
 
     private final OperationHandler operationHandler   = new AbstractOperationHandler()
                                                       {
-                                                          @Override
+                                                          /**
+                                                         * 
+                                                         */
+                                                        private static final long serialVersionUID = 1L;
+
+                                                        @Override
                                                           public void handleSet(JsonObject properties)
                                                           {
                                                               JsonValue textValue = properties.get("text");
@@ -65,7 +75,7 @@ public class EJRWTTinymceEditor extends Composite
                                                           }
                                                       };
 
-    public EJRWTTinymceEditor(Composite parent, int style, boolean inline, String profile, boolean removeToolbar, String contentCssFile)
+    public EJRWTTinymceEditor(Composite parent, int style, boolean inline, String profile, boolean removeToolbar, String contentCssFile, String configJsonFile)
     {
         super(parent, style);
 
@@ -77,9 +87,8 @@ public class EJRWTTinymceEditor extends Composite
         remoteObject.set("removeToolbar", removeToolbar);
         remoteObject.set("profile", profile == null ? "Standard" : profile);
         // remoteObject.set("font", getCssFont());
-        remoteObject.set("contentCss", contentCss = read(contentCssFile == null 
-                || contentCssFile.isEmpty() ?
-                        "resources/tinymce/ej/content.ej.css" : contentCssFile));
+        remoteObject.set("contentCss",  read(contentCssFile == null || contentCssFile.isEmpty() ? "resources/tinymce/ej/content.ej.css" : contentCssFile));
+        remoteObject.set("configObj", readAsJson(configJsonFile == null || configJsonFile.isEmpty() ? "resources/tinymce/ej/config.ej.json" : configJsonFile));
 
     }
 
@@ -180,6 +189,38 @@ public class EJRWTTinymceEditor extends Composite
         }
     }
 
+    private static JsonObject readAsJson(String fileName)
+    {
+        ClassLoader classLoader = EJRWTTinymceEditor.class.getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+        if (inputStream == null)
+        {
+            return new JsonObject();
+        }
+        try (Reader reader = new InputStreamReader(inputStream);)
+        {
+
+            return JsonObject.readFrom(reader);
+
+        }
+        catch (IOException e1)
+        {
+            e1.printStackTrace();
+            return new JsonObject();
+        }
+        finally
+        {
+            try
+            {
+                inputStream.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
     // //////////////////
     // overwrite methods
 
@@ -224,17 +265,7 @@ public class EJRWTTinymceEditor extends Composite
         remoteObject.set("text", text);
     }
 
-    public void setContentCss(String contentCss)
-    {
-        this.contentCss = contentCss;
-        if (contentCss != null)
-        {
 
-            this.contentCss = read(contentCss);
-        }
-        remoteObject.set("contentCss", this.contentCss);
-
-    }
 
     public String getText()
     {
