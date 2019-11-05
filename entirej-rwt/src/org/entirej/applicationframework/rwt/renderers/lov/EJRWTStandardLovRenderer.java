@@ -235,6 +235,7 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
                 table.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
                 table.setLinesVisible(rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.SHOW_VERTICAL_LINES, true));
                 table.setHeaderVisible(rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.SHOW_HEADING_PROPERTY, true));
+                table.setData(EJ_RWT.MARKUP_ENABLED, rendererProp.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, false));
 
                 EJRWTTableViewerColumnFactory factory = new EJRWTTableViewerColumnFactory(_tableViewer);
                 ColumnViewerToolTipSupport.enableFor(_tableViewer);

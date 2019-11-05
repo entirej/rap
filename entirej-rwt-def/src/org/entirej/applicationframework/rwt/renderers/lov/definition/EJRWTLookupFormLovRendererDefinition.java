@@ -102,11 +102,16 @@ public class EJRWTLookupFormLovRendererDefinition implements EJDevLovRendererDef
         message.setLabel("Filter Message");
         message.setDescription("The message text is displayed as a hint for the user, indicating the purpose of the filter..");
         
+        EJDevPropertyDefinition htmlFormat = new EJDevPropertyDefinition(EJRWTMultiRecordBlockDefinitionProperties.ENABLE_MARKUP, EJPropertyDefinitionType.BOOLEAN);
+        htmlFormat.setLabel("XHTML Formatting");
+        htmlFormat.setDescription("If this property is set, the Table formats certain XHTML tags ");
+        
 
         mainGroup.addPropertyDefinition(message);
         mainGroup.addPropertyDefinition(showTableBorder);
         mainGroup.addPropertyDefinition(showTableHeader);
         mainGroup.addPropertyDefinition(showVerticalLines);
+        mainGroup.addPropertyDefinition(htmlFormat);
         mainGroup.addPropertyDefinition(quearyScreen);
 
         return mainGroup;

@@ -1,7 +1,24 @@
 {
   "fontsize_formats": "8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px 44px",
    
-   
+  "style_formats":[
+    {"title":"Bold text","inline":"strong"},
+    {"title":"Red text","inline":"span","styles":{"color":"#ff0000"}},
+    {"title":"Red header","block":"h1","styles":{"color":"#ff0000"}},
+    {
+      "title":"Badge",
+      "inline":"span",
+      "styles":{
+        "display":"inline-block",
+        "border":"1px solid #2276d2",
+        "border-radius":"5px",
+        "padding":"2px 5px",
+        "margin":"0 2px",
+        "color":"#2276d2"
+      }
+    },
+    {"title":"Table row 1","selector":"tr","classes":"tablerow1"}
+  ], 
   "visualblocks_default_state":false,
   "end_container_on_empty_block":true
 }
