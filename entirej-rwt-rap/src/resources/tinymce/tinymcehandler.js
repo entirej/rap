@@ -117,7 +117,8 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				rap.off("render", this.onRender);
 				
 				
-				
+				var editorElm = this.element.cloneNode(true);
+				this.element.append(editorElm);
 				
 
 				if (this.profile == 'Basic') {
@@ -133,7 +134,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				if (this.inline) {
 					
 					tinymce.init({
-				          target: this.element,
+				          target: editorElm,
 				          menubar: true,
 				          inline: true,
 				          branding: false,
@@ -157,7 +158,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				} else {
 					
 					tinymce.init({
-				          target: this.element,
+				          target: editorElm,
 				          menubar: true,
 				          branding: false,
 				          resize: false,
@@ -241,6 +242,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			
 			var editorDoc =editorContent.getElementsByTagName("iframe")[0].contentDocument.cloneNode(true);
 			var readOnlyDoc =readOnly.getElementsByTagName("iframe")[0];
+			readOnlyDoc.parentNode.style.height = 'inherit';
 			
 			readOnlyDoc.onload = function () { 
 				readOnlyDoc.contentDocument.body.innerHTML = editorDoc.body.innerHTML;
@@ -266,8 +268,9 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 						} else {
 		
 							
-							this.element.style.visibility = "hidden";
+							
 							this.copyHtmlToReadOnly();
+							this.element.style.visibility = "hidden";
 							this.elementReadonly.style.visibility = "visible";
 		
 						}	
