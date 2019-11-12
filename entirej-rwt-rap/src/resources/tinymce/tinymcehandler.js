@@ -235,20 +235,15 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 		},
 		
 		copyHtmlToReadOnly (){
-			var editorContent = this.element.parentElement.getElementsByClassName("mce-edit-area")[0];
+			
 			this.elementReadonly.innerHTML = '';
-			var readOnly = editorContent.cloneNode(true);
+			var readOnly =document.createElement("div");
 			this.elementReadonly.append(readOnly);
 			
-			var editorDoc =editorContent.getElementsByTagName("iframe")[0].contentDocument.cloneNode(true);
-			var readOnlyDoc =readOnly.getElementsByTagName("iframe")[0];
-			readOnlyDoc.parentNode.style.height = 'inherit';
 			
-			readOnlyDoc.onload = function () { 
-				readOnlyDoc.contentDocument.body.innerHTML = editorDoc.body.innerHTML;
-				readOnlyDoc.contentDocument.head.innerHTML = editorDoc.head.innerHTML;
-				
-			} ;
+			
+			readOnly.innerHTML = "<style type=\"text/css\">"+this.contentCss+"</style>"+ this.editor.getContent();
+			
 			
 		}
 		,

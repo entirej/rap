@@ -330,7 +330,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public void setVisible(boolean visible)
     {
-        if (_labelField != null)
+        if (_labelField != null && controlState(_labelField.getControl()))
         {
             _labelField.getControl().setVisible(visible);
         }

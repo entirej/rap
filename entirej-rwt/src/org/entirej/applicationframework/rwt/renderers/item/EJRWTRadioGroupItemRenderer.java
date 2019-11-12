@@ -490,7 +490,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     private void refreshBackground(Button radioButton)
     {
         Color background = EJRWTVisualAttributeUtils.INSTANCE.getBackground(_visualAttributeProperties);
-        if (radioButton != null)
+        if (radioButton != null && controlState(_radioGroup))
         {
             radioButton.setBackground(background != null ? background : _visualContext.getBackgroundColor());
         }
@@ -499,7 +499,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     private void refreshForeground(Button radioButton)
     {
         Color foreground = EJRWTVisualAttributeUtils.INSTANCE.getForeground(_visualAttributeProperties);
-        if (radioButton != null)
+        if (radioButton != null && controlState(_radioGroup))
         {
             radioButton.setForeground(foreground != null ? foreground : _visualContext.getForegroundColor());
         }
@@ -507,7 +507,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
 
     private void refreshFont(Button radioButton)
     {
-        if (radioButton != null)
+        if (radioButton != null && controlState(_radioGroup))
         {
             radioButton.setFont(EJRWTVisualAttributeUtils.INSTANCE.getFont(_visualAttributeProperties, _visualContext.getItemFont()));
         }
@@ -516,7 +516,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     @Override
     public void validationErrorOccurred(boolean error)
     {
-        if (_errorDecoration == null)
+        if (_errorDecoration == null || !controlState(_radioGroup))
         {
             return;
         }
@@ -536,7 +536,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     public void setMessage(EJMessage message)
     {
         this.message = message;
-        if (_errorDecoration != null  && controlState(_radioGroup))
+        if (_errorDecoration != null  && controlState(_radioGroup) && !_errorDecoration.getControl().isDisposed())
         {
             ControlDecorationSupport.handleMessage(_errorDecoration, message);
         }
