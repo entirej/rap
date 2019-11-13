@@ -117,8 +117,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				rap.off("render", this.onRender);
 				
 				
-				var editorElm = this.element.cloneNode(true);
-				this.element.append(editorElm);
+
 				
 
 				if (this.profile == 'Basic') {
