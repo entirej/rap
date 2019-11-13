@@ -233,20 +233,6 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				this._font = font;
 			}
 		},
-		
-		copyHtmlToReadOnly (){
-			
-			this.elementReadonly.innerHTML = '';
-			var readOnly =document.createElement("div");
-			this.elementReadonly.append(readOnly);
-			
-			
-			
-			readOnly.innerHTML = "<style type=\"text/css\">"+this.contentCss+"</style>"+ this.editor.getContent();
-			
-			
-		}
-		,
 
 		setEnable : function(enable) {
 			if (this.ready) {
@@ -264,7 +250,10 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 		
 							
 							
-							this.copyHtmlToReadOnly();
+							this.elementReadonly.innerHTML = '';
+							var readOnly =document.createElement("div");
+							this.elementReadonly.append(readOnly);
+							readOnly.innerHTML = "<style type=\"text/css\">"+this.contentCss+"</style>"+ this.editor.getContent();
 							this.element.style.visibility = "hidden";
 							this.elementReadonly.style.visibility = "visible";
 		
