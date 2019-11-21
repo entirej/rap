@@ -117,6 +117,9 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				rap.off("render", this.onRender);
 				
 				
+				
+				var editorElm = this.element.cloneNode(true);
+				this.element.appendChild(editorElm);
 
 				
 
@@ -251,7 +254,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 							
 							this.elementReadonly.innerHTML = '';
 							var readOnly =document.createElement("div");
-							this.elementReadonly.append(readOnly);
+							this.elementReadonly.appendChild(readOnly);
 							readOnly.innerHTML = "<style type=\"text/css\">"+this.contentCss+"</style>"+ this.editor.getContent();
 							this.element.style.visibility = "hidden";
 							this.elementReadonly.style.visibility = "visible";
