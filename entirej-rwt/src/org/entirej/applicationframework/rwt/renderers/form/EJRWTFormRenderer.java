@@ -1774,7 +1774,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         public void setCanvasMessages(Collection<EJMessage> messages)
         {
             this.msgs = messages;
-            if (_popupDialog != null && !_popupDialog.getShell().isDisposed())
+            if (_popupDialog != null && !_popupDialog.getShell().isDisposed() && _popupDialog.getShell().isVisible())
             {
 
                 if (_popupDialog.getTray() != null)
@@ -2516,7 +2516,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             if (shell != null && !shell.isDisposed())
             {
 
-                shell.setParent(null);
+                //shell.setParent(null);
                 shell.dispose();
             }
 
@@ -2649,7 +2649,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             if (shell != null && !shell.isDisposed())
             {
 
-                shell.setParent(null);
+                //shell.setParent(null);
                 shell.dispose();
             }
             close();
