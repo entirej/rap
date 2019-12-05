@@ -2621,7 +2621,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             Label text = new Label(shell, SWT.WRAP);
                             GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
                             text.setData(EJ_RWT.MARKUP_ENABLED, true);
-                            text.setText(msg.getMessage());
+                            text.setText(escapeHtml(msg.getMessage()));
                             text.setLayoutData(data);
                         }
                     }
@@ -2632,6 +2632,39 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 calculateSize();
                 scrollComposite.setContent(shell);
             }
+        }
+        
+        String  escapeHtml(String string)
+        {
+            StringBuilder escapedTxt = new StringBuilder();
+            for (int i = 0; i < string.length(); i++)
+            {
+                char tmp = string.charAt(i);
+                switch (tmp)
+                {
+                    case '<':
+                        escapedTxt.append("&lt;");
+                        break;
+                    case '>':
+                        escapedTxt.append("&gt;");
+                        break;
+                    case '&':
+                        escapedTxt.append("&amp;");
+                        break;
+                    case '"':
+                        escapedTxt.append("&quot;");
+                        break;
+                    case '\'':
+                        escapedTxt.append("&#x27;");
+                        break;
+                    case '/':
+                        escapedTxt.append("&#x2F;");
+                        break;
+                    default:
+                        escapedTxt.append(tmp);
+                }
+            }
+            return escapedTxt.toString();
         }
         
         private void calculateSize()
