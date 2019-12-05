@@ -536,11 +536,11 @@ public abstract class EJRWTTrayDialog extends Dialog
             case LEFT:
                 base.moveBelow(sash);
                 trayControl.moveAbove(sash);
-                shell.setBounds(bounds.x, bounds.y, bounds.width + size+10, bounds.height);
+                shell.setBounds(bounds.x, bounds.y, bounds.width + size+3, bounds.height);
                 break;
             default:
                 
-                shell.setBounds(bounds.x, bounds.y, bounds.width + size+10, bounds.height);
+                shell.setBounds(bounds.x, bounds.y, bounds.width + size+3, bounds.height);
 
                 break;
 

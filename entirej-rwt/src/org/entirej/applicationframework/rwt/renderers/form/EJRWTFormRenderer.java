@@ -2470,6 +2470,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         private Composite     parent;
         EJRWTEntireJGridPane  composite;
+        ScrolledComposite scrollComposite;
         Collection<EJMessage> msgs;
 
         EJRWTEntireJGridPane  shell;
@@ -2527,6 +2528,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 {
 
                     composite = new EJRWTEntireJGridPane(parent, 1);
+                    scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL);
+
+                    GridData layoutData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL);
+                    scrollComposite.setLayoutData(layoutData);
                     composite.addControlListener(new ControlListener()
                     {
 
@@ -2548,12 +2553,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     composite.cleanLayout();
                 }
 
-                final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL);
+                
 
                 shell = new EJRWTEntireJGridPane(scrollComposite, 2);
 
-                GridData layoutData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL);
-                scrollComposite.setLayoutData(layoutData);
                 
                 shell.cleanLayoutVertical();
 
