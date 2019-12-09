@@ -24,6 +24,8 @@ public class EJRWTStackedItemRendererConfig
 
     private Boolean expandHorizontally = null;
     private Boolean expandVertically   = null;
+    
+    private String textAliment = null;
 
     public EJRWTStackedItemRendererType getType()
     {
@@ -108,6 +110,16 @@ public class EJRWTStackedItemRendererConfig
     public void setExpandVertically(Boolean expandVertically)
     {
         this.expandVertically = expandVertically;
+    }
+    
+    public void setTextAliment(String textAliment)
+    {
+        this.textAliment = textAliment;
+    }
+    
+    public String getTextAliment()
+    {
+        return textAliment;
     }
 
     public static class LOVSupportConfig extends EJRWTStackedItemRendererConfig
@@ -196,6 +208,90 @@ public class EJRWTStackedItemRendererConfig
         {
             super(EJRWTStackedItemRendererType.LABEL);
         }
+    }
+    public static class ValueLabel extends EJRWTStackedItemRendererConfig
+    {
+        public ValueLabel()
+        {
+            super(EJRWTStackedItemRendererType.VALUE_LABEL);
+        }
+    }
+    public static class Links extends EJRWTStackedItemRendererConfig
+    {
+        private List<Action> actions = new ArrayList<>();
+        
+        public Links()
+        {
+            super(EJRWTStackedItemRendererType.LINKS);
+        }
+        
+        public List<Action> getActions()
+        {
+            return actions;
+        }
+        
+        
+        public Links withAction(String name, String actionCommand)
+        {
+            actions.add(new Action(name, actionCommand));
+            
+            return this;
+        }
+        public Links withSpace()
+        {
+            Action e = new Action("", null);
+            e.space = true;
+            actions.add(e);
+            
+            return this;
+        }
+        public Links withSeparator()
+        {
+            Action e = new Action("", null);
+            e.separator = true;
+            actions.add(e);
+            
+            return this;
+        }
+        
+        
+        public static class Action{
+            
+            private String name;
+            private String actionCommand;
+            private boolean space;
+            private boolean separator;
+            
+            
+            
+            public Action(String name, String actionCommand)
+            {
+                super();
+                this.name = name;
+                this.actionCommand = actionCommand;
+            }
+
+            public String getActionCommand()
+            {
+                return actionCommand;
+            }
+            
+            public boolean isSpace()
+            {
+                return space;
+            }
+            
+            public boolean isSeparator()
+            {
+                return separator;
+            }
+            
+            public String getName()
+            {
+                return name;
+            }
+        }
+        
     }
 
     public static class Spacer extends EJRWTStackedItemRendererConfig

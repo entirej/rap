@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -79,6 +80,7 @@ import org.eclipse.swt.widgets.Text;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractPanelAction;
+import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJStackedPane;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJStackedPane.StackedPage;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
@@ -766,6 +768,8 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     private void extractValuetoUi()
     {
 
+        setLabel("");
+
         if (!controlState(stackedPane))
             return;
 
@@ -777,6 +781,18 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             _actionControl.setCustomActionVisible(_baseValue != null && _baseValue.getConfig().getType() == EJRWTStackedItemRendererType.DATE);
             if (_baseValue != null)
             {
+
+//                if (_baseValue.getConfig().getTextAliment() != null && controlState(_label))
+//                {
+//                    _label.setData("data.TextAliment", _label.getAlignment());
+//                    labletextAliment(_label, _baseValue.getConfig().getTextAliment());
+//                }
+//                else if (controlState(_label))
+//                {
+//                    if (_label.getData("data.TextAliment") instanceof Integer)
+//                        _label.setAlignment((Integer) _label.getData("data.TextAliment"));
+//                }
+
                 if (controlState(_label) && !(_baseValue.getConfig().getType() == EJRWTStackedItemRendererType.SPACER || _baseValue.getConfig().getType() == EJRWTStackedItemRendererType.CHECKBOX || _baseValue.getConfig().getType() == EJRWTStackedItemRendererType.BUTTON))
                 {
                     if (_baseValue.getConfig().getLabel() != null)
@@ -807,10 +823,68 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                     }
 
                 }
+                if (_baseValue.getConfig().getType() == EJRWTStackedItemRendererType.LINKS)
+                {
+                    EJRWTStackedItemRendererConfig.Links config = (EJRWTStackedItemRendererConfig.Links) _baseValue.getConfig();
+                    EJRWTEntireJGridPane control = (EJRWTEntireJGridPane) stackedPane.getControl(_baseValue.getConfig().getType().name());
+                    if (control.getData("CONFIG") != config)
+                    {
+                        Arrays.stream(control.getChildren()).filter(c -> !c.isDisposed()).forEach(Control::dispose);
+
+                        control.setData("CONFIG", config);
+
+                        config.getActions().forEach(a -> {
+
+                            if (a.isSeparator())
+                            {
+
+                                new Label(control, SWT.SEPARATOR|SWT.VERTICAL).setLayoutData(new GridData(GridData.FILL_VERTICAL|GridData.GRAB_VERTICAL));;
+                            }
+                            else if (a.isSpace())
+                            {
+                                new Label(control, SWT.NONE).setLayoutData(new GridData(GridData.FILL_BOTH|GridData.GRAB_HORIZONTAL));
+                            }
+                            else if (a.getActionCommand() ==null)
+                            {
+                                Link label = new Link(control, SWT.NONE);
+                                //label.setLayoutData(new GridData(GridData.FILL_VERTICAL));
+                                label.setText(a.getName());
+                                label.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_LABEL);
+                            }
+                            else
+                            {
+                                Link linkField = new Link(control, SWT.NONE);
+                                linkField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_LABEL);
+                                linkField.setText(String.format("<a>%s</a>", a.getName()));
+                                linkField.setData(EJ_RWT.MARKUP_ENABLED, true);
+                                linkField.addSelectionListener(new SelectionAdapter()
+                                {
+
+                                    private static final long serialVersionUID = 1L;
+
+                                    @Override
+                                    public void widgetSelected(SelectionEvent e)
+                                    {
+                                        setCustomActionCommand(a.getActionCommand());
+                                        Display.getDefault().asyncExec(() -> {
+
+                                            _item.executeActionCommand();
+
+                                        });
+                                    }
+                                });
+                            }
+
+                        });
+
+                        control.layout(true);
+                    }
+
+                }
 
                 if (_baseValue.getConfig().getTooltip() != null)
                 {
-                    setHint(_baseValue.getConfig().getLabel());
+                    setHint(_baseValue.getConfig().getTooltip());
                 }
                 else
                 {
@@ -1153,23 +1227,8 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 // setLOV mapping
                 if (_baseValue.getConfig() instanceof EJRWTStackedItemRendererConfig.ActionSupportConfig)
                 {
-                    if (_item.getProperties() instanceof EJCoreInsertScreenItemProperties)
-                    {
-                        ((EJCoreInsertScreenItemProperties) _item.getProperties()).setActionCommand(((EJRWTStackedItemRendererConfig.ActionSupportConfig) _baseValue.getConfig()).getActionCommand());
-                    }
-                    else if (_item.getProperties() instanceof EJCoreQueryScreenItemProperties)
-                    {
-                        ((EJCoreQueryScreenItemProperties) _item.getProperties()).setActionCommand(((EJRWTStackedItemRendererConfig.ActionSupportConfig) _baseValue.getConfig()).getActionCommand());
-                    }
-                    else if (_item.getProperties() instanceof EJCoreUpdateScreenItemProperties)
-                    {
-                        ((EJCoreUpdateScreenItemProperties) _item.getProperties()).setActionCommand(((EJRWTStackedItemRendererConfig.ActionSupportConfig) _baseValue.getConfig()).getActionCommand());
-                    }
-                    else if (_item.getProperties() instanceof EJCoreMainScreenItemProperties)
-                    {
-
-                        ((EJCoreMainScreenItemProperties) _item.getProperties()).setActionCommand(((EJRWTStackedItemRendererConfig.ActionSupportConfig) _baseValue.getConfig()).getActionCommand());
-                    }
+                    String actionCommand = ((EJRWTStackedItemRendererConfig.ActionSupportConfig) _baseValue.getConfig()).getActionCommand();
+                    setCustomActionCommand(actionCommand);
 
                 }
                 if (_baseValue.getConfig() instanceof EJRWTStackedItemRendererConfig.LOVSupportConfig)
@@ -1261,6 +1320,27 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
     }
 
+    private void setCustomActionCommand(String actionCommand)
+    {
+        if (_item.getProperties() instanceof EJCoreInsertScreenItemProperties)
+        {
+            ((EJCoreInsertScreenItemProperties) _item.getProperties()).setActionCommand(actionCommand);
+        }
+        else if (_item.getProperties() instanceof EJCoreQueryScreenItemProperties)
+        {
+            ((EJCoreQueryScreenItemProperties) _item.getProperties()).setActionCommand(actionCommand);
+        }
+        else if (_item.getProperties() instanceof EJCoreUpdateScreenItemProperties)
+        {
+            ((EJCoreUpdateScreenItemProperties) _item.getProperties()).setActionCommand(actionCommand);
+        }
+        else if (_item.getProperties() instanceof EJCoreMainScreenItemProperties)
+        {
+
+            ((EJCoreMainScreenItemProperties) _item.getProperties()).setActionCommand(actionCommand);
+        }
+    }
+
     private void setStackValue()
     {
         Object value = _baseValue.getValue();
@@ -1316,6 +1396,14 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         control.setText(value.toString());
                         break;
                     }
+                    case VALUE_LABEL:
+                    {
+                        setLabel("");
+                        Label control = (Label) stackedPane.getControl(_baseValue.getConfig().getType().name());
+                        control.setText(value.toString());
+                        break;
+                    }
+
                     case TEXT:
                     case TEXT_AREA:
                     {
@@ -1407,6 +1495,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                         break;
                     }
                     case BUTTON:
+                    case LINKS:
                     {
                         setLabel("");
 
@@ -1613,7 +1702,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     protected void setMandatoryBorder(boolean req)
     {
 
-        if(controlState(_mandatoryDecoration.getControl()))
+        if (controlState(_mandatoryDecoration.getControl()))
         {
             if (req && (getValue() == null || _baseValue.getValue() == null))
             {
@@ -2310,6 +2399,68 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             });
             _button.setData(_item.getReferencedItemProperties().getName());
             _button.setData("EJRWTItemRendererVisualContext", new EJRWTItemRendererVisualContext(_button.getBackground(), _button.getForeground(), _button.getFont()));
+
+        }
+        {
+
+            final EJRWTEntireJGridPane _grid = new EJRWTEntireJGridPane(stackedPane, 20);
+
+            _grid.cleanLayout();
+
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _grid.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
+            stackedPane.add(EJRWTStackedItemRendererType.LINKS.name(), new StackedPage()
+            {
+
+                @Override
+                public String getKey()
+                {
+                    return EJRWTStackedItemRendererType.LINKS.name();
+                }
+
+                @Override
+                public Control getControl()
+                {
+                    return _grid;
+                }
+            });
+            _grid.setData(_item.getReferencedItemProperties().getName());
+            _grid.setData("EJRWTItemRendererVisualContext", new EJRWTItemRendererVisualContext(_grid.getBackground(), _grid.getForeground(), _grid.getFont()));
+
+        }
+        {
+
+            final Label _valueLbl = new Label(stackedPane, SWT.WRAP);
+
+            _valueLbl.setData(EJ_RWT.MARKUP_ENABLED, true);
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
+
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                _valueLbl.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
+            stackedPane.add(EJRWTStackedItemRendererType.VALUE_LABEL.name(), new StackedPage()
+            {
+
+                @Override
+                public String getKey()
+                {
+                    return EJRWTStackedItemRendererType.VALUE_LABEL.name();
+                }
+
+                @Override
+                public Control getControl()
+                {
+                    return _valueLbl;
+                }
+            });
+            _valueLbl.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXT);
+            _valueLbl.setData(_item.getReferencedItemProperties().getName());
+            _valueLbl.setData("EJRWTItemRendererVisualContext", new EJRWTItemRendererVisualContext(_valueLbl.getBackground(), _valueLbl.getForeground(), _valueLbl.getFont()));
 
         }
 
@@ -3283,6 +3434,26 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
             }
         }
         return newVal;
+    }
+
+    private void labletextAliment(Label label, String labelOrientation)
+    {
+        if (label == null)
+        {
+            return;
+        }
+        if (EJRWTSingleRecordBlockDefinitionProperties.LABEL_ORIENTATION_LEFT_PROPERTY.equals(labelOrientation))
+        {
+            label.setAlignment(SWT.LEFT);
+        }
+        else if (EJRWTSingleRecordBlockDefinitionProperties.LABEL_ORIENTATION_RIGHT_PROPERTY.equals(labelOrientation))
+        {
+            label.setAlignment(SWT.RIGHT);
+        }
+        else if (EJRWTSingleRecordBlockDefinitionProperties.LABEL_ORIENTATION_CENTER_PROPERTY.equals(labelOrientation))
+        {
+            label.setAlignment(SWT.CENTER);
+        }
     }
 
 }

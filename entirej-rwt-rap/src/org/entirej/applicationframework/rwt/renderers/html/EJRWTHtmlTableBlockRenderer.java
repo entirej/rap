@@ -720,7 +720,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         if (arg1 instanceof String)
                                         {
                                             EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
-                                            if (currentRec != recordAt)
+                                           // if (currentRec != recordAt)
                                             {
                                                 currentRec = recordAt;
                                                 if (currentRec != null)
@@ -815,7 +815,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 if (arg1 instanceof String)
                                 {
                                     EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
-                                    if (currentRec != recordAt)
+                                    //if (currentRec != recordAt)
                                     {
                                         currentRec = recordAt;
                                         if (currentRec != null)
@@ -921,7 +921,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         if (arg1 instanceof String)
                                         {
                                             EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
-                                            if (currentRec != recordAt)
+                                            //if (currentRec != recordAt)
                                             {
                                                 currentRec = recordAt;
                                                 if (currentRec != null)
@@ -1020,7 +1020,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 if (arg1 instanceof String)
                                 {
                                     EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
-                                    if (currentRec != recordAt)
+                                    //if (currentRec != recordAt)
                                     {
                                         currentRec = recordAt;
                                         if (currentRec != null)
@@ -1129,7 +1129,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                     if (arg1 instanceof String)
                                     {
                                         EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
-                                        if (currentRec != recordAt)
+                                        //if (currentRec != recordAt)
                                         {
                                             currentRec = recordAt;
                                             if (currentRec != null)
@@ -1227,7 +1227,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             if (arg1 instanceof String)
                             {
                                 EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
-                                if (currentRec != recordAt)
+                               // if (currentRec != recordAt)
                                 {
                                     currentRec = recordAt;
                                     if (currentRec != null)
@@ -1419,6 +1419,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         _filteredContentProvider.setFilter(filter);
         
         createHTML();
+        
 
     }
 
@@ -2099,6 +2100,10 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         if (_browser.getText() == null || (!html.equals(_browser.getText())))
         {
             _browser.setText(html);
+            if (currentRec != null)
+            {
+                _browser.setSelection(String.valueOf(getDisplayedRecordNumber(currentRec)));
+            }
             LOGGER.debug(html);
         }
 
