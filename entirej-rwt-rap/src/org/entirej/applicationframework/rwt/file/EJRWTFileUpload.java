@@ -35,8 +35,10 @@ public class EJRWTFileUpload
         
         fileDialog.setText(title);
         fileDialog.setFilterExtensions(ext);
-        fileDialog.setUploadSizeLimit(fileSizeLimit);
-        fileDialog.setUploadTimeLimit(uploadTimeLimit);
+        if(fileSizeLimit>0)
+            fileDialog.setUploadSizeLimit(fileSizeLimit);
+        if(uploadTimeLimit>0)
+            fileDialog.setUploadTimeLimit(uploadTimeLimit);
         fileDialog.open(new DialogCallback()
         {
 
@@ -56,6 +58,10 @@ public class EJRWTFileUpload
 
         final FileDialog fileDialog = new FileDialog(Display.getDefault().getActiveShell(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | SWT.MULTI);
         fileDialog.setText(title);
+        if(fileSizeLimit>0)
+            fileDialog.setUploadSizeLimit(fileSizeLimit);
+        if(uploadTimeLimit>0)
+            fileDialog.setUploadTimeLimit(uploadTimeLimit);
         fileDialog.open(new DialogCallback()
         {
 
