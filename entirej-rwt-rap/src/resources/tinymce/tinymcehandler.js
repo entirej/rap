@@ -88,7 +88,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			
 			try
 			{
-				this.editor.theme.resizeTo (area[2] - 2, area[3] - 105);
+				this.editor.theme.resizeTo (area[2] - 2, area[3] - 170);
 			}catch(e)
 			{
 				//ignore
@@ -304,7 +304,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				}
 				try
 				{
-					this.editor.theme.resizeTo (area[2] - 2, area[3] - 105);
+					this.editor.theme.resizeTo (area[2] - 2, area[3] - 170);
 					
 				}catch(e)
 				{
