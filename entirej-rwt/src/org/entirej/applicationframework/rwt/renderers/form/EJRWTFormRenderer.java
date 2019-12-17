@@ -38,6 +38,7 @@ import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -60,6 +61,7 @@ import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppBlockRenderer;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppFormRenderer;
 import org.entirej.applicationframework.rwt.renderers.form.EJDrawerFolder.DrawerTab;
+import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.common.utils.EJParameterChecker;
@@ -74,11 +76,13 @@ import org.entirej.framework.core.internal.EJInternalForm;
 import org.entirej.framework.core.properties.EJCoreCanvasProperties;
 import org.entirej.framework.core.properties.EJCoreMainScreenProperties;
 import org.entirej.framework.core.properties.EJCoreProperties;
+import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
 import org.entirej.framework.core.properties.containers.interfaces.EJCanvasPropertiesContainer;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.core.properties.interfaces.EJCanvasProperties;
 import org.entirej.framework.core.properties.interfaces.EJDrawerPageProperties;
 import org.entirej.framework.core.properties.interfaces.EJFormProperties;
+import org.entirej.framework.core.properties.interfaces.EJMessagePaneProperties;
 import org.entirej.framework.core.properties.interfaces.EJStackedPageProperties;
 import org.entirej.framework.core.properties.interfaces.EJTabPageProperties;
 
@@ -660,7 +664,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     }
 
                     {
-                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        MessageTray messageTray = new MessageTray(canvasProperties.getMessagePaneProperties())
                         {
 
                             @Override
@@ -678,7 +682,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                         TrayLocation location = TrayLocation.RIGHT;
 
-                        switch (canvasProperties.getMessagePosition())
+                        switch (canvasProperties.getMessagePaneProperties().getPosition())
                         {
                             case BOTTOM:
                                 location = TrayLocation.BOTTOM;
@@ -697,7 +701,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 break;
                         }
 
-                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneSize());
+                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneProperties().getSize());
                     }
 
                 }
@@ -717,7 +721,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
-        if (!canvasProperties.getCloseableMessagePane())
+        if (!canvasProperties.getMessagePaneProperties().getCloseable())
         {
             canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
         }
@@ -859,7 +863,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     }
 
                     {
-                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        MessageTray messageTray = new MessageTray(canvasProperties.getMessagePaneProperties())
                         {
 
                             @Override
@@ -877,7 +881,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                         TrayLocation location = TrayLocation.RIGHT;
 
-                        switch (canvasProperties.getMessagePosition())
+                        switch (canvasProperties.getMessagePaneProperties().getPosition())
                         {
                             case BOTTOM:
                                 location = TrayLocation.BOTTOM;
@@ -896,7 +900,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 break;
                         }
 
-                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneSize());
+                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneProperties().getSize());
                     }
 
                 }
@@ -916,7 +920,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
-        if (!canvasProperties.getCloseableMessagePane())
+        if (!canvasProperties.getMessagePaneProperties().getCloseable())
         {
             canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
         }
@@ -1046,7 +1050,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     }
 
                     {
-                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        MessageTray messageTray = new MessageTray(canvasProperties.getMessagePaneProperties())
                         {
 
                             @Override
@@ -1064,7 +1068,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                         TrayLocation location = TrayLocation.RIGHT;
 
-                        switch (canvasProperties.getMessagePosition())
+                        switch (canvasProperties.getMessagePaneProperties().getPosition())
                         {
                             case BOTTOM:
                                 location = TrayLocation.BOTTOM;
@@ -1083,7 +1087,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 break;
                         }
 
-                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneSize());
+                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneProperties().getSize());
                     }
 
                 }
@@ -1103,7 +1107,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
-        if (!canvasProperties.getCloseableMessagePane())
+        if (!canvasProperties.getMessagePaneProperties().getCloseable())
         {
             canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
         }
@@ -1218,7 +1222,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     }
 
                     {
-                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        MessageTray messageTray = new MessageTray(canvasProperties.getMessagePaneProperties())
                         {
 
                             @Override
@@ -1236,7 +1240,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                         TrayLocation location = TrayLocation.RIGHT;
 
-                        switch (canvasProperties.getMessagePosition())
+                        switch (canvasProperties.getMessagePaneProperties().getPosition())
                         {
                             case BOTTOM:
                                 location = TrayLocation.BOTTOM;
@@ -1255,7 +1259,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 break;
                         }
 
-                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneSize());
+                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneProperties().getSize());
                     }
 
                 }
@@ -1275,7 +1279,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
-        if (!canvasProperties.getCloseableMessagePane())
+        if (!canvasProperties.getMessagePaneProperties().getCloseable())
         {
             canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
         }
@@ -1426,7 +1430,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     }
 
                     {
-                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        MessageTray messageTray = new MessageTray(canvasProperties.getMessagePaneProperties())
                         {
 
                             @Override
@@ -1444,7 +1448,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                         TrayLocation location = TrayLocation.RIGHT;
 
-                        switch (canvasProperties.getMessagePosition())
+                        switch (canvasProperties.getMessagePaneProperties().getPosition())
                         {
                             case BOTTOM:
                                 location = TrayLocation.BOTTOM;
@@ -1463,7 +1467,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 break;
                         }
 
-                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneSize());
+                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneProperties().getSize());
                     }
 
                 }
@@ -1496,7 +1500,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             canvasHandler.add(block);
         }
-        if (!canvasProperties.getCloseableMessagePane())
+        if (!canvasProperties.getMessagePaneProperties().getCloseable())
         {
             canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
         }
@@ -1593,7 +1597,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     }
 
                     {
-                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        MessageTray messageTray = new MessageTray(canvasProperties.getMessagePaneProperties())
                         {
 
                             @Override
@@ -1611,7 +1615,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                         TrayLocation location = TrayLocation.RIGHT;
 
-                        switch (canvasProperties.getMessagePosition())
+                        switch (canvasProperties.getMessagePaneProperties().getPosition())
                         {
                             case BOTTOM:
                                 location = TrayLocation.BOTTOM;
@@ -1630,7 +1634,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 break;
                         }
 
-                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneSize());
+                        trayPane.openTray(location, messageTray, canvasProperties.getMessagePaneProperties().getSize());
                     }
 
                 }
@@ -1650,7 +1654,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
-        if (!canvasProperties.getCloseableMessagePane())
+        if (!canvasProperties.getMessagePaneProperties().getCloseable())
         {
             canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
         }
@@ -1783,7 +1787,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 }
 
                 {
-                    MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                    MessageTray messageTray = new MessageTray(canvasProperties.getMessagePaneProperties())
                     {
 
                         @Override
@@ -1801,7 +1805,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                     TrayLocation location = TrayLocation.RIGHT;
 
-                    switch (canvasProperties.getMessagePosition())
+                    switch (canvasProperties.getMessagePaneProperties().getPosition())
                     {
                         case BOTTOM:
                             location = TrayLocation.BOTTOM;
@@ -1820,7 +1824,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             break;
                     }
 
-                    _popupDialog.openTray(location, messageTray, canvasProperties.getMessagePaneSize());
+                    _popupDialog.openTray(location, messageTray, canvasProperties.getMessagePaneProperties().getSize());
                 }
 
             }
@@ -2008,15 +2012,15 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 _popupDialog.centreLocation();
                 _popupDialog.open();
                 _popupDialog.activateDialog();
-                if (!canvasProperties.getCloseableMessagePane() && msgs == null)
+                if (!canvasProperties.getMessagePaneProperties().getCloseable() && msgs == null)
                 {
                     msgs = Collections.emptyList();
                 }
-                if ((msgs != null && msgs.size() > 0) || !canvasProperties.getCloseableMessagePane())
+                if ((msgs != null && msgs.size() > 0) || !canvasProperties.getMessagePaneProperties().getCloseable())
                 {
                     if (_popupDialog.getTray() == null)
                     {
-                        MessageTray messageTray = new MessageTray(canvasProperties.getCloseableMessagePane())
+                        MessageTray messageTray = new MessageTray(canvasProperties.getMessagePaneProperties())
                         {
 
                             @Override
@@ -2033,7 +2037,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         messageTray.setMessages(msgs);
                         TrayLocation location = TrayLocation.RIGHT;
 
-                        switch (canvasProperties.getMessagePosition())
+                        switch (canvasProperties.getMessagePaneProperties().getPosition())
                         {
                             case BOTTOM:
                                 location = TrayLocation.BOTTOM;
@@ -2052,7 +2056,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 break;
                         }
 
-                        _popupDialog.openTray(location, messageTray, canvasProperties.getMessagePaneSize());
+                        _popupDialog.openTray(location, messageTray, canvasProperties.getMessagePaneProperties().getSize());
                     }
                     else
                     {
@@ -2465,7 +2469,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
     }
 
-    public static abstract class MessageTray extends EJRWTDialogTray
+    public  abstract class MessageTray extends EJRWTDialogTray
     {
 
         private Composite     parent;
@@ -2474,17 +2478,26 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         Collection<EJMessage> msgs;
 
         EJRWTEntireJGridPane  shell;
-        boolean               canClose;
+        EJMessagePaneProperties properties ;
 
-        public MessageTray(boolean canClose)
+        public MessageTray(EJMessagePaneProperties properties)
         {
-            this.canClose = canClose;
+            this.properties = properties;
         }
 
         @Override
         protected Control createContents(Composite parent)
         {
             this.parent = parent;
+            if(properties.getVa()!=null) {
+                EJCoreVisualAttributeProperties visualAttribute = _form.getVisualAttribute(properties.getVa());
+                if(visualAttribute!=null)
+                {
+                    Color background = EJRWTVisualAttributeUtils.INSTANCE.getBackground(visualAttribute);
+                    if(background!=null)
+                        parent.setBackground(background);
+                }
+            }
             parent.addControlListener(new ControlListener()
             {
 
@@ -2561,7 +2574,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 shell.cleanLayoutVertical();
 
                 // add close button
-                if (canClose)
+                if (properties.getCloseable())
                 {
 
                     Label close = new Label(shell, SWT.None);
@@ -2620,8 +2633,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                             Label text = new Label(shell, SWT.WRAP);
                             GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
-                            text.setData(EJ_RWT.MARKUP_ENABLED, true);
-                            text.setText(escapeHtml(msg.getMessage()));
+                            text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
+                            text.setText(properties.getCustomFormatting()?escapeHtml(msg.getMessage()):msg.getMessage());
                             text.setLayoutData(data);
                         }
                     }
@@ -2642,24 +2655,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 char tmp = string.charAt(i);
                 switch (tmp)
                 {
-                    case '<':
-                        escapedTxt.append("&lt;");
-                        break;
-                    case '>':
-                        escapedTxt.append("&gt;");
-                        break;
+//                    case '<':
+//                        escapedTxt.append("&lt;");
+//                        break;
+//                    case '>':
+//                        escapedTxt.append("&gt;");
+//                        break;
                     case '&':
                         escapedTxt.append("&amp;");
                         break;
                     case '"':
                         escapedTxt.append("&quot;");
                         break;
-                    case '\'':
-                        escapedTxt.append("&#x27;");
-                        break;
-                    case '/':
-                        escapedTxt.append("&#x2F;");
-                        break;
+//                    case '\'':
+//                        escapedTxt.append("&#x27;");
+//                        break;
+//                    case '/':
+//                        escapedTxt.append("&#x2F;");
+//                        break;
                     default:
                         escapedTxt.append(tmp);
                 }

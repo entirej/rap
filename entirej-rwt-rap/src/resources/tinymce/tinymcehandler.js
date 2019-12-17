@@ -86,13 +86,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			this.ready = true;
 			var area = this.parent.getClientArea();
 			
-			try
-			{
-				this.editor.theme.resizeTo (area[2] - 2, area[3] - 170);
-			}catch(e)
-			{
-				//ignore
-			}
+			
 			
 			this.layout();
 			if (this._text) {
@@ -304,7 +298,10 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				}
 				try
 				{
-					this.editor.theme.resizeTo (area[2] - 2, area[3] - 170);
+					this.editor.theme.resizeTo (area[2] - 2, area[3] 
+					- (Array.from(this.element.getElementsByClassName("mce-toolbar")).map(element => element.offsetHeight).reduce((t,x)=>t+x)
+					+this.element.getElementsByClassName("mce-statusbar")[0]['offsetHeight']+4)
+					);
 					
 				}catch(e)
 				{

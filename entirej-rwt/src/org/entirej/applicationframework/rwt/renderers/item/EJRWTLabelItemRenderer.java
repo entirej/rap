@@ -42,6 +42,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
+import org.eclipse.ui.internal.forms.widgets.SelectionData;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.EJRWTAbstractLabel;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
@@ -745,6 +746,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
         _mandatoryDecoration.hide();
         
         setMessage(message);
+        setValue(_baseValue);
     }
 
     protected int getComponentStyle(String alignmentProperty, int style)
