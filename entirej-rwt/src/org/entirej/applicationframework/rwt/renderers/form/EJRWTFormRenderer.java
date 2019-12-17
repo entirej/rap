@@ -102,6 +102,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     protected Map<String, String>                   _drawerFoldersCache = new HashMap<String, String>();
     protected Map<String, String>                   _stackedPanesCache  = new HashMap<String, String>();
     protected Map<String, EJEmbeddedFormController> _formPanesCache     = new HashMap<String, EJEmbeddedFormController>();
+    
+    private Map<String,Collection<EJMessage>>   _messageCache = new HashMap<>();
 
     @Override
     public void formCleared()
@@ -568,6 +570,16 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 createSeparatorCanvas(parent, canvasProperties);
                 break;
         }
+        
+        _messageCache.entrySet().forEach(e-> {
+            
+            CanvasHandler canvasHandler = _canvases.get(e.getKey());
+            if (canvasHandler != null)
+            {
+                canvasHandler.setCanvasMessages(e.getValue());
+            }
+        });
+        _messageCache.clear();
     }
 
     protected void createSeparatorCanvas(Composite parent, EJCanvasProperties component)
@@ -2338,6 +2350,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             canvasHandler.setCanvasMessages(messages);
         }
+        else
+            _messageCache.put(canvasName, messages);
 
     }
 
