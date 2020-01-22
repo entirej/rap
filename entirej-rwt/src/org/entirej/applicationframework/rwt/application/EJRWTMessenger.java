@@ -572,7 +572,7 @@ public class EJRWTMessenger implements EJMessenger
         public static void open(int kind, Shell parent, String title, String message, int style)
         {
 
-            MessageDialog dialog = new MessageDialog(parent, title, null, message, kind, getButtonLabels(kind), 0)
+            MessageDialog dialog = new MessageDialog(parent, title, null, EJ_RWT.escapeHtmlWithXhtml(message), kind, getButtonLabels(kind), 0)
             {
 
                 @Override

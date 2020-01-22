@@ -18,6 +18,8 @@
  ******************************************************************************/
 package org.eclipse.rwt;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.rap.rwt.RWT;
@@ -26,6 +28,8 @@ import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.widgets.WidgetUtil;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
+
+import com.google.common.html.HtmlEscapers;
 
 public class EJ_RWT
 {
@@ -127,5 +131,131 @@ public class EJ_RWT
     public static void setTestMode(boolean b)
     {
         TextContext.getInstance().TESTMODE.set(b);
+    }
+    
+    public static String escapeHtmlWithXhtml(String string)
+    {
+        if(string==null)
+            return string;
+        
+        String escapeHtml =  escapeHtml(string);
+         
+        
+        
+         for (String tag : xhtmlSet)
+         {
+             escapeHtml=escapeHtml.replaceAll(escapeHtml(tag),tag);
+         }
+        
+        return escapeHtml;
+    }
+    
+    public static String escapeHtml(String string)
+    {
+        if(string==null)
+            return string;
+        
+        
+        return HtmlEscapers.htmlEscaper().escape(string);
+    }
+    
+    
+    /*
+    <b>text</b>
+    renders its content in bold font style
+    <i>text</i>
+    renders its content in italic font style
+    <br/>
+    inserts a line break
+    <sub>
+    renders its content as subscript
+    <sup>
+    renders its content as superscript
+    <big>
+    renders its content with bigger font size
+    <small>
+    renders its content with smaller font size
+    <del>
+    renders its content as deleted text
+    <ins>
+    renders its content as inserted text
+    <em>
+    renders its content as emphasized text
+    <strong>
+    renders its content as strong emphasized text
+    <dfn>
+    renders its content as instance definition
+    <code>
+    renders its content as computer code fragment
+    <samp>
+    renders its content as sample program output
+    <kbd>
+    renders its content as text to be entered by the user
+    <var>
+    renders its content as instance of a variable or program argument
+    <cite>
+    renders its content as citation
+    <q>
+    renders its content as short inline quotation
+    <abbr>
+    renders its content as abbreviation
+    <span>
+    generic style container
+    <img>
+    renders an image
+    <a>
+    renders a hyperlink
+     */
+    
+    private static Set<String> xhtmlSet = new HashSet<>();
+    static {
+        xhtmlSet.add("<br/>");
+        xhtmlSet.add("<b>");
+        xhtmlSet.add("</b>");
+        xhtmlSet.add("<i>");
+        xhtmlSet.add("</i>");
+        xhtmlSet.add("<sub>");
+        xhtmlSet.add("</sub>");
+        xhtmlSet.add("<big>");
+        xhtmlSet.add("</big>");
+        xhtmlSet.add("<small>");
+        xhtmlSet.add("</small>");
+        xhtmlSet.add("<del>");
+        xhtmlSet.add("</del>");
+        xhtmlSet.add("<ins>");
+        xhtmlSet.add("</ins>");
+        xhtmlSet.add("<em>");
+        xhtmlSet.add("</em>");
+        xhtmlSet.add("<strong>");
+        xhtmlSet.add("</strong>");
+        xhtmlSet.add("<dfn>");
+        xhtmlSet.add("</dfn>");
+        xhtmlSet.add("<code>");
+        xhtmlSet.add("</code>");
+        xhtmlSet.add("<samp>");
+        xhtmlSet.add("</samp>");
+        xhtmlSet.add("<kbd>");
+        xhtmlSet.add("</kbd>");
+        xhtmlSet.add("<var>");
+        xhtmlSet.add("</var>");
+        xhtmlSet.add("<cite>");
+        xhtmlSet.add("</cite>");
+        xhtmlSet.add("<q>");
+        xhtmlSet.add("</q>");
+        xhtmlSet.add("<abbr>");
+        xhtmlSet.add("<abbr/>");
+//NOT support yet to escape as text can go in-between start tag          
+//        xhtmlSet.add("<span>");
+//        xhtmlSet.add("</span>");
+//        xhtmlSet.add("<img>");
+//        xhtmlSet.add("</img>");
+        xhtmlSet.add("<a>");
+        xhtmlSet.add("</a>");
+        
+    }
+    
+    public static void main(String[] args)
+    {
+        System.out.println(escapeHtmlWithXhtml("test < run <br/> okay & thx!"));
     }
 }

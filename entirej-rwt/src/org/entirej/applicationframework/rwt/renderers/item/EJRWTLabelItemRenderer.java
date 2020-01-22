@@ -79,6 +79,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
 
     protected Object                          _baseValue;
     private EJMessage message;
+    private boolean xhtmlFormatting;
 
     protected boolean controlState(Control control)
     {
@@ -521,7 +522,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 labelField.getLabelControl().setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
             }
            // labelField.setData(EJ_RWT.MARKUP_ENABLED, _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
-            labelField.getLabelControl().setData(EJ_RWT.MARKUP_ENABLED, _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
+            labelField.getLabelControl().setData(EJ_RWT.MARKUP_ENABLED, xhtmlFormatting= _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
 
             String pictureName = _rendererProps.getStringProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_PICTURE);
 
@@ -559,7 +560,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                     if (controlState(labelField))
                     {
                         
-                        labelField.setText(text);
+                        labelField.setText(xhtmlFormatting?EJ_RWT.escapeHtmlWithXhtml(text):text);
                     }
                 }
                 
@@ -650,7 +651,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 {
                     if (controlState(linkField))
                     {
-                        linkField.setText(String.format("<a>%s</a>", value = text));
+                        linkField.setText(String.format("<a>%s</a>", EJ_RWT.escapeHtmlWithXhtml(value = text)));
                     }
                 }
                 
@@ -728,7 +729,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
             });
         }
 
-        _labelField.setText(label != null ? label : "");
+        _labelField.setText(label != null ? EJ_RWT.escapeHtmlWithXhtml(label) : "");
         _labelField.getControl().setToolTipText(hint != null ? hint : "");
         _labelField.getControl().setData(_item.getReferencedItemProperties().getName());
         _labelField.getControl().addFocusListener(this);

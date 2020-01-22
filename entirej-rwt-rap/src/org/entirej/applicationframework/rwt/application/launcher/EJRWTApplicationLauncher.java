@@ -72,8 +72,12 @@ import org.entirej.applicationframework.rwt.file.EJRWTFileUpload;
 import org.entirej.applicationframework.rwt.file.EJRWTFileUpload.FileSelectionCallBack;
 import org.entirej.applicationframework.rwt.renderers.html.EJRWTHtmlTableBlockRenderer.VACSSServiceHandler;
 import org.entirej.framework.core.EJActionProcessorException;
+import org.entirej.framework.core.EJConnectionHelper;
+import org.entirej.framework.core.EJConnectionHelper.EJFrameworkManagerProvider;
 import org.entirej.framework.core.EJFrameworkHelper;
 import org.entirej.framework.core.EJFrameworkInitialiser;
+import org.entirej.framework.core.EJFrameworkManager;
+import org.entirej.framework.core.EJSystemConnectionHelper;
 import org.entirej.framework.core.data.controllers.EJFileUpload;
 import org.entirej.framework.core.extensions.properties.EJCoreFrameworkExtensionPropertyList;
 import org.entirej.framework.core.interfaces.EJMessenger;
@@ -85,6 +89,7 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkE
 public abstract class EJRWTApplicationLauncher implements ApplicationConfiguration
 {
 
+    
     private static final String   THEME_DEFAULT_CSS = "theme/default.css";
     private static final String   ICONS_FAVICON_ICO = "icons/favicon.ico";
     protected static final String THEME_DEFAULT     = "org.entirej.applicationframework.rwt.Default";
@@ -318,6 +323,19 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
                         }
 
+                        
+                        EJFrameworkManagerProvider managerProvider = new EJFrameworkManagerProvider()
+                        {
+                            
+                            @Override
+                            public EJFrameworkManager get()
+                            {
+                                return EJRWTContext.getEJRWTApplicationManager().getFrameworkManager();
+                            }
+                        };
+                        EJConnectionHelper.setProvider(managerProvider);
+                        EJSystemConnectionHelper.setProvider(managerProvider);
+                        
                         RWTUtils.patchClient(getWebPathContext(), getTimeoutUrl());
 
                         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()

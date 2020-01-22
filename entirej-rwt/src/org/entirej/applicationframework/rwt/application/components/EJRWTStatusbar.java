@@ -289,14 +289,14 @@ public class EJRWTStatusbar implements EJRWTAppComponentRenderer
                     if (applicationLevelParameter != null)
                     {
                         Object value = applicationLevelParameter.getValue();
-                        section.setText(value == null ? "" : value.toString());
+                        section.setText(value == null ? "" : EJ_RWT.escapeHtmlWithXhtml(value.toString()));
                         applicationLevelParameter.addParameterChangedListener(new ParameterChangedListener()
                         {
 
                             @Override
                             public void parameterChanged(String parameterName, Object oldValue, Object newValue)
                             {
-                                section.setText(newValue == null ? "" : newValue.toString());
+                                section.setText(newValue == null ? "" : EJ_RWT.escapeHtmlWithXhtml(newValue.toString()));
 
                             }
                         });

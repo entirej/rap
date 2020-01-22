@@ -1,6 +1,8 @@
 package org.entirej.applicationframework.rwt.application.form.containers;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -35,6 +37,8 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane implements ITrayPane
      * The tray's control (null if none).
      */
     private Control         trayControl;
+    
+    private int sizeCache =-1;
 
   
 
@@ -116,6 +120,10 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane implements ITrayPane
     @Override
     public void openTray(final TrayLocation location, EJRWTDialogTray tray, int size) throws IllegalStateException, UnsupportedOperationException
     {
+        if(sizeCache>0)
+        {
+            size = sizeCache;
+        }
         if (tray == null)
         {
             throw new NullPointerException("Tray was null"); //$NON-NLS-1$
@@ -174,6 +182,38 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane implements ITrayPane
         }
 
         trayControl.setLayoutData(data);
+        trayControl.addControlListener(new ControlListener()
+        {
+            
+            @Override
+            public void controlResized(ControlEvent e)
+            {
+                if(trayControl==null || trayControl.isDisposed())
+                    return;
+                Rectangle bounds = trayControl.getBounds();
+                switch (location)
+                {
+                    case TOP:
+                    case BOTTOM:
+                        sizeCache = bounds.height;
+                        break;
+
+                    default:
+                        sizeCache =bounds.width;
+
+                        break;
+
+                }
+                
+            }
+            
+            @Override
+            public void controlMoved(ControlEvent e)
+            {
+                // TODO Auto-generated method stub
+                
+            }
+        });
 
         Rectangle bounds = this.getBounds();
 

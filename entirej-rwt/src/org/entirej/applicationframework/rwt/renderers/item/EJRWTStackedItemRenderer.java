@@ -855,7 +855,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                             {
                                 Link linkField = new Link(control, SWT.NONE);
                                 linkField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_LABEL);
-                                linkField.setText(String.format("<a>%s</a>", a.getName()));
+                                linkField.setText(String.format("<a>%s</a>", EJ_RWT.escapeHtmlWithXhtml(a.getName())));
                                 linkField.setData(EJ_RWT.MARKUP_ENABLED, true);
                                 linkField.addSelectionListener(new SelectionAdapter()
                                 {
@@ -2434,7 +2434,14 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
         }
         {
 
-            final Label _valueLbl = new Label(stackedPane, SWT.WRAP);
+            final Label _valueLbl = new Label(stackedPane, SWT.WRAP) {
+                
+                @Override
+                public void setText(String text)
+                {
+                    super.setText(EJ_RWT.escapeHtmlWithXhtml(text));
+                }
+            };
 
             _valueLbl.setData(EJ_RWT.MARKUP_ENABLED, true);
             String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);

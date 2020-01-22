@@ -1,5 +1,6 @@
 package org.entirej.applicationframework.rwt.utils;
 
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.*;
 import org.eclipse.swt.graphics.*;
 import org.eclipse.swt.widgets.*;
@@ -457,14 +458,7 @@ public class TableCursor extends Canvas
 
     String escapeHtml(String string)
     {
-
-        string = string.replaceAll("&#x27;", "\'");
-        string = string.replaceAll("&#x2F;", "/");
-        string = string.replaceAll("&#&quot;", "\"");
-        string = string.replaceAll("&amp;", "&");
-        string = string.replaceAll("&gt;", ">");
-        string = string.replaceAll("&lt;", "<");
-        return string;
+        return EJ_RWT.escapeHtml(string);
     }
 
     void paint(Event event)

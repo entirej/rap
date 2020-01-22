@@ -54,7 +54,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			this.elementReadonly.style.right = '0px';
 			this.elementReadonly.style.visibility = "hidden";// visible
 			this.elementReadonly.style["z-index"] = "2147483647";// visible
-			
+			this.elementReadonlyData = null;
 
 			this.parent.append(this.elementReadonly);
 			
@@ -114,8 +114,8 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				
 				var editorElm = this.element.cloneNode(true);
 				this.element.appendChild(editorElm);
-
-				
+				if (this._enable != undefined && !this._enable) 
+					this.element.style.visibility = "hidden";
 
 				if (this.profile == 'Basic') {
 					
@@ -206,7 +206,11 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				    this.editor.setContent(text);
 					if(this.removeToolbar && this.readonly  )
 					{
-						this.copyHtmlToReadOnly();
+						this.elementReadonly.innerHTML = '';
+						var readOnly =document.createElement("div");
+						this.elementReadonly.appendChild(readOnly);
+						readOnly.innerHTML = "<style type=\"text/css\">"+this.contentCss+"</style>"+ text;
+						
 					}
 				}catch(e)
 				{
