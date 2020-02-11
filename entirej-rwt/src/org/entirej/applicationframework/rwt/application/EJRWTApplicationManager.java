@@ -38,6 +38,7 @@ import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.applicationframework.rwt.renderers.form.EJRWTFormRenderer;
 import org.entirej.framework.core.EJActionProcessorException;
 import org.entirej.framework.core.EJApplicationException;
+import org.entirej.framework.core.EJAsyncCallback;
 import org.entirej.framework.core.EJFrameworkManager;
 import org.entirej.framework.core.EJManagedFrameworkConnection;
 import org.entirej.framework.core.EJMessage;
@@ -704,6 +705,80 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         bgThread.setDaemon(true);
         bgThread.start();
 
+    }
+    
+    
+    public void generateReportAsync(String reportName, EJParameterList parameterList,EJAsyncCallback<String> callback ) {
+        
+        if (reportManager == null)
+        {
+            reportManager = EJReportFrameworkInitialiser.initialiseFramework("report.ejprop");
+        }
+        final Display display = Display.getDefault();
+
+        final ServerPushSession pushSession = new ServerPushSession();
+        Runnable job = new Runnable()
+        {
+
+            @Override
+            public void run()
+            {
+                try
+                {
+                    final EJReport report;
+                    if (parameterList == null)
+                    {
+                        report = reportManager.createReport(reportName);
+                    }
+                    else
+                    {
+
+                        EJReportParameterList list = new EJReportParameterList();
+
+                        Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
+                        for (EJFormParameter parameter : allParameters)
+                        {
+                            EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
+                            reportParameter.setValue(parameter.getValue());
+
+                            list.addParameter(reportParameter);
+                        }
+                        report = reportManager.createReport(reportName, list);
+                    }
+
+                    EJReportRunner reportRunner = reportManager.createReportRunner();
+                    final String output = reportRunner.runReport(report);
+
+                    if (!display.isDisposed())
+                    {
+                        display.asyncExec(new Runnable()
+                        {
+                            public void run()
+                            {
+                                callback.completed(_frameworkManager, output);
+
+                            }
+                        });
+                    }
+                }
+                finally
+                {
+                    display.asyncExec(new Runnable()
+                    {
+                        public void run()
+                        {
+                            pushSession.stop();
+                        }
+                    });
+                }
+
+            }
+        };
+        pushSession.start();
+        Thread bgThread = new Thread(job);
+        bgThread.setDaemon(true);
+        bgThread.start();
+        
     }
 
     public String generateReport(String reportName)
