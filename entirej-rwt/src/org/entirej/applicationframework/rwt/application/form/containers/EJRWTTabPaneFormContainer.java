@@ -49,6 +49,7 @@ import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormCont
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormSelectedListener;
 import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.applicationframework.rwt.renderers.form.EJRWTFormRenderer;
+import org.entirej.framework.core.EJForm;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
 import org.entirej.framework.core.internal.EJInternalForm;
 import org.entirej.framework.core.properties.EJCoreFormProperties;
@@ -62,6 +63,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
     private EJRWTFormModal                  _formModel;
     private Map<EJInternalForm, CTabItem>   _tabPages              = new HashMap<EJInternalForm, CTabItem>();
     private List<EJRWTFormSelectedListener> _formSelectedListeners = new ArrayList<EJRWTFormSelectedListener>(1);
+  
     
     private AtomicBoolean uiReady = new AtomicBoolean(false);
     private List<Runnable> uiActions = new ArrayList<>();
@@ -136,6 +138,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
                 event.doit = false;
                 if (event.item instanceof CTabItem)
                 {
+                    deselectForm(getActiveForm());
                     EJInternalForm form = getFormByTab((CTabItem) event.item);
                     if (form != null)
                     {
@@ -161,6 +164,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
                 if (selection != null && selection.getData() instanceof EJInternalForm)
                 {
                     final EJInternalForm form = (EJInternalForm) selection.getData();
+                   
 
                     EJ_RWT.setAttribute(_folder, "ej-item-selection", form.getProperties().getName());
                     Display.getDefault().asyncExec(new Runnable()

@@ -2094,7 +2094,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 }
                 builder.append("</tbody></table>");
             }
-            builder.append("</<div>");
+            builder.append("</div>");
         }
         String html = builder.toString();
         if (_browser.getText() == null || (!html.equals(_browser.getText())))

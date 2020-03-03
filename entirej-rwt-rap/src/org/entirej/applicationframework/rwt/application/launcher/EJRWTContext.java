@@ -21,6 +21,7 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -32,6 +33,7 @@ public class EJRWTContext
 {
 
     private String state;
+    
 
     void setState(String state)
     {

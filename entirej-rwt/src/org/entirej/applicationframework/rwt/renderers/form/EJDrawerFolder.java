@@ -45,6 +45,9 @@ import org.entirej.framework.core.properties.interfaces.EJDrawerPageProperties;
 
 public class EJDrawerFolder extends Composite
 {
+    
+     
+    
     private final Color            SYSTEM_COLOR_RED = new Color(Display.getCurrent(), 221, 0, 0);
     private DrawerTab              active;
     EJRWTFormRenderer              ejrwtFormRenderer;
@@ -409,7 +412,7 @@ public class EJDrawerFolder extends Composite
                 @Override
                 public void handleEvent(Event event)
                 {
-                    if (shell.isVisible())
+                    if (shell.isVisible() )
                     {
 
                         Display.getDefault().asyncExec(new Runnable()
@@ -418,13 +421,8 @@ public class EJDrawerFolder extends Composite
                             @Override
                             public void run()
                             {
-                                shell.setVisible(false);
-                                // selection(null);
-                                if (active != null)
-                                {
-                                    active.rotatingButton.setSelection(false);
-                                    active.deactive = System.currentTimeMillis();
-                                }
+                               
+                                closeTab();
                             }
                         });
                     }
@@ -526,8 +524,11 @@ public class EJDrawerFolder extends Composite
 
             if (active == this || Math.abs(deactive - System.currentTimeMillis()) < 300)
             {
-                active.rotatingButton.setSelection(false);
-                active.deactive = System.currentTimeMillis();
+                if(active!=null && active.rotatingButton!=null) {
+                    active.rotatingButton.setSelection(false);
+                    active.deactive = System.currentTimeMillis();
+                }
+                closeTab();
                 active = null;
                 return;// avoid close events
             }
