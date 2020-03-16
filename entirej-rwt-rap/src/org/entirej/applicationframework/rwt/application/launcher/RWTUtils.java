@@ -67,7 +67,7 @@ public class RWTUtils
         //        builder.append(" settimeout( function() {");
         //        builder.append(" rwt.remote.Connection.getInstance()._retry();");
         //        builder.append(" }, 100 );} else");
-        builder.append(" if( errorType === \"session timeout\" || errorType === \"client error\" ) {");
+        builder.append(" if( errorType === \"session timeout\" || errorType === \"client error\"  || errorType === \"connection error\") {");
         if(timeoutPage==null || timeoutPage.isEmpty())
             builder.append(" parent.window.location.href = this._getRestartURL();");
         else

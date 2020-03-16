@@ -576,6 +576,12 @@ public class EJRWTMessenger implements EJMessenger
             {
 
                 @Override
+                protected int getShellStyle()
+                {
+                    return super.getShellStyle()|SWT.ON_TOP;
+                }
+                
+                @Override
                 protected Control createMessageArea(Composite composite)
                 {
 
@@ -588,6 +594,7 @@ public class EJRWTMessenger implements EJMessenger
                 }
             };
             dialog.setBlockOnOpen(false);
+          
             dialog.open();
 
 

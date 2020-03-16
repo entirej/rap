@@ -14,6 +14,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Display;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
 import org.entirej.framework.core.data.controllers.EJCanvasController;
+import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
 import org.entirej.framework.core.properties.containers.interfaces.EJCanvasPropertiesContainer;
 import org.entirej.framework.core.properties.interfaces.EJCanvasProperties;
 import org.entirej.framework.core.properties.interfaces.EJTabPageProperties;
@@ -286,6 +287,22 @@ class EJTabFolder implements ITabFolder
             cTabItem.item.setData(RWT.BADGE, badge);
         }
 
+    }
+    
+    @Override
+    public void setTabPageVa(String tabPageName, String visualAttributeName)
+    {
+        Tab cTabItem = tabPages.get(tabPageName);
+        if (cTabItem != null && cTabItem.item != null)
+        {
+            
+            
+            
+            cTabItem.item.setData(EJ_RWT.CUSTOM_VARIANT, visualAttributeName);
+            
+            
+        }
+        
     }
 
     

@@ -30,4 +30,6 @@ public interface ITabFolder
     void setTabPageBadge(String tabPageName, String badge);
 
     void put(String name, ITab tab);
+
+    void setTabPageVa(String tabPageName, String visualAttributeName);
 }
