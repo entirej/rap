@@ -2281,6 +2281,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             customWidth = width;
             customHeight =height;
+            if(_popupDialog!=null && _popupDialog.getShell()!=null && !_popupDialog.getShell().isDisposed()) {
+                _popupDialog.getShell().setSize(width + 80, height + 100);
+                _popupDialog.centreLocation();
+            }
             
         }
     }
