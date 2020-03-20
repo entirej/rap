@@ -83,6 +83,7 @@ public class RWTUtils
         builder.append("}() );");
         //System.err.println(builder.toString());
         executor.execute(builder.toString());
+       
         
     }
 

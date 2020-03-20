@@ -297,7 +297,7 @@ class EJTabFolder implements ITabFolder
         {
             
             
-            
+            //https://bugs.eclipse.org/bugs/show_bug.cgi?id=561155
             cTabItem.item.setData(EJ_RWT.CUSTOM_VARIANT, visualAttributeName);
             
             

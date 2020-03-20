@@ -1781,6 +1781,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         String                     button2Label;
         String                     button3Label;
         Collection<EJMessage>      msgs;
+        private int customWidth =-1;
+        private int customHeight =-1;
 
         public PopupCanvasHandler(EJCanvasProperties canvasProperties, EJCanvasController canvasController)
         {
@@ -1886,8 +1888,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             final String name = canvasProperties.getName();
             final String pageTitle = canvasProperties.getPopupPageTitle();
-            final int width = canvasProperties.getWidth();
-            final int height = canvasProperties.getHeight();
+            final int width = customWidth!=-1 ? customWidth : canvasProperties.getWidth();
+            final int height =customHeight!=-1 ? customHeight :  canvasProperties.getHeight();
             final int numCols = canvasProperties.getNumCols();
             final EJRWTApplicationManager applicationManager = (EJRWTApplicationManager) _form.getFrameworkManager().getApplicationManager();
 
@@ -2274,6 +2276,13 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
             return false;
         }
+
+        public void setCanvasSize(int width, int height)
+        {
+            customWidth = width;
+            customHeight =height;
+            
+        }
     }
 
     public interface CanvasHandler
@@ -2481,6 +2490,18 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }else 
         {
             _uicallCache.add(()->setButtonLabel(canvasName, button, label));
+        }
+    }
+    
+    public void setCanvasSize(String canvasName,int width,int height) {
+        CanvasHandler canvasHandler = _canvases.get(canvasName);
+        if (canvasHandler instanceof PopupCanvasHandler)
+        {
+            PopupCanvasHandler popupCanvasHandler = (PopupCanvasHandler) canvasHandler;
+            popupCanvasHandler.setCanvasSize(width, height);
+        }else 
+        {
+            _uicallCache.add(()->setCanvasSize(canvasName, width, height));
         }
     }
 
