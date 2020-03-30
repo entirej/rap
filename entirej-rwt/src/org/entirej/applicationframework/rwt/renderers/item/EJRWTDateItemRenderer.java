@@ -819,6 +819,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                 {
 
                     Shell shell = ((EJRWTApplicationManager) _item.getForm().getFrameworkManager().getApplicationManager()).getShell();
+                    
                     final Shell abstractDialog = new Shell(shell, SWT.ON_TOP | SWT.APPLICATION_MODAL | SWT.BORDER);
                     abstractDialog.setLayout(new GridLayout(3, false));
 
@@ -975,6 +976,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     Point display = _actionControl.toDisplay(0, 0);
                     Rectangle bounds = _actionControl.getBounds();
                     abstractDialog.setLocation(display.x, display.y + bounds.height);
+                    abstractDialog.setData("CUSTOM_POPUP", Boolean.TRUE);
                     abstractDialog.open();
 
                 }

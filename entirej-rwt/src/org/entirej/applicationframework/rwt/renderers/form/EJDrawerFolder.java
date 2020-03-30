@@ -1,6 +1,8 @@
 package org.entirej.applicationframework.rwt.renderers.form;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -395,7 +397,9 @@ public class EJDrawerFolder extends Composite
         private TabButton      rotatingButton;
         private Label          rotatingSep;
         protected long         deactive;
-
+        private List<Shell>    list;
+        
+        
         DrawerTab(EJDrawerPageProperties page)
         {
             this.page = page;
@@ -406,13 +410,16 @@ public class EJDrawerFolder extends Composite
 
             Display current = Display.getCurrent();
             shell = new Shell(current, SWT.RESIZE | SWT.ON_TOP);
+           
+            
             shell.addListener(SWT.Deactivate, new Listener()
             {
-
+                
                 @Override
                 public void handleEvent(Event event)
                 {
-                    if (shell.isVisible() )
+                    
+                    if (shell.isVisible() && list!=null  )
                     {
 
                         Display.getDefault().asyncExec(new Runnable()
@@ -421,12 +428,32 @@ public class EJDrawerFolder extends Composite
                             @Override
                             public void run()
                             {
-                               
-                                closeTab();
+                                
+                                int activeIndex = list.indexOf(event.display.getActiveShell());
+                                int currentIndex = list.indexOf(shell);
+                                
+                                
+                               if(activeIndex!=-1 && activeIndex<currentIndex)
+                                   closeTab();
                             }
                         });
-                    }
-
+                    }    
+                    
+                }
+            });
+            
+            
+            shell.addListener(SWT.Activate, new Listener()
+            {
+                
+                @Override
+                public void handleEvent(Event event)
+                {
+                    
+                    if(event.display.getActiveShell() == shell)
+                        list = Arrays.asList(event.display.getShells());
+                   
+                    
                 }
             });
             shell.setLayout(new FillLayout());
@@ -577,6 +604,7 @@ public class EJDrawerFolder extends Composite
                 active = null;
                 return;// avoid close events
             }
+            list = null;
 
         }
 
