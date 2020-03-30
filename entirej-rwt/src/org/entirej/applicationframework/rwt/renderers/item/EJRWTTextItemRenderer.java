@@ -637,7 +637,6 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
         if (!_textField.isFocusControl())
         {
-            _valueChanged = true;
             if (_valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base))))
                 commitValue();
         }
