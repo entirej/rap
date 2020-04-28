@@ -197,14 +197,14 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         _tabPages.put(form, tabItem);
         tabItem.setData(form);
         
-        EJ_RWT.setTestId(tabItem, form.getProperties().getName());
+        EJ_RWT.setTestId(tabItem, EJ_RWT.toFormID(form));
 
         
         final EJCoreFormProperties coreFormProperties = form.getProperties();
         tabItem.setText(coreFormProperties.getTitle() == null ? coreFormProperties.getName() : coreFormProperties.getTitle());
        
         _folder.setSelection(tabItem);
-        EJ_RWT.setAttribute(_folder, "ej-item-selection", form.getProperties().getName());
+        EJ_RWT.setAttribute(_folder, "ej-item-selection", EJ_RWT.toFormID(form));
         EJRWTFormRenderer renderer = (EJRWTFormRenderer) form.getRenderer();
         
         renderer.init();
@@ -390,7 +390,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
 
                 _folder.setSelection(_tabPages.get(form));
 
-                EJ_RWT.setAttribute(_folder, "ej-item-selection", form.getProperties().getName());
+                EJ_RWT.setAttribute(_folder, "ej-item-selection", EJ_RWT.toFormID(form));
                 renderer.gainInitialFocus();
                 return form;
             }
@@ -418,7 +418,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
 
                 _folder.setSelection(_tabPages.get(form));
 
-                EJ_RWT.setAttribute(_folder, "ej-item-selection", form.getProperties().getName());
+                EJ_RWT.setAttribute(_folder, "ej-item-selection",  EJ_RWT.toFormID(form));
                 renderer.gainInitialFocus();
                 return form;
             }

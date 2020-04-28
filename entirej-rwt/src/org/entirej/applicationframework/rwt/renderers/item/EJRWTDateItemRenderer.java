@@ -56,6 +56,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DateTime;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.Shell;
@@ -310,7 +311,23 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
     @Override
     protected Text newTextField(Composite composite, int style)
     {
-        _textField = super.newTextField(composite, style);
+        _textField = new Text(composite, style);
+        if (_rendererProps != null && _rendererProps.getBooleanProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_SELECT_ON_FOCUS, false))
+        {
+            _textField.addFocusListener(new FocusListener()
+            {
+                @Override
+                public void focusLost(FocusEvent arg0)
+                {
+                }
+
+                @Override
+                public void focusGained(FocusEvent arg0)
+                {
+                    _textField.selectAll();
+                }
+            });
+        }
 
         _textField.addModifyListener(new ModifyListener()
         {
@@ -369,7 +386,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     {
                         _textField.setText("");
                     }
-                    valueChanged();
+                    Display.getDefault().asyncExec(()->valueChanged());
                 }
                 finally
                 {

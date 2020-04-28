@@ -35,6 +35,7 @@ import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.widgets.WidgetUtil;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Widget;
+import org.entirej.framework.core.internal.EJInternalForm;
 
 import com.google.common.html.HtmlEscapers;
 
@@ -263,177 +264,7 @@ public class EJ_RWT
     
     public static void main(String[] args)
     {
-        System.out.println(clearHtml("<p><strong>PORTFOLIO OVERVIEW</strong></p>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p><strong>In General </strong></p>\n" + 
-                "<ul style=\"color: #4a4a4a; font-family: Verdana,&amp;quot; lucida sans&amp;quot;,arial,helvetica,sans-serif; font-size: 11px; font-style: normal; font-variant: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-decoration: none; text-indent: 0px; text-transform: none; -webkit-text-stroke-width: 0px; white-space: normal; word-spacing: 0px;\">\n" + 
-                "<li style=\"color: #4a4a4a; font-family: Verdana,&amp;quot;\">The presentation of the Portfolio Overview depends on customer type (Private, Bank, Inst. Client, Corporate, Broker, Sovereign, Nostro). It will be adjust on different information requirements.</li>\n" + 
-                "<li style=\"color: #4a4a4a; font-family: Verdana,&amp;quot;\">The data visible in TEMOS are always&nbsp;<strong>end of the previous business day;</strong> no intraday changes will occur (e.g. positions).</li>\n" + 
-                "<li style=\"color: #4a4a4a; font-family: Verdana,&amp;quot;\">Condensed risk information of a client with a first assessment.\n" + 
-                "<ul>\n" + 
-                "<li><strong>Risk calculation</strong>\n" + 
-                "<ul>\n" + 
-                "<li><strong>Market Value:</strong> Current price for acted shares, Precious metals and currencies. In contrast to the nominal value, the exchange rate value of a security is constantly to fluctuations depending upon supply and demand.</li>\n" + 
-                "<li><strong>Lending Value:</strong> Value, which a bank assigns to a collateral. The value of the collaterals must cover the amount of the exposure.</li>\n" + 
-                "<li><strong>Risk Exposure:</strong> Loans, guarantees, etc.</li>\n" + 
-                "<li><strong>Netting:</strong> Cash balances are netted per currency; FX Forward deals get netted per currency, currency tier, maturity - unrealized loss gets displayed and added to the direct exposure - on the other side gains are considered as collateral like a cash balance.</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "<li><strong>Limits</strong>\n" + 
-                "<ul>\n" + 
-                "<li>Several limit types: e.g. Lombard Limit etc.</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "<li><strong>Connections:</strong> third party liabilities\n" + 
-                "<ul>\n" + 
-                "<li>Single, Pledge or Group&nbsp;</li>\n" + 
-                "<li>Hierarchy</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "</ul>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p><strong>Functionalities</strong></p>\n" + 
-                "<ul style=\"color: #4a4a4a; font-family: Verdana,&amp;quot; lucida sans&amp;quot;,arial,helvetica,sans-serif; font-size: 11px; font-style: normal; font-variant: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-decoration: none; text-indent: 0px; text-transform: none; -webkit-text-stroke-width: 0px; white-space: normal; word-spacing: 0px;\">\n" + 
-                "<li style=\"color: #4a4a4a; font-family: Verdana,&amp;quot;\"><span style=\"color: #ff0000; font-family: Verdana,&amp;quot;\"><strong style=\"color: #4a4a4a; font-family: Verdana,&amp;quot; lucida sans&amp;quot;,arial,helvetica,sans-serif; font-size: 11px; font-style: normal; font-variant: normal; font-weight: bold; letter-spacing: normal; orphans: 2; text-align: left; text-decoration: none; text-indent: 0px; text-transform: none; -webkit-text-stroke-width: 0px; white-space: normal; word-spacing: 0px;\">Customer Alert</strong></span><span style=\"color: #4a4a4a; font-family: Verdana,&amp;quot; lucida sans&amp;quot;,arial,helvetica,sans-serif; font-size: 11px;\"> <span style=\"color: #4a4a4a; font-family: verdana,geneva,sans-serif;\"><span style=\"color: #001000; font-family: Verdana,&amp;quot;\">I<span style=\"background-color: #ffffff; color: #333333; display: inline; float: none; font-family: verdana,geneva,sans-serif; font-style: normal; font-variant: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-decoration: none; text-indent: 0px; text-transform: none; -webkit-text-stroke-width: 0px; white-space: normal; word-spacing: 0px;\">mportant Information, e.g. all types of Restrictions</span></span></span></span></li>\n" + 
-                "</ul>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<ul style=\"color: #4a4a4a; font-family: Verdana,&amp;quot;\">\n" + 
-                "<li style=\"color: #4a4a4a; font-family: Verdana,&amp;quot;\"><span style=\"color: #339966; font-family: Verdana,&amp;quot;\">Open Requests:</span> Pending for Approval</li>\n" + 
-                "<li style=\"color: #4a4a4a; font-family: Verdana,&amp;quot;\"><span style=\"color: #ff0000; font-family: Verdana,&amp;quot;\">Excesses: </span>actual Excesses</li>\n" + 
-                "<li style=\"color: #4a4a4a; font-family: Verdana,&amp;quot;\">Condition: actual Special Condition for the client</li>\n" + 
-                "<li style=\"color: #4a4a4a; font-family: Verdana,&amp;quot;\"><span style=\"color: #0000ff; font-family: Verdana,&amp;quot;\">Consolidation Level:</span> client within a Hierarchy</li>\n" + 
-                "<li style=\"color: #4a4a4a; font-family: Verdana,&amp;quot;\">Calculation Error: Gives an indication of an incorrect position in the clients portfolio</li>\n" + 
-                "</ul>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p><strong>Details&nbsp;</strong></p>\n" + 
-                "<p><strong>Total Lombard</strong></p>\n" + 
-                "<ul>\n" + 
-                "<li>Total Lombard&nbsp;: own Portfolio\n" + 
-                "<ul>\n" + 
-                "<li>Limits&nbsp;: Lombard, Fix Unsecured, Fix Secured others, Fix Secured by Property</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "<li>Content of Clients Portfolio&nbsp;: e.g. Securities, Cash, etc.</li>\n" + 
-                "<li>Total Lombard Available\n" + 
-                "<ul>\n" + 
-                "<li>Available amount after deduction of exposure\n" + 
-                "<ul>\n" + 
-                "<li>The calculation depends on the Limite type&nbsp;:\n" + 
-                "<ul>\n" + 
-                "<li>Lombard Limit&nbsp;: Lending Value &ndash; Exposure</li>\n" + 
-                "<li>Product Limits (within Lombard Limit):\n" + 
-                "<ul>\n" + 
-                "<li><strong>Restricted Product Utilisation (U)</strong> Utilisation of credit limit is restricted to risk position(s) in specified product(s). In case of utilisation in any other not specified product a restricted product excess will be created. The available margin will not be affected.</li>\n" + 
-                "<li><strong>Product Ceiling (C)</strong> Specific product(s) shall be limited to an amount. The unused part of the limit, and even the unused part of the product limit, is available to all other,&nbsp; not selected products. Any exposure exceeding the product ceiling will cause a product excess. All other product utilisation is supervised on the overall limit. The available margin will not be affected.</li>\n" + 
-                "<li><strong>Reservation for selected Products (R)</strong> Amount of product limit(s) will be reserved and reduces the availble margin accordingly.</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "<li>Fix Limits&nbsp;: Valid Limit + Lending Value - Exposure</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "</ul>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p><strong>Total Pledge</strong></p>\n" + 
-                "<ul>\n" + 
-                "<li>Connections are shown with arrows next to the accounts.</li>\n" + 
-                "<li>Further Collateral from third parties</li>\n" + 
-                "<li><strong>The pledgor is allowed to pledge only his own assets.</strong></li>\n" + 
-                "<li>There are three Types of Portfolio:\n" + 
-                "<ul>\n" + 
-                "<li><strong>Single Portfolio&nbsp;: </strong>no calculated connection to other clients. If the client has more than one account (Hierarchy), assets and liabilities are consolidated.</li>\n" + 
-                "<li><strong>Pledge Portfolio</strong> = one-sided Third Party Liabilities</li>\n" + 
-                "<li><strong>Group Portfolio </strong>= Mutual Third Party Liabilities</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "<li>Further Pledges&nbsp;:\n" + 
-                "<ul>\n" + 
-                "<li><strong>Pledge for Mortgages&nbsp;: </strong>Pledge for own or third Mortgages</li>\n" + 
-                "<li><strong>Reservation&nbsp;: </strong>a Reservation will reduce the Total Lombard Available&nbsp;; it is considered in the ARR-Calculation --&gt; see Portfolio Rating</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "</ul>\n" + 
-                "<p style=\"padding-left: 90px;\"><span style=\"color: #ff0000;\">The whole amount of the Reservation will be taken into the calculations, independent if the client has enough availability!</span></p>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p><strong>Availabilities </strong><strong>(</strong><strong>own Portfolio)</strong></p>\n" + 
-                "<p><strong>Available Margin</strong></p>\n" + 
-                "<ul>\n" + 
-                "<li><strong>Single</strong>\n" + 
-                "<ul>\n" + 
-                "<li><strong>Calculation:&nbsp;</strong>Total Lombard Available - Exposure</li>\n" + 
-                "<li><strong>Specialities:</strong> normal case: Lombard Available is identical with Available Margin</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "<li><strong>Pledge (Single Third Party Liabilities)</strong>\n" + 
-                "<ul>\n" + 
-                "<li><strong>Calculation:&nbsp;</strong>Total Lombard Available + Total Pledge (positive or negative);&nbsp;<strong>Pledgor and Pledgee together</strong></li>\n" + 
-                "<li><strong>Specialities:</strong> <strong>Pledgor</strong> --&gt;Only the amount will be deducted, which is used from the Pledgee. <strong>Pledgee</strong> --&gt; The max. available amount (Total Available of Pledgor or limited liability) will be given.</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "<li><strong>Group (Mutual Third Party Liabilities)</strong>\n" + 
-                "<ul>\n" + 
-                "<li><strong>Calculation: Pledge</strong> --&gt; Total Lombard Available + Total Pledge (positive or negative);&nbsp;<strong>whole group is considered; Fullpledge:&nbsp;</strong>Total Lombard Available + Total Pledge (positive or negative);&nbsp;<strong>only single figures</strong></li>\n" + 
-                "<li><strong>Specialities: Pledge&nbsp;</strong>--&gt; Each partner (Pledgor and Pledgee) can take all into own account;&nbsp;<strong>Fullpledge&nbsp;</strong>--&gt; The availability of each partner is limited. Each partner receives only the part, which he needs to cover his exposure.</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "</ul>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p><strong>Available Margin Ratio</strong></p>\n" + 
-                "<ul>\n" + 
-                "<li><strong>Single/Pledge/Group</strong>\n" + 
-                "<ul>\n" + 
-                "<li><strong>Calculation:</strong> Lending Value - Exposure in relation to Lending Value</li>\n" + 
-                "<li><strong>Specialities:</strong> The Available Margin Ratio will not be listed:\n" + 
-                "<ul>\n" + 
-                "<li>if the client has none exposure</li>\n" + 
-                "<li>if the client has a Fix Secured others, Fix Unsecured Limit, Fix Secured by Property, Fix Secured by Insurance Policy</li>\n" + 
-                "<li>If the Available Margin Ration will be negative</li>\n" + 
-                "<li><strong style=\"color: #4a4a4a; font-family: Verdana,&amp;quot; lucida sans&amp;quot;,arial,helvetica,sans-serif; font-size: 11px; font-style: normal; font-variant: normal; font-weight: bold; letter-spacing: normal; orphans: 2; text-align: left; text-decoration: none; text-indent: 0px; text-transform: none; -webkit-text-stroke-width: 0px; white-space: normal; word-spacing: 0px;\"><span style=\"color: #ff0000; font-family: Verdana,&amp;quot;\">The Available Margin Ratio will be written in red, as soon as the value drops below 10%: Early Warning&nbsp;!</span></strong></li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "</ul>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p><strong style=\"text-align: left; text-transform: none; text-indent: 0px; letter-spacing: normal; font-size: 11px; font-style: normal; font-variant: normal; font-weight: bold; text-decoration: none; word-spacing: 0px; white-space: normal; orphans: 2; -webkit-text-stroke-width: 0px; background-color: #ffffff;\">Available Limit</strong></p>\n" + 
-                "<ul>\n" + 
-                "<li><strong style=\"text-align: left; text-transform: none; text-indent: 0px; letter-spacing: normal; font-size: 11px; font-style: normal; font-variant: normal; font-weight: bold; text-decoration: none; word-spacing: 0px; white-space: normal; orphans: 2; -webkit-text-stroke-width: 0px; background-color: #ffffff;\">Single/Pledge/Group</strong>\n" + 
-                "<ul>\n" + 
-                "<li><strong style=\"text-align: left; text-transform: none; text-indent: 0px; letter-spacing: normal; font-size: 11px; font-style: normal; font-variant: normal; font-weight: bold; text-decoration: none; word-spacing: 0px; white-space: normal; orphans: 2; -webkit-text-stroke-width: 0px; background-color: #ffffff;\">Calculation:</strong> Valid Limit - Exposure</li>\n" + 
-                "<li><strong>Specialities:&nbsp;</strong>For Group --&gt; only single partner mentioned</li>\n" + 
-                "</ul>\n" + 
-                "</li>\n" + 
-                "</ul>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p><strong>Property Construction Limit, Mortgage, Fix Secured by Insurance Policy</strong><strong>&nbsp;</strong></p>\n" + 
-                "<ul>\n" + 
-                "<li>Both Limit and their exposures are shown and calculated separately.</li>\n" + 
-                "</ul>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p><strong>Pledge for Mortgage</strong></p>\n" + 
-                "<ul>\n" + 
-                "<li>Pledge for Mortgage <strong>given</strong> --&gt; included in the Pledge calculation</li>\n" + 
-                "<li>Pledge for Mortgage <strong>receive</strong> --&gt; included in the Mortgage calculation</li>\n" + 
-                "<li>Lombard Limit is mandatory.</li>\n" + 
-                "<li>Insufficient Coverage for Mortgage&nbsp;:</li>\n" + 
-                "</ul>\n" + 
-                "<p>If the Pledgor has not enough availability to cover the Pledge for Mortgage, an excess will occur in the Excess Management.</p>\n" + 
-                "<p>The Excess will listed twice&nbsp;: on the Mortgage side (Mortgage Officer has to monitor) and on the Lombard side (Credit Officer has to monitor) --&gt; further Information see Limit Management.</p>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p><strong>Personal Guarantee</strong></p>\n" + 
-                "<ul>\n" + 
-                "<li>A Personal Guarantee is granted from a third party (client or non-client).</li>\n" + 
-                "<li>It has no impact on the availability ot the client&rsquo;s portfolio.</li>\n" + 
-                "</ul>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p>&nbsp;</p>\n" + 
-                "<p>2020-02-03</p>"));
+        
     }
     
     
@@ -466,6 +297,26 @@ public class EJ_RWT
             e.printStackTrace();
         }
         return sb.toString();
+    }
+
+
+
+    public static String toFormID(EJInternalForm prop)
+    {
+        
+        return mapper.toFormID(prop);
+    }
+    
+    @FunctionalInterface
+    public static interface TestFormIdMapper{
+        String toFormID(EJInternalForm form);
+    }
+    
+    private static TestFormIdMapper mapper = (form) -> form.getProperties().getName();
+    
+    public static void setMapper(TestFormIdMapper mapper)
+    {
+        EJ_RWT.mapper = mapper;
     }
     
 }

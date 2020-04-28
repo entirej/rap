@@ -273,6 +273,22 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         maxValue = _rendererProps.getFloatProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MAXVALUE, Float.MAX_VALUE);
         minValue = _rendererProps.getFloatProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_MINVALUE, Float.MIN_VALUE*-1);
         _textField = new Text(composite, style);
+        if (_rendererProps != null && _rendererProps.getBooleanProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_SELECT_ON_FOCUS, false))
+        {
+            _textField.addFocusListener(new FocusListener()
+            {
+                @Override
+                public void focusLost(FocusEvent arg0)
+                {
+                }
+
+                @Override
+                public void focusGained(FocusEvent arg0)
+                {
+                    _textField.selectAll();
+                }
+            });
+        }
         _textField.addModifyListener(new ModifyListener()
         {
             @Override
@@ -324,7 +340,7 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
                                     _textField.setText("");
                             }
 
-                            valueChanged();
+                            Display.getDefault().asyncExec(()->valueChanged());
                         }
                         finally
                         {

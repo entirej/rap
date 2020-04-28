@@ -635,19 +635,17 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         Object base = _baseValue;
         String value = controlState(_textField) ? _textField.getText() : (String) _baseValue;
 
+        if (_oldvalue == null)
+        {
+            _oldvalue = base;
+        }
+        _valueChanged = _valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base)));
         if (!_textField.isFocusControl())
         {
-            if (_valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base))))
+            if (_valueChanged)
                 commitValue();
         }
-        else
-        {
-            if (_oldvalue == null)
-            {
-                _oldvalue = base;
-            }
-            _valueChanged = _valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base)));
-        }
+
         setMandatoryBorder(_mandatory);
         fireTextChange();
     }
@@ -688,7 +686,6 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             @Override
             public void run()
             {
-                commitValue();
                 _item.itemFocusLost();
 
             }
@@ -804,7 +801,6 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 @Override
                 public void focusLost(FocusEvent arg0)
                 {
-                    // ignore
                 }
 
                 @Override
@@ -814,6 +810,20 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
                 }
             });
         }
+        text.addFocusListener(new FocusListener()
+        {
+            @Override
+            public void focusLost(FocusEvent arg0)
+            {
+                Display.getDefault().asyncExec(() -> valueChanged());
+            }
+
+            @Override
+            public void focusGained(FocusEvent arg0)
+            {
+            }
+        });
+
         return text;
     }
 
@@ -1165,7 +1175,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
             if (enable)
             {
 
-                valueChanged();
+                Display.getDefault().asyncExec(() -> fireTextChange());
             }
         }
 
