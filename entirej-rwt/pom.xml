@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.entirej</groupId>
 	<artifactId>entirej-rwt</artifactId>
-	<version>${VERSION}</version>
+	<version>${VERSION}-SNAPSHOT</version>
 	<name>Entirej RWT</name>
 	<build>
 		<finalName>entirej-rwt-appframework-${VERSION}</finalName>
@@ -209,8 +209,8 @@
 
 	<properties>
 		<VERSION>DEVELOPMENT</VERSION>
-		<VERSION.CORE>DEVELOPMENT</VERSION.CORE>
-		<VERSION.REPORT>DEVELOPMENT</VERSION.REPORT>
+		<VERSION.CORE>DEVELOPMENT-SNAPSHOT</VERSION.CORE>
+		<VERSION.REPORT>DEVELOPMENT-SNAPSHOT</VERSION.REPORT>
 		<MAVEN.REPO.PATH>development</MAVEN.REPO.PATH>
 		<GITHUB.OAUTH></GITHUB.OAUTH>
 		<built.repo.dir>${project.build.directory}/repo</built.repo.dir>

@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.entirej</groupId>
 	<artifactId>entirej-rwt-rap</artifactId>
-	<version>${VERSION}</version>
+	<version>${VERSION}-SNAPSHOT</version>
 	<name>Entirej RWT RAP Extension </name>
 	<build>
 		<finalName>entirej-rwt-appframework-rcp-${VERSION}</finalName>
@@ -198,7 +198,7 @@
 		<dependency>
 			<groupId>org.entirej</groupId>
 			<artifactId>entirej-rwt</artifactId>
-			<version>${VERSION}</version>
+			<version>${VERSION.RAP}</version>
 			<exclusions>
 				<exclusion>
 					<artifactId>forms</artifactId>
@@ -293,7 +293,8 @@
 
 	<properties>
 		<VERSION>DEVELOPMENT</VERSION>
-		<VERSION.CORE>DEVELOPMENT</VERSION.CORE>
+		<VERSION.CORE>DEVELOPMENT-SNAPSHOT</VERSION.CORE>
+		<VERSION.RAP>DEVELOPMENT-SNAPSHOT</VERSION.RAP>
 		<MAVEN.REPO.PATH>development</MAVEN.REPO.PATH>
 		<GITHUB.OAUTH></GITHUB.OAUTH>
 		<built.repo.dir>${project.build.directory}/repo</built.repo.dir>
