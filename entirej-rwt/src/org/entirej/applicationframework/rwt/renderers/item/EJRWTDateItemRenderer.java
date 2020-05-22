@@ -642,6 +642,26 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
     }
     
     
+    public void valueChanged()
+    {
+        Object base = _baseValue;
+        Date value = controlState(_textField)? toValue():(Date) _baseValue;
+
+        if (_oldvalue == null)
+        {
+            _oldvalue = base;
+        }
+        _valueChanged = _valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base)));
+        if (controlState(_textField)&& !_textField.isFocusControl())
+        {
+            if (_valueChanged)
+                commitValue();
+        }
+
+        setMandatoryBorder(_mandatory);
+        fireTextChange();
+    }
+    
     protected void commitValue()
     {
         if (_valueChanged)

@@ -634,13 +634,17 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     {
         Object base = _baseValue;
         String value = controlState(_textField) ? _textField.getText() : (String) _baseValue;
-
+        if (value == null || value.length() == 0)
+        {
+            value = null;
+        }
+        
         if (_oldvalue == null)
         {
             _oldvalue = base;
         }
         _valueChanged = _valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base)));
-        if (!_textField.isFocusControl())
+        if (controlState(_textField)&& !_textField.isFocusControl())
         {
             if (_valueChanged)
                 commitValue();
@@ -1174,7 +1178,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
 
             if (enable)
             {
-
+                _valueChanged = true;
                 Display.getDefault().asyncExec(() -> fireTextChange());
             }
         }
