@@ -354,8 +354,8 @@ public abstract class EJRWTTrayDialog extends Dialog
         Link link = new Link(parent, SWT.WRAP | SWT.NO_FOCUS);
         ((GridLayout) parent.getLayout()).numColumns++;
         link.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_CENTER));
-        link.setText("<a>" + IDialogConstants.HELP_LABEL + "</a>"); //$NON-NLS-1$ //$NON-NLS-2$
-        link.setToolTipText(IDialogConstants.HELP_LABEL);
+        link.setText("<a>" + "Help" + "</a>"); //$NON-NLS-1$ //$NON-NLS-2$
+        link.setToolTipText("Help");
         link.addSelectionListener(new SelectionAdapter()
         {
             public void widgetSelected(SelectionEvent e)

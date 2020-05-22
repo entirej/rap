@@ -145,25 +145,25 @@
 			<version>${VERSION.REPORT}</version>
 		</dependency>
 		<dependency>
-            <groupId>org.eclipse.rap</groupId>
-            <artifactId>org.eclipse.rap.jface</artifactId>
-            <version>3.12.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.rap</groupId>
-            <artifactId>org.eclipse.rap.ui.forms</artifactId>
-            <version>3.12.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.rap</groupId>
-            <artifactId>org.eclipse.rap.ui</artifactId>
-            <version>3.12.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.rap</groupId>
-            <artifactId>org.eclipse.rap.ui.workbench</artifactId>
-            <version>3.12.0</version>
-        </dependency>
+			<groupId>org.eclipse.rap</groupId>
+			<artifactId>org.eclipse.rap.jface</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rap</groupId>
+			<artifactId>org.eclipse.rap.ui.forms</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rap</groupId>
+			<artifactId>org.eclipse.rap.ui</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.rap</groupId>
+			<artifactId>org.eclipse.rap.ui.workbench</artifactId>
+			<version>3.12.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
@@ -180,6 +180,16 @@
 			<groupId>com.github.ziplet</groupId>
 			<artifactId>ziplet</artifactId>
 			<version>2.4.1</version>
+		</dependency>
+		<dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>28.1-jre</version>
+        </dependency>
+		<dependency>
+			<groupId>org.eclipse.core</groupId>
+			<artifactId>commands</artifactId>
+			<version>3.3.0-I20070605-0010</version>
 		</dependency>
 	</dependencies>
 

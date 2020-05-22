@@ -189,18 +189,14 @@
 			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.chartjs.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.rap.incubator</groupId>
-			<artifactId>org.eclipse.rap.addons.fileupload</artifactId>
-			<version>3.4.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.fileupload_3.4.0.20171017-0945.jar</systemPath>
+			<groupId>org.eclipse.rap</groupId>
+			<artifactId>org.eclipse.rap.fileupload</artifactId>
+			<version>3.12.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.rap.incubator</groupId>
-			<artifactId>org.eclipse.rap.addons.filedialog</artifactId>
-			<version>3.4.0</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/extlibs/org.eclipse.rap.filedialog_3.4.0.20171017-0945.jar</systemPath>
+			<groupId>org.eclipse.rap</groupId>
+			<artifactId>org.eclipse.rap.filedialog</artifactId>
+			<version>3.12.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
