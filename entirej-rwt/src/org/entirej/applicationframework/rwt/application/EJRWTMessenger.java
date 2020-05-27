@@ -24,13 +24,16 @@ import java.util.concurrent.Callable;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.entirej.applicationframework.rwt.notifications.EJRWTNotifierDialog;
 import org.entirej.framework.core.EJApplicationException;
@@ -584,13 +587,33 @@ public class EJRWTMessenger implements EJMessenger
                 @Override
                 protected Control createMessageArea(Composite composite)
                 {
-
+                        
                     EJ_RWT.setTestId(composite, "msg.dialog");
                     EJ_RWT.setAttribute(composite, "kind", ""+kind);
-                    Control createMessageArea = super.createMessageArea(composite);
-                    if(messageLabel!=null)
-                        messageLabel.setData(EJ_RWT.MARKUP_ENABLED, true);
-                    return createMessageArea;
+                    Image image = getImage();
+                    if (image != null) {
+                            imageLabel = new Label(composite, SWT.NULL);
+                            
+                            image.setBackground(imageLabel.getBackground());
+                            imageLabel.setImage(image);
+                            GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.BEGINNING)
+                                            .applyTo(imageLabel);
+                    }
+                    // create message
+                    if (message != null) {
+                            messageLabel = new Label(composite, getMessageLabelStyle());
+                            messageLabel.setData(EJ_RWT.MARKUP_ENABLED, true);
+                            messageLabel.setText(message);
+                            GridDataFactory
+                                            .fillDefaults()
+                                            .align(SWT.FILL, SWT.BEGINNING)
+                                            .grab(true, false)
+                                            .hint(
+                                                            convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH),
+                                                            SWT.DEFAULT).applyTo(messageLabel);
+                    }
+                    return composite;
+                    
                 }
             };
             dialog.setBlockOnOpen(false);

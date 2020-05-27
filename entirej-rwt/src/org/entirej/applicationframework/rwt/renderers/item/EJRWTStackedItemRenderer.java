@@ -854,9 +854,10 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                             else
                             {
                                 Link linkField = new Link(control, SWT.NONE);
+                                linkField.setData(EJ_RWT.MARKUP_ENABLED, true);
                                 linkField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_LABEL);
                                 linkField.setText(String.format("<a>%s</a>", EJ_RWT.escapeHtmlWithXhtml(a.getName())));
-                                linkField.setData(EJ_RWT.MARKUP_ENABLED, true);
+                                
                                 linkField.addSelectionListener(new SelectionAdapter()
                                 {
 
