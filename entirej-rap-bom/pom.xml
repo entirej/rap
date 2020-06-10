@@ -42,14 +42,6 @@
 						<include>**/*</include>
 					</includes>
 				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>site</goal>
-						</goals>
-						<phase>deploy</phase>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>
