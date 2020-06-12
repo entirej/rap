@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2014 CRESOFT AG
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     CRESOFT AG - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 
 package org.entirej.applicationframework.rwt.file;
@@ -26,6 +25,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -50,30 +52,37 @@ public class EJRWTFileDownload
     public static void download(String sourcePath, String outputName)
     {
 
-        File file = new File( sourcePath);
-        
-        if(!file.exists())
+        File file = new File(sourcePath);
+
+        if (!file.exists())
         {
-          throw new EJApplicationException(String.format("File not found :%s", file.getName()));
-            
-            
+            throw new EJApplicationException(String.format("File not found :%s", file.getName()));
+
         }
-        
-        UUID randomUUID = UUID.randomUUID();
-        String fileKey = randomUUID.toString();
-        keys.put(fileKey, sourcePath);
-        StringBuffer url = new StringBuffer();
-        url.append(RWT.getServiceManager().getServiceHandlerUrl(SERVICE_HANDLER));
-        url.append("&filename=");
-        url.append(fileKey);
-        url.append("&output=");
-        url.append(outputName);
-        String encodedURL = RWT.getResponse().encodeURL(url.toString());
-        // UrlLauncher urlLauncher =
-        // RWT.getClient().getService(UrlLauncher.class);
-        // urlLauncher.openURL(encodedURL);
-        JavaScriptExecutor javaScriptExecutor = RWT.getClient().getService(JavaScriptExecutor.class);
-        javaScriptExecutor.execute(String.format("window.location = '%s'", encodedURL));
+        try
+        {
+            UUID randomUUID = UUID.randomUUID();
+            String fileKey = randomUUID.toString();
+            keys.put(fileKey, sourcePath);
+            StringBuffer url = new StringBuffer();
+            url.append(RWT.getServiceManager().getServiceHandlerUrl(SERVICE_HANDLER));
+            url.append("&filename=");
+
+            url.append(URLEncoder.encode(fileKey, "UTF-8"));
+
+            url.append("&output=");
+            url.append(URLEncoder.encode(outputName, "UTF-8"));
+            String encodedURL = RWT.getResponse().encodeURL(url.toString());
+            // UrlLauncher urlLauncher =
+            // RWT.getClient().getService(UrlLauncher.class);
+            // urlLauncher.openURL(encodedURL);
+            JavaScriptExecutor javaScriptExecutor = RWT.getClient().getService(JavaScriptExecutor.class);
+            javaScriptExecutor.execute(String.format("window.location = '%s'", encodedURL));
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            e.printStackTrace();
+        }
 
     }
 
@@ -137,14 +146,14 @@ public class EJRWTFileDownload
         public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
         {
             String fileName = request.getParameter("filename");
+            fileName = URLDecoder.decode(fileName, "UTF-8");
 
             String output = request.getParameter("output");
+            output = URLDecoder.decode(output, "UTF-8");
             // Get the file content
 
-            File file = new File( keys.get(fileName));
-            
-           
-            
+            File file = new File(keys.get(fileName));
+
             BufferedInputStream fileToDownload = new BufferedInputStream(new FileInputStream(file));
 
             // Send the file in the response
@@ -152,7 +161,7 @@ public class EJRWTFileDownload
 
             String contentDisposition = "attachment; filename=\"" + output + "\"";
             response.setHeader("Content-Disposition", contentDisposition);
-            response.setHeader( "Pragma", "public" );
+            response.setHeader("Pragma", "public");
             response.setContentLength(fileToDownload.available());
             PrintWriter out = response.getWriter();
             int c;
@@ -166,4 +175,5 @@ public class EJRWTFileDownload
             keys.remove(fileName);
         }
     }
+    
 }
