@@ -62,7 +62,7 @@ public class EJRWTHtmlView extends Composite
                                                             JsonValue textValue = properties.get("scroll");
                                                             if (textValue != null)
                                                             {
-                                                                scrollPos = textValue.asObject().get("vpos").asInt();
+                                                                scrollPos = (int)textValue.asObject().get("vpos").asFloat();
                                                             }
                                                         }
 
