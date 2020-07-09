@@ -774,6 +774,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                                 {
                                                     try
                                                     {
+                                                        setHasFocus(true);
                                                         _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
                                                     }
                                                     catch (EJApplicationException exception)
@@ -869,6 +870,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         {
                                             try
                                             {
+                                                setHasFocus(true);
                                                 _block.executeActionCommand((String) arg1, EJScreenType.MAIN);
                                             }
                                             catch (EJApplicationException exception)
