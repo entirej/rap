@@ -51,6 +51,7 @@ import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
+import org.entirej.applicationframework.rwt.application.form.containers.EJRWTDialogContext;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTDialogTray;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTTrayDialog.TrayLocation;
 import org.entirej.applicationframework.rwt.application.form.containers.EJRWTTrayPane;
@@ -2023,6 +2024,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         {
                             closeTray();
                         }
+                        EJRWTDialogContext.get().close(this);
                         getShell().setVisible(false);
                         return true;
                     }
