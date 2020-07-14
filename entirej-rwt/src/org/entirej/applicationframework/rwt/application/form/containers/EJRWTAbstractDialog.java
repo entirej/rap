@@ -20,16 +20,9 @@ package org.entirej.applicationframework.rwt.application.form.containers;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.TrayDialog;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.ShellAdapter;
-import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
@@ -38,10 +31,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.entirej.applicationframework.rwt.renderers.lov.EJRWTLovContext;
 
 public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Serializable, ITrayPane
 {
@@ -110,6 +101,20 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
         }, 100);
 
     }
+    
+    @Override
+    public int open()
+    {
+        EJRWTDialogContext.get().open(this);
+        return super.open();
+    }
+    
+    @Override
+    public boolean close()
+    {
+        EJRWTDialogContext.get().close(this);
+        return super.close();
+    }
 
     protected Control createButtonBar(Composite parent)
     {
@@ -159,7 +164,7 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
     {
 
         Button button = super.createButton(parent, id, label, defaultButton);
-        if (bypassDefaultForLOV && defaultButton)
+        if (defaultButton)
         {
             
                 Listener[] listeners = button.getListeners(SWT.Selection);
@@ -168,21 +173,18 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
                     button.removeListener(SWT.Selection, l);
                     button.removeListener(SWT.DefaultSelection, l);
                     
-                    button.addListener(SWT.Selection, e->{
+                    Listener proxy = e->{
                         
                         Display.getDefault().asyncExec(() ->{
-                        if(!EJRWTLovContext.get().isLovOpen())
+                        if(EJRWTDialogContext.get().isCurrent(EJRWTAbstractDialog.this))
                             l.handleEvent(e);
                         });
-                    });
-                    button.addListener(SWT.DefaultSelection, e->{
-                        
-                        
-                        Display.getDefault().asyncExec(() ->{
-                            if(!EJRWTLovContext.get().isLovOpen())
-                                l.handleEvent(e);
-                            });
-                    });
+                    };
+                    
+
+                    button.addListener(SWT.Selection,proxy );
+                    button.addListener(SWT.DefaultSelection,proxy);
+                    
                 }
                 
         }

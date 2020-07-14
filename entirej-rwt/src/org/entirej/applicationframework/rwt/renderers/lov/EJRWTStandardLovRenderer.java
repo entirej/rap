@@ -155,8 +155,6 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
             @Override
             public boolean close()
             {
-                if(_dialog!=null)
-                    EJRWTLovContext.get().closeLov();
                 _tableViewer = null;
                 _dialog = null;
                 return super.close();
@@ -517,7 +515,6 @@ public class EJRWTStandardLovRenderer implements EJLovRenderer
         _dialog.centreLocation();
         _dialog.open();
         _dialog.activateDialog();
-        EJRWTLovContext.get().openLov();
     }
 
     @Override
