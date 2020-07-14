@@ -307,7 +307,7 @@ public class EJRWTUpdateScreenRenderer extends EJRWTAbstractScreenRenderer imple
                 addExtraButton(parent, button3Label, ID_BUTTON_3);
                 addExtraButton(parent, button2Label, ID_BUTTON_2);
                 addExtraButton(parent, button1Label, ID_BUTTON_1);
-                EJ_RWT.setTestId(createButton(parent, UPDATE_OK_ACTION_COMMAND, updateButtonLabel == null ? "Update" : updateButtonLabel, true),_block.getProperties().getName()+".ok");
+                EJ_RWT.setTestId(createButton(parent, UPDATE_OK_ACTION_COMMAND, updateButtonLabel == null ? "Update" : updateButtonLabel, true,true),_block.getProperties().getName()+".ok");
                 EJ_RWT.setTestId(createButton(parent, UPDATE_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false),_block.getProperties().getName()+".cancel");
             }
 

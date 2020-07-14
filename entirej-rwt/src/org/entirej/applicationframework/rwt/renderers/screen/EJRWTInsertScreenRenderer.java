@@ -311,7 +311,7 @@ public class EJRWTInsertScreenRenderer extends EJRWTAbstractScreenRenderer imple
                 addExtraButton(parent, button3Label, ID_BUTTON_3);
                 addExtraButton(parent, button2Label, ID_BUTTON_2);
                 addExtraButton(parent, button1Label, ID_BUTTON_1);
-                EJ_RWT.setTestId(createButton(parent, INSERT_OK_ACTION_COMMAND, insertButtonLabel == null ? "Insert" : insertButtonLabel, true),"ok");
+                EJ_RWT.setTestId(createButton(parent, INSERT_OK_ACTION_COMMAND, insertButtonLabel == null ? "Insert" : insertButtonLabel, true,true),"ok");
                 EJ_RWT.setTestId(createButton(parent, INSERT_CANCEL_ACTION_COMMAND, cancelButtonLabel == null ? "Cancel" : cancelButtonLabel, false),"cancel");
             }
 

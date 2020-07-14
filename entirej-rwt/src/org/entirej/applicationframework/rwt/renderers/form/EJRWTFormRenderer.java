@@ -2010,7 +2010,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         {
                             return;
                         }
-                        Button button = createButton(parent, id, label, deafultButton);
+                        Button button = createButton(parent, id, label, deafultButton,true);
                         EJ_RWT.setTestId(button, "btn-" + id);
 
                     }
