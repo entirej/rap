@@ -761,14 +761,14 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                             });
                         }
                     }
-                    catch (Exception t) {
+                    catch (Throwable t) {
                         if (!display.isDisposed())
                         {
                             display.asyncExec(new Runnable()
                             {
                                 public void run()
                                 {
-                                    callback.completedWithError(_frameworkManager, t);
+                                    callback.completedWithError(_frameworkManager, t instanceof Exception? (Exception) t: new Exception(t));
 
                                 }
                             });
