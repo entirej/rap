@@ -28,7 +28,6 @@ import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.entirej.applicationframework.rwt.application.components.EJRWTStatusbar;
 import org.entirej.applicationframework.rwt.application.components.menu.EJRWTDefaultMenuBuilder;
 import org.entirej.applicationframework.rwt.application.components.menu.EJRWTDefaultMenuPropertiesBuilder;
 import org.entirej.applicationframework.rwt.application.components.menu.EJRWTMenuTreeRoot;
@@ -747,19 +746,36 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                     }
 
                     EJReportRunner reportRunner = reportManager.createReportRunner();
-                    final String output = reportRunner.runReport(report);
+                    try {
+                        final String output = reportRunner.runReport(report);
 
-                    if (!display.isDisposed())
-                    {
-                        display.asyncExec(new Runnable()
+                        if (!display.isDisposed())
                         {
-                            public void run()
+                            display.asyncExec(new Runnable()
                             {
-                                callback.completed(_frameworkManager, output);
+                                public void run()
+                                {
+                                    callback.completed(_frameworkManager, output);
 
-                            }
-                        });
+                                }
+                            });
+                        }
                     }
+                    catch (Exception t) {
+                        if (!display.isDisposed())
+                        {
+                            display.asyncExec(new Runnable()
+                            {
+                                public void run()
+                                {
+                                    callback.completedWithError(_frameworkManager, t);
+
+                                }
+                            });
+                        }
+                    }
+                    
+                    
                 }
                 finally
                 {
