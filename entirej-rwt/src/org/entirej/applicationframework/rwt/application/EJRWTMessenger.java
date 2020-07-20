@@ -603,7 +603,7 @@ public class EJRWTMessenger implements EJMessenger
                     if (message != null) {
                             messageLabel = new Label(composite, getMessageLabelStyle());
                             messageLabel.setData(EJ_RWT.MARKUP_ENABLED, true);
-                            messageLabel.setText(message);
+                            messageLabel.setText(message.replaceAll("\r\n", "<br/>").replaceAll("\n", "<br/>"));
                             GridDataFactory
                                             .fillDefaults()
                                             .align(SWT.FILL, SWT.BEGINNING)

@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
@@ -127,7 +128,7 @@ public class EJRWTNotifierDialog
 
                 GC gc = new GC(_shell);
 
-                String lines[] = message.split("\n");
+                String lines[] = message.replaceAll( "<br/>","\n").replaceAll( "<br>","\n").split("\n");
                 Point longest = null;
 
                 for (String line : lines)
@@ -173,6 +174,7 @@ public class EJRWTNotifierDialog
                 });
 
                 Label text = new Label(inner, SWT.WRAP);
+                text.setData(RWT.MARKUP_ENABLED, Boolean.TRUE);
                 text.setData(EJ_RWT.CUSTOM_VARIANT, "notifierDialogText"+csstag);
 
 
@@ -181,7 +183,8 @@ public class EJRWTNotifierDialog
                 gd.horizontalSpan = 3;
                 text.setLayoutData(gd);
                 //text.setForeground(_fgColor);
-                text.setText(message);
+                
+                text.setText(message.replaceAll("\r\n", "<br/>").replaceAll("\n", "<br/>"));
 
                 _shell.setSize(width, height);
 

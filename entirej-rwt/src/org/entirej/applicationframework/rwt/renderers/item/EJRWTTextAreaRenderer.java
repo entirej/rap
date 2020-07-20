@@ -112,7 +112,7 @@ public class EJRWTTextAreaRenderer extends EJRWTTextItemRenderer
             String text = proxy.getText(element);
             if(text!=null)
             {
-                text=   text.replaceAll("\n", "<br />");
+                text=   text.replaceAll("\n", "<br/>");
             }
             return text;
         }
