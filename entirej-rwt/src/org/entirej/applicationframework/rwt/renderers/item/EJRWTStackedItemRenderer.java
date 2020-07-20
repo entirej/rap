@@ -657,7 +657,22 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
 
             if (controlState(stackedPane))
             {
-                stackedPane.forceFocus();
+                Control control = stackedPane.getActiveControl();
+                if (control != null && controlState(control))
+                {
+                    if (control instanceof Button)
+                    {
+                        ((Button) control).forceFocus();
+                    }
+                    else if (control instanceof Text)
+                    {
+                        ((Text) control).forceFocus();
+                    }
+                    else if (control instanceof Combo)
+                    {
+                        ((Combo) control).forceFocus();
+                    }
+                }
             }
         }
     }
