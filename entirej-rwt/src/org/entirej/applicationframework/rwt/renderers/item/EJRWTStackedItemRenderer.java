@@ -1718,7 +1718,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     protected void setMandatoryBorder(boolean req)
     {
 
-        if (controlState(_mandatoryDecoration.getControl()))
+        if (controlState(_actionControl) && controlState(_mandatoryDecoration.getControl()))
         {
             if (req && (getValue() == null || _baseValue.getValue() == null))
             {
