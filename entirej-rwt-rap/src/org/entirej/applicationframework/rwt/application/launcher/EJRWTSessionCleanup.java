@@ -1,6 +1,7 @@
 package org.entirej.applicationframework.rwt.application.launcher;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
 
@@ -9,16 +10,20 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 
 public class EJRWTSessionCleanup
 {
-    Logger LOG = Logger.getLogger(EJRWTSessionCleanup.class.getName());
-    
+    Logger                                    LOG        = Logger.getLogger(EJRWTSessionCleanup.class.getName());
+
     private WeakHashMap<Closeable, Closeable> closeables = new WeakHashMap<>();
 
     public EJRWTSessionCleanup()
     {
-        LOG.info("EJRWTSessionCleanup session for :"+RWT.getUISession().getId());
+        LOG.info("EJRWTSessionCleanup session for :" + RWT.getUISession().getId());
         try
         {
             RWT.getUISession().addUISessionListener(new UISessionListener()
@@ -40,7 +45,7 @@ public class EJRWTSessionCleanup
 
         }
     }
-    
+
     public void addCloseable(Closeable closeable)
     {
         closeables.put(closeable, closeable);
@@ -48,7 +53,7 @@ public class EJRWTSessionCleanup
 
     protected void cleanup()
     {
-        LOG.info("EJRWTSessionCleanup cleanup for session for :"+RWT.getUISession().getId());
+        LOG.info("EJRWTSessionCleanup cleanup for session for :" + RWT.getUISession().getId());
         for (Closeable cloneable : closeables.values())
         {
             try
@@ -64,9 +69,13 @@ public class EJRWTSessionCleanup
 
     }
 
-    public static EJRWTSessionCleanup getSession()
+    public static Optional<EJRWTSessionCleanup> getSession()
     {
-        return SingletonUtil.getSessionInstance(EJRWTSessionCleanup.class);
+        if (RWT.getUISession() != null)
+            return Optional.of(SingletonUtil.getSessionInstance(EJRWTSessionCleanup.class));
+        else
+            return Optional.empty();
+
     }
 
 }
