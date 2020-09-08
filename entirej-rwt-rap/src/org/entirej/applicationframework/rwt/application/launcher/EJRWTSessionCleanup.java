@@ -2,6 +2,7 @@ package org.entirej.applicationframework.rwt.application.launcher;
 
 import java.io.IOException;
 import java.util.WeakHashMap;
+import java.util.logging.Logger;
 
 import org.apache.commons.fileupload.util.Closeable;
 import org.eclipse.rap.rwt.RWT;
@@ -11,11 +12,13 @@ import org.eclipse.rap.rwt.service.UISessionListener;
 
 public class EJRWTSessionCleanup
 {
-
+    Logger LOG = Logger.getLogger(EJRWTSessionCleanup.class.getName());
+    
     private WeakHashMap<Closeable, Closeable> closeables = new WeakHashMap<>();
 
     public EJRWTSessionCleanup()
     {
+        LOG.info("EJRWTSessionCleanup session for :"+RWT.getUISession().getId());
         try
         {
             RWT.getUISession().addUISessionListener(new UISessionListener()
@@ -45,6 +48,7 @@ public class EJRWTSessionCleanup
 
     protected void cleanup()
     {
+        LOG.info("EJRWTSessionCleanup cleanup for session for :"+RWT.getUISession().getId());
         for (Closeable cloneable : closeables.values())
         {
             try
