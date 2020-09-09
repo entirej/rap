@@ -36,6 +36,7 @@ import org.eclipse.rap.rwt.application.Application.OperationMode;
 import org.eclipse.rap.rwt.application.ApplicationConfiguration;
 import org.eclipse.rap.rwt.application.EntryPoint;
 import org.eclipse.rap.rwt.application.EntryPointFactory;
+import org.eclipse.rap.rwt.application.ExceptionHandler;
 import org.eclipse.rap.rwt.client.WebClient;
 import org.eclipse.rap.rwt.client.service.BrowserNavigation;
 import org.eclipse.rap.rwt.client.service.BrowserNavigationEvent;
@@ -89,7 +90,6 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkE
 public abstract class EJRWTApplicationLauncher implements ApplicationConfiguration
 {
 
-    
     private static final String   THEME_DEFAULT_CSS = "theme/default.css";
     private static final String   ICONS_FAVICON_ICO = "icons/favicon.ico";
     protected static final String THEME_DEFAULT     = "org.entirej.applicationframework.rwt.Default";
@@ -105,10 +105,11 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     {
         return ICONS_FAVICON_ICO;
     }
-    
-    protected boolean canLoadServices(){
-        
-       return true;
+
+    protected boolean canLoadServices()
+    {
+
+        return true;
     }
 
     protected String getLoadingImage()
@@ -139,6 +140,11 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     protected String getBaseThemeCSSLocation()
     {
         return THEME_DEFAULT_CSS;
+    }
+
+    public void handleAppException(Throwable exception)
+    {
+        throw new RuntimeException(exception);
     }
 
     protected String getThemeCSSLocation()
@@ -240,6 +246,16 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
         configuration.addResource(favicon, new FileResource());
         configuration.addResource(getLoadingImage(), new FileResource());
         configuration.addStyleSheet(THEME_DEFAULT, "resource/theme/default.css");
+
+        configuration.setExceptionHandler(new ExceptionHandler()
+        {
+            @Override
+            public void handleException(Throwable exception)
+            {
+                EJRWTSessionCleanup.getSession().ifPresent(EJRWTSessionCleanup::cleanup);
+                handleAppException(exception);
+            }
+        });
         String baseThemeCSSLocation = getBaseThemeCSSLocation();
         if (baseThemeCSSLocation == null)
         {
@@ -295,8 +311,6 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                 };
             }
 
-           
-
             private EntryPoint newEntryPoint()
             {
                 return new EntryPoint()
@@ -323,10 +337,9 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
                         }
 
-                        
                         EJFrameworkManagerProvider managerProvider = new EJFrameworkManagerProvider()
                         {
-                            
+
                             @Override
                             public EJFrameworkManager get()
                             {
@@ -335,61 +348,60 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         };
                         EJConnectionHelper.setProvider(managerProvider);
                         EJSystemConnectionHelper.setProvider(managerProvider);
-                        
+
                         RWTUtils.patchClient(getWebPathContext(), getTimeoutUrl());
 
                         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
                         {
 
                             @Override
-                            public void promptFileUpload(final EJFileUpload fileUpload,final Callable<Object> callable)
+                            public void promptFileUpload(final EJFileUpload fileUpload, final Callable<Object> callable)
                             {
-                                if(fileUpload.isMultiSelection())
+                                if (fileUpload.isMultiSelection())
                                 {
-                                    EJRWTFileUpload.promptMultipleFileUpload(fileUpload.getTitle(),fileUpload.getUploadSizeLimit(),fileUpload.getUploadTimeLimit(),fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
+                                    EJRWTFileUpload.promptMultipleFileUpload(fileUpload.getTitle(), fileUpload.getUploadSizeLimit(), fileUpload.getUploadTimeLimit(), fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
                                     {
-                                        
+
                                         @Override
                                         public void select(String[] files)
                                         {
                                             try
                                             {
-                                                fileUpload.setFilePaths(files!=null ? Arrays.asList(files) :null);
+                                                fileUpload.setFilePaths(files != null ? Arrays.asList(files) : null);
                                                 callable.call();
                                             }
                                             catch (Exception e)
                                             {
                                                 fileUpload.getForm().handleException(e);
                                             }
-                                            
+
                                         }
                                     });
                                 }
                                 else
                                 {
-                                    
-                                    EJRWTFileUpload.promptFileUpload(fileUpload.getTitle(),fileUpload.getUploadSizeLimit(),fileUpload.getUploadTimeLimit(),fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
+
+                                    EJRWTFileUpload.promptFileUpload(fileUpload.getTitle(), fileUpload.getUploadSizeLimit(), fileUpload.getUploadTimeLimit(), fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
                                     {
-                                        
+
                                         @Override
                                         public void select(String[] files)
                                         {
                                             try
                                             {
-                                                fileUpload.setFilePaths(files!=null ? Arrays.asList(files) :null);
+                                                fileUpload.setFilePaths(files != null ? Arrays.asList(files) : null);
                                                 callable.call();
                                             }
                                             catch (Exception e)
                                             {
                                                 fileUpload.getForm().handleException(e);
                                             }
-                                            
+
                                         }
                                     });
-                                    
-                                    
+
                                 }
-                                
+
                             }
 
                             public Image getImage(String name, ClassLoader loader)
@@ -506,20 +518,20 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         if (display.isDisposed())
                             display = new Display();
                         Shell shell = new Shell(display, SWT.NO_TRIM);
-                        
+
                         EJFrameworkExtensionProperties definedProperties = coreProperties.getApplicationDefinedProperties();
                         String keyMnemonic = definedProperties.getStringProperty("MNEMONIC");
-                        if(keyMnemonic==null || keyMnemonic.isEmpty())
+                        if (keyMnemonic == null || keyMnemonic.isEmpty())
                             keyMnemonic = "ALT";
-                        display.setData( RWT.MNEMONIC_ACTIVATOR, keyMnemonic);
-                        //check test mode
-                        
+                        display.setData(RWT.MNEMONIC_ACTIVATOR, keyMnemonic);
+                        // check test mode
+
                         StartupParameters service = RWT.getClient().getService(StartupParameters.class);
-                        if(service!= null && Boolean.valueOf(service.getParameter("TEST_MODE")))
+                        if (service != null && Boolean.valueOf(service.getParameter("TEST_MODE")))
                         {
                             EJ_RWT.setTestMode(true);
                         }
-                        
+
                         try
                         {
                             preApplicationBuild(applicationManager);
@@ -559,7 +571,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         // String message = getDefaultTabCloseMessage();
                         // if ("__DEFAULT__".equals(message))
                         // {
-                        // confirmation.setMessage(String.format("Do you want to close %s ?",
+                        // confirmation.setMessage(String.format("Do you want to
+                        // close %s ?",
                         // EJCoreProperties.getInstance().getLayoutContainer().getTitle()));
                         // }
                         // else if (message != null)
@@ -596,8 +609,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                 e.printStackTrace();
                             }
 
-                        
-                        if(definedProperties!=null && definedProperties.getBooleanProperty("LIVE_CONNECTION", false))
+                        if (definedProperties != null && definedProperties.getBooleanProperty("LIVE_CONNECTION", false))
                             pushSession.start();
 
                         return openShell(display, shell);
@@ -605,8 +617,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                 };
             }
         }, properties);
-        
-        
+
         // services
 
         {
@@ -615,23 +626,22 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             final String SERVICE_PATH = "SERVICE_PATH";
             final String SERVICE_FORM = "SERVICE_FORM";
 
-           final String SERVICE_NAME = "SERVICE_NAME";
+            final String SERVICE_NAME = "SERVICE_NAME";
             EJFrameworkExtensionProperties definedProperties = coreProperties.getApplicationDefinedProperties();
-            if (canLoadServices()&& definedProperties != null)
+            if (canLoadServices() && definedProperties != null)
             {
                 EJFrameworkExtensionProperties group = definedProperties.getPropertyGroup(SERVICE);
-                if (group != null && group.getPropertyList(SERVICE_LIST)!=null)
+                if (group != null && group.getPropertyList(SERVICE_LIST) != null)
                 {
                     EJCoreFrameworkExtensionPropertyList list = group.getPropertyList(SERVICE_LIST);
                     List<EJFrameworkExtensionPropertyListEntry> allListEntries = list.getAllListEntries();
                     for (EJFrameworkExtensionPropertyListEntry entry : allListEntries)
                     {
 
-                        
                         final String formId = entry.getProperty(SERVICE_FORM);
-                        HashMap<String, String>  srvproperties = new HashMap<String, String>(properties);
-                         srvproperties.put(WebClient.PAGE_TITLE, entry.getProperty(SERVICE_NAME));
-                        if(entry.getProperty(SERVICE_PATH)!=null && formId!=null && formId!=null)
+                        HashMap<String, String> srvproperties = new HashMap<String, String>(properties);
+                        srvproperties.put(WebClient.PAGE_TITLE, entry.getProperty(SERVICE_NAME));
+                        if (entry.getProperty(SERVICE_PATH) != null && formId != null && formId != null)
                         {
                             configuration.addEntryPoint(String.format("/%s", entry.getProperty(SERVICE_PATH)), new EntryPointFactory()
                             {
@@ -673,8 +683,6 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                     };
                                 }
 
-                               
-
                                 private EntryPoint newServiceEntryPoint(String serviceFormID)
                                 {
                                     return new EntryPoint()
@@ -683,66 +691,61 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                         public int createUI()
                                         {
 
-                                            
-
                                             RWTUtils.patchClient(getWebPathContext(), null);
 
                                             EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
                                             {
 
-                                               
-
                                                 @Override
-                                                public void promptFileUpload(final EJFileUpload fileUpload,final Callable<Object> callable)
+                                                public void promptFileUpload(final EJFileUpload fileUpload, final Callable<Object> callable)
                                                 {
-                                                    if(fileUpload.isMultiSelection())
+                                                    if (fileUpload.isMultiSelection())
                                                     {
-                                                        EJRWTFileUpload.promptMultipleFileUpload(fileUpload.getTitle(),fileUpload.getUploadSizeLimit(),fileUpload.getUploadTimeLimit(),fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
+                                                        EJRWTFileUpload.promptMultipleFileUpload(fileUpload.getTitle(), fileUpload.getUploadSizeLimit(), fileUpload.getUploadTimeLimit(), fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
                                                         {
-                                                            
+
                                                             @Override
                                                             public void select(String[] files)
                                                             {
                                                                 try
                                                                 {
-                                                                    fileUpload.setFilePaths(files!=null ? Arrays.asList(files) :null);
+                                                                    fileUpload.setFilePaths(files != null ? Arrays.asList(files) : null);
                                                                     callable.call();
                                                                 }
                                                                 catch (Exception e)
                                                                 {
                                                                     e.printStackTrace();
                                                                 }
-                                                                
+
                                                             }
                                                         });
                                                     }
                                                     else
                                                     {
-                                                        
-                                                        EJRWTFileUpload.promptFileUpload(fileUpload.getTitle(),fileUpload.getUploadSizeLimit(),fileUpload.getUploadTimeLimit(),fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
+
+                                                        EJRWTFileUpload.promptFileUpload(fileUpload.getTitle(), fileUpload.getUploadSizeLimit(), fileUpload.getUploadTimeLimit(), fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
                                                         {
-                                                            
+
                                                             @Override
                                                             public void select(String[] files)
                                                             {
                                                                 try
                                                                 {
-                                                                    fileUpload.setFilePaths(files!=null ? Arrays.asList(files) :null);
+                                                                    fileUpload.setFilePaths(files != null ? Arrays.asList(files) : null);
                                                                     callable.call();
                                                                 }
                                                                 catch (Exception e)
                                                                 {
                                                                     e.printStackTrace();
                                                                 }
-                                                                
+
                                                             }
                                                         });
-                                                        
-                                                        
+
                                                     }
-                                                    
+
                                                 }
-                                                
+
                                                 public Image getImage(String name, ClassLoader loader)
                                                 {
                                                     return RWTUtils.getImage(name, loader);
@@ -843,10 +846,12 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                             getContext().getUISession().setAttribute("ej.applicationManager", applicationManager);
 
                                             EJCoreLayoutContainer layoutContainer = EJCoreProperties.getInstance().getLayoutContainer();
-                                            // Now build the application container
+                                            // Now build the application
+                                            // container
                                             EJRWTApplicationContainer appContainer = new EJRWTApplicationContainer(layoutContainer);
 
-                                            // Add the application menu and status bar to the app
+                                            // Add the application menu and
+                                            // status bar to the app
                                             // container
                                             EJMessenger messenger = applicationManager.getApplicationMessenger();
                                             if (messenger == null)
@@ -857,8 +862,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                             if (display.isDisposed())
                                                 display = new Display();
                                             Shell shell = new Shell(display, SWT.NO_TRIM);
-                                           
-                                            applicationManager.buildServiceApplication(appContainer, shell,formId);
+
+                                            applicationManager.buildServiceApplication(appContainer, shell, formId);
 
                                             final EJRWTApplicationManager appman = applicationManager;
 
@@ -882,7 +887,6 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                             });
                                             shell.layout();
                                             shell.setMaximized(true);
-                                           
 
                                             final ServerPushSession pushSession = new ServerPushSession();
 
@@ -890,12 +894,10 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                             {
                                                 public void beforeDestroy(UISessionEvent event)
                                                 {
-                                                    
+
                                                     pushSession.stop();
                                                 }
                                             });
-
-                                            
 
                                             pushSession.start();
 
@@ -911,7 +913,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             }
 
         }
-        
+
     }
 
     @SuppressWarnings("deprecation")
@@ -995,6 +997,17 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             encodeURL = encodeURL.substring(0, encodeURL.indexOf("jsessionid"));
         }
         String browserText = MessageFormat.format("parent.window.location.href = \"{0}\";", encodeURL);
+        redirectJs(browserText);
+    }
+
+    public void navigateTo(String deployPath, String path)
+    {
+        String browserText = MessageFormat.format("parent.window.location.href = \"{0}\";", deployPath + path);
+        redirectJs(browserText);
+    }
+
+    private static void redirectJs(String browserText)
+    {
         JavaScriptExecutor executor = RWT.getClient().getService(JavaScriptExecutor.class);
         if (executor != null)
         {

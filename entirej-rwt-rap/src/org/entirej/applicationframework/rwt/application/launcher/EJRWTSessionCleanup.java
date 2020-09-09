@@ -10,10 +10,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 
 public class EJRWTSessionCleanup
 {
@@ -51,14 +47,15 @@ public class EJRWTSessionCleanup
         closeables.put(closeable, closeable);
     }
 
-    protected void cleanup()
+    public void cleanup()
     {
         LOG.info("EJRWTSessionCleanup cleanup for session for :" + RWT.getUISession().getId());
         for (Closeable cloneable : closeables.values())
         {
             try
             {
-                cloneable.close();
+                if(!cloneable.isClosed())
+                    cloneable.close();
             }
             catch (IOException e)
             {
