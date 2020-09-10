@@ -144,6 +144,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
     public void handleAppException(Throwable exception)
     {
+        EJRWTSessionCleanup.getSession().ifPresent(EJRWTSessionCleanup::cleanup);
         throw new RuntimeException(exception);
     }
 
@@ -252,7 +253,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             @Override
             public void handleException(Throwable exception)
             {
-                EJRWTSessionCleanup.getSession().ifPresent(EJRWTSessionCleanup::cleanup);
+                
                 handleAppException(exception);
             }
         });
