@@ -1,11 +1,11 @@
 package org.entirej.applicationframework.rwt.application.launcher;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
 
-import org.apache.commons.fileupload.util.Closeable;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.service.UISessionEvent;
@@ -54,7 +54,6 @@ public class EJRWTSessionCleanup
         {
             try
             {
-                if(!cloneable.isClosed())
                     cloneable.close();
             }
             catch (IOException e)
