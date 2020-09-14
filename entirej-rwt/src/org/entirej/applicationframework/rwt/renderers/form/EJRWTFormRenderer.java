@@ -314,6 +314,20 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         }
     }
+    
+    @Override
+    public void setPopupStatusBarMessage(String canvasName, String status)
+    {
+        CanvasHandler canvasHandler = _canvases.get(canvasName);
+        if (canvasHandler instanceof PopupCanvasHandler)
+        {
+            PopupCanvasHandler popupCanvasHandler = (PopupCanvasHandler) canvasHandler;
+            popupCanvasHandler.setStatusBarMessage(status);
+        }else 
+        {
+            _uicallCache.add(()->setPopupStatusBarMessage(canvasName, status));
+        }
+    }
 
     @Override
     public void showDrawerPage(String canvasName, String pageName)
@@ -1781,6 +1795,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         String                     button1Label;
         String                     button2Label;
         String                     button3Label;
+        String                     status;
+        
         Collection<EJMessage>      msgs;
         private int customWidth =-1;
         private int customHeight =-1;
@@ -1793,6 +1809,14 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             button2Label = canvasProperties.getButtonTwoText();
             button3Label = canvasProperties.getButtonThreeText();
             open(false);
+        }
+
+        public void setStatusBarMessage(String status)
+        {
+           this.status = status;
+           if (_popupDialog != null)
+               _popupDialog.setStatus(status);
+            
         }
 
         @Override
@@ -2028,6 +2052,12 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         getShell().setVisible(false);
                         return true;
                     }
+                    
+                    @Override
+                    protected boolean isStatusMessageSupported()
+                    {
+                        return true;
+                    }
 
                     @Override
                     protected void buttonPressed(int buttonId)
@@ -2064,6 +2094,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     }
                 };
                 _popupDialog.create();
+                if(status!=null)
+                    _popupDialog.setStatus(status);
             }
 
             if (show)

@@ -22,15 +22,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.rap.rwt.service.ServerPushSession;
+import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 
@@ -39,6 +42,7 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
     private Shell _parent;
     private int   _selectedButtonId = -1;
     private int   counter           = 0;
+    private Label statusBar;
 
     public EJRWTAbstractDialog(final Shell parent)
     {
@@ -71,6 +75,8 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
     {
 
     }
+    
+    
 
     public void activateDialog()
     {
@@ -142,6 +148,7 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
             Control helpControl = createHelpControl(composite);
             helpControl.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.GRAB_HORIZONTAL));
         }
+        
 
         // Add the buttons to the button bar.
         createButtonsForButtonBar(composite);
@@ -150,9 +157,40 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
             data.heightHint = 0;
             data.widthHint = 0;
         }
+        
+        
+     // create status control if needed
+        if (isStatusMessageSupported())
+        {
+            Composite statusComp = new Composite(parent, SWT.NONE);
+            FillLayout fillLayout = new FillLayout();
+            fillLayout.marginHeight = 0;
+            fillLayout.spacing = 0;
+            fillLayout.marginWidth = 0;
+            statusComp.setLayout(fillLayout);
+            data = new GridData(SWT.FILL, SWT.CENTER, true, false);
+            data.heightHint =16;
+           
+            statusComp.setLayoutData(data);
+            statusBar = new Label(statusComp,SWT.NONE);
+            statusBar.setData(EJ_RWT.MARKUP_ENABLED,true);
+        }
         return composite;
     }
 
+    protected  boolean isStatusMessageSupported()
+    {
+        return false;
+
+    }
+    
+    public void setStatus(String message)
+    {
+        if(isStatusMessageSupported()&& !statusBar.isDisposed()) {
+            statusBar.setText(message==null?"":message); 
+        }
+    }
+    
     @Override
     protected void buttonPressed(final int buttonId)
     {
