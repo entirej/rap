@@ -21,6 +21,7 @@ public class EJRWTDialogContext
 
     public void open(EJRWTAbstractDialog dialog)
     {
+        dialogs.remove(dialog);//remove and add to popto top
         dialogs.add(dialog);
     }
 
