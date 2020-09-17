@@ -170,9 +170,20 @@ public abstract class EJRWTAbstractDialog extends EJRWTTrayDialog implements Ser
             statusComp.setLayout(fillLayout);
             data = new GridData(SWT.FILL, SWT.CENTER, true, false);
             data.heightHint =16;
-           
+            data.exclude = true;
+            GridData dataLayout = data; 
             statusComp.setLayoutData(data);
-            statusBar = new Label(statusComp,SWT.NONE);
+            statusBar = new Label(statusComp,SWT.NONE) {
+                
+                @Override
+                public void setText(String text)
+                {
+                    dataLayout.exclude  = text==null || text.trim().isEmpty();
+                    super.setText(text);
+                    parent.layout(true);
+                }
+                
+            };
             statusBar.setData(EJ_RWT.MARKUP_ENABLED,true);
         }
         return composite;
