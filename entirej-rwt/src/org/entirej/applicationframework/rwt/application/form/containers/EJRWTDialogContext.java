@@ -31,6 +31,6 @@ public class EJRWTDialogContext
 
     public boolean isCurrent(EJRWTAbstractDialog dialog)
     {
-        return dialogs.peek() == dialog;
+        return dialogs.size()<2 || dialogs.peek() == dialog;
     }
 }
