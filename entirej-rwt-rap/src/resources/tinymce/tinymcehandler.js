@@ -136,13 +136,13 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				          branding: false,
 				          removed_menuitems: 'newdocument',
 						  plugins: [
-						    'advlist autolink lists  image  print preview  textcolor',
+						    'advlist autolink lists  print preview  textcolor',
 						    'searchreplace visualblocks ',
-						    'insertdatetime table contextmenu paste wordcount'
+						    'insertdatetime  contextmenu paste wordcount'
 						  ],
 						  content_style: this.contentCss,
 						  fontsize_formats: this.configObj!=null && this.configObj.fontsize_formats ? this.configObj.fontsize_formats :"8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px",
-						  toolbar: 'insert | undo redo |  formatselect | sizeselect fontselect fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+						  toolbar: 'insert | undo redo |  formatselect | sizeselect  fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
 						  
 						  
 						  style_formats: this.configObj!=null && this.configObj.style_formats ? this.configObj.style_formats :undefined,
@@ -160,12 +160,12 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				          resize: false,
 				          removed_menuitems: 'newdocument',
 						  plugins: [
-						    'advlist autolink lists  image  print preview  textcolor',
+						    'advlist autolink lists    print preview  textcolor',
 						    'searchreplace visualblocks ',
-						    'insertdatetime table contextmenu paste wordcount'
+						    'insertdatetime  contextmenu paste wordcount'
 						  ],
 						  fontsize_formats: this.configObj!=null && this.configObj.fontsize_formats ? this.configObj.fontsize_formats :"8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px",
-						  toolbar: 'insert | undo redo |  formatselect | sizeselect fontselect fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+						  toolbar: 'insert | undo redo |  formatselect | sizeselect  fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
 						  content_style: this.contentCss,
 						  style_formats: this.configObj!=null && this.configObj.style_formats ? this.configObj.style_formats :undefined,
 						  visualblocks_default_state: this.configObj!=null && this.configObj.visualblocks_default_state ? this.configObj.visualblocks_default_state :undefined,
