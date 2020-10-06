@@ -78,8 +78,10 @@ import org.entirej.framework.core.EJConnectionHelper.EJFrameworkManagerProvider;
 import org.entirej.framework.core.EJFrameworkHelper;
 import org.entirej.framework.core.EJFrameworkInitialiser;
 import org.entirej.framework.core.EJFrameworkManager;
+import org.entirej.framework.core.EJManagedFrameworkConnection;
 import org.entirej.framework.core.EJSystemConnectionHelper;
 import org.entirej.framework.core.data.controllers.EJFileUpload;
+import org.entirej.framework.core.data.controllers.EJManagedActionController;
 import org.entirej.framework.core.extensions.properties.EJCoreFrameworkExtensionPropertyList;
 import org.entirej.framework.core.interfaces.EJMessenger;
 import org.entirej.framework.core.properties.EJCoreLayoutContainer;
@@ -94,6 +96,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     private static final String   ICONS_FAVICON_ICO = "icons/favicon.ico";
     protected static final String THEME_DEFAULT     = "org.entirej.applicationframework.rwt.Default";
     private String                _baseURL;
+    private EJManagedFrameworkConnection connection;
 
     public void configure(Application configuration)
     {
@@ -533,15 +536,18 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             EJ_RWT.setTestMode(true);
                         }
 
+                        
+                        EJManagedFrameworkConnection connection = applicationManager.getConnection();
                         try
                         {
                             preApplicationBuild(applicationManager);
+                            applicationManager.buildApplication(appContainer, shell);
                         }
                         finally
                         {
-                            applicationManager.getConnection().close();
+                            connection.close();
                         }
-                        applicationManager.buildApplication(appContainer, shell);
+                       
 
                         final EJRWTApplicationManager appman = applicationManager;
 
@@ -551,6 +557,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             @Override
                             public void run()
                             {
+                                EJManagedFrameworkConnection connection = applicationManager.getConnection();
                                 try
                                 {
 
@@ -558,7 +565,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                 }
                                 finally
                                 {
-                                    appman.getConnection().close();
+                                    connection.close();
                                 }
 
                             }
@@ -587,7 +594,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         {
                             public void beforeDestroy(UISessionEvent event)
                             {
-                                if (applicationManager.getApplicationActionProcessor() != null)
+                                if (applicationManager.getApplicationActionProcessor() != null) {
+                                    EJManagedFrameworkConnection connection = applicationManager.getConnection();
                                     try
                                     {
                                         applicationManager.getApplicationActionProcessor().whenApplicationEnd(applicationManager);
@@ -596,11 +604,21 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                     {
                                         e.printStackTrace();
                                     }
+                                    finally
+                                    {
+                                        connection.close();
+                                    }
+                                }
+                                
+                               
+                               
                                 pushSession.stop();
                             }
                         });
 
-                        if (applicationManager.getApplicationActionProcessor() != null)
+                        if (applicationManager.getApplicationActionProcessor() != null) 
+                        {
+                            EJManagedFrameworkConnection connection2 = applicationManager.getConnection();
                             try
                             {
                                 applicationManager.getApplicationActionProcessor().whenApplicationStart(applicationManager);
@@ -609,6 +627,11 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             {
                                 e.printStackTrace();
                             }
+                            finally
+                            {
+                                connection2.close();
+                            }
+                        }
 
                         if (definedProperties != null && definedProperties.getBooleanProperty("LIVE_CONNECTION", false))
                             pushSession.start();
