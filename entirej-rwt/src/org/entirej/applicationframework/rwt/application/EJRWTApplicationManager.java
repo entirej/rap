@@ -901,13 +901,18 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         EJApplicationActionProcessor applicationActionProcessor = getApplicationActionProcessor();
         
         if(applicationActionProcessor!=null) {
+            EJManagedFrameworkConnection connection = getConnection();
             try
             {
                 applicationActionProcessor.executeActionCommand(this, helpActive ?"HELP_ACTIVE":"HELP_INACTIVE");
             }
             catch (EJActionProcessorException e)
             {
+                connection.rollback();
                 handleException(e);
+            }
+            finally {
+                connection.close();
             }
         }
     }

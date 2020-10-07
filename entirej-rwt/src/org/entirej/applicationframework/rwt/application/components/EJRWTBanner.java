@@ -34,6 +34,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.interfaces.EJRWTAppComponentRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.framework.core.EJActionProcessorException;
+import org.entirej.framework.core.EJManagedFrameworkConnection;
 import org.entirej.framework.core.actionprocessor.interfaces.EJApplicationActionProcessor;
 import org.entirej.framework.core.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.core.data.controllers.EJApplicationLevelParameter.ParameterChangedListener;
@@ -115,13 +116,18 @@ public class EJRWTBanner implements EJRWTAppComponentRenderer
                    EJApplicationActionProcessor applicationActionProcessor = manager.getApplicationActionProcessor();
                    if(applicationActionProcessor!=null)
                    {
+                       EJManagedFrameworkConnection connection = manager.getConnection();
                        try
                     {
                         applicationActionProcessor.executeActionCommand(manager.getFrameworkManager(), action);
                     }
                     catch (EJActionProcessorException e1)
                     {
-                        e1.printStackTrace();
+                        connection.rollback();
+                        manager.handleException(e1);
+                    }
+                       finally {
+                           connection.close();
                     }
                    }
                 }

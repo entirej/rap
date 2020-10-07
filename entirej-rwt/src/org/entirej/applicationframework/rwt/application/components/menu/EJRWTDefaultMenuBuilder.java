@@ -45,6 +45,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.application.components.menu.EJRWTMenuTreeElement.Type;
 import org.entirej.framework.core.EJActionProcessorException;
 import org.entirej.framework.core.EJApplicationException;
+import org.entirej.framework.core.EJManagedFrameworkConnection;
 import org.entirej.framework.core.EJMessageFactory;
 import org.entirej.framework.core.actionprocessor.interfaces.EJMenuActionProcessor;
 import org.entirej.framework.core.enumerations.EJFrameworkMessage;
@@ -133,14 +134,20 @@ public class EJRWTDefaultMenuBuilder implements Serializable
                             @Override
                             public void widgetSelected(SelectionEvent evnt)
                             {
+                                EJManagedFrameworkConnection connection = applicationManager.getConnection();
                                 try
                                 {
                                     menuActionProcessor.executeActionCommand(treeElement.getActionCommand());
                                 }
                                 catch (EJActionProcessorException e)
                                 {
+                                    connection.rollback();
                                     applicationManager.getApplicationMessenger().handleException(e, true);
                                 }
+                                finally {
+                                    connection.close();
+                                }
+                                
                             }
                         });
                     }
@@ -270,13 +277,19 @@ public class EJRWTDefaultMenuBuilder implements Serializable
                             }
                             else if (element.getType() == Type.ACTION && menuActionProcessor != null)
                             {
+                                EJManagedFrameworkConnection connection = _applicationManager.getConnection();
+
                                 try
                                 {
                                     menuActionProcessor.executeActionCommand(element.getActionCommand());
                                 }
                                 catch (EJActionProcessorException e)
                                 {
+                                    connection.rollback();
                                     _applicationManager.getApplicationMessenger().handleException(e, true);
+                                }
+                                finally {
+                                    connection.close();
                                 }
                             }
 
@@ -318,13 +331,18 @@ public class EJRWTDefaultMenuBuilder implements Serializable
                                     }
                                     else if (element.getType() == Type.ACTION && menuActionProcessor != null)
                                     {
+                                        EJManagedFrameworkConnection connection = _applicationManager.getConnection();
                                         try
                                         {
                                             menuActionProcessor.executeActionCommand(element.getActionCommand());
                                         }
                                         catch (EJActionProcessorException e)
                                         {
+                                            connection.rollback();
                                             _applicationManager.getApplicationMessenger().handleException(e, true);
+                                        }
+                                        finally {
+                                            connection.close();
                                         }
                                     }
                                 }

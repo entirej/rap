@@ -57,6 +57,7 @@ import org.entirej.applicationframework.rwt.application.interfaces.EJRWTFormSele
 import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.applicationframework.rwt.renderers.form.EJRWTFormRenderer;
 import org.entirej.framework.core.EJActionProcessorException;
+import org.entirej.framework.core.EJManagedFrameworkConnection;
 import org.entirej.framework.core.actionprocessor.interfaces.EJApplicationActionProcessor;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
 import org.entirej.framework.core.internal.EJInternalForm;
@@ -739,7 +740,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                     {
                         return ;
                     }
-                    
+                    EJManagedFrameworkConnection connection = _applicationManager.getConnection();
                     try
                     {
                         String pageName = (String) selection.getData("TAB_KEY");
@@ -748,6 +749,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                     }
                     catch (EJActionProcessorException e1)
                     {
+                        connection.rollback();
                         if(appTabFolder.getLastSelection()!=null)
                         {
                             appTabFolder.showPage(appTabFolder.getLastSelection());
@@ -756,8 +758,13 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                             _applicationManager.handleMessage(e1.getFrameworkMessage());
                         return;
                     }
+                    finally {
+                        connection.close();
+                    }
                     
-                    
+                
+                 EJManagedFrameworkConnection connection2 = _applicationManager.getConnection();
+   
                  try
                  {
                      String pageName = (String) selection.getData("TAB_KEY");
@@ -766,8 +773,12 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
                  }
                  catch (EJActionProcessorException e1)
                  {
+                     connection2.rollback();
                      e1.printStackTrace();
                  }
+                 finally {
+                     connection2.close();
+                }
                 }
             }
         });

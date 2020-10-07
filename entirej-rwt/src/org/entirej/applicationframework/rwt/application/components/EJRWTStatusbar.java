@@ -40,6 +40,7 @@ import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJActionProcessorException;
 import org.entirej.framework.core.EJApplicationException;
+import org.entirej.framework.core.EJManagedFrameworkConnection;
 import org.entirej.framework.core.actionprocessor.interfaces.EJApplicationActionProcessor;
 import org.entirej.framework.core.data.controllers.EJApplicationLevelParameter;
 import org.entirej.framework.core.data.controllers.EJApplicationLevelParameter.ParameterChangedListener;
@@ -232,13 +233,18 @@ public class EJRWTStatusbar implements EJRWTAppComponentRenderer
                         @Override
                         public void widgetSelected(SelectionEvent e)
                         {
+                            EJManagedFrameworkConnection connection = manager.getFrameworkManager().getConnection();
                            try
                         {
                             actionProcessor.executeActionCommand(manager.getFrameworkManager(), action);
                         }
                         catch (EJActionProcessorException e1)
                         {
-                            logger.error(e1.getMessage(), e);
+                            connection.rollback();
+                            manager.getFrameworkManager().handleException(e1);
+                        }
+                           finally {
+                               connection.close();
                         }
                         }
                     });
