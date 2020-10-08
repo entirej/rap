@@ -32,19 +32,27 @@ import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 public class EJRWTContext
 {
 
-    private String state;
+    
     
 
     void setState(String state)
     {
-        this.state = state;
+       RWT.getUISession().setAttribute("state", state);
+    }
+    String getState()
+    {
+       return (String) RWT.getUISession().getAttribute("state");
     }
 
-    EJRWTApplicationManager manager;
+    
 
     public void setManager(EJRWTApplicationManager manager)
     {
-        this.manager = manager;
+        RWT.getUISession().setAttribute("ej.applicationManager", manager);
+    }
+    public EJRWTApplicationManager getManager()
+    {
+        return (EJRWTApplicationManager) RWT.getUISession().getAttribute("ej.applicationManager");
     }
 
     private EJRWTContext()
@@ -60,13 +68,14 @@ public class EJRWTContext
     public static EJRWTApplicationManager getEJRWTApplicationManager()
     {
         EJRWTContext pageContext = getPageContext();
-        return pageContext.manager != null ? pageContext.manager : (EJRWTApplicationManager) getContext().getUISession().getAttribute("ej.applicationManager");
+        EJRWTApplicationManager manager = pageContext.getManager();
+        return manager != null ? manager : (EJRWTApplicationManager) getContext().getUISession().getAttribute("ej.applicationManager");
     }
 
     public String getUrlParameter(String paramName)
     {
 
-        String paramState = state;
+        String paramState = getState();
         if (paramState != null)
         {
             Map<String, String> queryMap = getQueryMap(paramState);

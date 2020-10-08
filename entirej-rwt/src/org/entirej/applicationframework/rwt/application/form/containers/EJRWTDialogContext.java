@@ -2,17 +2,32 @@ package org.entirej.applicationframework.rwt.application.form.containers;
 
 import java.util.Stack;
 
+import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 
 public class EJRWTDialogContext
 {
 
-    private volatile Stack<EJRWTAbstractDialog> dialogs = new Stack<>();
+   // private volatile 
 
     private EJRWTDialogContext()
     {
         // keep private
     }
+    
+    @SuppressWarnings("unchecked")
+    public Stack<EJRWTAbstractDialog> getDialogs()
+    {
+        Stack<EJRWTAbstractDialog> dialogs = null;
+        dialogs  = (Stack<EJRWTAbstractDialog>) RWT.getUISession().getAttribute("EJRWTDialogContext.dialogs");
+        if(dialogs==null) {
+            dialogs = new Stack<>();
+            RWT.getUISession().setAttribute("EJRWTDialogContext.dialogs",dialogs);
+        }
+        
+        return dialogs;
+    }
+    
 
     public static EJRWTDialogContext get()
     {
@@ -21,17 +36,19 @@ public class EJRWTDialogContext
 
     public void open(EJRWTAbstractDialog dialog)
     {
+        Stack<EJRWTAbstractDialog> dialogs = getDialogs();
         dialogs.remove(dialog);//remove and add to popto top
         dialogs.add(dialog);
     }
 
     public void close(EJRWTAbstractDialog dialog)
     {
-        dialogs.remove(dialog);
+        getDialogs().remove(dialog);
     }
 
     public boolean isCurrent(EJRWTAbstractDialog dialog)
     {
+        Stack<EJRWTAbstractDialog> dialogs = getDialogs();
         return dialogs.size()<2 || dialogs.peek() == dialog;
     }
 }
