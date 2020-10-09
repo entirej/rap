@@ -81,7 +81,6 @@ import org.entirej.framework.core.EJFrameworkManager;
 import org.entirej.framework.core.EJManagedFrameworkConnection;
 import org.entirej.framework.core.EJSystemConnectionHelper;
 import org.entirej.framework.core.data.controllers.EJFileUpload;
-import org.entirej.framework.core.data.controllers.EJManagedActionController;
 import org.entirej.framework.core.extensions.properties.EJCoreFrameworkExtensionPropertyList;
 import org.entirej.framework.core.interfaces.EJMessenger;
 import org.entirej.framework.core.properties.EJCoreLayoutContainer;
@@ -275,6 +274,153 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             configuration.addResource(getThemeCSSLocation(), new FileResource());
         }
 
+        EJFrameworkManagerProvider managerProvider = new EJFrameworkManagerProvider()
+        {
+
+            @Override
+            public EJFrameworkManager get()
+            {
+                return EJRWTContext.getEJRWTApplicationManager().getFrameworkManager();
+            }
+        };
+        EJConnectionHelper.setProvider(managerProvider);
+        EJSystemConnectionHelper.setProvider(managerProvider);
+        
+        
+        EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
+        {
+
+            @Override
+            public void promptFileUpload(final EJFileUpload fileUpload, final Callable<Object> callable)
+            {
+                if (fileUpload.isMultiSelection())
+                {
+                    EJRWTFileUpload.promptMultipleFileUpload(fileUpload.getTitle(), fileUpload.getUploadSizeLimit(), fileUpload.getUploadTimeLimit(), fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
+                    {
+
+                        @Override
+                        public void select(String[] files)
+                        {
+                            try
+                            {
+                                fileUpload.setFilePaths(files != null ? Arrays.asList(files) : null);
+                                callable.call();
+                            }
+                            catch (Exception e)
+                            {
+                                fileUpload.getForm().handleException(e);
+                            }
+
+                        }
+                    });
+                }
+                else
+                {
+
+                    EJRWTFileUpload.promptFileUpload(fileUpload.getTitle(), fileUpload.getUploadSizeLimit(), fileUpload.getUploadTimeLimit(), fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
+                    {
+
+                        @Override
+                        public void select(String[] files)
+                        {
+                            try
+                            {
+                                fileUpload.setFilePaths(files != null ? Arrays.asList(files) : null);
+                                callable.call();
+                            }
+                            catch (Exception e)
+                            {
+                                fileUpload.getForm().handleException(e);
+                            }
+
+                        }
+                    });
+
+                }
+
+            }
+
+            public Image getImage(String name, ClassLoader loader)
+            {
+                return RWTUtils.getImage(name, loader);
+            }
+
+            @Override
+            public void open(final String output, String outputName)
+            {
+                EJRWTFileDownload.download(output, outputName);
+
+                RWT.getUISession().addUISessionListener(new UISessionListener()
+                {
+
+                    private static final long serialVersionUID = 1L;
+
+                    @Override
+                    public void beforeDestroy(UISessionEvent arg0)
+                    {
+                        File f = new File(output);
+                        if (f.exists())
+                        {
+
+                            f.delete();
+                        }
+
+                    }
+                });
+
+            }
+
+            public float getAvgCharWidth(Font font)
+            {
+                return RWTUtils.getAvgCharWidth(font);
+            }
+
+            public int getCharHeight(Font font)
+            {
+                return RWTUtils.getCharHeight(font);
+            }
+
+            public void rendererSection(final Section section)
+            {
+                section.removeListener(SWT.Dispose, section.getListeners(SWT.Dispose)[0]);
+                section.removeListener(SWT.Resize, section.getListeners(SWT.Resize)[0]);
+                section.setFont(section.getParent().getFont());
+                section.setForeground(section.getParent().getForeground());
+                Object adapter = section.getAdapter(IWidgetGraphicsAdapter.class);
+                IWidgetGraphicsAdapter gfxAdapter = (IWidgetGraphicsAdapter) adapter;
+                gfxAdapter.setRoundedBorder(1, section.getTitleBarBackground(), 2, 2, 0, 0);
+
+                Listener listener = new Listener()
+                {
+                    public void handleEvent(Event e)
+                    {
+
+                        Object adapter = section.getAdapter(IWidgetGraphicsAdapter.class);
+                        IWidgetGraphicsAdapter gfxAdapter = (IWidgetGraphicsAdapter) adapter;
+                        Color[] gradientColors = new Color[] { section.getTitleBarBorderColor(), section.getBackground(), section.getTitleBarBackground(), section.getBackground(), section.getBackground() };
+                        int gradientPercent = 0;
+                        Rectangle bounds = section.getClientArea();
+
+                        if (bounds.height != 0)
+                        {
+                            gradientPercent = 30 * 100 / bounds.height;
+                            if (gradientPercent > 100)
+                            {
+                                gradientPercent = 100;
+                            }
+                        }
+                        int[] percents = new int[] { 0, 1, 2, gradientPercent, 100 };
+                        gfxAdapter.setBackgroundGradient(gradientColors, percents, true);
+                        gfxAdapter.setRoundedBorder(1, section.getBackground(), 4, 4, 0, 0);
+                    }
+                };
+                section.addListener(SWT.Dispose, listener);
+                section.addListener(SWT.Resize, listener);
+
+            }
+        });
+        
+        
         configuration.addEntryPoint(String.format("/%s", getWebPathContext()), new EntryPointFactory()
         {
 
@@ -341,152 +487,11 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
                         }
 
-                        EJFrameworkManagerProvider managerProvider = new EJFrameworkManagerProvider()
-                        {
-
-                            @Override
-                            public EJFrameworkManager get()
-                            {
-                                return EJRWTContext.getEJRWTApplicationManager().getFrameworkManager();
-                            }
-                        };
-                        EJConnectionHelper.setProvider(managerProvider);
-                        EJSystemConnectionHelper.setProvider(managerProvider);
+                       
 
                         RWTUtils.patchClient(getWebPathContext(), getTimeoutUrl());
 
-                        EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
-                        {
-
-                            @Override
-                            public void promptFileUpload(final EJFileUpload fileUpload, final Callable<Object> callable)
-                            {
-                                if (fileUpload.isMultiSelection())
-                                {
-                                    EJRWTFileUpload.promptMultipleFileUpload(fileUpload.getTitle(), fileUpload.getUploadSizeLimit(), fileUpload.getUploadTimeLimit(), fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
-                                    {
-
-                                        @Override
-                                        public void select(String[] files)
-                                        {
-                                            try
-                                            {
-                                                fileUpload.setFilePaths(files != null ? Arrays.asList(files) : null);
-                                                callable.call();
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                fileUpload.getForm().handleException(e);
-                                            }
-
-                                        }
-                                    });
-                                }
-                                else
-                                {
-
-                                    EJRWTFileUpload.promptFileUpload(fileUpload.getTitle(), fileUpload.getUploadSizeLimit(), fileUpload.getUploadTimeLimit(), fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
-                                    {
-
-                                        @Override
-                                        public void select(String[] files)
-                                        {
-                                            try
-                                            {
-                                                fileUpload.setFilePaths(files != null ? Arrays.asList(files) : null);
-                                                callable.call();
-                                            }
-                                            catch (Exception e)
-                                            {
-                                                fileUpload.getForm().handleException(e);
-                                            }
-
-                                        }
-                                    });
-
-                                }
-
-                            }
-
-                            public Image getImage(String name, ClassLoader loader)
-                            {
-                                return RWTUtils.getImage(name, loader);
-                            }
-
-                            @Override
-                            public void open(final String output, String outputName)
-                            {
-                                EJRWTFileDownload.download(output, outputName);
-
-                                RWT.getUISession().addUISessionListener(new UISessionListener()
-                                {
-
-                                    private static final long serialVersionUID = 1L;
-
-                                    @Override
-                                    public void beforeDestroy(UISessionEvent arg0)
-                                    {
-                                        File f = new File(output);
-                                        if (f.exists())
-                                        {
-
-                                            f.delete();
-                                        }
-
-                                    }
-                                });
-
-                            }
-
-                            public float getAvgCharWidth(Font font)
-                            {
-                                return RWTUtils.getAvgCharWidth(font);
-                            }
-
-                            public int getCharHeight(Font font)
-                            {
-                                return RWTUtils.getCharHeight(font);
-                            }
-
-                            public void rendererSection(final Section section)
-                            {
-                                section.removeListener(SWT.Dispose, section.getListeners(SWT.Dispose)[0]);
-                                section.removeListener(SWT.Resize, section.getListeners(SWT.Resize)[0]);
-                                section.setFont(section.getParent().getFont());
-                                section.setForeground(section.getParent().getForeground());
-                                Object adapter = section.getAdapter(IWidgetGraphicsAdapter.class);
-                                IWidgetGraphicsAdapter gfxAdapter = (IWidgetGraphicsAdapter) adapter;
-                                gfxAdapter.setRoundedBorder(1, section.getTitleBarBackground(), 2, 2, 0, 0);
-
-                                Listener listener = new Listener()
-                                {
-                                    public void handleEvent(Event e)
-                                    {
-
-                                        Object adapter = section.getAdapter(IWidgetGraphicsAdapter.class);
-                                        IWidgetGraphicsAdapter gfxAdapter = (IWidgetGraphicsAdapter) adapter;
-                                        Color[] gradientColors = new Color[] { section.getTitleBarBorderColor(), section.getBackground(), section.getTitleBarBackground(), section.getBackground(), section.getBackground() };
-                                        int gradientPercent = 0;
-                                        Rectangle bounds = section.getClientArea();
-
-                                        if (bounds.height != 0)
-                                        {
-                                            gradientPercent = 30 * 100 / bounds.height;
-                                            if (gradientPercent > 100)
-                                            {
-                                                gradientPercent = 100;
-                                            }
-                                        }
-                                        int[] percents = new int[] { 0, 1, 2, gradientPercent, 100 };
-                                        gfxAdapter.setBackgroundGradient(gradientColors, percents, true);
-                                        gfxAdapter.setRoundedBorder(1, section.getBackground(), 4, 4, 0, 0);
-                                    }
-                                };
-                                section.addListener(SWT.Dispose, listener);
-                                section.addListener(SWT.Resize, listener);
-
-                            }
-                        });
+                        
                         final EJRWTApplicationManager applicationManager;
 
                         if (this.getClass().getClassLoader().getResource("application.ejprop") != null)
@@ -717,138 +722,6 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
                                             RWTUtils.patchClient(getWebPathContext(), null);
 
-                                            EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
-                                            {
-
-                                                @Override
-                                                public void promptFileUpload(final EJFileUpload fileUpload, final Callable<Object> callable)
-                                                {
-                                                    if (fileUpload.isMultiSelection())
-                                                    {
-                                                        EJRWTFileUpload.promptMultipleFileUpload(fileUpload.getTitle(), fileUpload.getUploadSizeLimit(), fileUpload.getUploadTimeLimit(), fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
-                                                        {
-
-                                                            @Override
-                                                            public void select(String[] files)
-                                                            {
-                                                                try
-                                                                {
-                                                                    fileUpload.setFilePaths(files != null ? Arrays.asList(files) : null);
-                                                                    callable.call();
-                                                                }
-                                                                catch (Exception e)
-                                                                {
-                                                                    e.printStackTrace();
-                                                                }
-
-                                                            }
-                                                        });
-                                                    }
-                                                    else
-                                                    {
-
-                                                        EJRWTFileUpload.promptFileUpload(fileUpload.getTitle(), fileUpload.getUploadSizeLimit(), fileUpload.getUploadTimeLimit(), fileUpload.getFileExtensions().toArray(new String[0]), new FileSelectionCallBack()
-                                                        {
-
-                                                            @Override
-                                                            public void select(String[] files)
-                                                            {
-                                                                try
-                                                                {
-                                                                    fileUpload.setFilePaths(files != null ? Arrays.asList(files) : null);
-                                                                    callable.call();
-                                                                }
-                                                                catch (Exception e)
-                                                                {
-                                                                    e.printStackTrace();
-                                                                }
-
-                                                            }
-                                                        });
-
-                                                    }
-
-                                                }
-
-                                                public Image getImage(String name, ClassLoader loader)
-                                                {
-                                                    return RWTUtils.getImage(name, loader);
-                                                }
-
-                                                @Override
-                                                public void open(final String output, String outputName)
-                                                {
-                                                    EJRWTFileDownload.download(output, outputName);
-
-                                                    RWT.getUISession().addUISessionListener(new UISessionListener()
-                                                    {
-
-                                                        private static final long serialVersionUID = 1L;
-
-                                                        @Override
-                                                        public void beforeDestroy(UISessionEvent arg0)
-                                                        {
-                                                            File f = new File(output);
-                                                            if (f.exists())
-                                                            {
-
-                                                                f.delete();
-                                                            }
-
-                                                        }
-                                                    });
-
-                                                }
-
-                                                public float getAvgCharWidth(Font font)
-                                                {
-                                                    return RWTUtils.getAvgCharWidth(font);
-                                                }
-
-                                                public int getCharHeight(Font font)
-                                                {
-                                                    return RWTUtils.getCharHeight(font);
-                                                }
-
-                                                public void rendererSection(final Section section)
-                                                {
-                                                    section.removeListener(SWT.Dispose, section.getListeners(SWT.Dispose)[0]);
-                                                    section.removeListener(SWT.Resize, section.getListeners(SWT.Resize)[0]);
-                                                    section.setFont(section.getParent().getFont());
-                                                    section.setForeground(section.getParent().getForeground());
-                                                    Object adapter = section.getAdapter(IWidgetGraphicsAdapter.class);
-                                                    IWidgetGraphicsAdapter gfxAdapter = (IWidgetGraphicsAdapter) adapter;
-                                                    gfxAdapter.setRoundedBorder(1, section.getTitleBarBackground(), 2, 2, 0, 0);
-
-                                                    Listener listener = new Listener()
-                                                    {
-                                                        public void handleEvent(Event e)
-                                                        {
-
-                                                            Object adapter = section.getAdapter(IWidgetGraphicsAdapter.class);
-                                                            IWidgetGraphicsAdapter gfxAdapter = (IWidgetGraphicsAdapter) adapter;
-                                                            Color[] gradientColors = new Color[] { section.getTitleBarBorderColor(), section.getBackground(), section.getTitleBarBackground(), section.getBackground(), section.getBackground() };
-                                                            int gradientPercent = 0;
-                                                            Rectangle bounds = section.getClientArea();
-
-                                                            if (bounds.height != 0)
-                                                            {
-                                                                gradientPercent = 30 * 100 / bounds.height;
-                                                                if (gradientPercent > 100)
-                                                                {
-                                                                    gradientPercent = 100;
-                                                                }
-                                                            }
-                                                            int[] percents = new int[] { 0, 1, 2, gradientPercent, 100 };
-                                                            gfxAdapter.setBackgroundGradient(gradientColors, percents, true);
-                                                            gfxAdapter.setRoundedBorder(1, section.getBackground(), 4, 4, 0, 0);
-                                                        }
-                                                    };
-                                                    section.addListener(SWT.Dispose, listener);
-                                                    section.addListener(SWT.Resize, listener);
-
-                                                }
-                                            });
                                             final EJRWTApplicationManager applicationManager;
 
                                             if (this.getClass().getClassLoader().getResource("application.ejprop") != null)
