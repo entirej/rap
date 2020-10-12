@@ -271,7 +271,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         options.getPlugins().getLabels().setArc(propertyGroup.getBooleanProperty(LBL_VIEW_ARC, options.getPlugins().getLabels().isArc()));
         options.getPlugins().getLabels().setRender(propertyGroup.getStringProperty(LBL_VIEW_TYPE));
         options.getPlugins().getLabels().setPosition(propertyGroup.getStringProperty(LBL_VIEW_POS));
-        
+        options.getPlugins().getLabels().setShowZero(false);
         String va = propertyGroup.getStringProperty(LBL_VIEW_VA);
         
         if(va!=null && !va.isEmpty())
