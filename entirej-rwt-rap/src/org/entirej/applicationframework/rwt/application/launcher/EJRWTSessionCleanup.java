@@ -61,10 +61,14 @@ public class EJRWTSessionCleanup
     {
         getCloseables().put(closeable, closeable);
     }
+    public void removeCloseable(Closeable closeable)
+    {
+        getCloseables().remove(closeable);
+    }
 
     public void cleanup()
     {
-        LOG.info("EJRWTSessionCleanup cleanup for session for :" + RWT.getUISession().getId());
+        LOG.info("EJRWTSessionCleanup cleanup for session for :" + RWT.getUISession().getId() + ", size:"+getCloseables().size());
         
         WeakHashMap<Closeable, Closeable> closeables = getCloseables();
         Collection<Closeable> collection = closeables.values();
