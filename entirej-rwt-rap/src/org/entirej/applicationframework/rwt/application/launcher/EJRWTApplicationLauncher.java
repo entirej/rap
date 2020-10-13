@@ -542,7 +542,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         }
 
                         
-                        EJManagedFrameworkConnection connection = applicationManager.getConnection();
+                        EJManagedFrameworkConnection connection = applicationManager.getFrameworkManager().getSystemConnection();
                         try
                         {
                             preApplicationBuild(applicationManager);
@@ -623,7 +623,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
                         if (applicationManager.getApplicationActionProcessor() != null) 
                         {
-                            EJManagedFrameworkConnection connection2 = applicationManager.getConnection();
+                            EJManagedFrameworkConnection connection2 = applicationManager.getFrameworkManager().getSystemConnection();
                             try
                             {
                                 applicationManager.getApplicationActionProcessor().whenApplicationStart(applicationManager);
