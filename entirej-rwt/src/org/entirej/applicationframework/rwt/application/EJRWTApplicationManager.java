@@ -584,6 +584,8 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         finally
         {
             connection.close();
+
+            EJRWTImageRetriever.getGraphicsProvider().setReportFrameworkManager(null);
         }
 
     }
@@ -696,6 +698,8 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                 finally
                 {
                     connection.close();
+
+                    EJRWTImageRetriever.getGraphicsProvider().setReportFrameworkManager(null);
                     display.asyncExec(new Runnable()
                     {
                         public void run()
@@ -796,6 +800,8 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                 finally
                 {
                     connection.close();
+
+                    EJRWTImageRetriever.getGraphicsProvider().setReportFrameworkManager(null);
                     display.asyncExec(new Runnable()
                     {
                         public void run()
@@ -855,6 +861,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         finally
         {
             connection.close();
+            EJRWTImageRetriever.getGraphicsProvider().setReportFrameworkManager(null);
         }
     }
 

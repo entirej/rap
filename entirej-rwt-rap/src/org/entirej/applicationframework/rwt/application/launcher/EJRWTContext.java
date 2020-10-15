@@ -33,7 +33,7 @@ public class EJRWTContext
 {
 
     
-    private volatile ThreadLocal<EJReportFrameworkManager> reportLocal = new ThreadLocal<>();
+    private static volatile ThreadLocal<EJReportFrameworkManager> reportLocal = new ThreadLocal<>();
 
     void setState(String state)
     {
@@ -54,11 +54,11 @@ public class EJRWTContext
     {
         return (EJRWTApplicationManager) RWT.getUISession().getAttribute("ej.applicationManager");
     }
-    public void setManager(EJReportFrameworkManager manager)
+    public static void setReportManager(EJReportFrameworkManager manager)
     {
         reportLocal.set(manager);
     }
-    public EJReportFrameworkManager getReportManager()
+    public static EJReportFrameworkManager getReportManager()
     {
         return reportLocal.get();
     }
@@ -80,12 +80,7 @@ public class EJRWTContext
         return manager != null ? manager : (EJRWTApplicationManager) getContext().getUISession().getAttribute("ej.applicationManager");
     }
     
-    public static EJReportFrameworkManager getEJReportManager()
-    {
-        EJRWTContext pageContext = getPageContext();
-        EJReportFrameworkManager manager = pageContext.getReportManager();
-        return manager != null ? manager : (EJReportFrameworkManager) getContext().getUISession().getAttribute("ej.reportManager");
-    }
+   
 
     public String getUrlParameter(String paramName)
     {

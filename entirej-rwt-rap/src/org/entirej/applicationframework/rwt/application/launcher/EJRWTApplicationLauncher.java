@@ -291,7 +291,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             @Override
             public EJReportFrameworkManager get()
             {
-                return EJRWTContext.getEJReportManager();
+                return EJRWTContext.getReportManager();
             }
         };
         EJConnectionHelper.setProvider(managerProvider);
@@ -305,7 +305,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             @Override
             public void setReportFrameworkManager(EJReportFrameworkManager manager)
             {
-                EJRWTContext.getPageContext().setManager(manager);
+                EJRWTContext.setReportManager(manager);
                 
             }
             
