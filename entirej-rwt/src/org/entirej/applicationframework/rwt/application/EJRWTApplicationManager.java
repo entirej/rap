@@ -431,7 +431,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         return _frameworkManager.getApplicationLevelParameter(valueName);
     }
     
-    public boolean hsApplicationLevelParameter(String valueName)
+    public boolean hasApplicationLevelParameter(String valueName)
     {
         return _frameworkManager.hasApplicationLevelParameter(valueName);
     }
