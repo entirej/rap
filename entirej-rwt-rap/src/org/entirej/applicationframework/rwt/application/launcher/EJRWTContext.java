@@ -21,19 +21,19 @@ import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
+import org.entirej.framework.report.EJReportFrameworkManager;
 
 public class EJRWTContext
 {
 
     
-    
+    private volatile ThreadLocal<EJReportFrameworkManager> reportLocal = new ThreadLocal<>();
 
     void setState(String state)
     {
@@ -44,7 +44,7 @@ public class EJRWTContext
        return (String) RWT.getUISession().getAttribute("state");
     }
 
-    
+   
 
     public void setManager(EJRWTApplicationManager manager)
     {
@@ -53,6 +53,14 @@ public class EJRWTContext
     public EJRWTApplicationManager getManager()
     {
         return (EJRWTApplicationManager) RWT.getUISession().getAttribute("ej.applicationManager");
+    }
+    public void setManager(EJReportFrameworkManager manager)
+    {
+        reportLocal.set(manager);
+    }
+    public EJReportFrameworkManager getReportManager()
+    {
+        return reportLocal.get();
     }
 
     private EJRWTContext()
@@ -70,6 +78,13 @@ public class EJRWTContext
         EJRWTContext pageContext = getPageContext();
         EJRWTApplicationManager manager = pageContext.getManager();
         return manager != null ? manager : (EJRWTApplicationManager) getContext().getUISession().getAttribute("ej.applicationManager");
+    }
+    
+    public static EJReportFrameworkManager getEJReportManager()
+    {
+        EJRWTContext pageContext = getPageContext();
+        EJReportFrameworkManager manager = pageContext.getReportManager();
+        return manager != null ? manager : (EJReportFrameworkManager) getContext().getUISession().getAttribute("ej.reportManager");
     }
 
     public String getUrlParameter(String paramName)

@@ -87,6 +87,8 @@ import org.entirej.framework.core.properties.EJCoreLayoutContainer;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionPropertyListEntry;
+import org.entirej.framework.report.EJReportConnectionHelper;
+import org.entirej.framework.report.EJReportFrameworkManager;
 
 public abstract class EJRWTApplicationLauncher implements ApplicationConfiguration
 {
@@ -283,13 +285,30 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                 return EJRWTContext.getEJRWTApplicationManager().getFrameworkManager();
             }
         };
+        EJReportConnectionHelper.EJFrameworkManagerProvider reportManagerProvider = new EJReportConnectionHelper.EJFrameworkManagerProvider()
+        {
+            
+            @Override
+            public EJReportFrameworkManager get()
+            {
+                return EJRWTContext.getEJReportManager();
+            }
+        };
         EJConnectionHelper.setProvider(managerProvider);
         EJSystemConnectionHelper.setProvider(managerProvider);
+        EJReportConnectionHelper.setProvider(reportManagerProvider);
         
         
         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
         {
 
+            @Override
+            public void setReportFrameworkManager(EJReportFrameworkManager manager)
+            {
+                EJRWTContext.getPageContext().setManager(manager);
+                
+            }
+            
             @Override
             public void promptFileUpload(final EJFileUpload fileUpload, final Callable<Object> callable)
             {

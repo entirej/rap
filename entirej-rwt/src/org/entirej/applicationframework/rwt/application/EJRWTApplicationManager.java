@@ -61,6 +61,7 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkE
 import org.entirej.framework.report.EJReport;
 import org.entirej.framework.report.EJReportFrameworkInitialiser;
 import org.entirej.framework.report.EJReportFrameworkManager;
+import org.entirej.framework.report.EJReportManagedFrameworkConnection;
 import org.entirej.framework.report.EJReportParameterList;
 import org.entirej.framework.report.data.controllers.EJReportParameter;
 import org.entirej.framework.report.enumerations.EJReportExportType;
@@ -81,9 +82,9 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     private EJApplicationActionProcessor actionProcessor = null;
 
     private static final Logger          logger          = LoggerFactory.getLogger(EJRWTApplicationManager.class);
-    
-    private boolean helpSupported = false;
-    private boolean helpActive = false;
+
+    private boolean                      helpSupported   = false;
+    private boolean                      helpActive      = false;
 
     public EJRWTApplicationManager()
     {
@@ -200,11 +201,10 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         }
 
         _applicationContainer = container;
-        _applicationContainer.buildApplication(this, mainWindow,null);
+        _applicationContainer.buildApplication(this, mainWindow, null);
     }
-    
-    
-    public void buildServiceApplication(EJRWTApplicationContainer container, Composite mainWindow,String serviceForm)
+
+    public void buildServiceApplication(EJRWTApplicationContainer container, Composite mainWindow, String serviceForm)
     {
         if (container == null)
         {
@@ -215,10 +215,9 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             throw new NullPointerException("The serviceForm cannot bu null");
         }
         shell = mainWindow.getShell();
-       
-        
+
         _applicationContainer = container;
-        _applicationContainer.buildApplication(this, mainWindow,serviceForm);
+        _applicationContainer.buildApplication(this, mainWindow, serviceForm);
     }
 
     public EJInternalForm getActiveForm()
@@ -344,17 +343,16 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         {
             throw new IllegalStateException("Unable to open a form until the application has been built");
         }
-        if(blocking)
+        if (blocking)
         {
             _applicationContainer.getFormContainer().openModelForm(form);
         }
-        else 
+        else
         {
-            
+
             _applicationContainer.add(form);
         }
-        
-        
+
     }
 
     /**
@@ -430,7 +428,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     {
         return _frameworkManager.getApplicationLevelParameter(valueName);
     }
-    
+
     public boolean hasApplicationLevelParameter(String valueName)
     {
         return _frameworkManager.hasApplicationLevelParameter(valueName);
@@ -492,9 +490,9 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     public void uploadFile(EJFileUpload fileUpload)
     {
         messenger.uploadFile(fileUpload);
-        
+
     }
-    
+
     public void askInternalQuestion(EJInternalQuestion question)
     {
         messenger.askInternalQuestion(question);
@@ -526,62 +524,67 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
     public void runReport(String reportName, EJParameterList parameterList)
     {
-        if (reportManager == null)
+        EJReportFrameworkManager reportManager = newReportManager();
+        EJReportManagedFrameworkConnection connection = reportManager.getConnection();
+        try
         {
-            reportManager = EJReportFrameworkInitialiser.initialiseFramework("report.ejprop");
-        }
-        EJReport report;
-        if (parameterList == null)
-        {
-            report = reportManager.createReport(reportName);
-        }
-        else
-        {
-
-            EJReportParameterList list = new EJReportParameterList();
-
-            Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
-            for (EJFormParameter parameter : allParameters)
+            EJReport report;
+            if (parameterList == null)
             {
-                EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
-                reportParameter.setValue(parameter.getValue());
-
-                list.addParameter(reportParameter);
+                report = reportManager.createReport(reportName);
             }
-            report = reportManager.createReport(reportName, list);
-        }
-
-        EJReportRunner reportRunner = reportManager.createReportRunner();
-        String output = reportRunner.runReport(report);
-
-        String name = report.getName();
-
-        EJReportParameter reportParameter = null;
-        if(report.hasReportParameter("REPORT_NAME"))
-        {
-            reportParameter = report.getReportParameter("REPORT_NAME");
-        }
-
-        if (reportParameter != null && reportParameter.getValue() != null && !((String) reportParameter.getValue()).isEmpty())
-        {
-            name = (String) reportParameter.getValue();
-        }
-        else
-        {
-            if (report.getOutputName() != null && !report.getOutputName().isEmpty())
+            else
             {
-                name = report.getOutputName();
+
+                EJReportParameterList list = new EJReportParameterList();
+
+                Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
+                for (EJFormParameter parameter : allParameters)
+                {
+                    EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
+                    reportParameter.setValue(parameter.getValue());
+
+                    list.addParameter(reportParameter);
+                }
+                report = reportManager.createReport(reportName, list);
             }
-        }
 
-        String ext = report.getProperties().getExportType().toString().toLowerCase();
-        report.getProperties().getExportType();
-        if (report.getProperties().getExportType() == EJReportExportType.XLSX_LARGE)
+            EJReportRunner reportRunner = reportManager.createReportRunner();
+            String output = reportRunner.runReport(report);
+
+            String name = report.getName();
+
+            EJReportParameter reportParameter = null;
+            if (report.hasReportParameter("REPORT_NAME"))
+            {
+                reportParameter = report.getReportParameter("REPORT_NAME");
+            }
+
+            if (reportParameter != null && reportParameter.getValue() != null && !((String) reportParameter.getValue()).isEmpty())
+            {
+                name = (String) reportParameter.getValue();
+            }
+            else
+            {
+                if (report.getOutputName() != null && !report.getOutputName().isEmpty())
+                {
+                    name = report.getOutputName();
+                }
+            }
+
+            String ext = report.getProperties().getExportType().toString().toLowerCase();
+            report.getProperties().getExportType();
+            if (report.getProperties().getExportType() == EJReportExportType.XLSX_LARGE)
+            {
+
+                ext = EJReportExportType.XLSX.toString().toLowerCase();
+            }
+            EJRWTImageRetriever.getGraphicsProvider().open(output, String.format("%s.%s", name, ext));
+        }
+        finally
         {
-
-            ext = EJReportExportType.XLSX.toString().toLowerCase();
+            connection.close();
         }
-        EJRWTImageRetriever.getGraphicsProvider().open(output, String.format("%s.%s", name, ext));
 
     }
 
@@ -609,10 +612,8 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     @Override
     public void runReportAsync(final String reportName, final EJParameterList parameterList, final EJMessage completedMessage)
     {
-        if (reportManager == null)
-        {
-            reportManager = EJReportFrameworkInitialiser.initialiseFramework("report.ejprop");
-        }
+        EJReportFrameworkManager reportManager = newReportManager();
+
         final Display display = Display.getDefault();
 
         final ServerPushSession pushSession = new ServerPushSession();
@@ -622,6 +623,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             @Override
             public void run()
             {
+                EJReportManagedFrameworkConnection connection = reportManager.getConnection();
                 try
                 {
                     final EJReport report;
@@ -657,7 +659,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                                 String name = report.getName();
 
                                 EJReportParameter reportParameter = null;
-                                if(report.hasReportParameter("REPORT_NAME"))
+                                if (report.hasReportParameter("REPORT_NAME"))
                                 {
                                     reportParameter = report.getReportParameter("REPORT_NAME");
                                 }
@@ -693,6 +695,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                 }
                 finally
                 {
+                    connection.close();
                     display.asyncExec(new Runnable()
                     {
                         public void run()
@@ -710,14 +713,19 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         bgThread.start();
 
     }
-    
-    
-    public void generateReportAsync(String reportName, EJParameterList parameterList,EJAsyncCallback<String> callback ) {
-        
-        if (reportManager == null)
-        {
-            reportManager = EJReportFrameworkInitialiser.initialiseFramework("report.ejprop");
-        }
+
+    private EJReportFrameworkManager newReportManager()
+    {
+        EJReportFrameworkManager reportManager = EJReportFrameworkInitialiser.newFramework("report.ejprop");
+        EJRWTImageRetriever.getGraphicsProvider().setReportFrameworkManager(reportManager);
+        return reportManager;
+    }
+
+    public void generateReportAsync(String reportName, EJParameterList parameterList, EJAsyncCallback<String> callback)
+    {
+
+       
+
         final Display display = Display.getDefault();
 
         final ServerPushSession pushSession = new ServerPushSession();
@@ -727,6 +735,8 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             @Override
             public void run()
             {
+                EJReportFrameworkManager reportManager = newReportManager();
+                EJReportManagedFrameworkConnection connection = reportManager.getConnection();
                 try
                 {
                     final EJReport report;
@@ -751,7 +761,8 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                     }
 
                     EJReportRunner reportRunner = reportManager.createReportRunner();
-                    try {
+                    try
+                    {
                         final String output = reportRunner.runReport(report);
 
                         if (!display.isDisposed())
@@ -766,24 +777,25 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                             });
                         }
                     }
-                    catch (Throwable t) {
+                    catch (Throwable t)
+                    {
                         if (!display.isDisposed())
                         {
                             display.asyncExec(new Runnable()
                             {
                                 public void run()
                                 {
-                                    callback.completedWithError(_frameworkManager, t instanceof Exception? (Exception) t: new Exception(t));
+                                    callback.completedWithError(_frameworkManager, t instanceof Exception ? (Exception) t : new Exception(t));
 
                                 }
                             });
                         }
                     }
-                    
-                    
+
                 }
                 finally
                 {
+                    connection.close();
                     display.asyncExec(new Runnable()
                     {
                         public void run()
@@ -799,7 +811,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
         Thread bgThread = new Thread(job);
         bgThread.setDaemon(true);
         bgThread.start();
-        
+
     }
 
     public String generateReport(String reportName)
@@ -810,38 +822,41 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
     public String generateReport(String reportName, EJParameterList parameterList)
     {
-        if (reportManager == null)
+        EJReportFrameworkManager reportManager = newReportManager();
+        EJReportManagedFrameworkConnection connection = reportManager.getConnection();
+        try
         {
-            reportManager = EJReportFrameworkInitialiser.initialiseFramework("report.ejprop");
-        }
-        EJReport report;
-        if (parameterList == null)
-        {
-            report = reportManager.createReport(reportName);
-        }
-        else
-        {
-
-            EJReportParameterList list = new EJReportParameterList();
-
-            Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
-            for (EJFormParameter parameter : allParameters)
+            EJReport report;
+            if (parameterList == null)
             {
-                EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
-                reportParameter.setValue(parameter.getValue());
-
-                list.addParameter(reportParameter);
+                report = reportManager.createReport(reportName);
             }
-            report = reportManager.createReport(reportName, list);
+            else
+            {
+
+                EJReportParameterList list = new EJReportParameterList();
+
+                Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
+                for (EJFormParameter parameter : allParameters)
+                {
+                    EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
+                    reportParameter.setValue(parameter.getValue());
+
+                    list.addParameter(reportParameter);
+                }
+                report = reportManager.createReport(reportName, list);
+            }
+
+            EJReportRunner reportRunner = reportManager.createReportRunner();
+            String output = reportRunner.runReport(report);
+
+            return output;
         }
-
-        EJReportRunner reportRunner = reportManager.createReportRunner();
-        String output = reportRunner.runReport(report);
-
-        return output;
+        finally
+        {
+            connection.close();
+        }
     }
-
-    private EJReportFrameworkManager reportManager;
 
     @Override
     public EJTabLayoutComponent getTabLayoutComponent(String name)
@@ -852,35 +867,35 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     @Override
     public void setTabPageVisible(String name, String tabPageName, boolean visible)
     {
-        _applicationContainer.setTabPageVisible(name,tabPageName,visible);
-        
+        _applicationContainer.setTabPageVisible(name, tabPageName, visible);
+
     }
 
     @Override
     public String getDisplayedTabPage(String name)
     {
-        return  _applicationContainer.getDisplayedTabPage(name);
+        return _applicationContainer.getDisplayedTabPage(name);
     }
 
     @Override
     public void setTabBadge(String name, String pageName, String badge)
     {
-        _applicationContainer.setTabBadge(name,pageName,badge);
-        
+        _applicationContainer.setTabBadge(name, pageName, badge);
+
     }
 
     @Override
     public void showTabPage(String name, String pageName)
     {
-        _applicationContainer.showTabPage(name,pageName);
-        
+        _applicationContainer.showTabPage(name, pageName);
+
     }
 
     @Override
     public void setTabPageEnable(String name, String tabPageName, boolean enable)
     {
-        _applicationContainer.setTabPageEnable(name,tabPageName,enable);
-        
+        _applicationContainer.setTabPageEnable(name, tabPageName, enable);
+
     }
 
     public boolean isHelpSupported()
@@ -891,7 +906,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     public void setHelpSupported(boolean helpSupported)
     {
         this.helpSupported = helpSupported;
-        
+
     }
 
     public boolean isHelpActive()
@@ -902,21 +917,23 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     public void setHelpActive(boolean helpActive)
     {
         this.helpActive = helpActive;
-        
+
         EJApplicationActionProcessor applicationActionProcessor = getApplicationActionProcessor();
-        
-        if(applicationActionProcessor!=null) {
+
+        if (applicationActionProcessor != null)
+        {
             EJManagedFrameworkConnection connection = getConnection();
             try
             {
-                applicationActionProcessor.executeActionCommand(this, helpActive ?"HELP_ACTIVE":"HELP_INACTIVE");
+                applicationActionProcessor.executeActionCommand(this, helpActive ? "HELP_ACTIVE" : "HELP_INACTIVE");
             }
             catch (EJActionProcessorException e)
             {
                 connection.rollback();
                 handleException(e);
             }
-            finally {
+            finally
+            {
                 connection.close();
             }
         }

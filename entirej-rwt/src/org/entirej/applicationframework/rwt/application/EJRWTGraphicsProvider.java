@@ -18,13 +18,13 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.application;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.forms.widgets.Section;
 import org.entirej.framework.core.data.controllers.EJFileUpload;
+import org.entirej.framework.report.EJReportFrameworkManager;
 
 public interface EJRWTGraphicsProvider
 {
@@ -42,4 +42,5 @@ public interface EJRWTGraphicsProvider
     
  
     public void promptFileUpload(EJFileUpload fileUpload,Callable<Object> callable);
+    public void setReportFrameworkManager(EJReportFrameworkManager manager);
 }
