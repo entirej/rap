@@ -71,6 +71,7 @@ import org.slf4j.LoggerFactory;
 
 public class EJRWTApplicationManager implements EJApplicationManager, Serializable
 {
+    private static final String          REPORT_DATASOURCE_ID_PARAM = "REPORT_DATASOURCE_ID";
     private EJFrameworkManager           _frameworkManager;
     private EJRWTApplicationContainer    _applicationContainer;
 
@@ -740,6 +741,15 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             public void run()
             {
                 EJReportFrameworkManager reportManager = newReportManager();
+                
+                if(parameterList!=null && parameterList.getAllParameterNames().contains(REPORT_DATASOURCE_ID_PARAM)
+                        && reportManager.applicationLevelParameterExists(REPORT_DATASOURCE_ID_PARAM))
+                {
+                    reportManager.getApplicationLevelParameter(REPORT_DATASOURCE_ID_PARAM)
+                    .setValue(parameterList.getParameter(REPORT_DATASOURCE_ID_PARAM).getValue());
+                }
+                
+                
                 EJReportManagedFrameworkConnection connection = reportManager.getConnection();
                 try
                 {
@@ -829,6 +839,12 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     public String generateReport(String reportName, EJParameterList parameterList)
     {
         EJReportFrameworkManager reportManager = newReportManager();
+        if(parameterList!=null && parameterList.getAllParameterNames().contains(REPORT_DATASOURCE_ID_PARAM)
+                && reportManager.applicationLevelParameterExists(REPORT_DATASOURCE_ID_PARAM))
+        {
+            reportManager.getApplicationLevelParameter(REPORT_DATASOURCE_ID_PARAM)
+            .setValue(parameterList.getParameter(REPORT_DATASOURCE_ID_PARAM).getValue());
+        }
         EJReportManagedFrameworkConnection connection = reportManager.getConnection();
         try
         {
