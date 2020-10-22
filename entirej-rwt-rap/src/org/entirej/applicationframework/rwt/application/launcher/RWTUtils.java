@@ -55,9 +55,18 @@ public class RWTUtils
     {
         //https://github.com/eclipse/rap/blob/master/bundles/org.eclipse.rap.rwt/js/rwt/runtime/ErrorHandler.js
         JavaScriptExecutor executor = RWT.getClient().getService(JavaScriptExecutor.class);
+        //System.err.println(builder.toString());
+        executor.execute(errorBoxPatch(timeoutPage).toString());
+        executor.execute(dateNavButtonPatch().toString());
+       
+        
+    }
+
+    private static StringBuilder errorBoxPatch(String timeoutPage)
+    {
         StringBuilder builder = new StringBuilder();
         builder.append("(function() {");
-        builder.append("console.log('patchClient');");
+        builder.append("console.log('patchClient-errorBoxPatch');");
         builder.append(" var errorHandler = rwt.runtime.ErrorHandler;");
         builder.append(" var origShowErrorBox = rwt.util.Functions.bind(errorHandler.showErrorBox, errorHandler );");
         builder.append(" errorHandler.showErrorBox = function( errorType,freeze, errorDetails ) {");
@@ -81,10 +90,37 @@ public class RWTUtils
         builder.append(" }");
         builder.append(" };");
         builder.append("}() );");
-        //System.err.println(builder.toString());
-        executor.execute(builder.toString());
-       
-        
+        return builder;
     }
+    
+    private static StringBuilder dateNavButtonPatch()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append("(function() {");
+        builder.append("console.log('patchClient-NavButton');");
+        builder.append(" var calendar = rwt.widgets.base.Calendar;");
+        builder.append(" var onNavButtonClicked = rwt.util.Functions.bind(calendar._onNavButtonClicked, calendar );");
+        builder.append(" var setDate = rwt.util.Functions.bind(calendar.setDate, calendar );");
+        builder.append(" var getDate = rwt.util.Functions.bind(calendar.getDate, calendar );");
+        
+        builder.append(" calendar._onNavButtonClicked = function( evt ) {");
+        builder.append(" var selDate = getDate();"  );
+        builder.append(" var selDayOfMonth = (selDate == null) ? -1 : selDate.getDate();");
+
+        builder.append(" onNavButtonClicked(evt);");
+        builder.append(" selDate = getDate();"  );
+        builder.append(" var selYear = (selDate == null) ? -1 : selDate.getFullYear();");
+        builder.append(" var selMonth = (selDate == null) ? -1 : selDate.getMonth();");
+        builder.append(" setDate(selYear,selMonth,selDayOfMonth)");
+        builder.append(" };");
+        builder.append("}() );");
+        return builder;
+    }
+    
+    
+ 
+    
+    
+    
 
 }
