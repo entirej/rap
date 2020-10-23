@@ -45,6 +45,7 @@ import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
+import org.entirej.applicationframework.rwt.utils.SmartNumberUtil;
 import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.EJMessageFactory;
@@ -260,7 +261,9 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         Number value = (Number) baseValue;
         try
         {
-            value = _decimalFormatter.parse((String) v);
+            value = SmartNumberUtil.toNumber(_textField.getText(), t->null);
+            if(value==null)
+                value = _decimalFormatter.parse((String) v);
         }
         catch (ParseException e)
         {
@@ -316,18 +319,20 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
             {
                 if (_textField.getText().trim().length() > 0)
                 {
-                    try
-                    {
-                        Number number = _decimalFormatter.parse(_textField.getText());
-
-                    }
-                    catch (ParseException e)
-                    {
-                        _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_FORMAT);
-
-                        _errorDecoration.setDescriptionText(String.format("Invalid Number format. Should be %s ", _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_FORMAT)));
-                        _errorDecoration.show();
-                    }
+                    
+                    if(!SmartNumberUtil.supported(_textField.getText()))
+                        try
+                        {
+                            Number number = _decimalFormatter.parse(_textField.getText());
+    
+                        }
+                        catch (ParseException e)
+                        {
+                            _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_FORMAT);
+    
+                            _errorDecoration.setDescriptionText(String.format("Invalid Number format. Should be %s ", _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_FORMAT)));
+                            _errorDecoration.show();
+                        }
                 }
             }
         });
@@ -550,7 +555,9 @@ public class EJRWTNumberItemRenderer extends EJRWTTextItemRenderer implements Se
         Number value = null;
         try
         {
-            value = _decimalFormatter.parse(_textField.getText());
+            value = SmartNumberUtil.toNumber(_textField.getText(), t->null);
+            if(value==null)
+                value = _decimalFormatter.parse(_textField.getText());
         }
         catch (ParseException e)
         {
