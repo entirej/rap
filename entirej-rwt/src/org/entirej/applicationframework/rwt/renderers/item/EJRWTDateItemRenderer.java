@@ -68,6 +68,7 @@ import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
+import org.entirej.applicationframework.rwt.utils.SmartDateUtil;
 import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.EJMessageFactory;
@@ -336,20 +337,25 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             {
                 if (_textField.getText().trim().length() > 0)
                 {
-                    try
-                    {
-                        _dateFormat.parse(_textField.getText());
-                    }
-                    catch (ParseException e)
-                    {
-
-                        String format = _dateFormat.toFormatString();
-                        if (format == null || format.length() == 0)
+                    if(!SmartDateUtil.supported(_textField.getText()))
+                        try
                         {
-                            format = "eg: " + _dateFormat.format(new Date());
+                            _dateFormat.parse(_textField.getText());
                         }
-                        _errorDecoration.setDescriptionText(String.format("Invalid Date format. Should be %s ", format));
-                        _errorDecoration.show();
+                        catch (ParseException e)
+                        {
+    
+                            String format = _dateFormat.toFormatString();
+                            if (format == null || format.length() == 0)
+                            {
+                                format = "eg: " + _dateFormat.format(new Date());
+                            }
+                            _errorDecoration.setDescriptionText(String.format("Invalid Date format. Should be %s ", format));
+                            _errorDecoration.show();
+                        }
+                    else {
+                        _errorDecoration.setDescriptionText("");
+                        _errorDecoration.hide();
                     }
                 }
             }
@@ -367,8 +373,11 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     {
                         if (_textField.getText() != null)
                         {
-                            value = _dateFormat.parse(_textField.getText());
+                            value = SmartDateUtil.toDate(_textField.getText(), text-> null);
                         }
+                        
+                        if(value == null)
+                            value = _dateFormat.parse(_textField.getText());
 
                         // convert to correct type if need
                         value = converType(value);
@@ -437,7 +446,12 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         Date value =(Date) baseValue;
         try
         {
-           
+            if (_textField.getText() != null)
+            {
+                value = SmartDateUtil.toDate(_textField.getText(), text-> null);
+            }
+            
+            if(value == null)
                 value = _dateFormat.parse((String) v);
             
 
@@ -626,7 +640,13 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         {
             if (_textField.getText() != null)
             {
-                value = _dateFormat.parse(_textField.getText());
+                if (_textField.getText() != null)
+                {
+                    value = SmartDateUtil.toDate(_textField.getText(), text-> null);
+                }
+                
+                if(value == null)
+                    value = _dateFormat.parse(_textField.getText());
             }
 
             // convert to correct type if need
