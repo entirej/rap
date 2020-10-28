@@ -57,7 +57,6 @@ public class RWTUtils
         JavaScriptExecutor executor = RWT.getClient().getService(JavaScriptExecutor.class);
         //System.err.println(builder.toString());
         executor.execute(errorBoxPatch(timeoutPage).toString());
-        executor.execute(dateNavButtonPatch().toString());
        
         
     }
@@ -93,29 +92,7 @@ public class RWTUtils
         return builder;
     }
     
-    private static StringBuilder dateNavButtonPatch()
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.append("(function() {");
-        builder.append("console.log('patchClient-NavButton');");
-        builder.append(" var calendar = rwt.widgets.base.Calendar;");
-        builder.append(" var onNavButtonClicked = rwt.util.Functions.bind(calendar._onNavButtonClicked, calendar );");
-        builder.append(" var setDate = rwt.util.Functions.bind(calendar.setDate, calendar );");
-        builder.append(" var getDate = rwt.util.Functions.bind(calendar.getDate, calendar );");
-        
-        builder.append(" calendar._onNavButtonClicked = function( evt ) {");
-        builder.append(" var selDate = getDate();"  );
-        builder.append(" var selDayOfMonth = (selDate == null) ? -1 : selDate.getDate();");
 
-        builder.append(" onNavButtonClicked(evt);");
-        builder.append(" selDate = getDate();"  );
-        builder.append(" var selYear = (selDate == null) ? -1 : selDate.getFullYear();");
-        builder.append(" var selMonth = (selDate == null) ? -1 : selDate.getMonth();");
-        builder.append(" setDate(selYear,selMonth,selDayOfMonth)");
-        builder.append(" };");
-        builder.append("}() );");
-        return builder;
-    }
     
     
  
