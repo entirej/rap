@@ -377,12 +377,12 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
     public void openEmbeddedForm(EJEmbeddedFormController embeddedController)
     {
-        embeddedController.getCallingForm().getRenderer().openEmbeddedForm(embeddedController);
+        embeddedController.getParentForm().getRenderer().openEmbeddedForm(embeddedController);
     }
 
     public void closeEmbeddedForm(EJEmbeddedFormController embeddedController)
     {
-        embeddedController.getCallingForm().getRenderer().closeEmbeddedForm(embeddedController);
+        embeddedController.getParentForm().getRenderer().closeEmbeddedForm(embeddedController);
     }
 
     public void popupFormClosed()
