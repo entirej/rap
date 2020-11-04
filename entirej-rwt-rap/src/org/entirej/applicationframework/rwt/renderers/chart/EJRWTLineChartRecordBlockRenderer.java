@@ -584,7 +584,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 for (Float f : row)
                 {
                     floatArray[i] = (f != null ? f : 0);
-                    floatTooltipArray[i] = getStrValue(floatArray[i]);
+                    floatTooltipArray[i] = getToolTipValue(floatArray[i]);
 
                     ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
 
@@ -682,6 +682,29 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         else if (object instanceof Date)
         {
 
+            xvalue = (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
+        }
+        else
+        {
+            xvalue = (object.toString());
+        }
+        return xvalue;
+    }
+    private String getToolTipValue(Object object)
+    {
+        String xvalue;
+        if (object instanceof String)
+        {
+            xvalue = ((String) object);
+        }
+        else if (object instanceof Number)
+        {
+            
+            xvalue = (createDecimalFormat(object, null).format(object));
+        }
+        else if (object instanceof Date)
+        {
+            
             xvalue = (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
         }
         else
