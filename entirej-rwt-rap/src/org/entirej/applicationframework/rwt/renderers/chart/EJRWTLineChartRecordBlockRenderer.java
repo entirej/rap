@@ -577,12 +577,14 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 }
 
                 float[] floatArray = new float[row.size()];
+                String[] floatTooltipArray = new String[row.size()];
                 ChartStyle[] styleArray = new ChartStyle[row.size()];
                 int i = 0;
 
                 for (Float f : row)
                 {
                     floatArray[i] = (f != null ? f : 0);
+                    floatTooltipArray[i] = getStrValue(floatArray[i]);
 
                     ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
 
@@ -651,7 +653,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 info.setLineWidth(mainScreenItemProperties.getBlockRendererRequiredProperties().getIntProperty(LINE_WIDTH, info.getLineWidth()));
                 info.setLineTension(mainScreenItemProperties.getBlockRendererRequiredProperties().getFloatProperty(LINE_TENSION, (float) info.getLineTension()));
                 info.setSteppedLine(mainScreenItemProperties.getBlockRendererRequiredProperties().getStringProperty(STEPPED_LINE));
-                chartRowData.addRow(info, floatArray, styleArray);
+                chartRowData.addRow(info, floatArray,floatTooltipArray, styleArray);
                 // chartRowData.addRow(floatArray, colors);
             }
 
