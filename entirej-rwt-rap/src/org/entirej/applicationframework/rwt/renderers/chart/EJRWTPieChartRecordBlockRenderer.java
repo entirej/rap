@@ -19,12 +19,14 @@ package org.entirej.applicationframework.rwt.renderers.chart;
 
 import java.awt.Color;
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -477,6 +479,31 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
         return list;
     }
+    
+    
+    private String getToolTipValue(Object object)
+    {
+        String xvalue;
+        if (object instanceof String)
+        {
+            xvalue = ((String) object);
+        }
+        else if (object instanceof Number)
+        {
+            
+            xvalue = (createDecimalFormat(object, null).format(object));
+        }
+        else if (object instanceof Date)
+        {
+            
+            xvalue = (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
+        }
+        else
+        {
+            xvalue = (object.toString());
+        }
+        return xvalue;
+    }
 
     public void refresh(Object input)
     {
@@ -511,6 +538,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 boolean[] hidden = new boolean[screenItems.size()];
                 ChartStyle[] styles = new ChartStyle[screenItems.size()];
                 double[] data = new double[screenItems.size()];
+                String[] dataToolTips = new String[screenItems.size()];
                 int[] widths = new int[screenItems.size()];
                 int index = 0;
                 for (EJScreenItemController sItem : screenItems)
@@ -561,6 +589,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                     }
 
                     data[index] = (val);
+                    dataToolTips[index] = getToolTipValue(val);
                     index++;
 
                 }
@@ -570,7 +599,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 rowInfo.setHidden(hidden);
 
                 rowInfo.setAction("_pie_select");
-                chartRowData.addRow(rowInfo, data);
+                chartRowData.addRow(rowInfo, data,dataToolTips);
 
             }
 

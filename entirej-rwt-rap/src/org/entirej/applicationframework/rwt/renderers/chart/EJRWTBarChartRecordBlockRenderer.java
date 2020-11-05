@@ -485,6 +485,30 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
         return list;
     }
+    
+    private String getToolTipValue(Object object)
+    {
+        String xvalue;
+        if (object instanceof String)
+        {
+            xvalue = ((String) object);
+        }
+        else if (object instanceof Number)
+        {
+            
+            xvalue = (createDecimalFormat(object, null).format(object));
+        }
+        else if (object instanceof Date)
+        {
+            
+            xvalue = (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
+        }
+        else
+        {
+            xvalue = (object.toString());
+        }
+        return xvalue;
+    }
 
     public void refresh(Object input)
     {
@@ -587,12 +611,14 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 }
 
                 float[] floatArray = new float[row.size()];
+                String[] floatArrayTips = new String[row.size()];
                 ChartStyle[] styleArray = new ChartStyle[row.size()];
                 int i = 0;
 
                 for (Float f : row)
                 {
                     floatArray[i] = (f != null ? f : 0);
+                    floatArrayTips[i] = getToolTipValue(f != null ? f : 0);
 
                     ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
 
@@ -657,7 +683,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 info.setAction(action);
                 info.setChartStyle(colors);
                 info.setHidden(!sItem.isVisible());
-                chartRowData.addRow(info, floatArray, styleArray);
+                chartRowData.addRow(info, floatArray,floatArrayTips, styleArray);
                 // chartRowData.addRow(floatArray, colors);
             }
 
