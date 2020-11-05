@@ -260,7 +260,7 @@
 			<dependency>
 				<groupId>org.eclipse.rap.incubator</groupId>
 				<artifactId>org.eclipse.rap.chartjs</artifactId>
-				<version>3.1.15</version>
+				<version>3.1.16</version>
 			</dependency>
 			<dependency>
 				<groupId>net.htmlparser.jericho</groupId>
