@@ -397,6 +397,23 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             
 
     }
+    
+    @Override
+    public void setDrawerVisible(String canvasName,  boolean visible)
+    {
+        if (canvasName != null )
+        {
+            EJDrawerFolder tabPane = _drawerFolders.get(canvasName);
+            if (tabPane != null)
+            {
+                tabPane.setVisible( visible);
+            }
+            else
+                _uicallCache.add(()->setDrawerVisible(canvasName,  visible));
+        }
+        
+        
+    }
 
     @Override
     public void init()
