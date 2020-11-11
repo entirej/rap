@@ -482,7 +482,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public void setMessage(EJMessage message)
     {
         this.message = message;
-        if (_errorDecoration != null  &&  !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null && controlState(_labelField)  &&  !_errorDecoration.getControl().isDisposed())
         {
             ControlDecorationSupport.handleMessage(_errorDecoration, message);
         }
@@ -493,7 +493,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public void clearMessage()
     {
         this.message = null;
-        if (_errorDecoration != null   && !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null  && controlState(_labelField) && !_errorDecoration.getControl().isDisposed())
         {
             _errorDecoration.setDescriptionText("");
             {

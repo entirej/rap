@@ -359,7 +359,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public void validationErrorOccurred(boolean error)
     {
-        if (_errorDecoration == null ||  _errorDecoration.getControl().isDisposed())
+        if (_errorDecoration == null  || !controlState(_labelField.getControl()) ||  _errorDecoration.getControl().isDisposed())
         {
             return;
         }
@@ -378,7 +378,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public void setMessage(EJMessage message)
     {
         this.message = message;
-        if (_errorDecoration != null  &&  !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null  && controlState(_labelField.getControl()) && !_errorDecoration.getControl().isDisposed())
         {
             ControlDecorationSupport.handleMessage(_errorDecoration, message);
         }
@@ -389,7 +389,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public void clearMessage()
     {
         this.message = null;
-        if (_errorDecoration != null  &&  !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null && controlState(_labelField.getControl())  &&  !_errorDecoration.getControl().isDisposed())
         {
             _errorDecoration.setDescriptionText("");
             {
