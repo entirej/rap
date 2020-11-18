@@ -51,7 +51,8 @@ public class SmartNumberUtil
     public static void installBasic()
     {
         // (+/-)(spec)
-        addSpec(format -> validSpec(format, 't'), format -> calculateNumber(format, 1000));
+        addSpec(format -> validSpec(format, 't'), format -> calculateNumber(format, 1000)); 
+        addSpec(format -> validSpec(format, 'k'), format -> calculateNumber(format, 1000)); 
         addSpec(format -> validSpec(format, 'm'), format -> calculateNumber(format, 1000000));
         addSpec(format -> validSpec(format, 'b'), format -> calculateNumber(format, 1000000000));
 
