@@ -87,16 +87,20 @@ class EJTabFolder implements ITabFolder
         final Tab cTabItem = tabPages.get(pageName);
         if (cTabItem != null)
         {
-            if (visible)
+            if (visible )
             {
+                cTabItem.visible = true;
                 if (cTabItem.item == null)
                 {
+                    
                     Display.getDefault().asyncExec(new Runnable()
                     {
 
                         @Override
                         public void run()
                         {
+                            if(!cTabItem.visible)
+                                return;
                             cTabItem.create(true);
 
                         }
@@ -105,12 +109,15 @@ class EJTabFolder implements ITabFolder
             }
             else
             {
-                if (cTabItem.item != null)
+                cTabItem.visible = false;
+                if (cTabItem.item != null )
                 {
+                   
                     CTabItem[] items = folder.getItems();
                     int index = 0;
                     for (CTabItem cTabItem2 : items)
                     {
+                     
                         if (cTabItem2 == cTabItem.item)
                         {
                             cTabItem.index = index;
@@ -124,6 +131,8 @@ class EJTabFolder implements ITabFolder
                         @Override
                         public void run()
                         {
+                            if(cTabItem.visible)
+                                return;
                             cTabItem.remove();
                         }
                     });
@@ -179,6 +188,7 @@ class EJTabFolder implements ITabFolder
     {
         final AtomicBoolean       init  = new AtomicBoolean(true);
         CTabItem                  item;
+        boolean                   visible =true;
         int                       index = -1;
         EJRWTEntireJGridPane      pageCanvas;
         final EJTabPageProperties page;
@@ -186,6 +196,7 @@ class EJTabFolder implements ITabFolder
         public Tab(EJTabPageProperties page)
         {
             this.page = page;
+            visible = page.isVisible();
         }
 
         void remove()
@@ -206,7 +217,6 @@ class EJTabFolder implements ITabFolder
 
       public  void create(boolean innerBuild)
         {
-
             final CTabItem tabItem = (index == -1 || folder.getItemCount() < index) ? new CTabItem(folder, SWT.NONE) : new CTabItem(folder, SWT.NONE, index);
             tabItem.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
             tabItem.setData("TAB_KEY", page.getName());
