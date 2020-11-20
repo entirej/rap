@@ -99,7 +99,7 @@ class EJTabFolder implements ITabFolder
                         @Override
                         public void run()
                         {
-                            if(!cTabItem.visible)
+                            if(!cTabItem.visible && cTabItem.item == null)
                                 return;
                             cTabItem.create(true);
 
@@ -131,7 +131,7 @@ class EJTabFolder implements ITabFolder
                         @Override
                         public void run()
                         {
-                            if(cTabItem.visible)
+                            if(cTabItem.visible && cTabItem.item != null)
                                 return;
                             cTabItem.remove();
                         }
@@ -203,7 +203,10 @@ class EJTabFolder implements ITabFolder
         {
             if (item != null && !item.isDisposed())
             {
+                CTabFolder paranet=  item.getParent();
                 item.dispose();
+                paranet.redraw();
+                paranet.update();
             }
             item = null;
         }
@@ -269,6 +272,10 @@ class EJTabFolder implements ITabFolder
 
             item = tabItem;
             tabItem.getControl().setEnabled(page.isEnabled());
+            
+            CTabFolder paranet=  item.getParent();
+            paranet.redraw();
+            paranet.update();
 
         }
 
