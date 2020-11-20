@@ -91,10 +91,11 @@ import org.entirej.framework.core.properties.interfaces.EJTabPageProperties;
 public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 {
 
-    private interface UICallCache {
+    private interface UICallCache
+    {
         void call();
     }
-    
+
     protected EJInternalForm                        _form;
     protected EJRWTEntireJGridPane                  _mainPane;
     protected LinkedList<String>                    _canvasesIds        = new LinkedList<String>();
@@ -111,7 +112,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
     private Map<String, Collection<EJMessage>>      _messageCache       = new HashMap<>();
     private List<String>                            _showPopupCache     = new LinkedList<>();
-    private List<UICallCache>                       _uicallCache     = new LinkedList<>();
+    private List<UICallCache>                       _uicallCache        = new LinkedList<>();
 
     @Override
     public void formCleared()
@@ -292,8 +293,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 }
                 composite.layout(true);
             }
-            else {
-                _uicallCache.add(()->closeEmbeddedForm(formController));
+            else
+            {
+                _uicallCache.add(() -> closeEmbeddedForm(formController));
             }
         }
     }
@@ -314,7 +316,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         }
     }
-    
+
     @Override
     public void setPopupStatusBarMessage(String canvasName, String status)
     {
@@ -323,9 +325,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             PopupCanvasHandler popupCanvasHandler = (PopupCanvasHandler) canvasHandler;
             popupCanvasHandler.setStatusBarMessage(status);
-        }else 
+        }
+        else
         {
-            _uicallCache.add(()->setPopupStatusBarMessage(canvasName, status));
+            _uicallCache.add(() -> setPopupStatusBarMessage(canvasName, status));
         }
     }
 
@@ -376,7 +379,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 tabPane.setTabPageVisible(pageName, visible);
             }
             else
-                _uicallCache.add(()->setTabPageVisible(canvasName, pageName, visible));
+                _uicallCache.add(() -> setTabPageVisible(canvasName, pageName, visible));
         }
 
     }
@@ -392,27 +395,25 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 tabPane.setTabPageVisible(pageName, visible);
             }
             else
-                _uicallCache.add(()->setDrawerPageVisible(canvasName, pageName, visible));
+                _uicallCache.add(() -> setDrawerPageVisible(canvasName, pageName, visible));
         }
-            
 
     }
-    
+
     @Override
-    public void setDrawerVisible(String canvasName,  boolean visible)
+    public void setDrawerVisible(String canvasName, boolean visible)
     {
-        if (canvasName != null )
+        if (canvasName != null)
         {
             EJDrawerFolder tabPane = _drawerFolders.get(canvasName);
             if (tabPane != null)
             {
-                tabPane.setVisible( visible);
+                tabPane.setVisible(visible);
             }
             else
-                _uicallCache.add(()->setDrawerVisible(canvasName,  visible));
+                _uicallCache.add(() -> setDrawerVisible(canvasName, visible));
         }
-        
-        
+
     }
 
     @Override
@@ -566,11 +567,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             createCanvas(_mainPane, canvasProperties, canvasController);
         }
         _showPopupCache.forEach(this::showPopupCanvas);
-        
-        
+
         ArrayList<UICallCache> uiactions = new ArrayList<>(_uicallCache);
         uiactions.forEach(UICallCache::call);
-        
+
         _messageCache.entrySet().forEach(e -> {
 
             CanvasHandler canvasHandler = _canvases.get(e.getKey());
@@ -581,10 +581,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         });
 
         _uicallCache.removeAll(uiactions);
-        
+
         _messageCache.clear();
         _showPopupCache.clear();
-        
+
         _mainPane.addDisposeListener(new DisposeListener()
         {
 
@@ -640,8 +640,6 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 break;
         }
 
-        
-        
     }
 
     protected void createSeparatorCanvas(Composite parent, EJCanvasProperties component)
@@ -795,10 +793,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
-//        if (!canvasProperties.getMessagePaneProperties().getCloseable())
-//        {
-//            canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
-//        }
+        // if (!canvasProperties.getMessagePaneProperties().getCloseable())
+        // {
+        // canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
+        // }
         for (final EJStackedPageProperties page : canvasProperties.getStackedPageContainer().getAllStackedPageProperties())
         {
 
@@ -994,10 +992,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
-//        if (!canvasProperties.getMessagePaneProperties().getCloseable())
-//        {
-//            canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
-//        }
+        // if (!canvasProperties.getMessagePaneProperties().getCloseable())
+        // {
+        // canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
+        // }
 
         if (_formPanesCache.containsKey(name))
         {
@@ -1180,29 +1178,35 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
-//        if (!canvasProperties.getMessagePaneProperties().getCloseable())
-//        {
-//            canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
-//        }
+        // if (!canvasProperties.getMessagePaneProperties().getCloseable())
+        // {
+        // canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
+        // }
 
         _tabFolders.put(name, folder);
         folder.getFolder().setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
 
         Collection<EJTabPageProperties> allTabPageProperties = canvasProperties.getTabPageContainer().getAllTabPageProperties();
         int index = 0;
+        List<ITabFolder.ITab> tabs = new ArrayList<>();
         for (EJTabPageProperties page : allTabPageProperties)
         {
 
             ITabFolder.ITab tab = folder.newTab(page);
             if (page.isVisible())
-            {
-
-                tab.create(index == 0);
-            }
+                tabs.add(tab);
             tab.setIndex(index);
             index++;
 
             folder.put(page.getName(), tab);
+
+        }
+        boolean create = true;
+        for (ITabFolder.ITab tab : tabs)
+        {
+
+            tab.create(create);
+            create = false;
 
         }
 
@@ -1352,10 +1356,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
-//        if (!canvasProperties.getMessagePaneProperties().getCloseable())
-//        {
-//            canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
-//        }
+        // if (!canvasProperties.getMessagePaneProperties().getCloseable())
+        // {
+        // canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
+        // }
 
         _drawerFolders.put(name, folder);
         folder.getFolder().setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
@@ -1573,10 +1577,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             canvasHandler.add(block);
         }
-//        if (!canvasProperties.getMessagePaneProperties().getCloseable())
-//        {
-//            canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
-//        }
+        // if (!canvasProperties.getMessagePaneProperties().getCloseable())
+        // {
+        // canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
+        // }
         if (canvasProperties.getType() == EJCanvasType.GROUP)
         {
             for (EJCanvasProperties containedCanvas : canvasProperties.getGroupCanvasContainer().getAllCanvasProperties())
@@ -1727,10 +1731,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         };
         _canvases.put(canvasProperties.getName(), canvasHandler);
-//        if (!canvasProperties.getMessagePaneProperties().getCloseable())
-//        {
-//            canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
-//        }
+        // if (!canvasProperties.getMessagePaneProperties().getCloseable())
+        // {
+        // canvasHandler.setCanvasMessages(Collections.<EJMessage> emptyList());
+        // }
         layoutBody.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
         if (canvasProperties.getType() == EJCanvasType.SPLIT)
         {
@@ -1813,10 +1817,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         String                     button2Label;
         String                     button3Label;
         String                     status;
-        
+
         Collection<EJMessage>      msgs;
-        private int customWidth =-1;
-        private int customHeight =-1;
+        private int                customWidth         = -1;
+        private int                customHeight        = -1;
 
         public PopupCanvasHandler(EJCanvasProperties canvasProperties, EJCanvasController canvasController)
         {
@@ -1830,10 +1834,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         public void setStatusBarMessage(String status)
         {
-           this.status = status;
-           if (_popupDialog != null)
-               _popupDialog.setStatus(status);
-            
+            this.status = status;
+            if (_popupDialog != null)
+                _popupDialog.setStatus(status);
+
         }
 
         @Override
@@ -1930,8 +1934,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             final String name = canvasProperties.getName();
             final String pageTitle = canvasProperties.getPopupPageTitle();
-            final int width = customWidth!=-1 ? customWidth : canvasProperties.getWidth();
-            final int height =customHeight!=-1 ? customHeight :  canvasProperties.getHeight();
+            final int width = customWidth != -1 ? customWidth : canvasProperties.getWidth();
+            final int height = customHeight != -1 ? customHeight : canvasProperties.getHeight();
             final int numCols = canvasProperties.getNumCols();
             final EJRWTApplicationManager applicationManager = (EJRWTApplicationManager) _form.getFrameworkManager().getApplicationManager();
 
@@ -1985,7 +1989,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         scrollComposite.setMinSize(_mainPane.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
                         ArrayList<UICallCache> uiactions = new ArrayList<>(_uicallCache);
                         uiactions.forEach(UICallCache::call);
-                        
+
                         _messageCache.entrySet().forEach(e -> {
 
                             CanvasHandler canvasHandler = _canvases.get(e.getKey());
@@ -2052,7 +2056,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         {
                             return;
                         }
-                        Button button = createButton(parent, id, label, deafultButton,true);
+                        Button button = createButton(parent, id, label, deafultButton, true);
                         EJ_RWT.setTestId(button, "btn-" + id);
 
                     }
@@ -2069,7 +2073,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         getShell().setVisible(false);
                         return true;
                     }
-                    
+
                     @Override
                     protected boolean isStatusMessageSupported()
                     {
@@ -2111,7 +2115,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     }
                 };
                 _popupDialog.create();
-                if(status!=null)
+                if (status != null)
                     _popupDialog.setStatus(status);
             }
 
@@ -2124,10 +2128,12 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 _popupDialog.centreLocation();
                 _popupDialog.open();
                 _popupDialog.activateDialog();
-//                if (!canvasProperties.getMessagePaneProperties().getCloseable() && msgs == null)
-//                {
-//                  //  msgs = Collections.emptyList();
-//                }
+                // if
+                // (!canvasProperties.getMessagePaneProperties().getCloseable()
+                // && msgs == null)
+                // {
+                // // msgs = Collections.emptyList();
+                // }
                 if ((msgs != null && msgs.size() > 0) || !canvasProperties.getMessagePaneProperties().getCloseable())
                 {
                     if (_popupDialog.getTray() == null)
@@ -2331,12 +2337,13 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         public void setCanvasSize(int width, int height)
         {
             customWidth = width;
-            customHeight =height;
-            if(_popupDialog!=null && _popupDialog.getShell()!=null && !_popupDialog.getShell().isDisposed()) {
+            customHeight = height;
+            if (_popupDialog != null && _popupDialog.getShell() != null && !_popupDialog.getShell().isDisposed())
+            {
                 _popupDialog.getShell().setSize(width + 80, height + 100);
                 _popupDialog.centreLocation();
             }
-            
+
         }
     }
 
@@ -2479,7 +2486,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             canvasHandler.setTrayContent(id);
         }
         else
-            _uicallCache.add(()->setTrayContent(canvasName, id));
+            _uicallCache.add(() -> setTrayContent(canvasName, id));
     }
 
     @Override
@@ -2492,7 +2499,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             popupCanvasHandler.enableButton(button, state);
         }
         else
-            _uicallCache.add(()->setButtonEnabled(canvasName, button, state));
+            _uicallCache.add(() -> setButtonEnabled(canvasName, button, state));
 
     }
 
@@ -2518,7 +2525,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             popupCanvasHandler.setButtonVisible(button, state);
         }
         else
-            _uicallCache.add(()->setButtonVisible(canvasName, button, state));
+            _uicallCache.add(() -> setButtonVisible(canvasName, button, state));
 
     }
 
@@ -2542,21 +2549,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             PopupCanvasHandler popupCanvasHandler = (PopupCanvasHandler) canvasHandler;
             popupCanvasHandler.setButtonLabel(button, label);
-        }else 
+        }
+        else
         {
-            _uicallCache.add(()->setButtonLabel(canvasName, button, label));
+            _uicallCache.add(() -> setButtonLabel(canvasName, button, label));
         }
     }
-    
-    public void setCanvasSize(String canvasName,int width,int height) {
+
+    public void setCanvasSize(String canvasName, int width, int height)
+    {
         CanvasHandler canvasHandler = _canvases.get(canvasName);
         if (canvasHandler instanceof PopupCanvasHandler)
         {
             PopupCanvasHandler popupCanvasHandler = (PopupCanvasHandler) canvasHandler;
             popupCanvasHandler.setCanvasSize(width, height);
-        }else 
+        }
+        else
         {
-            _uicallCache.add(()->setCanvasSize(canvasName, width, height));
+            _uicallCache.add(() -> setCanvasSize(canvasName, width, height));
         }
     }
 
@@ -2795,7 +2805,6 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
         }
 
-
         private void calculateSize()
         {
             if (shell != null && !shell.isDisposed() && !parent.isDisposed())
@@ -2838,8 +2847,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             {
                 tabPane.setTabPageBadge(tabPageName, badge);
             }
-            else 
-                _uicallCache.add(()->setTabPageBadge(canvasName, tabPageName, badge));
+            else
+                _uicallCache.add(() -> setTabPageBadge(canvasName, tabPageName, badge));
         }
 
     }
@@ -2854,8 +2863,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             {
                 tabPane.setDrawerPageBadge(tabPageName, badge);
             }
-             else
-                 _uicallCache.add(()->setDrawerPageBadge(canvasName, tabPageName, badge));
+            else
+                _uicallCache.add(() -> setDrawerPageBadge(canvasName, tabPageName, badge));
         }
 
     }
@@ -2871,13 +2880,13 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 tabPane.setDrawerPageBadgeVa(tabPageName, visualAttributeName);
             }
             else
-                _uicallCache.add(()->setDrawerPageBadgeVisualAttribute(canvasName, tabPageName, visualAttributeName));
-                
+                _uicallCache.add(() -> setDrawerPageBadgeVisualAttribute(canvasName, tabPageName, visualAttributeName));
+
         }
 
     }
-    
-    public void setTabPageVisualAttribute(String canvasName,String tabPageName,  String visualAttributeName)
+
+    public void setTabPageVisualAttribute(String canvasName, String tabPageName, String visualAttributeName)
     {
         if (canvasName != null && tabPageName != null)
         {
@@ -2886,9 +2895,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             {
                 tabPane.setTabPageVa(tabPageName, visualAttributeName);
             }
-            else 
-                _uicallCache.add(()->setTabPageVisualAttribute(canvasName, tabPageName, visualAttributeName));
-                
+            else
+                _uicallCache.add(() -> setTabPageVisualAttribute(canvasName, tabPageName, visualAttributeName));
+
         }
     }
 

@@ -1,8 +1,11 @@
 package org.entirej.applicationframework.rwt.renderers.form;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rwt.EJ_RWT;
@@ -25,14 +28,14 @@ class EJTabFolder implements ITabFolder
      * 
      */
     private final EJRWTFormRenderer ejrwtFormRenderer;
-    final CTabFolder         folder;
-    final EJCanvasController canvasController;
-    final Map<String, Tab>   tabPages = new HashMap<String, Tab>();
+    final CTabFolder                folder;
+    final EJCanvasController        canvasController;
+    final Map<String, Tab>          tabPages   = new HashMap<String, Tab>();
 
-    private AtomicBoolean fireEvents = new AtomicBoolean(true);
-    
-    private String lastSelection;
-    
+    private AtomicBoolean           fireEvents = new AtomicBoolean(true);
+
+    private String                  lastSelection;
+
     EJTabFolder(EJRWTFormRenderer ejrwtFormRenderer, CTabFolder folder, EJCanvasController canvasController)
     {
         super();
@@ -46,10 +49,11 @@ class EJTabFolder implements ITabFolder
     {
         return fireEvents.get();
     }
-    
+
     public void showPage(String pageName)
     {
-        try {
+        try
+        {
             fireEvents.set(false);
             Tab cTabItem = tabPages.get(pageName);
             if (cTabItem != null && cTabItem.item != null)
@@ -57,21 +61,22 @@ class EJTabFolder implements ITabFolder
                 lastSelection = pageName;
                 cTabItem.createTabData();
                 folder.setSelection(cTabItem.item);
-    
+
                 EJ_RWT.setAttribute(folder, "ej-item-selection", pageName);
             }
         }
-        finally {
+        finally
+        {
             fireEvents.set(true);
         }
 
     }
-    
+
     public String getLastSelection()
     {
         return lastSelection;
     }
-    
+
     public void setLastSelection(String lastSelection)
     {
         this.lastSelection = lastSelection;
@@ -87,19 +92,19 @@ class EJTabFolder implements ITabFolder
         final Tab cTabItem = tabPages.get(pageName);
         if (cTabItem != null)
         {
-            if (visible )
+            if (visible)
             {
                 cTabItem.visible = true;
                 if (cTabItem.item == null)
                 {
-                    
+
                     Display.getDefault().asyncExec(new Runnable()
                     {
 
                         @Override
                         public void run()
                         {
-                            if(!cTabItem.visible && cTabItem.item == null)
+                            if (!cTabItem.visible && cTabItem.item == null)
                                 return;
                             cTabItem.create(true);
 
@@ -110,28 +115,16 @@ class EJTabFolder implements ITabFolder
             else
             {
                 cTabItem.visible = false;
-                if (cTabItem.item != null )
+                if (cTabItem.item != null)
                 {
-                   
-                    CTabItem[] items = folder.getItems();
-                    int index = 0;
-                    for (CTabItem cTabItem2 : items)
-                    {
-                     
-                        if (cTabItem2 == cTabItem.item)
-                        {
-                            cTabItem.index = index;
-                            break;
-                        }
-                        index++;
-                    }
+
                     Display.getDefault().asyncExec(new Runnable()
                     {
 
                         @Override
                         public void run()
                         {
-                            if(cTabItem.visible && cTabItem.item != null)
+                            if (cTabItem.visible && cTabItem.item != null)
                                 return;
                             cTabItem.remove();
                         }
@@ -164,9 +157,9 @@ class EJTabFolder implements ITabFolder
 
     public void put(String key, ITab value)
     {
-        tabPages.put(key,(Tab) value);
-        if(lastSelection==null)
-            key =lastSelection;
+        tabPages.put(key, (Tab) value);
+        if (lastSelection == null)
+            key = lastSelection;
     }
 
     void remove(String key)
@@ -186,10 +179,10 @@ class EJTabFolder implements ITabFolder
 
     class Tab implements ITabFolder.ITab
     {
-        final AtomicBoolean       init  = new AtomicBoolean(true);
+        final AtomicBoolean       init    = new AtomicBoolean(true);
         CTabItem                  item;
-        boolean                   visible =true;
-        int                       index = -1;
+        boolean                   visible = true;
+        int                       index   = -1;
         EJRWTEntireJGridPane      pageCanvas;
         final EJTabPageProperties page;
 
@@ -203,31 +196,49 @@ class EJTabFolder implements ITabFolder
         {
             if (item != null && !item.isDisposed())
             {
-                CTabFolder paranet=  item.getParent();
+                CTabFolder paranet = item.getParent();
                 item.dispose();
                 paranet.redraw();
                 paranet.update();
             }
             item = null;
         }
-        
+
         @Override
         public void setIndex(int index)
         {
             this.index = index;
-            
+
         }
 
-      public  void create(boolean innerBuild)
+        public void create(boolean innerBuild)
         {
-          if (item != null && !item.isDisposed())
-          {
-              item.dispose();
-          }
+            if (item != null && !item.isDisposed())
+            {
+                item.dispose();
+            }
+
+            int index = -1;
+            ArrayList<Tab> tabs = new ArrayList<>(EJTabFolder.this.tabPages.values());
+
+            Collections.sort(tabs, (t1, t2) -> Integer.compare(t1.index, t2.index));
+
+            for (Tab tab : tabs)
+            {
+                if (!tab.visible)
+                    continue;
+
+                index++;
+
+                if(tab==this)
+                    break;
+                
+            }
+
             final CTabItem tabItem = (index == -1 || folder.getItemCount() < index) ? new CTabItem(folder, SWT.NONE) : new CTabItem(folder, SWT.NONE, index);
             tabItem.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
             tabItem.setData("TAB_KEY", page.getName());
-            
+
             EJ_RWT.setTestId(tabItem, page.getName());
             pageCanvas = new EJRWTEntireJGridPane(folder, page.getNumCols());
             pageCanvas.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
@@ -274,13 +285,10 @@ class EJTabFolder implements ITabFolder
                 folder.setSelection(tabItem);
             }
 
-            
-            
-            
             item = tabItem;
             tabItem.getControl().setEnabled(page.isEnabled());
-            
-            CTabFolder paranet=  item.getParent();
+
+            CTabFolder paranet = item.getParent();
             paranet.redraw();
             paranet.update();
 
@@ -312,23 +320,19 @@ class EJTabFolder implements ITabFolder
         }
 
     }
-    
+
     @Override
     public void setTabPageVa(String tabPageName, String visualAttributeName)
     {
         Tab cTabItem = tabPages.get(tabPageName);
         if (cTabItem != null && cTabItem.item != null)
         {
-            
-            
-            //https://bugs.eclipse.org/bugs/show_bug.cgi?id=561155
-            cTabItem.item.setData(EJ_RWT.CUSTOM_VARIANT, visualAttributeName);
-            
-            
-        }
-        
-    }
 
-    
+            // https://bugs.eclipse.org/bugs/show_bug.cgi?id=561155
+            cTabItem.item.setData(EJ_RWT.CUSTOM_VARIANT, visualAttributeName);
+
+        }
+
+    }
 
 }
