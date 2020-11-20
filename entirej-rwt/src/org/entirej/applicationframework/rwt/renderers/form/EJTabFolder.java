@@ -220,6 +220,10 @@ class EJTabFolder implements ITabFolder
 
       public  void create(boolean innerBuild)
         {
+          if (item != null && !item.isDisposed())
+          {
+              item.dispose();
+          }
             final CTabItem tabItem = (index == -1 || folder.getItemCount() < index) ? new CTabItem(folder, SWT.NONE) : new CTabItem(folder, SWT.NONE, index);
             tabItem.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
             tabItem.setData("TAB_KEY", page.getName());
@@ -270,6 +274,9 @@ class EJTabFolder implements ITabFolder
                 folder.setSelection(tabItem);
             }
 
+            
+            
+            
             item = tabItem;
             tabItem.getControl().setEnabled(page.isEnabled());
             
