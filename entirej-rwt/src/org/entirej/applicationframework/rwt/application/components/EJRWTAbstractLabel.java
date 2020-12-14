@@ -42,16 +42,19 @@ public abstract class EJRWTAbstractLabel extends Composite implements Serializab
     private Control           actionCustomControl;
     private int               actionWidthHint  = 0;
 
-    public EJRWTAbstractLabel(Composite parent)
+    public EJRWTAbstractLabel(Composite parent,boolean empty)
     {
         super(parent, SWT.NO_FOCUS);
         setData(EJ_RWT.CUSTOM_VARIANT, "itemgroupclear");
 
         int numColumns = 1;
 
-        numColumns = 3;
+       
 
-        GridLayoutFactory.swtDefaults().margins(0, 0).extendedMargins(2, 2, 3, 2).spacing(0, 2).numColumns(numColumns).applyTo(this);
+        if(empty)
+            GridLayoutFactory.swtDefaults().margins(0, 0).extendedMargins(0, 0, 0, 0).spacing(0, 0).numColumns(1).applyTo(this);
+        else
+            GridLayoutFactory.swtDefaults().margins(0, 0).extendedMargins(2, 2, 3, 2).spacing(0, 2).numColumns(numColumns).applyTo(this);
 
         labelControl = createLabel(this);
 
@@ -61,6 +64,11 @@ public abstract class EJRWTAbstractLabel extends Composite implements Serializab
         actionCustomControl = createCustomLabelButtonControl(this);
         actionControl = createLabelButtonControl(this);
         setActionVisible(false);
+    }
+    
+    public EJRWTAbstractLabel(Composite parent)
+    {
+        this(parent, false);
     }
 
     public void setActionVisible(boolean visible)
