@@ -54,6 +54,7 @@ import org.entirej.framework.core.data.controllers.EJPopupFormController;
 import org.entirej.framework.core.internal.EJInternalForm;
 import org.entirej.framework.core.properties.EJCoreFormProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
+import org.entirej.framework.core.renderers.interfaces.EJFormRenderer;
 
 public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppComponentRenderer
 {
@@ -174,11 +175,15 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
                         public void run()
                         {
 
-                            for (EJRWTFormSelectedListener listener : _formSelectedListeners)
-                            {
-                                listener.fireFormSelected(form);
+                            EJFormRenderer renderer = form.getRenderer();
+                            if(renderer!=null) {
+                                for (EJRWTFormSelectedListener listener : _formSelectedListeners)
+                                {
+                                    listener.fireFormSelected(form);
+                                }
+                                form.focusGained();
                             }
-                            form.focusGained();
+                           
 
                         }
                     });
