@@ -175,8 +175,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
                         public void run()
                         {
 
-                            EJFormRenderer renderer = form.getRenderer();
-                            if(renderer!=null) {
+                            if(form.getManagedRenderer()!=null) {
                                 for (EJRWTFormSelectedListener listener : _formSelectedListeners)
                                 {
                                     listener.fireFormSelected(form);
