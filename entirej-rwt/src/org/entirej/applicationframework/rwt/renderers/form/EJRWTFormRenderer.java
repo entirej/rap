@@ -2364,7 +2364,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     public String getDisplayedStackedPage(String key)
     {
         EJRWTEntireJStackedPane stackedPane = _stackedPanes.get(key);
-        if (stackedPane != null)
+        if (stackedPane != null && !stackedPane.isDisposed())
         {
             return stackedPane.getActiveControlKey();
         }
@@ -2397,7 +2397,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     public String getDisplayedTabPage(String key)
     {
         ITabFolder tabFolder = _tabFolders.get(key);
-        if (tabFolder != null)
+        if (tabFolder != null && tabFolder.getFolder()!=null && !tabFolder.getFolder().isDisposed())
         {
             return tabFolder.getActiveKey();
         }
@@ -2425,7 +2425,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     public String getDisplayedDrawerPage(String key)
     {
         EJDrawerFolder tabFolder = _drawerFolders.get(key);
-        if (tabFolder != null)
+        if (tabFolder != null && tabFolder.getFolder()!=null && !tabFolder.getFolder().isDisposed())
         {
             return tabFolder.getActiveKey();
         }
