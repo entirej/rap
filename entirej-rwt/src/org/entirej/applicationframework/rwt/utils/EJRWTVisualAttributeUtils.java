@@ -39,6 +39,7 @@ public enum EJRWTVisualAttributeUtils
     private Map<String, Color> _backgroundColors = new HashMap<String, Color>();
     private Map<String, Color> _foregroundColors = new HashMap<String, Color>();
     private Map<String, Font>  _fonts            = new HashMap<String, Font>();
+    private int DEFAULT_FONT_SIZE = 11;
 
     public Color getBackground(EJCoreVisualAttributeProperties visualAttributeProperties)
     {
@@ -107,12 +108,14 @@ public enum EJRWTVisualAttributeUtils
             }
             String name = null;
             int style = SWT.NORMAL;
-            int size = 11;
+            int size = DEFAULT_FONT_SIZE;
             if (defaultFont == null)
             {
                 defaultFont = Display.getDefault().getSystemFont();
+                name = defaultFont.getFontData()[0].getName();
+                style = defaultFont.getFontData()[0].getStyle();
             }
-            if (defaultFont != null)
+            else if (defaultFont != null)
             {
                 name = defaultFont.getFontData()[0].getName();
                 style = defaultFont.getFontData()[0].getStyle();
