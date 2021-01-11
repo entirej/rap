@@ -65,6 +65,11 @@ public enum EJRWTVisualAttributeUtils
         return null;
 
     }
+    
+    public void setDefaultFontSize(int size)
+    {
+        DEFAULT_FONT_SIZE = size;
+    }
 
     public Color getForeground(EJCoreVisualAttributeProperties visualAttributeProperties)
     {
