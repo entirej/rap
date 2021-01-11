@@ -199,7 +199,7 @@ public class EJRWTNotifierDialog
                 text.setLayoutData(gd);
                 //text.setForeground(_fgColor);
                 
-                text.setText(message.replaceAll("\r\n", "<br/>").replaceAll("\n", "<br/>"));
+                text.setText(EJ_RWT.escapeHtmlWithXhtml(message.replaceAll("\r\n", "<br/>").replaceAll("\n", "<br/>")));
 
                 _shell.setSize(width, height);
 
