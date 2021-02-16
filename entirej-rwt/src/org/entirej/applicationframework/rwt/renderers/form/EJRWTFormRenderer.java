@@ -383,6 +383,13 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
     }
+    
+    @Override
+    public void setSplitPageVisible(String splitCanvasName, String splitPageCanvasName, boolean visible)
+    {
+        // TODO Auto-generated method stub
+        
+    }
 
     @Override
     public void setDrawerPageVisible(String canvasName, String pageName, boolean visible)
