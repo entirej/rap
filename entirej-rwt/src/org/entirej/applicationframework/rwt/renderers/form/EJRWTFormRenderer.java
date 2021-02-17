@@ -103,6 +103,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     protected Map<String, EJInternalBlock>          _blocks             = new HashMap<String, EJInternalBlock>();
     protected Map<String, ITabFolder>               _tabFolders         = new HashMap<String, ITabFolder>();
     protected Map<String, EJDrawerFolder>           _drawerFolders      = new HashMap<String, EJDrawerFolder>();
+    protected Map<String, EJSplitFolder>            _splitFolders       = new HashMap<String, EJSplitFolder>();
     protected Map<String, EJRWTEntireJStackedPane>  _stackedPanes       = new HashMap<String, EJRWTEntireJStackedPane>();
     protected Map<String, Composite>                _formPanes          = new HashMap<String, Composite>();
     protected Map<String, String>                   _tabFoldersCache    = new HashMap<String, String>();
@@ -383,12 +384,21 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
     }
-    
+
     @Override
     public void setSplitPageVisible(String splitCanvasName, String splitPageCanvasName, boolean visible)
     {
-        // TODO Auto-generated method stub
-        
+        if (splitCanvasName != null)
+        {
+            EJSplitFolder tabPane = _splitFolders.get(splitCanvasName);
+            if (tabPane != null)
+            {
+                tabPane.setVisible(splitPageCanvasName,visible);
+            }
+            else
+                _uicallCache.add(() -> setSplitPageVisible(splitCanvasName,splitPageCanvasName, visible));
+        }
+
     }
 
     @Override
@@ -690,6 +700,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         final String name = canvasProperties.getName();
 
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
+        trayPane.setData("canvas_id",name);
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
         parent = trayPane;
         final EJRWTEntireJStackedPane stackedPane = new EJRWTEntireJStackedPane(parent);
@@ -884,6 +895,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
 
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
+        trayPane.setData("canvas_id",canvasProperties.getName());
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
         parent = trayPane;
         final String name = canvasProperties.getName();
@@ -1057,7 +1069,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         final String name = canvasProperties.getName();
 
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
-
+        trayPane.setData("canvas_id",canvasProperties.getName());
         EJ_RWT.setTestId(trayPane, _form.getProperties().getName() + "." + canvasProperties.getName());
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
         parent = trayPane;
@@ -1236,6 +1248,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
+        trayPane.setData("canvas_id",canvasProperties.getName());
         EJ_RWT.setTestId(trayPane, _form.getProperties().getName() + "." + canvasProperties.getName());
         parent = trayPane;
 
@@ -1433,6 +1446,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
 
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
+        trayPane.setData("canvas_id",canvasProperties.getName());
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
 
         EJ_RWT.setTestId(trayPane, _form.getProperties().getName() + "." + canvasProperties.getName());
@@ -1627,14 +1641,16 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     {
 
         final EJRWTTrayPane trayPane = new EJRWTTrayPane(parent);
-
+        trayPane.setData("canvas_id",canvasProperties.getName());
+        final String name = canvasProperties.getName();
         EJ_RWT.setTestId(trayPane, _form.getProperties().getName() + "." + canvasProperties.getName());
         trayPane.setLayoutData(createCanvasGridData(canvasProperties));
         parent = trayPane;
         SashForm layoutBody = new SashForm(parent, canvasProperties.getSplitOrientation() == EJCanvasSplitOrientation.HORIZONTAL ? SWT.HORIZONTAL : SWT.VERTICAL);
         trayPane.initBase(layoutBody);
         layoutBody.setLayoutData(createCanvasGridData(canvasProperties));
-
+        EJSplitFolder splitFolder = new EJSplitFolder(layoutBody);
+        _splitFolders.put(name, splitFolder);
         CanvasHandler canvasHandler = new CanvasHandler()
         {
 
@@ -2404,7 +2420,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     public String getDisplayedTabPage(String key)
     {
         ITabFolder tabFolder = _tabFolders.get(key);
-        if (tabFolder != null && tabFolder.getFolder()!=null && !tabFolder.getFolder().isDisposed())
+        if (tabFolder != null && tabFolder.getFolder() != null && !tabFolder.getFolder().isDisposed())
         {
             return tabFolder.getActiveKey();
         }
@@ -2432,7 +2448,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     public String getDisplayedDrawerPage(String key)
     {
         EJDrawerFolder tabFolder = _drawerFolders.get(key);
-        if (tabFolder != null && tabFolder.getFolder()!=null && !tabFolder.getFolder().isDisposed())
+        if (tabFolder != null && tabFolder.getFolder() != null && !tabFolder.getFolder().isDisposed())
         {
             return tabFolder.getActiveKey();
         }
