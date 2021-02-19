@@ -716,7 +716,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             }
         };
         pushSession.start();
-       reportExecutorService.submit(job);
+        reportExecutorService.submit(job);
 
     }
 
@@ -808,13 +808,16 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
                     connection.close();
 
                     EJRWTImageRetriever.getGraphicsProvider().setReportFrameworkManager(null);
-                    display.asyncExec(new Runnable()
+                    if (!display.isDisposed())
                     {
-                        public void run()
+                        display.asyncExec(new Runnable()
                         {
-                            pushSession.stop();
-                        }
-                    });
+                            public void run()
+                            {
+                                pushSession.stop();
+                            }
+                        });
+                    }
                 }
 
             }
