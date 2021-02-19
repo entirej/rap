@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.widgets.Composite;
@@ -79,13 +81,14 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
     private Shell                        shell;
 
-    private List<EJInternalForm>         embeddedForms   = new ArrayList<EJInternalForm>();
-    private EJApplicationActionProcessor actionProcessor = null;
+    private List<EJInternalForm>         embeddedForms              = new ArrayList<EJInternalForm>();
+    private EJApplicationActionProcessor actionProcessor            = null;
 
-    private static final Logger          logger          = LoggerFactory.getLogger(EJRWTApplicationManager.class);
+    private static final Logger          logger                     = LoggerFactory.getLogger(EJRWTApplicationManager.class);
 
-    private boolean                      helpSupported   = false;
-    private boolean                      helpActive      = false;
+    private boolean                      helpSupported              = false;
+    private boolean                      helpActive                 = false;
+    private ExecutorService              reportExecutorService      = Executors.newSingleThreadExecutor();
 
     public EJRWTApplicationManager()
     {
@@ -713,9 +716,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             }
         };
         pushSession.start();
-        Thread bgThread = new Thread(job);
-        bgThread.setDaemon(true);
-        bgThread.start();
+       reportExecutorService.submit(job);
 
     }
 
@@ -729,8 +730,6 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     public void generateReportAsync(String reportName, EJParameterList parameterList, EJAsyncCallback<String> callback)
     {
 
-       
-
         final Display display = Display.getDefault();
 
         final ServerPushSession pushSession = new ServerPushSession();
@@ -741,15 +740,12 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             public void run()
             {
                 EJReportFrameworkManager reportManager = newReportManager();
-                
-                if(parameterList!=null && parameterList.getAllParameterNames().contains(REPORT_DATASOURCE_ID_PARAM)
-                        && reportManager.applicationLevelParameterExists(REPORT_DATASOURCE_ID_PARAM))
+
+                if (parameterList != null && parameterList.getAllParameterNames().contains(REPORT_DATASOURCE_ID_PARAM) && reportManager.applicationLevelParameterExists(REPORT_DATASOURCE_ID_PARAM))
                 {
-                    reportManager.getApplicationLevelParameter(REPORT_DATASOURCE_ID_PARAM)
-                    .setValue(parameterList.getParameter(REPORT_DATASOURCE_ID_PARAM).getValue());
+                    reportManager.getApplicationLevelParameter(REPORT_DATASOURCE_ID_PARAM).setValue(parameterList.getParameter(REPORT_DATASOURCE_ID_PARAM).getValue());
                 }
-                
-                
+
                 EJReportManagedFrameworkConnection connection = reportManager.getConnection();
                 try
                 {
@@ -824,9 +820,7 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             }
         };
         pushSession.start();
-        Thread bgThread = new Thread(job);
-        bgThread.setDaemon(true);
-        bgThread.start();
+        reportExecutorService.execute(job);
 
     }
 
@@ -839,11 +833,9 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     public String generateReport(String reportName, EJParameterList parameterList)
     {
         EJReportFrameworkManager reportManager = newReportManager();
-        if(parameterList!=null && parameterList.getAllParameterNames().contains(REPORT_DATASOURCE_ID_PARAM)
-                && reportManager.applicationLevelParameterExists(REPORT_DATASOURCE_ID_PARAM))
+        if (parameterList != null && parameterList.getAllParameterNames().contains(REPORT_DATASOURCE_ID_PARAM) && reportManager.applicationLevelParameterExists(REPORT_DATASOURCE_ID_PARAM))
         {
-            reportManager.getApplicationLevelParameter(REPORT_DATASOURCE_ID_PARAM)
-            .setValue(parameterList.getParameter(REPORT_DATASOURCE_ID_PARAM).getValue());
+            reportManager.getApplicationLevelParameter(REPORT_DATASOURCE_ID_PARAM).setValue(parameterList.getParameter(REPORT_DATASOURCE_ID_PARAM).getValue());
         }
         EJReportManagedFrameworkConnection connection = reportManager.getConnection();
         try
