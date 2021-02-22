@@ -406,6 +406,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         if(aform!=null) {
             EJRWTFormRenderer renderer = (EJRWTFormRenderer) aform.getRenderer();
             renderer.closesDrawerPages();
+            renderer.focusLost();
         }
     }
     

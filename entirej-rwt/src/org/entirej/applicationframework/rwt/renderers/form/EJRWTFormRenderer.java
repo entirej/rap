@@ -2945,5 +2945,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         _drawerFolders.values().forEach(d -> d.closeActivePage());
     }
+    
+    public void focusLost()
+    {
+        
+        _form.focusLost();
+    }
 
 }
