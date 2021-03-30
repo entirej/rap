@@ -21,7 +21,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 	}
 
 	eclipsesource.TinymceEditor = function(properties) {
-		bindAll(this, [ "layout", "onReady", "onSend", "onRender" ,"setEditorSetup"]);
+		bindAll(this, [ "layout", "onReady", "onSend", "onRender" ,"setEditorSetup","setViewEditorSetup"]);
 		this.parent = rap.getObject(properties.parent);
 		this.inline = properties.inline;
 		this.profile = properties.profile;
@@ -80,6 +80,14 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			
 			
 		},
+		setViewEditorSetup : function( e) {
+			this.editorView = e;
+			this.editorView.setMode('readonly');
+			e.on('init', this.onReady);
+			
+			
+			
+		},
 		onReady : function(ed) {
 			// TODO [tb] : on IE 7/8 the iframe and body has to be made
 			// transparent explicitly
@@ -126,7 +134,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				}
 
 				
-				//this.element.style.visibility = "hidden";
+				// this.element.style.visibility = "hidden";
 				if (this.inline) {
 					
 					tinymce.init({
@@ -176,9 +184,24 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					
 				}
 
-				
-				
-				
+				if(this.removeToolbar) {
+					var readOnly =document.createElement("div");
+					this.elementReadonly.appendChild(readOnly);
+					tinymce.init({
+				          target: readOnly,
+				          menubar: false,
+				          inline: false,
+				          branding: false,
+						  plugins: [
+						    
+						  ],
+						  content_style: this.contentCss,
+						 toolbar: false,
+						 statusbar: false,
+						  skin: 'borderless',
+						  			  
+						  setup: this.setViewEditorSetup});
+			   }
 				
 				
 				rap.on("send", this.onSend);
@@ -193,7 +216,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					this.editor.setDirty(false);
 				}catch(e)
 				{
-					//ignore
+					// ignore
 				}
 				
 			}
@@ -206,15 +229,12 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				    this.editor.setContent(text);
 					if(this.removeToolbar && this.readonly  )
 					{
-						this.elementReadonly.innerHTML = '';
-						var readOnly =document.createElement("div");
-						this.elementReadonly.appendChild(readOnly);
-						readOnly.innerHTML = "<style type=\"text/css\">"+this.contentCss+"</style>"+ text;
+						this.editorView.setContent(text);
 						
 					}
 				}catch(e)
 				{
-					//ignore
+					// ignore
 				}
 				
 				
@@ -226,7 +246,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 		setFont : function(font) {
 			if (this.ready) {
 				async(this, function() { // Needed by IE for some reason
-					//this.element.style.font = font;
+					// this.element.style.font = font;
 					
 				});
 			} else {
@@ -245,15 +265,10 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 						if (enable) {
 							this.elementReadonly.style.visibility = "hidden";
 							this.element.style.visibility = "visible";
-							this.elementReadonly.innerHTML = '';
 						} else {
 		
 							
-							
-							this.elementReadonly.innerHTML = '';
-							var readOnly =document.createElement("div");
-							this.elementReadonly.appendChild(readOnly);
-							readOnly.innerHTML = "<style type=\"text/css\">"+this.contentCss+"</style>"+ this.editor.getContent();
+							this.editorView.setContent(this.editor.getContent());
 							this.element.style.visibility = "hidden";
 							this.elementReadonly.style.visibility = "visible";
 		
@@ -267,7 +282,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					this.editor.setMode(this.readonly ? 'readonly' : 'design');
 				}catch(e)
 				{
-					//ignore
+					// ignore
 				}
 				
 
@@ -299,6 +314,8 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				{
 					this.elementReadonly.style.left = area[0] + "px";
 					this.elementReadonly.style.top = area[1] + "px";
+					this.editorView.theme.resizeTo (area[2] - 2, area[3]-4 
+					);
 				}
 				try
 				{
@@ -309,7 +326,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					
 				}catch(e)
 				{
-					//ignore
+					// ignore
 				}
 				
 			}
