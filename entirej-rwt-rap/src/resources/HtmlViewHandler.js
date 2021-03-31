@@ -278,17 +278,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         	}
             
     	}
-        var elemsnts= this.element.getElementsByClassName("html_view_div");
-        if(elemsnts)
-        {
-        	
-        	for(var i =0;i<elemsnts.length;i++)
-        	{
-        		
-        		var func = this.ej_text_select;
-        		elemsnts[i].onclick =  func;
-        	}
-        }
+        
         
         var divs = this.element.getElementsByTagName("div");
         this.element.onscroll = this.ej_scroll_main;
