@@ -168,7 +168,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         {
 
             Date value = getValue();
-            
+
             addDay(value, 1);
 
         }
@@ -337,14 +337,14 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             {
                 if (_textField.getText().trim().length() > 0)
                 {
-                    if(!SmartDateUtil.supported(_textField.getText()))
+                    if (!SmartDateUtil.supported(_textField.getText()))
                         try
                         {
                             _dateFormat.parse(_textField.getText());
                         }
                         catch (ParseException e)
                         {
-    
+
                             String format = _dateFormat.toFormatString();
                             if (format == null || format.length() == 0)
                             {
@@ -353,7 +353,8 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                             _errorDecoration.setDescriptionText(String.format("Invalid Date format. Should be %s ", format));
                             _errorDecoration.show();
                         }
-                    else {
+                    else
+                    {
                         _errorDecoration.setDescriptionText("");
                         _errorDecoration.hide();
                     }
@@ -373,10 +374,10 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     {
                         if (_textField.getText() != null)
                         {
-                            value = SmartDateUtil.toDate(_textField.getText(), text-> null);
+                            value = SmartDateUtil.toDate(_textField.getText(), text -> null);
                         }
-                        
-                        if(value == null)
+
+                        if (value == null)
                             value = _dateFormat.parse(_textField.getText());
 
                         // convert to correct type if need
@@ -395,7 +396,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     {
                         _textField.setText("");
                     }
-                    Display.getDefault().asyncExec(()->valueChanged());
+                    Display.getDefault().asyncExec(() -> valueChanged());
                 }
                 finally
                 {
@@ -429,31 +430,30 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         }
         return _textField;
     }
-    
+
     @Override
     protected TextCellEditor newTextCellEditor(Composite viewer, int style)
     {
         // TODO Auto-generated method stub
         return super.newTextCellEditor(viewer, style);
     }
-    
+
     @Override
-    protected Object toValueFromCell(Object v,Object baseValue)
+    protected Object toValueFromCell(Object v, Object baseValue)
     {
-        if(v==null || ((String)v).trim().isEmpty())
-            return null ;      
-       
-        Date value =(Date) baseValue;
+        if (v == null || ((String) v).trim().isEmpty())
+            return null;
+
+        Date value = (Date) baseValue;
         try
         {
             if (_textField.getText() != null)
             {
-                value = SmartDateUtil.toDate(_textField.getText(), text-> null);
+                value = SmartDateUtil.toDate(_textField.getText(), text -> null);
             }
-            
-            if(value == null)
+
+            if (value == null)
                 value = _dateFormat.parse((String) v);
-            
 
             // convert to correct type if need
             value = converType(value);
@@ -468,11 +468,9 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             }
             _item.getForm().getFrameworkManager().handleException(new EJApplicationException(String.format("Invalid Date format. Should be %s ", format)));
         }
-        
-        
+
         return value;
-        
-        
+
     }
 
     @Override
@@ -630,10 +628,10 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
 
         return value;
     }
-    
+
     private Date toValue()
     {
-        if(!controlState(_textField))
+        if (!controlState(_textField))
             return (Date) _baseValue;
         Date value = null;
         try
@@ -642,10 +640,10 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
             {
                 if (_textField.getText() != null)
                 {
-                    value = SmartDateUtil.toDate(_textField.getText(), text-> null);
+                    value = SmartDateUtil.toDate(_textField.getText(), text -> null);
                 }
-                
-                if(value == null)
+
+                if (value == null)
                     value = _dateFormat.parse(_textField.getText());
             }
 
@@ -657,22 +655,21 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         {
             // ignore error
         }
-        
+
         return value;
     }
-    
-    
+
     public void valueChanged()
     {
         Object base = _baseValue;
-        Date value = controlState(_textField)? toValue():(Date) _baseValue;
+        Date value = controlState(_textField) ? toValue() : (Date) _baseValue;
 
         if (_oldvalue == null)
         {
             _oldvalue = base;
         }
         _valueChanged = _valueChanged || ((base == null && value != null) || (base != null && value == null) || (value != null && !value.equals(base)));
-        if (controlState(_textField)&& !_textField.isFocusControl())
+        if (controlState(_textField) && !_textField.isFocusControl())
         {
             if (_valueChanged)
                 commitValue();
@@ -681,23 +678,23 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
         setMandatoryBorder(_mandatory);
         fireTextChange();
     }
-    
+
     protected void commitValue()
     {
         if (_valueChanged)
         {
             _valueChanged = false;
-            Date value = controlState(_textField)? toValue():(Date) _baseValue;
-            
-            
+            Date value = controlState(_textField) ? toValue() : (Date) _baseValue;
+
             _item.itemValueChaged(value);
-            _oldvalue=null;
+            _oldvalue = null;
             setMandatoryBorder(_mandatory);
         }
     }
+
     protected String toTexttValue(Object value)
     {
-        if (value != null && format!=null)
+        if (value != null && format != null)
         {
             return format.format(value);
         }
@@ -707,7 +704,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
     @Override
     public ColumnLabelProvider createColumnLabelProvider(final EJScreenItemProperties item, EJScreenItemController controller)
     {
-         format = createDateFormat(controller);
+        format = createDateFormat(controller);
         ColumnLabelProvider provider = new ColumnLabelProvider()
         {
             @Override
@@ -876,7 +873,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                 {
 
                     Shell shell = ((EJRWTApplicationManager) _item.getForm().getFrameworkManager().getApplicationManager()).getShell();
-                    
+
                     final Shell abstractDialog = new Shell(shell, SWT.ON_TOP | SWT.APPLICATION_MODAL | SWT.BORDER);
                     abstractDialog.setLayout(new GridLayout(3, false));
 
@@ -1089,6 +1086,23 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     boolean fixday = !pattern.contains("d");
                     boolean fixmMonth = !pattern.contains("M");
                     boolean fixmYear = !pattern.contains("y");
+                    boolean fix2dYear = pattern.contains("yyyy");
+
+                    if (fix2dYear && !fixmYear)
+                    {
+                        Calendar calendar = format.getCalendar();
+
+                        calendar.setTime(parse);
+                        int year = calendar.get(Calendar.YEAR);
+
+                        if (year < 100)
+                        {
+                            calendar.setTime(parse);
+                            calendar.set(Calendar.YEAR, year + 2000);// offset
+                            parse = calendar.getTime();
+                        }
+
+                    }
 
                     if (fixday || fixmMonth || fixmYear)
                     {
