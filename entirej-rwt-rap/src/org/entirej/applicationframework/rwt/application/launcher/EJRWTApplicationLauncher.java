@@ -26,6 +26,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -220,6 +221,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     public void createEntryPoint(final Application configuration)
     {
 
+        
+       
         configuration.setOperationMode(getOperationMode());
         Map<String, String> properties = new HashMap<String, String>();
         if (this.getClass().getClassLoader().getResource("application.ejprop") != null)
@@ -506,7 +509,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
                         }
 
-                       
+                        RWT.setLocale(getLocale());
 
                         RWTUtils.patchClient(getWebPathContext(), getTimeoutUrl());
 
@@ -895,6 +898,11 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     public String getBaseURL()
     {
         return _baseURL;
+    }
+    
+    public Locale getLocale()
+    {
+        return Locale.US;
     }
 
     public static void reloadApplication(EJFrameworkHelper frameworkHelper)
