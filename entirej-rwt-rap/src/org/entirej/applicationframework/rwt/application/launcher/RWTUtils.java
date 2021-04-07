@@ -18,6 +18,8 @@
 package org.entirej.applicationframework.rwt.application.launcher;
 
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
@@ -57,6 +59,7 @@ public class RWTUtils
         JavaScriptExecutor executor = RWT.getClient().getService(JavaScriptExecutor.class);
         //System.err.println(builder.toString());
         executor.execute(errorBoxPatch(timeoutPage).toString());
+        executor.execute(getWeekStartPatch().toString());
        
         
     }
@@ -92,7 +95,24 @@ public class RWTUtils
         return builder;
     }
     
+    private static StringBuilder getWeekStartPatch()
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.append("(function() {");
+        builder.append("console.log('patchClient-getTerritory');");
+        builder.append(" var client = rwt.client.Client;");
+        builder.append(" client.getTerritory = function(  ) {");
+        builder.append("console.log('getWeekStartPatch');");
+        builder.append("return null};}() );");
+        return builder;
+    }
+    
 
+    
+     public static void main(String[] args) throws UnknownHostException
+    {
+        System.out.println(InetAddress.getLocalHost().getHostName());
+    }
     
     
  
