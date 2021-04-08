@@ -103,7 +103,7 @@ public class RWTUtils
         builder.append(" var client = rwt.client.Client;");
         builder.append(" client.getTerritory = function(  ) {");
         builder.append("console.log('getWeekStartPatch');");
-        builder.append("return null};}() );");
+        builder.append("return ''};}() );");
         return builder;
     }
     
