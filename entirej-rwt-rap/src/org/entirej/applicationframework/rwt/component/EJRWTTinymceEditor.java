@@ -87,7 +87,7 @@ public class EJRWTTinymceEditor extends Composite
         remoteObject.set("removeToolbar", removeToolbar);
         remoteObject.set("profile", profile == null ? "Standard" : profile);
         // remoteObject.set("font", getCssFont());
-        remoteObject.set("contentCss",  read(contentCssFile == null || contentCssFile.isEmpty() ? "resources/tinymce/ej/content.ej.css" : contentCssFile));
+        remoteObject.set("contentCss",  read(contentCssFile == null || contentCssFile.isEmpty() ? hasFile("/resources/tinymce/ej/custom.ej.css")?"/resources/tinymce/ej/custom.ej.css": "resources/tinymce/ej/content.ej.css" : contentCssFile));
         remoteObject.set("configObj", readAsJson(configJsonFile == null || configJsonFile.isEmpty() ? "resources/tinymce/ej/config.ej.json" : configJsonFile));
 
     }
@@ -175,6 +175,31 @@ public class EJRWTTinymceEditor extends Composite
         {
 
             return s.hasNext() ? s.next().replaceAll("\\R+", " ") : "";
+        }
+        finally
+        {
+            try
+            {
+                inputStream.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+    private static boolean hasFile(String fileName)
+    {
+        ClassLoader classLoader = EJRWTTinymceEditor.class.getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+        if (inputStream == null)
+        {
+            return false;
+        }
+        try 
+        {
+            
+            return true;
         }
         finally
         {
