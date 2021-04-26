@@ -146,10 +146,10 @@ public class EJRWTFileDownload
         public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
         {
             String fileName = request.getParameter("filename");
-            fileName = URLDecoder.decode(fileName, "UTF-8");
+           // fileName = URLDecoder.decode(fileName, "UTF-8");
 
             String output = request.getParameter("output");
-            output = URLDecoder.decode(output, "UTF-8");
+            //output = URLDecoder.decode(output, "UTF-8");
             // Get the file content
 
             File file = new File(keys.get(fileName));
