@@ -295,8 +295,30 @@ public class EJRWTTinymceEditor extends Composite
     public String getText()
     {
         checkWidget();
-        return text != null ? text.trim() : null;
+        return stripHtml(text != null ? text.trim() : null);
     }
+    
+    
+    
+
+    private static String stripHtml(String text)
+    {
+        //
+        if(text!=null) {
+            String tableRegEx = "<[/]?table[^>]*>";
+            String tableBodyRegEx = "<[/]?tbody[^>]*>";
+            String trRegEx = "<[/]?tr[^>]*>";
+            String tdRegEx = "<[/]?td[^>]*>";
+            text = text.replaceAll(tableRegEx, "");
+            text = text.replaceAll(tableBodyRegEx, "");
+            text = text.replaceAll(trRegEx, "");
+            text = text.replaceAll(tdRegEx, " ");
+        }
+        
+        return text;
+    }
+    
+   
 
     private String getCssFont()
     {
