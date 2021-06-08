@@ -142,6 +142,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				          menubar: true,
 				          inline: true,
 				          branding: false,
+				          paste_as_text: true,
 				          removed_menuitems: 'newdocument',
 						  plugins: [
 						    'advlist autolink lists  print preview  textcolor',
@@ -166,6 +167,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				          menubar: true,
 				          branding: false,
 				          resize: false,
+				          paste_as_text: true,
 				          removed_menuitems: 'newdocument',
 						  plugins: [
 						    'advlist autolink lists    print preview  textcolor',
