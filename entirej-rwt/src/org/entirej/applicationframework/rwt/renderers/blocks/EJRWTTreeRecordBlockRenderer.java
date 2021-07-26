@@ -148,6 +148,8 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
 
     private String                         defaultMessage;
 
+    private EJDataRecord _currentRecord;
+
     protected void clearFilter()
     {
         if (filteredContentProvider != null)
@@ -530,7 +532,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
     @Override
     public void recordSelected(final EJDataRecord record)
     {
-
+        _currentRecord = record;
         EJRWTAsync.runUISafe(dispaly,() -> {
             if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
             {
@@ -606,7 +608,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
     @Override
     public EJDataRecord getFocusedRecord()
     {
-        EJDataRecord _focusedRecord = null;
+        EJDataRecord _focusedRecord = _currentRecord;
 
         if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
         {
@@ -617,7 +619,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 Object firstElement = structuredSelection.getFirstElement();
                 if (firstElement instanceof EJDataRecord)
                 {
-                    _focusedRecord = (EJDataRecord) firstElement;
+                    _focusedRecord = _currentRecord = (EJDataRecord) firstElement;
                 }
             }
         }
@@ -1561,6 +1563,7 @@ public class EJRWTTreeRecordBlockRenderer implements EJRWTAppBlockRenderer, KeyL
                 }
             }
         });
+        recordSelected(_currentRecord);
     }
 
     private void addActionKeyinfo(String actionKey, String actionId)
