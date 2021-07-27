@@ -149,6 +149,8 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     private EJRWTAbstractFilteredTree      filterTree;
 
+    private EJDataRecord _currentRecord;
+
     protected void clearFilter()
     {
         if (_filteredContentProvider != null)
@@ -553,6 +555,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public void recordSelected(EJDataRecord record)
     {
 
+        _currentRecord = record;
         EJRWTAsync.runUISafe(dispaly,() -> {
             if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
             {
@@ -614,7 +617,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
     @Override
     public EJDataRecord getFocusedRecord()
     {
-        EJDataRecord _focusedRecord = null;
+        EJDataRecord _focusedRecord = _currentRecord;
 
         if (_tableViewer != null && !_tableViewer.getTree().isDisposed())
         {
@@ -625,7 +628,7 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 Object firstElement = structuredSelection.getFirstElement();
                 if (firstElement instanceof EJDataRecord)
                 {
-                    _focusedRecord = (EJDataRecord) firstElement;
+                    _focusedRecord = _currentRecord =  (EJDataRecord) firstElement;
                 }
             }
         }
@@ -1524,6 +1527,8 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 }
             }
         });
+        
+        recordSelected(_currentRecord);
     }
 
     private class ColumnInfo
