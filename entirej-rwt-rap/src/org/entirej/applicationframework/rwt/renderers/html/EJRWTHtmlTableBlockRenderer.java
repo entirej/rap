@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -193,9 +194,11 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
     private String                                            valueVA;
 
-    private String filter;
+    private String                                            filter;
 
-    private String doubleClickActionCommand;
+    private String                                            doubleClickActionCommand;
+
+    private AtomicBoolean                                     refreshHtml                = new AtomicBoolean(false);
 
     protected void clearFilter()
     {
@@ -629,7 +632,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         EJFrameworkExtensionProperties blockRendererProperties = blockProperties.getBlockRendererProperties();
         addHeader = true;
         doubleClickActionCommand = blockRendererProperties.getStringProperty(EJRWTMultiRecordBlockDefinitionProperties.DOUBLE_CLICK_ACTION_COMMAND);
-        
+
         if (blockRendererProperties != null)
         {
             addHeader = blockRendererProperties.getBooleanProperty(EJRWTMultiRecordBlockDefinitionProperties.SHOW_HEADING_PROPERTY, true);
@@ -720,7 +723,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         if (arg1 instanceof String)
                                         {
                                             EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
-                                           // if (currentRec != recordAt)
+                                            // if (currentRec != recordAt)
                                             {
                                                 currentRec = recordAt;
                                                 if (currentRec != null)
@@ -741,12 +744,12 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                                 if (currentRec != null)
                                                     _block.newRecordInstance(currentRec);
                                             }
-                                            
-                                            if(doubleClickActionCommand!=null) 
+
+                                            if (doubleClickActionCommand != null)
                                             {
                                                 _block.executeActionCommand(doubleClickActionCommand, EJScreenType.MAIN);
                                             }
-                                            
+
                                         }
                                     }
 
@@ -816,7 +819,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 if (arg1 instanceof String)
                                 {
                                     EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
-                                    //if (currentRec != recordAt)
+                                    // if (currentRec != recordAt)
                                     {
                                         currentRec = recordAt;
                                         if (currentRec != null)
@@ -836,15 +839,14 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         if (currentRec != null)
                                             _block.newRecordInstance(currentRec);
                                     }
-                                    
-                                    if(doubleClickActionCommand!=null) 
+
+                                    if (doubleClickActionCommand != null)
                                     {
                                         _block.executeActionCommand(doubleClickActionCommand, EJScreenType.MAIN);
                                     }
-                                    
+
                                 }
                             }
-
 
                             else if ("eaction".equals(method))
                             {
@@ -923,7 +925,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         if (arg1 instanceof String)
                                         {
                                             EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
-                                            //if (currentRec != recordAt)
+                                            // if (currentRec != recordAt)
                                             {
                                                 currentRec = recordAt;
                                                 if (currentRec != null)
@@ -943,12 +945,12 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                                 if (currentRec != null)
                                                     _block.newRecordInstance(currentRec);
                                             }
-                                            
-                                            if(doubleClickActionCommand!=null) 
+
+                                            if (doubleClickActionCommand != null)
                                             {
                                                 _block.executeActionCommand(doubleClickActionCommand, EJScreenType.MAIN);
                                             }
-                                            
+
                                         }
                                     }
 
@@ -1022,7 +1024,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                 if (arg1 instanceof String)
                                 {
                                     EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
-                                    //if (currentRec != recordAt)
+                                    // if (currentRec != recordAt)
                                     {
                                         currentRec = recordAt;
                                         if (currentRec != null)
@@ -1042,12 +1044,12 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                         if (currentRec != null)
                                             _block.newRecordInstance(currentRec);
                                     }
-                                    
-                                    if(doubleClickActionCommand!=null) 
+
+                                    if (doubleClickActionCommand != null)
                                     {
                                         _block.executeActionCommand(doubleClickActionCommand, EJScreenType.MAIN);
                                     }
-                                    
+
                                 }
                             }
 
@@ -1131,7 +1133,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                     if (arg1 instanceof String)
                                     {
                                         EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
-                                        //if (currentRec != recordAt)
+                                        // if (currentRec != recordAt)
                                         {
                                             currentRec = recordAt;
                                             if (currentRec != null)
@@ -1151,12 +1153,12 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                             if (currentRec != null)
                                                 _block.newRecordInstance(currentRec);
                                         }
-                                        
-                                        if(doubleClickActionCommand!=null) 
+
+                                        if (doubleClickActionCommand != null)
                                         {
                                             _block.executeActionCommand(doubleClickActionCommand, EJScreenType.MAIN);
                                         }
-                                        
+
                                     }
                                 }
 
@@ -1229,7 +1231,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                             if (arg1 instanceof String)
                             {
                                 EJDataRecord recordAt = getRecordAt(Integer.valueOf((String) arg1));
-                               // if (currentRec != recordAt)
+                                // if (currentRec != recordAt)
                                 {
                                     currentRec = recordAt;
                                     if (currentRec != null)
@@ -1249,12 +1251,12 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                                     if (currentRec != null)
                                         _block.newRecordInstance(currentRec);
                                 }
-                                
-                                if(doubleClickActionCommand!=null) 
+
+                                if (doubleClickActionCommand != null)
                                 {
                                     _block.executeActionCommand(doubleClickActionCommand, EJScreenType.MAIN);
                                 }
-                                
+
                             }
                         }
 
@@ -1413,15 +1415,14 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
             }
         };
 
-        if (filterHtml != null && filter!=null)
+        if (filterHtml != null && filter != null)
         {
             filterHtml.setInitialText(filter);
 
         }
         _filteredContentProvider.setFilter(filter);
-        
+
         createHTML();
-        
 
     }
 
@@ -1660,9 +1661,9 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                     EJCoreMainScreenItemProperties itemProps = (EJCoreMainScreenItemProperties) screenItemProperties;
 
                     EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, itemProps.getReferencedItemName());
-                    if(!item.isVisible())
+                    if (!item.isVisible())
                         continue;
-                        
+
                     EJManagedItemRendererWrapper renderer = item.getManagedItemRenderer();
                     if (renderer != null)
                     {
@@ -1788,6 +1789,24 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     }
 
     private void createHTML()
+    {
+        if (!refreshHtml.get())
+        {
+            refreshHtml.set(true);
+            Display.getDefault().asyncExec(() -> {
+                try
+                {
+                    _createHTML();
+                }
+                finally
+                {
+                    refreshHtml.set(false);
+                }
+            });
+        }
+    }
+
+    private void _createHTML()
     {
 
         if (_browser == null || _browser.isDisposed())
@@ -2410,7 +2429,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public void setFilter(String filter)
     {
-        this.filter =filter;
+        this.filter = filter;
         if (_filteredContentProvider != null)
         {
             _filteredContentProvider.setFilter(filter);
