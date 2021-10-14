@@ -29,6 +29,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.xml.crypto.Data;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -93,7 +96,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
     public String getCSSKey()
     {
         return EJ_RWT.CSS_CV_ITEM_DATE;
-
+ 
     }
 
     private Date converType(Date newValue)
@@ -949,8 +952,16 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
 
                     }
 
+                    AtomicInteger year = new AtomicInteger();
+                    AtomicInteger month = new AtomicInteger();
+                    AtomicInteger day = new AtomicInteger();
+                    year.set(calendar.getYear());
+                    month.set(calendar.getMonth());
+                    day.set(calendar.getDay());
                     calendar.addMouseListener(new MouseAdapter()
                     {
+                        
+                        
                         @Override
                         public void mouseDoubleClick(MouseEvent e)
                         {
@@ -959,6 +970,44 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                                 selectDate(abstractDialog, calendar);
                             }
                         }
+                        public void mouseDown(MouseEvent e) {
+                            int cyear = calendar.getYear();
+                            int cmonth = calendar.getMonth();
+                            int cday = calendar.getDay();
+                            if(month.get() != cmonth || cyear!=year.get()) {
+                                
+                                int dayToset = day.get();
+                                
+                                if(dayToset>28 && cmonth==1) {
+                                    dayToset = 28;
+                                }
+                                if(dayToset==31)
+                                switch (cmonth)
+                                {
+                                  
+                                    case 3:
+                                    case 5:
+                                    case 8:
+                                    case 10:
+                                        dayToset = 30;
+                                        break;
+
+                                    default:
+                                        break;
+                                }
+                                
+                                calendar.setDay(dayToset);
+                                year.set(cyear);
+                                month.set(cmonth);
+                            }else {
+                                day.set(cday);
+                            }
+                            
+                            
+                            
+                        };
+                        
+                        
                     });
 
                     String[] keys = new String[] { "ENTER", "RETURN", "CR" };
