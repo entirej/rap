@@ -962,14 +962,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     {
                         
                         
-                        @Override
-                        public void mouseDoubleClick(MouseEvent e)
-                        {
-                            if (e.y >= 40)
-                            {
-                                selectDate(abstractDialog, calendar);
-                            }
-                        }
+                        
                         public void mouseDown(MouseEvent e) {
                             int cyear = calendar.getYear();
                             int cmonth = calendar.getMonth();
@@ -1000,12 +993,21 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                                 year.set(cyear);
                                 month.set(cmonth);
                             }else {
-                                day.set(cday);
+                                //day.set(cday); //don't reset date 
                             }
                             
                             
                             
-                        };
+                        }
+                        
+                        @Override
+                        public void mouseDoubleClick(MouseEvent e)
+                        {
+                            if (e.y >= 40)
+                            {
+                                selectDate(abstractDialog, calendar);
+                            }
+                        }
                         
                         
                     });
