@@ -964,37 +964,40 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                         
                         
                         public void mouseDown(MouseEvent e) {
-                            int cyear = calendar.getYear();
-                            int cmonth = calendar.getMonth();
-                            int cday = calendar.getDay();
-                            if(month.get() != cmonth || cyear!=year.get()) {
+                            Display.getCurrent().asyncExec(()->{
                                 
-                                int dayToset = day.get();
-                                
-                                if(dayToset>28 && cmonth==1) {
-                                    dayToset = 28;
-                                }
-                                if(dayToset==31)
-                                switch (cmonth)
-                                {
-                                  
-                                    case 3:
-                                    case 5:
-                                    case 8:
-                                    case 10:
-                                        dayToset = 30;
-                                        break;
+                                int cyear = calendar.getYear();
+                                int cmonth = calendar.getMonth();
+                                int cday = calendar.getDay();
+                                if(month.get() != cmonth || cyear!=year.get()) {
+                                    
+                                    int dayToset = day.get();
+                                    
+                                    if(dayToset>28 && cmonth==1) {
+                                        dayToset = 28;
+                                    }
+                                    if(dayToset==31)
+                                    switch (cmonth)
+                                    {
+                                      
+                                        case 3:
+                                        case 5:
+                                        case 8:
+                                        case 10:
+                                            dayToset = 30;
+                                            break;
 
-                                    default:
-                                        break;
+                                        default:
+                                            break;
+                                    }
+                                    
+                                    calendar.setDay(dayToset);
+                                    year.set(cyear);
+                                    month.set(cmonth);
+                                }else {
+                                    day.set(cday);
                                 }
-                                
-                                calendar.setDay(dayToset);
-                                year.set(cyear);
-                                month.set(cmonth);
-                            }else {
-                                //day.set(cday); //don't reset date 
-                            }
+                            });
                             
                             
                             
