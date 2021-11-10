@@ -966,6 +966,9 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                         public void mouseDown(MouseEvent e) {
                             Display.getCurrent().asyncExec(()->{
                                 
+                                if(calendar.isDisposed())
+                                    return;
+                                
                                 int cyear = calendar.getYear();
                                 int cmonth = calendar.getMonth();
                                 int cday = calendar.getDay();
