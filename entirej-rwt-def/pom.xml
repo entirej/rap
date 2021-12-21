@@ -180,10 +180,6 @@
 			</snapshots>
 		</repository>
 
-		<repository>
-			<id>maven-eclipse-repo</id>
-			<url>http://maven-eclipse.github.io/maven</url>
-		</repository>
 
 	</repositories>
 
