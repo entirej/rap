@@ -958,55 +958,63 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     year.set(calendar.getYear());
                     month.set(calendar.getMonth());
                     day.set(calendar.getDay());
+                    final Object LOCK = new Object();
                     calendar.addMouseListener(new MouseAdapter()
                     {
 
                         public void mouseDown(MouseEvent e)
                         {
-                            if (e.y > 35)
-                                day.set(calendar.getDay());
-                            else
-                                Display.getCurrent().asyncExec(() -> {
+                            synchronized (LOCK)
+                            {
 
-                                    if (calendar.isDisposed())
-                                        return;
-
-                                    int cyear = calendar.getYear();
-                                    int cmonth = calendar.getMonth();
-                                    int cday = calendar.getDay();
-                                    if (month.get() != cmonth || cyear != year.get())
-                                    {
-
-                                        int dayToset = day.get();
-
-                                        if (dayToset > 28 && cmonth == 1)
+                                if (e.y > 35)
+                                    day.set(calendar.getDay());
+                                else
+                                    Display.getCurrent().asyncExec(() -> {
+                                        synchronized (LOCK)
                                         {
-                                            dayToset = 28;
-                                        }
-                                        if (dayToset == 31)
-                                            switch (cmonth)
+                                            if (calendar.isDisposed())
+                                                return;
+
+                                            int cyear = calendar.getYear();
+                                            int cmonth = calendar.getMonth();
+                                            int cday = calendar.getDay();
+                                            if (month.get() != cmonth || cyear != year.get())
                                             {
 
-                                                case 3:
-                                                case 5:
-                                                case 8:
-                                                case 10:
-                                                    dayToset = 30;
-                                                    break;
+                                                int dayToset = day.get();
 
-                                                default:
-                                                    break;
+                                                if (dayToset > 28 && cmonth == 1)
+                                                {
+                                                    dayToset = 28;
+                                                }
+                                                if (dayToset == 31)
+                                                    switch (cmonth)
+                                                    {
+
+                                                        case 3:
+                                                        case 5:
+                                                        case 8:
+                                                        case 10:
+                                                            dayToset = 30;
+                                                            break;
+
+                                                        default:
+                                                            break;
+                                                    }
+
+                                                calendar.setDay(dayToset);
+                                                year.set(cyear);
+                                                month.set(cmonth);
                                             }
+                                            else
+                                            {
 
-                                        calendar.setDay(dayToset);
-                                        year.set(cyear);
-                                        month.set(cmonth);
-                                    }
-                                    else
-                                    {
-                                        day.set(cday);
-                                    }
-                                });
+                                                day.set(cday);
+                                            }
+                                        }
+                                    });
+                            }
 
                         }
 
