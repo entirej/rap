@@ -962,7 +962,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     calendar.addMouseListener(new MouseAdapter()
                     {
 
-                        public void mouseDown(MouseEvent e)
+                        public void mouseUp(MouseEvent e)
                         {
                             synchronized (LOCK)
                             {
