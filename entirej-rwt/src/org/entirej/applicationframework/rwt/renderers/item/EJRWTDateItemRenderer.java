@@ -96,7 +96,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
     public String getCSSKey()
     {
         return EJ_RWT.CSS_CV_ITEM_DATE;
- 
+
     }
 
     private Date converType(Date newValue)
@@ -960,52 +960,56 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                     day.set(calendar.getDay());
                     calendar.addMouseListener(new MouseAdapter()
                     {
-                        
-                        
-                        
-                        public void mouseDown(MouseEvent e) {
-                            Display.getCurrent().asyncExec(()->{
-                                
-                                if(calendar.isDisposed())
-                                    return;
-                                
-                                int cyear = calendar.getYear();
-                                int cmonth = calendar.getMonth();
-                                int cday = calendar.getDay();
-                                if(month.get() != cmonth || cyear!=year.get()) {
-                                    
-                                    int dayToset = day.get();
-                                    
-                                    if(dayToset>28 && cmonth==1) {
-                                        dayToset = 28;
-                                    }
-                                    if(dayToset==31)
-                                    switch (cmonth)
-                                    {
-                                      
-                                        case 3:
-                                        case 5:
-                                        case 8:
-                                        case 10:
-                                            dayToset = 30;
-                                            break;
 
-                                        default:
-                                            break;
+                        public void mouseDown(MouseEvent e)
+                        {
+                            if (e.y > 35)
+                                day.set(calendar.getDay());
+                            else
+                                Display.getCurrent().asyncExec(() -> {
+
+                                    if (calendar.isDisposed())
+                                        return;
+
+                                    int cyear = calendar.getYear();
+                                    int cmonth = calendar.getMonth();
+                                    int cday = calendar.getDay();
+                                    if (month.get() != cmonth || cyear != year.get())
+                                    {
+
+                                        int dayToset = day.get();
+
+                                        if (dayToset > 28 && cmonth == 1)
+                                        {
+                                            dayToset = 28;
+                                        }
+                                        if (dayToset == 31)
+                                            switch (cmonth)
+                                            {
+
+                                                case 3:
+                                                case 5:
+                                                case 8:
+                                                case 10:
+                                                    dayToset = 30;
+                                                    break;
+
+                                                default:
+                                                    break;
+                                            }
+
+                                        calendar.setDay(dayToset);
+                                        year.set(cyear);
+                                        month.set(cmonth);
                                     }
-                                    
-                                    calendar.setDay(dayToset);
-                                    year.set(cyear);
-                                    month.set(cmonth);
-                                }else {
-                                    day.set(cday);
-                                }
-                            });
-                            
-                            
-                            
+                                    else
+                                    {
+                                        day.set(cday);
+                                    }
+                                });
+
                         }
-                        
+
                         @Override
                         public void mouseDoubleClick(MouseEvent e)
                         {
@@ -1014,8 +1018,7 @@ public class EJRWTDateItemRenderer extends EJRWTTextItemRenderer
                                 selectDate(abstractDialog, calendar);
                             }
                         }
-                        
-                        
+
                     });
 
                     String[] keys = new String[] { "ENTER", "RETURN", "CR" };
