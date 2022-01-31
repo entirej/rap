@@ -220,17 +220,17 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.jface</artifactId>
-			<version>3.12.0</version>
+			<version>3.19.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.forms</artifactId>
-			<version>3.12.0</version>
+			<version>3.19.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui</artifactId>
-			<version>3.12.0</version>
+			<version>3.19.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
@@ -245,22 +245,22 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.fileupload</artifactId>
-			<version>3.12.0</version>
+			<version>3.19.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.filedialog</artifactId>
-			<version>3.12.0</version>
+			<version>3.19.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt</artifactId>
-			<version>3.12.0</version>
+			<version>3.19.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt.osgi</artifactId>
-			<version>3.12.0</version>
+			<version>3.19.0</version>
 		</dependency>
 
 		<dependency>
