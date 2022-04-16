@@ -68,6 +68,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTApplicationContaine
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.EJRWTGraphicsProvider;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
+import org.entirej.applicationframework.rwt.component.EJRWTH2Canvas;
 import org.entirej.applicationframework.rwt.component.EJRWTTinymceEditor;
 import org.entirej.applicationframework.rwt.file.EJRWTFileDownload;
 import org.entirej.applicationframework.rwt.file.EJRWTFileUpload;
@@ -94,10 +95,10 @@ import org.entirej.framework.report.EJReportFrameworkManager;
 public abstract class EJRWTApplicationLauncher implements ApplicationConfiguration
 {
 
-    private static final String   THEME_DEFAULT_CSS = "theme/default.css";
-    private static final String   ICONS_FAVICON_ICO = "icons/favicon.ico";
-    protected static final String THEME_DEFAULT     = "org.entirej.applicationframework.rwt.Default";
-    private String                _baseURL;
+    private static final String          THEME_DEFAULT_CSS = "theme/default.css";
+    private static final String          ICONS_FAVICON_ICO = "icons/favicon.ico";
+    protected static final String        THEME_DEFAULT     = "org.entirej.applicationframework.rwt.Default";
+    private String                       _baseURL;
     private EJManagedFrameworkConnection connection;
 
     public void configure(Application configuration)
@@ -221,8 +222,6 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     public void createEntryPoint(final Application configuration)
     {
 
-        
-       
         configuration.setOperationMode(getOperationMode());
         Map<String, String> properties = new HashMap<String, String>();
         if (this.getClass().getClassLoader().getResource("application.ejprop") != null)
@@ -260,7 +259,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             @Override
             public void handleException(Throwable exception)
             {
-                
+
                 handleAppException(exception);
             }
         });
@@ -290,7 +289,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
         };
         EJReportConnectionHelper.EJFrameworkManagerProvider reportManagerProvider = new EJReportConnectionHelper.EJFrameworkManagerProvider()
         {
-            
+
             @Override
             public EJReportFrameworkManager get()
             {
@@ -300,8 +299,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
         EJConnectionHelper.setProvider(managerProvider);
         EJSystemConnectionHelper.setProvider(managerProvider);
         EJReportConnectionHelper.setProvider(reportManagerProvider);
-        
-        
+
         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
         {
 
@@ -309,9 +307,9 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             public void setReportFrameworkManager(EJReportFrameworkManager manager)
             {
                 EJRWTContext.setReportManager(manager);
-                
+
             }
-            
+
             @Override
             public void promptFileUpload(final EJFileUpload fileUpload, final Callable<Object> callable)
             {
@@ -441,8 +439,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
             }
         });
-        
-        
+
         configuration.addEntryPoint(String.format("/%s", getWebPathContext()), new EntryPointFactory()
         {
 
@@ -513,7 +510,6 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
                         RWTUtils.patchClient(getWebPathContext(), getTimeoutUrl());
 
-                        
                         final EJRWTApplicationManager applicationManager;
 
                         if (this.getClass().getClassLoader().getResource("application.ejprop") != null)
@@ -563,7 +559,6 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             EJ_RWT.setTestMode(true);
                         }
 
-                        
                         EJManagedFrameworkConnection connection = applicationManager.getFrameworkManager().getConnection();
                         try
                         {
@@ -574,7 +569,6 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         {
                             connection.close();
                         }
-                       
 
                         final EJRWTApplicationManager appman = applicationManager;
 
@@ -621,7 +615,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         {
                             public void beforeDestroy(UISessionEvent event)
                             {
-                                if (applicationManager.getApplicationActionProcessor() != null) {
+                                if (applicationManager.getApplicationActionProcessor() != null)
+                                {
                                     EJManagedFrameworkConnection connection = applicationManager.getConnection();
                                     try
                                     {
@@ -636,14 +631,12 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                         connection.close();
                                     }
                                 }
-                                
-                               
-                               
+
                                 pushSession.stop();
                             }
                         });
 
-                        if (applicationManager.getApplicationActionProcessor() != null) 
+                        if (applicationManager.getApplicationActionProcessor() != null)
                         {
                             EJManagedFrameworkConnection connection2 = applicationManager.getFrameworkManager().getConnection();
                             try
@@ -876,6 +869,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
         loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextResource().getLocation());
         loader.requireJs("rwt-resources/" + new org.eclipse.ui.forms.internal.widgets.formtextkit.FormTextAdapterResource().getLocation());
         EJRWTTinymceEditor.initResources();
+        EJRWTH2Canvas.initResources();
         AbstractChart.registerJS();
         AbstractChart.requireJS();
     }
@@ -899,7 +893,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
     {
         return _baseURL;
     }
-    
+
     public Locale getLocale()
     {
         return Locale.US;
@@ -938,4 +932,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             executor.execute(browserText);
         }
     }
+
+    
+
 }
