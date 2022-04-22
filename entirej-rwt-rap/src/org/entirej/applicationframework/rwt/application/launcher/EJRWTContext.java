@@ -19,45 +19,51 @@ package org.entirej.applicationframework.rwt.application.launcher;
 
 import static org.eclipse.rap.rwt.internal.service.ContextProvider.getContext;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
+import org.entirej.applicationframework.rwt.component.EJRWTH2Canvas;
 import org.entirej.framework.report.EJReportFrameworkManager;
 
 public class EJRWTContext
 {
 
-    
     private static volatile ThreadLocal<EJReportFrameworkManager> reportLocal = new ThreadLocal<>();
 
     void setState(String state)
     {
-       RWT.getUISession().setAttribute("state", state);
-    }
-    String getState()
-    {
-       return (String) RWT.getUISession().getAttribute("state");
+        RWT.getUISession().setAttribute("state", state);
     }
 
-   
+    String getState()
+    {
+        return (String) RWT.getUISession().getAttribute("state");
+    }
 
     public void setManager(EJRWTApplicationManager manager)
     {
         RWT.getUISession().setAttribute("ej.applicationManager", manager);
     }
+
     public EJRWTApplicationManager getManager()
     {
         return (EJRWTApplicationManager) RWT.getUISession().getAttribute("ej.applicationManager");
     }
+
     public static void setReportManager(EJReportFrameworkManager manager)
     {
         reportLocal.set(manager);
     }
+
     public static EJReportFrameworkManager getReportManager()
     {
         return reportLocal.get();
@@ -73,14 +79,44 @@ public class EJRWTContext
         return SingletonUtil.getSessionInstance(EJRWTContext.class);
     }
 
+    public void screenshot(Consumer<String> callback)
+    {
+        EJRWTH2Canvas ejrwth2Canvas = new EJRWTH2Canvas();
+
+        ejrwth2Canvas.screenshot(data -> {
+            System.out.println("screenshot :" + data);
+            byte[] imagedata = java.util.Base64.getDecoder().decode(data.substring(data.indexOf(",") + 1));
+            try
+            {
+
+                Path tempFile = Files.createTempFile("screenshot", ".png");
+                try
+                {
+                    Files.write(tempFile, imagedata);
+                    callback.accept(tempFile.toFile().getAbsolutePath());
+                }
+                finally
+                {
+                    // clear it
+                    if (!tempFile.toFile().delete())
+                        tempFile.toFile().deleteOnExit();
+                }
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
+        });
+
+    }
+
     public static EJRWTApplicationManager getEJRWTApplicationManager()
     {
         EJRWTContext pageContext = getPageContext();
         EJRWTApplicationManager manager = pageContext.getManager();
         return manager != null ? manager : (EJRWTApplicationManager) getContext().getUISession().getAttribute("ej.applicationManager");
     }
-    
-   
 
     public String getUrlParameter(String paramName)
     {
