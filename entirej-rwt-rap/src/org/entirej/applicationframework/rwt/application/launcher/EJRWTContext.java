@@ -84,7 +84,6 @@ public class EJRWTContext
         EJRWTH2Canvas ejrwth2Canvas = new EJRWTH2Canvas();
 
         ejrwth2Canvas.screenshot(data -> {
-            System.out.println("screenshot :" + data);
             byte[] imagedata = java.util.Base64.getDecoder().decode(data.substring(data.indexOf(",") + 1));
             try
             {
