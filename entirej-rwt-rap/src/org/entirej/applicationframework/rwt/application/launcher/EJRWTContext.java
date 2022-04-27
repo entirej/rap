@@ -38,6 +38,7 @@ public class EJRWTContext
 {
 
     private static volatile ThreadLocal<EJReportFrameworkManager> reportLocal = new ThreadLocal<>();
+    private Consumer<String> screenshotHandler;
 
     void setState(String state)
     {
@@ -109,7 +110,44 @@ public class EJRWTContext
         });
 
     }
+    public void setScreenshotHandler(Consumer<String> callback)
+    {
+        screenshotHandler= callback;
+    }
+    
+    public void fireScreenshotHandler()
+    {
+        if(screenshotHandler!=null) {
+            EJRWTH2Canvas ejrwth2Canvas = new EJRWTH2Canvas();
+            
+            ejrwth2Canvas.screenshot(data -> {
+                byte[] imagedata = java.util.Base64.getDecoder().decode(data.substring(data.indexOf(",") + 1));
+                try
+                {
+                    
+                    Path tempFile = Files.createTempFile("screenshot", ".png");
+                    try
+                    {
+                        Files.write(tempFile, imagedata);
+                        screenshotHandler.accept(tempFile.toFile().getAbsolutePath());
+                    }
+                    finally
+                    {
+                        // clear it
+                        if (!tempFile.toFile().delete())
+                            tempFile.toFile().deleteOnExit();
+                    }
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+                
+            });
+        }
+    }
 
+    
     public static EJRWTApplicationManager getEJRWTApplicationManager()
     {
         EJRWTContext pageContext = getPageContext();

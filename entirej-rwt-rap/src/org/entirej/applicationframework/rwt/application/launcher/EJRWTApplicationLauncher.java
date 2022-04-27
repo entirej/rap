@@ -544,6 +544,15 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         Display display = Display.getDefault();
                         if (display.isDisposed())
                             display = new Display();
+                        
+                        display.addFilter(SWT.KeyDown, new Listener() {
+                            public void handleEvent(Event e) {
+                                if ((e.stateMask & SWT.SHIFT) != 0  && e.keyCode==SWT.F1) {
+                                    EJRWTContext.getPageContext().fireScreenshotHandler();
+                                }
+                            }
+                        });
+                        display.setData(RWT.ACTIVE_KEYS, new String[] {"SHIFT+F1"});
                         Shell shell = new Shell(display, SWT.NO_TRIM);
 
                         EJFrameworkExtensionProperties definedProperties = coreProperties.getApplicationDefinedProperties();
