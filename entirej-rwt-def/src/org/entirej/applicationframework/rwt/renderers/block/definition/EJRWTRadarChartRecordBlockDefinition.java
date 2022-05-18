@@ -127,10 +127,6 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("RadarChart-Record Block");
 
- 
-        
-      
-        
         EJDevPropertyDefinition relationItem = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LABLE_COLUMN, EJPropertyDefinitionType.BLOCK_ITEM);
         relationItem.setLabel("Dataset Label Item");
 
@@ -141,22 +137,19 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
         EJDevPropertyDefinition legend = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_LEGEND, EJPropertyDefinitionType.BOOLEAN);
         legend.setLabel("Show Legend");
         legend.setDefaultValue("true");
-       
 
         EJDevPropertyDefinition showToolTips = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_TOOLTIPS, EJPropertyDefinitionType.BOOLEAN);
         showToolTips.setLabel("Show ToolTips");
         showToolTips.setDefaultValue("true");
 
-        
         EJDevPropertyDefinition lblVa = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LBL_VIEW_VA, EJPropertyDefinitionType.VISUAL_ATTRIBUTE);
         lblVa.setLabel("Label VA");
-        
+
         EJDevPropertyDefinition lblArc = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LBL_VIEW_ARC, EJPropertyDefinitionType.BOOLEAN);
         lblArc.setLabel("Label Arc");
-        
-        
+
         lblArc.setDefaultValue("false");
-        
+
         EJDevPropertyDefinition lblRender = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LBL_VIEW_TYPE, EJPropertyDefinitionType.STRING);
         lblRender.setLabel("Label Render");
         lblRender.setDefaultValue("percentage");
@@ -164,32 +157,30 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
         lblRender.addValidValue("percentage", "Percentage");
         lblRender.addValidValue("value", "Value");
         lblRender.addValidValue("label", "Label");
-        
+
         EJDevPropertyDefinition lblPostions = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LBL_VIEW_POS, EJPropertyDefinitionType.STRING);
         lblPostions.setLabel("Label Postion");
         lblPostions.setDefaultValue("default");
-        
+
         lblPostions.addValidValue("default", "Default");
         lblPostions.addValidValue("border", "Border");
         lblPostions.addValidValue("outside", "Outside");
-        
+
         EJDevPropertyDefinition legendPostions = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LEGEND_POSITION, EJPropertyDefinitionType.STRING);
         legendPostions.setLabel("Legend Postion");
         legendPostions.setDefaultValue("top");
-        
+
         legendPostions.addValidValue("top", "Top");
         legendPostions.addValidValue("bottom", "Bottom");
         legendPostions.addValidValue("left", "Left");
         legendPostions.addValidValue("right", "Right");
-        
-        
+
         EJDevPropertyDefinitionGroup lblConfigGroup = new EJDevPropertyDefinitionGroup("LBL_CONFIG");
         lblConfigGroup.setLabel("Label Settings");
         lblConfigGroup.addPropertyDefinition(lblRender);
         lblConfigGroup.addPropertyDefinition(lblPostions);
         lblConfigGroup.addPropertyDefinition(lblVa);
         lblConfigGroup.addPropertyDefinition(lblArc);
-        
 
         mainGroup.addPropertyDefinition(relationItem);
         mainGroup.addPropertyDefinition(animation);
@@ -270,26 +261,18 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
         visualAttribute.setDescription("The background, foreground and font attributes applied for screen item");
         visualAttribute.setMandatory(false);
 
-
         EJDevPropertyDefinition actionCmd = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.ACTION, EJPropertyDefinitionType.ACTION_COMMAND);
         actionCmd.setLabel("Click Action Command");
         actionCmd.setDescription("Add an action command that will be sent to the action processor when a user  clicks on this chart");
-
-        
 
         EJDevPropertyDefinition strokeWidth = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LINE_WIDTH, EJPropertyDefinitionType.INTEGER);
         strokeWidth.setLabel("Border Width");
         strokeWidth.setDescription("The border width of the arcs in the dataset.");
         strokeWidth.setDefaultValue("1");
 
-        
         EJDevPropertyDefinition fillBG = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.MULTI, EJPropertyDefinitionType.BOOLEAN);
-        fillBG.setLabel("Fill background");
+        fillBG.setLabel("Fill Background");
         fillBG.setDefaultValue("false");
-        
-
-       
-       
 
         mainGroup.addPropertyDefinition(visualAttribute);
         mainGroup.addPropertyDefinition(actionCmd);
@@ -398,8 +381,6 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
     public EJPropertyDefinitionGroup getItemGroupPropertiesDefinitionGroup()
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("PieChart-Record Block: Required Item Group Properties");
-
-       
 
         return mainGroup;
     }
