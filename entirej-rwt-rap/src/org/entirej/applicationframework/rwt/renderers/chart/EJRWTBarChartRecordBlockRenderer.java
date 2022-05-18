@@ -742,7 +742,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         {
             DecimalFormatSymbols dfs = new DecimalFormatSymbols(defaultLocale);
             _decimalFormatter = new DecimalFormat(format, dfs);
-            if ((obj.getClass().equals(Integer.class.getName())) || (obj.getClass().equals(Long.class.getName())))
+            if ((obj.getClass().equals(Integer.class)) || (obj.getClass().equals(Long.class)))
 
             {
                 _decimalFormatter.setGroupingUsed(true);

@@ -270,7 +270,7 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
         strokeWidth.setDescription("The border width of the arcs in the dataset.");
         strokeWidth.setDefaultValue("1");
 
-        EJDevPropertyDefinition fillBG = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.MULTI, EJPropertyDefinitionType.BOOLEAN);
+        EJDevPropertyDefinition fillBG = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.FILLBG, EJPropertyDefinitionType.BOOLEAN);
         fillBG.setLabel("Fill Background");
         fillBG.setDefaultValue("false");
 

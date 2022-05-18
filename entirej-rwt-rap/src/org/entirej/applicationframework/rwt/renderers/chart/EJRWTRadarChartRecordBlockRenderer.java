@@ -137,6 +137,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
     public final String                    LABLE_COLUMN              = "lblColumn";
 
     public final String                    LINE_WIDTH                = "lineWidth";
+    public final String                    FILLBG                    = "fillbg";
 
     private String                         labelColumn;
     private EJDataRecord                   currentRecord;
@@ -543,6 +544,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
                     {
                         attributeProperties = visualAttribute;
                     }
+                    EJCoreMainScreenItemProperties mainScreenItemProperties = (EJCoreMainScreenItemProperties) sItem.getProperties();
                     if (attributeProperties != null)
                     {
                         if (attributeProperties.getForegroundColor() != null)
@@ -553,11 +555,14 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
                         if (attributeProperties.getBackgroundColor() != null)
                         {
                             Color color = attributeProperties.getBackgroundColor();
-                            colors.setFillColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
+                            if(mainScreenItemProperties.getBlockRendererRequiredProperties().getBooleanProperty(LINE_WIDTH, false))
+                                colors.setFillColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
+                            
+                            colors.setStrokeColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
 
                         }
                     }
-                    EJCoreMainScreenItemProperties mainScreenItemProperties = (EJCoreMainScreenItemProperties) sItem.getProperties();
+                   
                     styles[index] = (colors);
                     hidden[index] = (!sItem.isVisible());
                     widths[index] = (mainScreenItemProperties.getBlockRendererRequiredProperties().getIntProperty(LINE_WIDTH, 1));
@@ -616,7 +621,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
         {
             DecimalFormatSymbols dfs = new DecimalFormatSymbols(defaultLocale);
             _decimalFormatter = new DecimalFormat(format, dfs);
-            if ((obj.getClass().equals(Integer.class.getName())) || (obj.getClass().equals(Long.class.getName())))
+            if ((obj.getClass().equals(Integer.class)) || (obj.getClass().equals(Long.class)))
 
             {
                 _decimalFormatter.setGroupingUsed(true);
