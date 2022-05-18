@@ -145,6 +145,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     private boolean                           editAllowed;
 
     protected boolean                         cellEditAllowed  = true;
+    private boolean visible;
 
     protected boolean controlState(Control control)
     {
@@ -295,6 +296,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public void initialise(EJScreenItemController item, EJScreenItemProperties screenItemProperties)
     {
         _item = item;
+        visible = item.isVisible();
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
@@ -644,12 +646,12 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public boolean isVisible()
     {
-        if (controlState(_comboField))
-        {
-            return _comboField.isVisible();
-        }
+//        if (controlState(_comboField))
+//        {
+//            return _comboField.isVisible();
+//        }
 
-        return false;
+        return visible;
     }
 
     @Override
@@ -840,6 +842,7 @@ public class EJRWTComboItemRenderer implements EJRWTAppItemRenderer, FocusListen
         {
             _actionControl.setVisible(visible);
         }
+        this.visible = visible;
     }
 
     @Override

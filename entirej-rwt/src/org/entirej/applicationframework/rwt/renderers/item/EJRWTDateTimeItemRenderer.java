@@ -100,6 +100,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
     protected Object                          _baseValue;
     private EJMessage message;
     private EJRWTAbstractLabel labelField;
+    private boolean visible;
 
     protected boolean controlState(Control control)
     {
@@ -319,22 +320,22 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
     @Override
     public boolean isVisible()
     {
-        if (_displayValueAsLabel)
-        {
-            if (controlState(_valueLabel))
-            {
-                return _valueLabel.isVisible();
-            }
-        }
-        else
-        {
-            if (controlState(_textField))
-            {
-                return _textField.isVisible();
-            }
-        }
+//        if (_displayValueAsLabel)
+//        {
+//            if (controlState(_valueLabel))
+//            {
+//                return _valueLabel.isVisible();
+//            }
+//        }
+//        else
+//        {
+//            if (controlState(_textField))
+//            {
+//                return _textField.isVisible();
+//            }
+//        }
 
-        return false;
+        return visible;
     }
 
     @Override
@@ -415,6 +416,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
         {
             _label.setVisible(visible);
         }
+        this.visible = visible;
     }
 
     @Override
@@ -938,6 +940,7 @@ public class EJRWTDateTimeItemRenderer implements EJRWTAppItemRenderer, FocusLis
     public void initialise(EJScreenItemController item, EJScreenItemProperties screenItemProperties)
     {
         _item = item;
+        visible = item.isVisible();
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();

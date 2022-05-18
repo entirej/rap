@@ -117,6 +117,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     private String                            defaultMessage;
     private boolean                           editAllowed;
     protected boolean                         cellEditAllowed  = true;
+    private boolean visible;
 
     protected boolean controlState(Control control)
     {
@@ -207,6 +208,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     {
 
         _item = item;
+        visible = item.isVisible();
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
@@ -370,22 +372,22 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
     @Override
     public boolean isVisible()
     {
-        if (_displayValueAsLabel)
-        {
-            if (controlState(_valueLabel))
-            {
-                return _valueLabel.isVisible();
-            }
-        }
-        else
-        {
-            if (controlState(_textField))
-            {
-                return _textField.isVisible();
-            }
-        }
+//        if (_displayValueAsLabel)
+//        {
+//            if (controlState(_valueLabel))
+//            {
+//                return _valueLabel.isVisible();
+//            }
+//        }
+//        else
+//        {
+//            if (controlState(_textField))
+//            {
+//                return _textField.isVisible();
+//            }
+//        }
 
-        return false;
+        return visible;
     }
 
     @Override
@@ -555,6 +557,7 @@ public class EJRWTTextItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
             _actionControl.setVisible(visible);
         }
+        this.visible = visible;
 
     }
 

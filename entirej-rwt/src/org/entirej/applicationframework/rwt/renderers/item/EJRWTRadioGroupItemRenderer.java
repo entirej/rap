@@ -89,6 +89,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     protected Object                          _baseValue;
     protected String                          _defaultButtonId;
     private EJMessage message;
+    private boolean visible;
 
     @Override
     public boolean useFontDimensions()
@@ -220,6 +221,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     public void initialise(EJScreenItemController item, EJScreenItemProperties screenItemProperties)
     {
         _item = item;
+        visible = item.isVisible();
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
@@ -269,12 +271,12 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
     @Override
     public boolean isVisible()
     {
-        if (controlState(_radioGroup))
-        {
-            return _radioGroup.isVisible();
-        }
+//        if (controlState(_radioGroup))
+//        {
+//            return _radioGroup.isVisible();
+//        }
 
-        return false;
+        return visible;
     }
 
     @Override
@@ -461,6 +463,7 @@ public class EJRWTRadioGroupItemRenderer implements EJRWTAppItemRenderer, FocusL
                 children[i].setVisible(visible);
             }
         }
+        this.visible = visible;
     }
 
     @Override

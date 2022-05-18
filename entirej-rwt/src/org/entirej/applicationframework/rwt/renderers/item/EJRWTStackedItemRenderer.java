@@ -164,6 +164,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     protected EJRWTStackedItemRendererValue _intbaseValue;
     private EJMessage                       message;
     private String                          defaultMessage;
+    private boolean visible;
 
     protected boolean controlState(Control control)
     {
@@ -263,6 +264,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     {
 
         _item = item;
+        visible = item.isVisible();
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
@@ -618,14 +620,14 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
     public boolean isVisible()
     {
 
-        {
-            if (controlState(stackedPane))
-            {
-                return stackedPane.isVisible();
-            }
-        }
+//        {
+//            if (controlState(stackedPane))
+//            {
+//                return stackedPane.isVisible();
+//            }
+//        }
 
-        return false;
+        return visible;
     }
 
     @Override
@@ -1563,6 +1565,7 @@ public class EJRWTStackedItemRenderer implements EJRWTAppItemRenderer, FocusList
                 _actionControl.setVisible(visible);
             }
         }
+        this.visible = visible;
 
     }
 

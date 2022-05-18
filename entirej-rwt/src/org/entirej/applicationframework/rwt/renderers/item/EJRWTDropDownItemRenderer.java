@@ -148,6 +148,7 @@ public class EJRWTDropDownItemRenderer implements EJRWTAppItemRenderer, FocusLis
 
     protected boolean                         cellEditAllowed  = true;
     private String[]                          _baseItems       = new String[0];
+    private boolean visible;
 
     protected boolean controlState(Control control)
     {
@@ -300,6 +301,7 @@ public class EJRWTDropDownItemRenderer implements EJRWTAppItemRenderer, FocusLis
     public void initialise(EJScreenItemController item, EJScreenItemProperties screenItemProperties)
     {
         _item = item;
+        visible = item.isVisible();
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
@@ -649,12 +651,12 @@ public class EJRWTDropDownItemRenderer implements EJRWTAppItemRenderer, FocusLis
     @Override
     public boolean isVisible()
     {
-        if (controlState(_comboField))
-        {
-            return _comboField.isVisible();
-        }
+//        if (controlState(_comboField))
+//        {
+//            return _comboField.isVisible();
+//        }
 
-        return false;
+        return visible;
     }
 
     @Override
@@ -845,6 +847,7 @@ public class EJRWTDropDownItemRenderer implements EJRWTAppItemRenderer, FocusLis
         {
             _actionControl.setVisible(visible);
         }
+        this.visible = visible;
     }
 
     @Override

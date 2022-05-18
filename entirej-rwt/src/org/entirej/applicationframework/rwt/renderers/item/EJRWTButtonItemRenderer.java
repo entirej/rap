@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
-import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTLabelItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
@@ -70,6 +69,7 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
     protected EJCoreVisualAttributeProperties _initialVAProperties;
     protected ControlDecoration               _errorDecoration;
     protected EJMessage message;
+    private boolean visible;
     
     
    
@@ -138,6 +138,7 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
     public void initialise(EJScreenItemController item, EJScreenItemProperties screenItemProperties)
     {
         _item = item;
+        visible = item.isVisible();
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = item.getProperties();
         _rendererProps = _itemProperties.getItemRendererProperties();
@@ -218,12 +219,12 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
     public boolean isVisible()
     {
 
-        if (controlState(_button))
-        {
-            return _button.isVisible();
-        }
+//        if (controlState(_button))
+//        {
+//            return _button.isVisible();
+//        }
 
-        return false;
+        return visible;
     }
 
     @Override
@@ -287,6 +288,7 @@ public class EJRWTButtonItemRenderer implements EJRWTAppItemRenderer, FocusListe
         {
             _button.setVisible(visible);
         }
+        this.visible = visible;
     }
 
     @Override

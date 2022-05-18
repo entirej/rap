@@ -41,6 +41,7 @@ public class EJRWTHelpItemRenderer implements EJRWTAppItemRenderer, Serializable
     private String                          itemName;
     private ToolBar component;
     private EJRWTApplicationManager _applicationManager;
+    private boolean visible;
 
     @Override
     public void refreshItemRenderer()
@@ -57,6 +58,7 @@ public class EJRWTHelpItemRenderer implements EJRWTAppItemRenderer, Serializable
     public void initialise(EJScreenItemController item, EJScreenItemProperties screenItemProperties)
     {
         this.item = item;
+        visible = item.isVisible();
         _applicationManager = (EJRWTApplicationManager) item.getForm().getFrameworkManager().getApplicationManager();
         this.screenItemProperties = screenItemProperties;
 
@@ -159,6 +161,7 @@ public class EJRWTHelpItemRenderer implements EJRWTAppItemRenderer, Serializable
         {
             _button.getControl().setVisible(visible);
         }
+        this.visible = visible;
 
     }
 
@@ -184,12 +187,12 @@ public class EJRWTHelpItemRenderer implements EJRWTAppItemRenderer, Serializable
     @Override
     public boolean isVisible()
     {
-        if (controlState(_button))
-        {
-            return _button.getControl().isVisible();
-        }
+//        if (controlState(_button))
+//        {
+//            return _button.getControl().isVisible();
+//        }
 
-        return false;
+        return visible;
     }
 
     @Override

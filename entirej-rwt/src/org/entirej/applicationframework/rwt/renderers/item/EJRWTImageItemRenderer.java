@@ -185,6 +185,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
     private transient Image                   _currentImage;
     protected Object                          _baseValue;
     private EJMessage message;
+    private boolean visible;
 
     protected boolean controlState(Control control)
     {
@@ -239,6 +240,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public void initialise(EJScreenItemController item, EJScreenItemProperties screenItemProperties)
     {
         _item = item;
+        visible = item.isVisible();
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
@@ -335,12 +337,12 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public boolean isVisible()
     {
-        if (controlState(_labelField))
-        {
-            return _labelField.isVisible();
-        }
+//        if (controlState(_labelField))
+//        {
+//            return _labelField.isVisible();
+//        }
 
-        return false;
+        return visible;
     }
 
     @Override
@@ -440,6 +442,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
         {
             _labelField.setVisible(visible);
         }
+        this.visible = visible;
     }
 
     @Override

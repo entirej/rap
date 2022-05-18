@@ -80,6 +80,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     protected Object                          _baseValue;
     private EJMessage message;
     private boolean xhtmlFormatting;
+    private boolean visible;
 
     protected boolean controlState(Control control)
     {
@@ -152,6 +153,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public void initialise(EJScreenItemController item, EJScreenItemProperties screenItemProperties)
     {
         _item = item;
+        visible = item.isVisible();
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
@@ -255,12 +257,12 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public boolean isVisible()
     {
-        if (_labelField != null && controlState(_labelField.getControl()))
-        {
-            return _labelField.getControl().isVisible();
-        }
+//        if (_labelField != null && controlState(_labelField.getControl()))
+//        {
+//            return _labelField.getControl().isVisible();
+//        }
 
-        return false;
+        return visible;
     }
 
     @Override
@@ -336,6 +338,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
         {
             _labelField.getControl().setVisible(visible);
         }
+        this.visible = visible;
     }
 
     @Override

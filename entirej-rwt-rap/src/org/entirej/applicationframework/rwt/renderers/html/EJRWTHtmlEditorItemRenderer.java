@@ -78,6 +78,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
 
     protected Object                          _baseValue;
     private EJMessage                         message;
+    private boolean visible;
 
     protected boolean controlState(Control control)
     {
@@ -168,6 +169,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
+        visible = _item.isVisible();
         final String caseProperty = _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_CASE);
 
     }
@@ -292,7 +294,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
             }
         }
 
-        return false;
+        return this.visible;
     }
 
     @Override
@@ -378,6 +380,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
     public void setVisible(boolean visible)
     {
 
+        this.visible = visible;
         {
             if (controlState(_textField))
             {

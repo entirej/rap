@@ -125,6 +125,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     protected boolean                         _lovActivated;
     protected boolean                         _lovInitialied;
     private EJMessage                         message;
+    private boolean visible;
 
     public static final String                COLUMN_IMAGE_ITEM = "IMAGE_ITEM";
 
@@ -243,6 +244,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     public void initialise(EJScreenItemController item, EJScreenItemProperties screenItemProperties)
     {
         _item = item;
+        visible = item.isVisible();
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
@@ -371,12 +373,12 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
     @Override
     public boolean isVisible()
     {
-        if (controlState(_listField))
-        {
-            return _listField.isVisible();
-        }
+//        if (controlState(_listField))
+//        {
+//            return _listField.isVisible();
+//        }
 
-        return false;
+        return visible;
     }
 
     @Override
@@ -605,6 +607,7 @@ public class EJRWTListItemRenderer implements EJRWTAppItemRenderer, FocusListene
         {
             _label.setVisible(visible);
         }
+        this.visible = visible;
     }
 
     @Override

@@ -81,6 +81,8 @@ public class EJRWTHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusLis
     private String                            serviceHandlerUrl;
     private String                            contentCssFile;
 
+    private boolean visible;
+
     protected boolean controlState(Control control)
     {
         return control != null && !control.isDisposed();
@@ -170,6 +172,7 @@ public class EJRWTHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusLis
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
+        visible = _item.isVisible();
         final String caseProperty = _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_CASE);
 
     }
@@ -294,7 +297,7 @@ public class EJRWTHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusLis
             }
         }
 
-        return false;
+        return visible;
     }
 
     @Override
@@ -431,6 +434,8 @@ public class EJRWTHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusLis
         {
             _label.setVisible(visible);
         }
+        this.visible = visible;
+        
     }
 
     @Override
