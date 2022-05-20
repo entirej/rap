@@ -1395,6 +1395,30 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     protected void processAction(String method, JsonObject parameters)
     {
+        if("legend_action".equals(method)) {
+            EJScreenItemController dataItem = null;
+            List<EJScreenItemController> screenItems = getScreenItems();
+            for (EJScreenItemController sItem : screenItems)
+            {
+                String label = sItem.getProperties().getLabel();
+                if (label.trim().isEmpty())
+                {
+                    label = sItem.getProperties().getReferencedItemName();
+                }
+
+                if (label.equals(parameters.get("label").asString()))
+                {
+                    dataItem = sItem;
+                    break;
+                }
+            }
+            if (dataItem != null)
+            {
+                
+                dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
+            }
+            return;
+        }
 
         if (parameters.names().contains("data_label") && parameters.names().contains("value"))
         {
