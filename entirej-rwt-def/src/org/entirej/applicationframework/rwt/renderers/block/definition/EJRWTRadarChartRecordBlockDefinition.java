@@ -133,6 +133,10 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
         EJDevPropertyDefinition animation = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.ANIMATION, EJPropertyDefinitionType.BOOLEAN);
         animation.setLabel("Animation");
         animation.setDefaultValue("true");
+        
+        EJDevPropertyDefinition fillBG = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.FILLBG, EJPropertyDefinitionType.BOOLEAN);
+        fillBG.setLabel("Fill Background");
+        fillBG.setDefaultValue("false");
 
         EJDevPropertyDefinition legend = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_LEGEND, EJPropertyDefinitionType.BOOLEAN);
         legend.setLabel("Show Legend");
@@ -184,6 +188,7 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
 
         mainGroup.addPropertyDefinition(relationItem);
         mainGroup.addPropertyDefinition(animation);
+        mainGroup.addPropertyDefinition(fillBG);
 
         mainGroup.addPropertyDefinition(showToolTips);
         mainGroup.addPropertyDefinition(legend);
@@ -265,19 +270,17 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
         actionCmd.setLabel("Click Action Command");
         actionCmd.setDescription("Add an action command that will be sent to the action processor when a user  clicks on this chart");
 
-        EJDevPropertyDefinition strokeWidth = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LINE_WIDTH, EJPropertyDefinitionType.INTEGER);
-        strokeWidth.setLabel("Border Width");
-        strokeWidth.setDescription("The border width of the arcs in the dataset.");
-        strokeWidth.setDefaultValue("1");
+//        EJDevPropertyDefinition strokeWidth = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LINE_WIDTH, EJPropertyDefinitionType.INTEGER);
+//        strokeWidth.setLabel("Border Width");
+//        strokeWidth.setDescription("The border width of the arcs in the dataset.");
+//        strokeWidth.setDefaultValue("1");
 
-        EJDevPropertyDefinition fillBG = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.FILLBG, EJPropertyDefinitionType.BOOLEAN);
-        fillBG.setLabel("Fill Background");
-        fillBG.setDefaultValue("false");
+        
 
         mainGroup.addPropertyDefinition(visualAttribute);
         mainGroup.addPropertyDefinition(actionCmd);
-        mainGroup.addPropertyDefinition(strokeWidth);
-        mainGroup.addPropertyDefinition(fillBG);
+       // mainGroup.addPropertyDefinition(strokeWidth);
+       // mainGroup.addPropertyDefinition(fillBG);
 
         return mainGroup;
     }

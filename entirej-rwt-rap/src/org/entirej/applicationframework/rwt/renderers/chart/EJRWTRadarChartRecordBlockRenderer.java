@@ -35,10 +35,10 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.rap.chartjs.ChartStyle;
-import org.eclipse.rap.chartjs.pie.PieChart;
-import org.eclipse.rap.chartjs.pie.PieChartOptions;
-import org.eclipse.rap.chartjs.pie.PieChartRowData;
-import org.eclipse.rap.chartjs.pie.PieChartRowData.RowInfo;
+import org.eclipse.rap.chartjs.radar.RadarChart;
+import org.eclipse.rap.chartjs.radar.RadarChartOptions;
+import org.eclipse.rap.chartjs.radar.RadarChartRowData;
+import org.eclipse.rap.chartjs.radar.RadarChartRowData.RowInfo;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rwt.EJRWTAsync;
 import org.eclipse.rwt.EJ_RWT;
@@ -114,7 +114,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
     private boolean                        _isFocused                = false;
     private EJEditableBlockController      _block;
     private EJRWTEntireJGridPane           _mainPane;
-    private PieChart                       _chartView;
+    private RadarChart                     _chartView;
 
     private EJFrameworkExtensionProperties _rendererProp;
     List<String>                           _actionkeys               = new ArrayList<String>();
@@ -122,7 +122,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
 
     private List<EJDataRecord>             _treeBaseRecords          = new ArrayList<EJDataRecord>();
 
-    private final PieChartOptions          options                   = new PieChartOptions();
+    private final RadarChartOptions        options                   = new RadarChartOptions();
 
     public final String                    ANIMATION                 = "animation";
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
@@ -145,6 +145,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
     private Display                        dispaly                   = Display.getDefault();
+    private boolean fillBG;
 
     @Override
     public void setFilter(String filter)
@@ -257,8 +258,9 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
         _block = block;
         EJCoreBlockProperties blockProperties = _block.getProperties();
         options.setAnimation(blockProperties.getBlockRendererProperties().getBooleanProperty(ANIMATION, options.getAnimation()));
-        options.setViewType("radar");
         options.setShowToolTips(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_TOOLTIPS, options.getShowToolTips()));
+        
+         fillBG = blockProperties.getBlockRendererProperties().getBooleanProperty(FILLBG, true);
 
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
@@ -515,57 +517,44 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
 
             }
 
-            PieChartRowData chartRowData = new PieChartRowData(xlabel.toArray(new String[0]));
+            RadarChartRowData chartRowData = new RadarChartRowData(xlabel.toArray(new String[0]));
 
             for (EJDataRecord ejDataRecord : records)
             {
                 if (ejDataRecord == null)
                     continue;
                 Object lbl = labelColumn != null ? ejDataRecord.getValue(labelColumn) : "";
+                ChartStyle colors = new ChartStyle(220, 220, 220, 0.6f);
+                colors.setFill(fillBG);
 
-                PieChartRowData.RowInfo rowInfo = new RowInfo();
+                EJCoreVisualAttributeProperties attributeProperties = labelColumn != null ? ejDataRecord.getItem(labelColumn).getVisualAttribute() : null;
+
+                RadarChartRowData.RowInfo rowInfo = new RowInfo();
                 rowInfo.setLabel(lbl != null ? lbl.toString() : "");
 
-                boolean[] hidden = new boolean[screenItems.size()];
-                ChartStyle[] styles = new ChartStyle[screenItems.size()];
+                if (attributeProperties != null)
+                {
+                    if (attributeProperties.getForegroundColor() != null)
+                    {
+                        Color color = attributeProperties.getForegroundColor();
+                        colors = new ChartStyle(color.getRed(), color.getGreen(), color.getBlue(), 0.8f);
+                    }
+                    if (attributeProperties.getBackgroundColor() != null)
+                    {
+                        Color color = attributeProperties.getBackgroundColor();
+                        //
+
+                        colors.setStrokeColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
+
+                    }
+                    rowInfo.setChartStyle(colors);
+                }
+
                 double[] data = new double[screenItems.size()];
                 String[] dataToolTips = new String[screenItems.size()];
-                int[] widths = new int[screenItems.size()];
                 int index = 0;
                 for (EJScreenItemController sItem : screenItems)
                 {
-
-                    ChartStyle colors = new ChartStyle(220, 220, 220, 0.8f);
-
-                    EJCoreVisualAttributeProperties attributeProperties = sItem.getItemRenderer().getVisualAttributeProperties();
-
-                    EJCoreVisualAttributeProperties visualAttribute = ejDataRecord.getItem(sItem.getName()).getVisualAttribute();
-                    if (visualAttribute != null)
-                    {
-                        attributeProperties = visualAttribute;
-                    }
-                    EJCoreMainScreenItemProperties mainScreenItemProperties = (EJCoreMainScreenItemProperties) sItem.getProperties();
-                    if (attributeProperties != null)
-                    {
-                        if (attributeProperties.getForegroundColor() != null)
-                        {
-                            Color color = attributeProperties.getForegroundColor();
-                            colors = new ChartStyle(color.getRed(), color.getGreen(), color.getBlue(), 0.8f);
-                        }
-                        if (attributeProperties.getBackgroundColor() != null)
-                        {
-                            Color color = attributeProperties.getBackgroundColor();
-                            if(mainScreenItemProperties.getBlockRendererRequiredProperties().getBooleanProperty(LINE_WIDTH, false))
-                                colors.setFillColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
-                            
-                            colors.setStrokeColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
-
-                        }
-                    }
-                   
-                    styles[index] = (colors);
-                    hidden[index] = (!sItem.isVisible());
-                    widths[index] = (mainScreenItemProperties.getBlockRendererRequiredProperties().getIntProperty(LINE_WIDTH, 1));
 
                     Object yvalue = ejDataRecord.getValue(sItem.getName());
 
@@ -588,12 +577,8 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
                     index++;
 
                 }
-                // rowInfo.setHidden(hidden);
-                rowInfo.setChartStyle(styles);
-                rowInfo.setBorderWidth(widths);
-                rowInfo.setHidden(hidden);
 
-                rowInfo.setAction("_pie_select");
+                rowInfo.setAction("_radar_select");
                 chartRowData.addRow(rowInfo, data, dataToolTips);
 
             }
@@ -983,7 +968,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
                     group.setText(displayProperties.getFrameTitle());
 
                     group.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL));
-                    _chartView = new PieChart(group, style)
+                    _chartView = new RadarChart(group, style)
                     {
 
                         protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -995,7 +980,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
                 }
                 else
                 {
-                    _chartView = new PieChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
+                    _chartView = new RadarChart(_mainPane, displayProperties.dispayGroupFrame() ? style | SWT.BORDER : style)
                     {
 
                         protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1010,7 +995,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
             }
             else
             {
-                _chartView = new PieChart(_mainPane, style)
+                _chartView = new RadarChart(_mainPane, style)
                 {
 
                     protected void action(String method, org.eclipse.rap.json.JsonObject parameters)
@@ -1096,7 +1081,8 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
 
     protected void processAction(String method, JsonObject parameters)
     {
-        if("legend_action".equals(method)) {
+        if ("legend_action".equals(method))
+        {
             EJScreenItemController dataItem = null;
             List<EJScreenItemController> screenItems = getScreenItems();
             for (EJScreenItemController sItem : screenItems)
@@ -1115,7 +1101,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
             }
             if (dataItem != null)
             {
-                
+
                 dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
             }
             return;
