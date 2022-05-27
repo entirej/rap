@@ -525,7 +525,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
                     continue;
                 Object lbl = labelColumn != null ? ejDataRecord.getValue(labelColumn) : "";
                 ChartStyle colors = new ChartStyle(220, 220, 220, 0.6f);
-                colors.setFill(fillBG);
+               
 
                 EJCoreVisualAttributeProperties attributeProperties = labelColumn != null ? ejDataRecord.getItem(labelColumn).getVisualAttribute() : null;
 
@@ -547,9 +547,10 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
                         colors.setStrokeColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
 
                     }
-                    rowInfo.setChartStyle(colors);
+                   
                 }
-
+                colors.setFill(fillBG);
+                rowInfo.setChartStyle(colors);
                 double[] data = new double[screenItems.size()];
                 String[] dataToolTips = new String[screenItems.size()];
                 int index = 0;
