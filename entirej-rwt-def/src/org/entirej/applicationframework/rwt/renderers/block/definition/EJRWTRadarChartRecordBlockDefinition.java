@@ -369,7 +369,7 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
 
         Label label = new Label(client, SWT.NONE);
 
-        label.setText("Pie Chart");
+        label.setText("Radar Chart");
         return new EJDevBlockRendererDefinitionControl(blockDisplayProperties, Collections.<EJDevItemRendererDefinitionControl> emptyList());
     }
 
@@ -383,7 +383,7 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
     @Override
     public EJPropertyDefinitionGroup getItemGroupPropertiesDefinitionGroup()
     {
-        EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("PieChart-Record Block: Required Item Group Properties");
+        EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("RadarChart-Record Block: Required Item Group Properties");
 
         return mainGroup;
     }
