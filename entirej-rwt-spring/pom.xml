@@ -158,6 +158,10 @@
 					<artifactId>org.eclipse.jface</artifactId>
 					<groupId>org.eclipse.jface</groupId>
 				</exclusion>
+                <exclusion>
+                    <groupId>org.osgi.service</groupId>
+                    <artifactId>org.osgi.service.prefs</artifactId>
+                </exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
