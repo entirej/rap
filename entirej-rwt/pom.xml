@@ -153,34 +153,16 @@
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.forms</artifactId>
 			<version>3.19.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.osgi.service</groupId>
-					<artifactId>org.osgi.service.prefs</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui</artifactId>
 			<version>3.19.0</version>
-			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.workbench</artifactId>
 			<version>3.19.0</version>
-			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
 		</dependency>
 
 		<dependency>

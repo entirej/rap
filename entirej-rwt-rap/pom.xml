@@ -221,12 +221,6 @@
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.jface</artifactId>
 			<version>3.19.0</version>
-			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
@@ -237,23 +231,11 @@
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui</artifactId>
 			<version>3.19.0</version>
-			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.workbench</artifactId>
-			<version>3.19.0</version>
-			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
+			<version>3.12.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap.incubator</groupId>
@@ -300,6 +282,11 @@
 			</snapshots>
 		</repository>
 
+
+		<repository>
+			<id>maven-eclipse-repo</id>
+			<url>http://maven-eclipse.github.io/maven</url>
+		</repository>
 	</repositories>
 
 
