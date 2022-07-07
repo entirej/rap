@@ -74,17 +74,20 @@ public class EJRWTTinymceEditor extends Composite
                                                               }
                                                           }
                                                       };
+    private boolean supportTable;
 
-    public EJRWTTinymceEditor(Composite parent, int style, boolean inline, String profile, boolean removeToolbar, String contentCssFile, String configJsonFile)
+    public EJRWTTinymceEditor(Composite parent, int style, boolean inline, String profile, boolean removeToolbar,boolean supportTable, String contentCssFile, String configJsonFile)
     {
         super(parent, style);
 
+        this.supportTable = supportTable;
         Connection connection = RWT.getUISession().getConnection();
         remoteObject = connection.createRemoteObject(REMOTE_TYPE);
         remoteObject.setHandler(operationHandler);
         remoteObject.set("parent", WidgetUtil.getId(this));
         remoteObject.set("inline", inline);
         remoteObject.set("removeToolbar", removeToolbar);
+        remoteObject.set("supportTable", supportTable);
         remoteObject.set("profile", profile == null ? "Standard" : profile);
         // remoteObject.set("font", getCssFont());
         remoteObject.set("contentCss",  read(contentCssFile == null || contentCssFile.isEmpty() ? hasFile("/resources/tinymce/ej/custom.ej.css")?"/resources/tinymce/ej/custom.ej.css": "resources/tinymce/ej/content.ej.css" : contentCssFile));
@@ -295,7 +298,7 @@ public class EJRWTTinymceEditor extends Composite
     public String getText()
     {
         checkWidget();
-        return stripHtml(text != null ? text.trim() : null);
+        return supportTable? text: stripHtml(text != null ? text.trim() : null);
     }
     
     
@@ -304,7 +307,7 @@ public class EJRWTTinymceEditor extends Composite
     private static String stripHtml(String text)
     {
         //
-        if(text!=null) {
+        if(text!=null  ) {
             String tableRegEx = "<[/]?table[^>]*>";
             String tableBodyRegEx = "<[/]?tbody[^>]*>";
             String trRegEx = "<[/]?tr[^>]*>";

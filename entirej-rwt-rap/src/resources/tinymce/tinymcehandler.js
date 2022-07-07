@@ -28,6 +28,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 		this.contentCss = properties.contentCss;
 		this.configObj = properties.configObj;
 		this.removeToolbar = properties.removeToolbar;
+		this.supportTable = properties.supportTable;
 		this.readonly = false;
 		this.element = document.createElement("div");
 
@@ -137,6 +138,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				// this.element.style.visibility = "hidden";
 				if (this.inline) {
 					
+				   if(this.supportTable)
 					tinymce.init({
 				          target: editorElm,
 				          menubar: true,
@@ -160,29 +162,76 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 						  formats: this.configObj!=null && this.configObj.formats ? this.configObj.formats :undefined,
 										  
 						  setup: this.setEditorSetup});
+					else
+						tinymce.init({
+					          target: editorElm,
+					          menubar: true,
+					          inline: true,
+					          branding: false,
+					          paste_as_text: true,
+					          removed_menuitems: 'newdocument',
+							  plugins: [
+							    'advlist autolink lists  print preview  textcolor',
+							    'searchreplace visualblocks ',
+							    'insertdatetime table contextmenu paste wordcount'
+							  ],
+							  content_style: this.contentCss,
+							  fontsize_formats: this.configObj!=null && this.configObj.fontsize_formats ? this.configObj.fontsize_formats :"8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px",
+							  toolbar: 'insert | undo redo |  formatselect | sizeselect  fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+							  
+							  
+							  style_formats: this.configObj!=null && this.configObj.style_formats ? this.configObj.style_formats :undefined,
+							  visualblocks_default_state: this.configObj!=null && this.configObj.visualblocks_default_state ? this.configObj.visualblocks_default_state :undefined,
+							  end_container_on_empty_block: this.configObj!=null && this.configObj.end_container_on_empty_block ? this.configObj.end_container_on_empty_block :undefined,
+							  formats: this.configObj!=null && this.configObj.formats ? this.configObj.formats :undefined,
+											  
+							  setup: this.setEditorSetup});
 				} else {
 					
-					tinymce.init({
-				          target: editorElm,
-				          menubar: true,
-				          branding: false,
-				          resize: false,
-				          paste_as_text: true,
-				          removed_menuitems: 'newdocument',
-						  plugins: [
-						    'advlist autolink lists    print preview  textcolor',
-						    'searchreplace visualblocks ',
-						    'insertdatetime  contextmenu paste wordcount'
-						  ],
-						  fontsize_formats: this.configObj!=null && this.configObj.fontsize_formats ? this.configObj.fontsize_formats :"8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px",
-						  toolbar: 'insert | undo redo |  formatselect | sizeselect  fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
-						  content_style: this.contentCss,
-						  style_formats: this.configObj!=null && this.configObj.style_formats ? this.configObj.style_formats :undefined,
-						  visualblocks_default_state: this.configObj!=null && this.configObj.visualblocks_default_state ? this.configObj.visualblocks_default_state :undefined,
-						  end_container_on_empty_block: this.configObj!=null && this.configObj.end_container_on_empty_block ? this.configObj.end_container_on_empty_block :undefined,
-						  formats: this.configObj!=null && this.configObj.formats ? this.configObj.formats :undefined,
-								  
-						  setup: this.setEditorSetup});
+					if(this.supportTable)
+						tinymce.init({
+					          target: editorElm,
+					          menubar: true,
+					          branding: false,
+					          resize: false,
+					          paste_as_text: true,
+					          removed_menuitems: 'newdocument',
+							  plugins: [
+							    'advlist autolink lists    print preview  textcolor',
+							    'searchreplace visualblocks ',
+							    'insertdatetime table contextmenu paste wordcount'
+							  ],
+							  fontsize_formats: this.configObj!=null && this.configObj.fontsize_formats ? this.configObj.fontsize_formats :"8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px",
+							  toolbar: 'insert | undo redo |  formatselect | sizeselect  fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+							  content_style: this.contentCss,
+							  style_formats: this.configObj!=null && this.configObj.style_formats ? this.configObj.style_formats :undefined,
+							  visualblocks_default_state: this.configObj!=null && this.configObj.visualblocks_default_state ? this.configObj.visualblocks_default_state :undefined,
+							  end_container_on_empty_block: this.configObj!=null && this.configObj.end_container_on_empty_block ? this.configObj.end_container_on_empty_block :undefined,
+							  formats: this.configObj!=null && this.configObj.formats ? this.configObj.formats :undefined,
+									  
+							  setup: this.setEditorSetup});
+					else
+						tinymce.init({
+					          target: editorElm,
+					          menubar: true,
+					          branding: false,
+					          resize: false,
+					          paste_as_text: true,
+					          removed_menuitems: 'newdocument',
+							  plugins: [
+							    'advlist autolink lists    print preview  textcolor',
+							    'searchreplace visualblocks ',
+							    'insertdatetime  contextmenu paste wordcount'
+							  ],
+							  fontsize_formats: this.configObj!=null && this.configObj.fontsize_formats ? this.configObj.fontsize_formats :"8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px",
+							  toolbar: 'insert | undo redo |  formatselect | sizeselect  fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat',
+							  content_style: this.contentCss,
+							  style_formats: this.configObj!=null && this.configObj.style_formats ? this.configObj.style_formats :undefined,
+							  visualblocks_default_state: this.configObj!=null && this.configObj.visualblocks_default_state ? this.configObj.visualblocks_default_state :undefined,
+							  end_container_on_empty_block: this.configObj!=null && this.configObj.end_container_on_empty_block ? this.configObj.end_container_on_empty_block :undefined,
+							  formats: this.configObj!=null && this.configObj.formats ? this.configObj.formats :undefined,
+									  
+							  setup: this.setEditorSetup});
 					
 				}
 
