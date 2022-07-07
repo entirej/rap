@@ -314,7 +314,7 @@ public class EJRWTTinymceEditor extends Composite
             String tdRegEx = "<[/]?td[^>]*>";
             text = text.replaceAll(tableRegEx, "");
             text = text.replaceAll(tableBodyRegEx, "");
-            text = text.replaceAll(trRegEx, "");
+            text = text.replaceAll(trRegEx, "<br>");
             text = text.replaceAll(tdRegEx, " ");
         }
         
