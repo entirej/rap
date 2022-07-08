@@ -36,7 +36,7 @@ public class EJRWTTinymceEditor extends Composite
     /**
      * 
      */
-    private static final long serialVersionUID = 1L;
+    private static final long      serialVersionUID   = 1L;
     private static final String    RESOURCES_PATH     = "resources/tinymce/";
     private static final String    REGISTER_PATH      = "tinymceeditor/";
 
@@ -54,11 +54,11 @@ public class EJRWTTinymceEditor extends Composite
     private final OperationHandler operationHandler   = new AbstractOperationHandler()
                                                       {
                                                           /**
-                                                         * 
-                                                         */
-                                                        private static final long serialVersionUID = 1L;
+                                                          * 
+                                                          */
+                                                          private static final long serialVersionUID = 1L;
 
-                                                        @Override
+                                                          @Override
                                                           public void handleSet(JsonObject properties)
                                                           {
                                                               JsonValue textValue = properties.get("text");
@@ -74,9 +74,9 @@ public class EJRWTTinymceEditor extends Composite
                                                               }
                                                           }
                                                       };
-    private boolean supportTable;
+    private boolean                supportTable;
 
-    public EJRWTTinymceEditor(Composite parent, int style, boolean inline, String profile, boolean removeToolbar,boolean supportTable, String contentCssFile, String configJsonFile)
+    public EJRWTTinymceEditor(Composite parent, int style, boolean inline, String profile, boolean removeToolbar, boolean supportTable, String contentCssFile, String configJsonFile)
     {
         super(parent, style);
 
@@ -90,8 +90,14 @@ public class EJRWTTinymceEditor extends Composite
         remoteObject.set("supportTable", supportTable);
         remoteObject.set("profile", profile == null ? "Standard" : profile);
         // remoteObject.set("font", getCssFont());
-        remoteObject.set("contentCss",  read(contentCssFile == null || contentCssFile.isEmpty() ? hasFile("/resources/tinymce/ej/custom.ej.css")?"/resources/tinymce/ej/custom.ej.css": "resources/tinymce/ej/content.ej.css" : contentCssFile));
+        remoteObject.set("contentCss", read(contentCssFile == null || contentCssFile.isEmpty() ? hasFile("/resources/tinymce/ej/custom.ej.css") ? "/resources/tinymce/ej/custom.ej.css" : "resources/tinymce/ej/content.ej.css" : contentCssFile));
         remoteObject.set("configObj", readAsJson(configJsonFile == null || configJsonFile.isEmpty() ? "resources/tinymce/ej/config.ej.json" : configJsonFile));
+
+    }
+
+    public EJRWTTinymceEditor(Composite parent, int style, boolean inline, String profile, boolean removeToolbar, String contentCssFile, String configJsonFile)
+    {
+        this(parent, style, inline, profile, removeToolbar, false, contentCssFile, configJsonFile);
 
     }
 
@@ -191,6 +197,7 @@ public class EJRWTTinymceEditor extends Composite
             }
         }
     }
+
     private static boolean hasFile(String fileName)
     {
         ClassLoader classLoader = EJRWTTinymceEditor.class.getClassLoader();
@@ -199,9 +206,9 @@ public class EJRWTTinymceEditor extends Composite
         {
             return false;
         }
-        try 
+        try
         {
-            
+
             return true;
         }
         finally
@@ -293,21 +300,17 @@ public class EJRWTTinymceEditor extends Composite
         remoteObject.set("text", text);
     }
 
-
-
     public String getText()
     {
         checkWidget();
-        return supportTable? text: stripHtml(text != null ? text.trim() : null);
+        return supportTable ? text : stripHtml(text != null ? text.trim() : null);
     }
-    
-    
-    
 
     private static String stripHtml(String text)
     {
         //
-        if(text!=null  ) {
+        if (text != null)
+        {
             String tableRegEx = "<[/]?table[^>]*>";
             String tableBodyRegEx = "<[/]?tbody[^>]*>";
             String trRegEx = "<[/]?tr[^>]*>";
@@ -317,11 +320,9 @@ public class EJRWTTinymceEditor extends Composite
             text = text.replaceAll(trRegEx, "<br>");
             text = text.replaceAll(tdRegEx, " ");
         }
-        
+
         return text;
     }
-    
-   
 
     private String getCssFont()
     {
