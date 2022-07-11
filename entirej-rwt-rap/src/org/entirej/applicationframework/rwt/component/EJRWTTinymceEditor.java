@@ -100,6 +100,8 @@ public class EJRWTTinymceEditor extends Composite
         this(parent, style, inline, profile, removeToolbar, false, contentCssFile, configJsonFile);
 
     }
+    
+    
 
     public static void initResources()
     {
