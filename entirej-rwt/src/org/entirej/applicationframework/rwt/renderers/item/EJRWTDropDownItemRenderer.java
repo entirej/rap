@@ -1023,7 +1023,7 @@ public class EJRWTDropDownItemRenderer implements EJRWTAppItemRenderer, FocusLis
                 int style = SWT.BORDER;
                 style = getComponentStyle(alignmentProperty, style);
                 _comboField = new Text(parent, style);
-                _comboField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_TEXT);
+                _comboField.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_DROPDOWN);
                 String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
                 if (customCSSKey != null && customCSSKey.trim().length() > 0)
