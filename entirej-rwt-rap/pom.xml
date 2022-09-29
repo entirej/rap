@@ -148,7 +148,8 @@
 		</extensions>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -222,100 +223,105 @@
 			<artifactId>org.eclipse.rap.jface</artifactId>
 			<version>3.22.0</version>
 			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
-			
+				<exclusion>
+					<groupId>org.osgi.service</groupId>
+					<artifactId>org.osgi.service.prefs</artifactId>
+				</exclusion>
+			</exclusions>
+
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.forms</artifactId>
 			<version>3.22.0</version>
 			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
+				<exclusion>
+					<groupId>org.osgi.service</groupId>
+					<artifactId>org.osgi.service.prefs</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui</artifactId>
 			<version>3.22.0</version>
 			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
+				<exclusion>
+					<groupId>org.osgi.service</groupId>
+					<artifactId>org.osgi.service.prefs</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.workbench</artifactId>
 			<version>3.22.0</version>
 			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
+				<exclusion>
+					<groupId>org.osgi.service</groupId>
+					<artifactId>org.osgi.service.prefs</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap.incubator</groupId>
 			<artifactId>org.eclipse.rap.chartjs</artifactId>
 			<version>3.1.20</version>
 			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
+				<exclusion>
+					<groupId>org.osgi.service</groupId>
+					<artifactId>org.osgi.service.prefs</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.fileupload</artifactId>
 			<version>3.22.0</version>
 			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
+				<exclusion>
+					<groupId>org.osgi.service</groupId>
+					<artifactId>org.osgi.service.prefs</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>commons-fileupload</groupId>
+			<artifactId>commons-fileupload</artifactId>
+			<version>1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.filedialog</artifactId>
 			<version>3.22.0</version>
 			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
+				<exclusion>
+					<groupId>org.osgi.service</groupId>
+					<artifactId>org.osgi.service.prefs</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt</artifactId>
 			<version>3.22.0</version>
 			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
+				<exclusion>
+					<groupId>org.osgi.service</groupId>
+					<artifactId>org.osgi.service.prefs</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt.osgi</artifactId>
 			<version>3.22.0</version>
 			<exclusions>
-                <exclusion>
-                    <groupId>org.osgi.service</groupId>
-                    <artifactId>org.osgi.service.prefs</artifactId>
-                </exclusion>
-            </exclusions>
+				<exclusion>
+					<groupId>org.osgi.service</groupId>
+					<artifactId>org.osgi.service.prefs</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
