@@ -227,11 +227,12 @@ public class EJ_RWT
 
     public static void main(String[] args)
     {
-
+        System.out.println(clearHtml("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; blank spaces a > b").trim());
     }
 
     public static String clearHtml(String html)
     {
+        html = html.replaceAll("&nbsp;", " ");
         final StringBuilder sb = new StringBuilder();
         HTMLEditorKit.ParserCallback parserCallback = new HTMLEditorKit.ParserCallback()
         {
@@ -253,6 +254,7 @@ public class EJ_RWT
                     sb.append("\n");
                     readyForNewline = false;
                 }
+                
             }
 
             @Override
@@ -290,5 +292,7 @@ public class EJ_RWT
     {
         EJ_RWT.mapper = mapper;
     }
+    
+   
 
 }
