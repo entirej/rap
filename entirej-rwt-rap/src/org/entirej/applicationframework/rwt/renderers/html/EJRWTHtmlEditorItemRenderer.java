@@ -688,6 +688,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
                                     {
 
                                         close();
+                                        _textField.setText(getText());
                                     }
 
                                 };
