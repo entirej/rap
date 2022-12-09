@@ -41,9 +41,10 @@ public class EJRWTTinymceEditor extends Composite
     private static final String    REGISTER_PATH      = "tinymceeditor/";
 
     private static final String[]  RESOURCE_FILES     = { "tinymce.min.js", "tinymcehandler.js" };
-    private static final String[]  RESOURCE_FILES_SUB = { "plugins/visualblocks/css/visualblocks.css", "skins/lightgray/content.inline.min.css", "skins/lightgray/content.min.css", "skins/lightgray/content.mobile.min.css", "skins/lightgray/skin.min.css", "skins/lightgray/skin.mobile.min.css",
-            "skins/lightgray/fonts/tinymce-mobile.woff", "skins/lightgray/fonts/tinymce-small.eot", "skins/lightgray/fonts/tinymce-small.svg", "skins/lightgray/fonts/tinymce-small.ttf", "skins/lightgray/fonts/tinymce-small.woff", "skins/lightgray/fonts/tinymce.eot", "skins/lightgray/fonts/tinymce.svg",
-            "skins/lightgray/fonts/tinymce.ttf", "skins/lightgray/fonts/tinymce.woff", "skins/lightgray/img/anchor.gif", "skins/lightgray/img/loader.gif", "skins/lightgray/img/object.gif", "skins/lightgray/img/trans.gif", "themes/inlite/theme.min.js", "themes/mobile/theme.min.js", "themes/modern/theme.min.js", };
+    private static final String[]  RESOURCE_FILES_SUB = { "plugins/fullscreen/plugin.min.js", "plugins/visualblocks/css/visualblocks.css", "skins/lightgray/content.inline.min.css", "skins/lightgray/content.min.css", "skins/lightgray/content.mobile.min.css", "skins/lightgray/skin.min.css",
+            "skins/lightgray/skin.mobile.min.css", "skins/lightgray/fonts/tinymce-mobile.woff", "skins/lightgray/fonts/tinymce-small.eot", "skins/lightgray/fonts/tinymce-small.svg", "skins/lightgray/fonts/tinymce-small.ttf", "skins/lightgray/fonts/tinymce-small.woff", "skins/lightgray/fonts/tinymce.eot",
+            "skins/lightgray/fonts/tinymce.svg", "skins/lightgray/fonts/tinymce.ttf", "skins/lightgray/fonts/tinymce.woff", "skins/lightgray/img/anchor.gif", "skins/lightgray/img/loader.gif", "skins/lightgray/img/object.gif", "skins/lightgray/img/trans.gif", "themes/inlite/theme.min.js", "themes/mobile/theme.min.js",
+            "themes/modern/theme.min.js", };
 
     private static final String    REMOTE_TYPE        = "eclipsesource.TinymceEditor";
 
@@ -73,6 +74,12 @@ public class EJRWTTinymceEditor extends Composite
                                                                   }
                                                               }
                                                           }
+
+                                                          @Override
+                                                          public void handleCall(String method, JsonObject parameters)
+                                                          {
+                                                              action(method);
+                                                          }
                                                       };
     private boolean                supportTable;
 
@@ -100,8 +107,6 @@ public class EJRWTTinymceEditor extends Composite
         this(parent, style, inline, profile, removeToolbar, false, contentCssFile, configJsonFile);
 
     }
-    
-    
 
     public static void initResources()
     {
@@ -110,6 +115,12 @@ public class EJRWTTinymceEditor extends Composite
     }
 
     protected void textValueChanged()
+    {
+        // ignore
+
+    }
+
+    protected void action(String method)
     {
         // ignore
 

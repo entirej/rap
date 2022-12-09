@@ -30,10 +30,13 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
 import org.entirej.applicationframework.rwt.component.EJRWTTinymceEditor;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.item.ControlDecorationSupport;
@@ -621,6 +624,85 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
                 {
                     _item.itemValueChaged(_textField.getText());
 
+                }
+
+                @Override
+                protected void action(String method)
+                {
+                    if ("fullScreen".equals(method))
+                    {
+                        Display.getDefault().asyncExec(new Runnable()
+                        {
+
+                            @Override
+                            public void run()
+                            {
+
+                                EJRWTAbstractDialog newShell = new EJRWTAbstractDialog(Display.getCurrent().getActiveShell())
+                                {
+                                    @Override
+                                    public void create()
+                                    {
+
+                                        super.create();
+                                        getShell().setText("Expanded View");
+                                    }
+
+                                    @Override
+                                    public void createBody(final Composite parent)
+                                    {
+                                        parent.setLayout(new GridLayout(1, false));
+
+                                        EJRWTTinymceEditor expandEditor = new EJRWTTinymceEditor(parent, SWT.NONE, _rendererProps.getBooleanProperty(PROPERTY_INLINE_KEY, false),
+
+                                                _rendererProps.getStringProperty(PROPERTY_PROFILE_KEY), _rendererProps.getBooleanProperty(PROPERTY_REMOVE_TOOLBAR_KEY, false), _rendererProps.getBooleanProperty(PROPERTY_SUPPORT_TABLE_LAYOUTS_KEY, false), _rendererProps.getStringProperty(PROPERTY_CSS_PATH),
+                                                _rendererProps.getStringProperty(PROPERTY_CONFIG_PATH))
+                                        {
+                                            protected void action(String method)
+                                            {
+
+                                                if ("fullScreen".equals(method))
+                                                {
+                                                    _textField.setText(getText());
+                                                    close();
+                                                }
+                                            };
+                                        };
+                                        expandEditor.setText(_textField.getText());
+
+                                        GridData gridData = new GridData(GridData.FILL_BOTH);
+                                        gridData.grabExcessHorizontalSpace = true;
+                                        gridData.grabExcessVerticalSpace = true;
+                                        expandEditor.setLayoutData(gridData);
+
+                                    }
+
+                                    @Override
+                                    protected void createButtonsForButtonBar(Composite parent)
+                                    {
+                                        createButton(parent, -1, "Close", true);
+                                    }
+
+                                    @Override
+                                    protected void buttonPressed(int buttonId)
+                                    {
+
+                                        close();
+                                    }
+
+                                };
+
+                                newShell.create();
+
+                                newShell.getShell().setMaximized(true);
+                                newShell.getShell().layout(true);
+                                newShell.centreLocation();
+                                newShell.open();
+                                newShell.getShell().forceActive();
+
+                            }
+                        });
+                    }
                 }
             };
 
