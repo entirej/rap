@@ -550,7 +550,8 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         }
         else
         {
-            _mainPane.forceFocus();
+            if(!_mainPane.isDisposed())
+                _mainPane.forceFocus();
         }
         setHasFocus(true);
         logger.trace("END gainFocus");
