@@ -221,7 +221,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.jface</artifactId>
-			<version>3.22.0</version>
+			<version>3.23.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -233,7 +233,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.forms</artifactId>
-			<version>3.22.0</version>
+			<version>3.23.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -244,7 +244,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui</artifactId>
-			<version>3.22.0</version>
+			<version>3.23.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -255,7 +255,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.workbench</artifactId>
-			<version>3.22.0</version>
+			<version>3.23.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -277,7 +277,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.fileupload</artifactId>
-			<version>3.22.0</version>
+			<version>3.23.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -293,7 +293,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.filedialog</artifactId>
-			<version>3.22.0</version>
+			<version>3.23.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -304,7 +304,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt</artifactId>
-			<version>3.22.0</version>
+			<version>3.23.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -315,7 +315,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt.osgi</artifactId>
-			<version>3.22.0</version>
+			<version>3.23.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
