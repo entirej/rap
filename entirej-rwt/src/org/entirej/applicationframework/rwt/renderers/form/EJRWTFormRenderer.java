@@ -2818,6 +2818,17 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
                             text.setText(properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage());
                             text.setLayoutData(data);
+                            if(msg.getCallback()!=null)
+                                text.addMouseListener(new MouseAdapter()
+                                {
+                                    private static final long serialVersionUID = 1L;
+
+                                    @Override
+                                    public void mouseUp(MouseEvent e)
+                                    { if(msg.getCallback()!=null)
+                                            msg.getCallback().run();
+                                    }
+                                });
                         }
                     }
                     composite.layout(true);
