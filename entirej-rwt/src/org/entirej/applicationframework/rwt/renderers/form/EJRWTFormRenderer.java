@@ -2813,22 +2813,34 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         }
                         {// text
 
-                            Label text = new Label(shell, SWT.WRAP);
-                            GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
-                            text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
-                            text.setText(properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage());
-                            text.setLayoutData(data);
-                            if(msg.getCallback()!=null)
-                                text.addMouseListener(new MouseAdapter()
-                                {
-                                    private static final long serialVersionUID = 1L;
+                            if(msg.getCallback()!=null) {
+                                Label text = new Label(shell, SWT.WRAP);
+                                GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
+                                text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
+                                String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
+                                text.setText(label);
+                                text.setData(EJ_RWT.CUSTOM_VARIANT,"ejmessage");
+                                text.setLayoutData(data);
+                                
+                                    text.addMouseListener(new MouseAdapter()
+                                    {
+                                        private static final long serialVersionUID = 1L;
 
-                                    @Override
-                                    public void mouseUp(MouseEvent e)
-                                    { if(msg.getCallback()!=null)
-                                            msg.getCallback().run();
-                                    }
-                                });
+                                        @Override
+                                        public void mouseUp(MouseEvent e)
+                                        { if(msg.getCallback()!=null)
+                                                msg.getCallback().run();
+                                        }
+                                    });
+                            }else {
+                                Label text = new Label(shell, SWT.WRAP);
+                                GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
+                                text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
+                                String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
+                                text.setText( label);
+                                text.setLayoutData(data);
+                            }
+                           
                         }
                     }
                     composite.layout(true);

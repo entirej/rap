@@ -1917,6 +1917,9 @@ Label.notifierDialogTitleWarn {
 Label.notifierDialogTextWarn {
     font: 11px Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
 }
+Label.ejmessage:hover  {
+    text-decoration: underline;
+}
 
 /*EJ Item Group related theming*/
 Composite.itemgroup {
