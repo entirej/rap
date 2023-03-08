@@ -125,6 +125,13 @@ public class EJRWTTinymceEditor extends Composite
         // ignore
 
     }
+    
+    @Override
+    public boolean forceFocus()
+    {
+        remoteObject.set("focus", true);
+        return super.forceFocus();
+    }
 
     private static void registerResources()
     {

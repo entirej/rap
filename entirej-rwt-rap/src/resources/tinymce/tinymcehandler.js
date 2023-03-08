@@ -11,7 +11,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 
 		destructor : "destroy",
 
-		properties : [ "text", "font", "enable" ]
+		properties : [ "text", "font", "enable" ,"focus"]
 
 	});
 
@@ -301,6 +301,21 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			} else {
 				this._text = text;
 			}
+		},
+		
+		setFocus : function(focus) {
+			if (this.ready) {
+				try
+				{
+					if(focus)
+						this.editor.focus();
+				}catch(e)
+				{
+					// ignore
+				}
+				
+				
+			} 
 		},
 
 		setFont : function(font) {
