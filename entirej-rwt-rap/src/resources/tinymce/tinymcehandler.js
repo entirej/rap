@@ -29,6 +29,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 		this.configObj = properties.configObj;
 		this.removeToolbar = properties.removeToolbar;
 		this.supportTable = properties.supportTable;
+		this.pasteAsText = properties.pasteAsText;
 		this.readonly = false;
 		this.element = document.createElement("div");
 
@@ -151,7 +152,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				          menubar: true,
 				          inline: true,
 				          branding: false,
-				          paste_as_text: true,
+				          paste_as_text: this.pasteAsText,
 				          removed_menuitems: 'newdocument',
 						  plugins: [
 						    'advlist autolink lists  print preview  textcolor',
@@ -162,7 +163,6 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 						  fontsize_formats: this.configObj!=null && this.configObj.fontsize_formats ? this.configObj.fontsize_formats :"8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px",
 						  toolbar: 'insert | undo redo |  formatselect | sizeselect  fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | fullscreen',
 						  fullscreen_native: true,
-						  
 						  style_formats: this.configObj!=null && this.configObj.style_formats ? this.configObj.style_formats :undefined,
 						  visualblocks_default_state: this.configObj!=null && this.configObj.visualblocks_default_state ? this.configObj.visualblocks_default_state :undefined,
 						  end_container_on_empty_block: this.configObj!=null && this.configObj.end_container_on_empty_block ? this.configObj.end_container_on_empty_block :undefined,
@@ -175,7 +175,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					          menubar: true,
 					          inline: true,
 					          branding: false,
-					          paste_as_text: true,
+					          paste_as_text: this.pasteAsText,
 					          removed_menuitems: 'newdocument',
 							  plugins: [
 							    'advlist autolink lists  print preview  textcolor',
@@ -186,7 +186,6 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 							  fontsize_formats: this.configObj!=null && this.configObj.fontsize_formats ? this.configObj.fontsize_formats :"8px 10px 11px 12px 13px 14px 18px 20px 22px 24px 36px",
 							  toolbar: 'insert | undo redo |  formatselect | sizeselect  fontsizeselect bold italic backcolor forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | fullscreen',
 							  fullscreen_native: true,
-							  
 							  style_formats: this.configObj!=null && this.configObj.style_formats ? this.configObj.style_formats :undefined,
 							  visualblocks_default_state: this.configObj!=null && this.configObj.visualblocks_default_state ? this.configObj.visualblocks_default_state :undefined,
 							  end_container_on_empty_block: this.configObj!=null && this.configObj.end_container_on_empty_block ? this.configObj.end_container_on_empty_block :undefined,
@@ -201,7 +200,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					          menubar: true,
 					          branding: false,
 					          resize: false,
-					          paste_as_text: true,
+					          paste_as_text: this.pasteAsText,
 					          removed_menuitems: 'newdocument',
 							  plugins: [
 							    'advlist autolink lists    print preview  textcolor',
@@ -224,7 +223,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					          menubar: true,
 					          branding: false,
 					          resize: false,
-					          paste_as_text: true,
+					          paste_as_text: this.pasteAsText,
 					          removed_menuitems: 'newdocument',
 							  plugins: [
 							    'advlist autolink lists    print preview  textcolor',
@@ -239,7 +238,6 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 							  visualblocks_default_state: this.configObj!=null && this.configObj.visualblocks_default_state ? this.configObj.visualblocks_default_state :undefined,
 							  end_container_on_empty_block: this.configObj!=null && this.configObj.end_container_on_empty_block ? this.configObj.end_container_on_empty_block :undefined,
 							  formats: this.configObj!=null && this.configObj.formats ? this.configObj.formats :undefined,
-									  
 							  setup: this.setEditorSetup});
 					
 				}
@@ -252,14 +250,14 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				          menubar: false,
 				          inline: false,
 				          branding: false,
+				          paste_as_text: this.pasteAsText,
 						  plugins: [
-						    
+							  'paste'
 						  ],
 						  content_style: this.contentCss,
-						 toolbar: false,
-						 statusbar: false,
+						  toolbar: false,
+						  statusbar: false,
 						  skin: 'borderless',
-						  			  
 						  setup: this.setViewEditorSetup});
 			   }
 				

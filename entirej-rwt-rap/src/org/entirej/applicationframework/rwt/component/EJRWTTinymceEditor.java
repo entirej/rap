@@ -83,7 +83,7 @@ public class EJRWTTinymceEditor extends Composite
                                                       };
     private boolean                supportTable;
 
-    public EJRWTTinymceEditor(Composite parent, int style, boolean inline, String profile, boolean removeToolbar, boolean supportTable, String contentCssFile, String configJsonFile)
+    public EJRWTTinymceEditor(Composite parent, int style, boolean inline, String profile, boolean removeToolbar, boolean supportTable, String contentCssFile, String configJsonFile, boolean pasteAsText)
     {
         super(parent, style);
 
@@ -99,12 +99,13 @@ public class EJRWTTinymceEditor extends Composite
         // remoteObject.set("font", getCssFont());
         remoteObject.set("contentCss", read(contentCssFile == null || contentCssFile.isEmpty() ? hasFile("/resources/tinymce/ej/custom.ej.css") ? "/resources/tinymce/ej/custom.ej.css" : "resources/tinymce/ej/content.ej.css" : contentCssFile));
         remoteObject.set("configObj", readAsJson(configJsonFile == null || configJsonFile.isEmpty() ? "resources/tinymce/ej/config.ej.json" : configJsonFile));
+        remoteObject.set("pasteAsText", pasteAsText);
 
     }
 
     public EJRWTTinymceEditor(Composite parent, int style, boolean inline, String profile, boolean removeToolbar, String contentCssFile, String configJsonFile)
     {
-        this(parent, style, inline, profile, removeToolbar, false, contentCssFile, configJsonFile);
+        this(parent, style, inline, profile, removeToolbar, false, contentCssFile, configJsonFile, false);
 
     }
 
@@ -125,7 +126,7 @@ public class EJRWTTinymceEditor extends Composite
         // ignore
 
     }
-    
+
     @Override
     public boolean forceFocus()
     {
