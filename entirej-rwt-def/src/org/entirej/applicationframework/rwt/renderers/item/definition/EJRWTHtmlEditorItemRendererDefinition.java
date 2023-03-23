@@ -37,18 +37,19 @@ import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendere
 public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererDefinition
 {
 
-    public static final String PROPERTY_CSS_KEY                   = "CSS_KEY";
-    public static final String PROPERTY_INLINE_KEY                = "INLINE";
-    public static final String PROPERTY_PROFILE_KEY               = "PROFILE";
-    public static final String PROPERTY_PROFILE_BASIC             = "Basic";
-    public static final String PROPERTY_PROFILE_STANDARD          = "Standard";
-    public static final String PROPERTY_PROFILE_FULL              = "Full";
-    public static final String PROPERTY_CSS_PATH                  = "CSS_PATH";
-    public static final String PROPERTY_CONFIG_PATH               = "CONFIG_PATH";
+    public static final String  PROPERTY_CSS_KEY                   = "CSS_KEY";
+    public static final String  PROPERTY_INLINE_KEY                = "INLINE";
+    public static final String  PROPERTY_PROFILE_KEY               = "PROFILE";
+    public static final String  PROPERTY_PROFILE_BASIC             = "Basic";
+    public static final String  PROPERTY_PROFILE_STANDARD          = "Standard";
+    public static final String  PROPERTY_PROFILE_FULL              = "Full";
+    public static final String  PROPERTY_CSS_PATH                  = "CSS_PATH";
+    public static final String  PROPERTY_CONFIG_PATH               = "CONFIG_PATH";
 
-    public static final String PROPERTY_REMOVE_TOOLBAR_KEY        = "REMOVE_TOOLBAR";
+    public static final String  PROPERTY_REMOVE_TOOLBAR_KEY        = "REMOVE_TOOLBAR";
 
-    public static final String PROPERTY_SUPPORT_TABLE_LAYOUTS_KEY = "SUPPORT_TABLE_LAYOUTS";
+    public static final String  PROPERTY_SUPPORT_TABLE_LAYOUTS_KEY = "SUPPORT_TABLE_LAYOUTS";
+    private static final String PROPERTY_PASTE_AS_TEXT             = "PROPERTY_PASTE_AS_TEXT";
 
     public EJRWTHtmlEditorItemRendererDefinition()
     {
@@ -107,6 +108,11 @@ public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererD
         EJDevPropertyDefinition configPath = new EJDevPropertyDefinition(PROPERTY_CONFIG_PATH, EJPropertyDefinitionType.PROJECT_FILE);
         configPath.setLabel("Editor Config path");
         mainGroup.addPropertyDefinition(configPath);
+
+        EJDevPropertyDefinition pasteAsText = new EJDevPropertyDefinition(PROPERTY_PASTE_AS_TEXT, EJPropertyDefinitionType.BOOLEAN);
+        pasteAsText.setLabel("Paste as text");
+        pasteAsText.setDefaultValue("false");
+        mainGroup.addPropertyDefinition(pasteAsText);
 
         // EJDevPropertyDefinition profile = new
         // EJDevPropertyDefinition(PROPERTY_PROFILE_KEY,
