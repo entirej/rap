@@ -21,7 +21,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 	}
 
 	eclipsesource.TinymceEditor = function(properties) {
-		bindAll(this, [ "layout", "onReady", "onSend", "onRender" ,"setEditorSetup","setViewEditorSetup","onFullscreenStateChanged"]);
+		bindAll(this, [ "layout", "onReady", "onSend", "onRender" ,"setEditorSetup","setViewEditorSetup","onFullscreenStateChanged","onPrePaste"]);
 		this.parent = rap.getObject(properties.parent);
 		this.inline = properties.inline;
 		this.profile = properties.profile;
@@ -121,6 +121,25 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 			var args = {};
 			remoteObject.call('fullScreen',args);
 		},
+		onPrePaste : function(plugin, args) {
+			
+			if(!this.supportTable) {
+				var text = args.content;
+				if (text !== null) {
+				    let tableRegEx = /<[/]?table[^>]*>/g;
+				    let tableBodyRegEx = /<[/]?tbody[^>]*>/g;
+				    let trRegEx = /<[/]?tr[^>]*>/g;
+				    let tdRegEx = /<[/]?td[^>]*>/g;
+				    text = text.replaceAll(tableRegEx, '');
+				    text = text.replaceAll(tableBodyRegEx, '');
+				    text = text.replaceAll(trRegEx, '<br>');
+				    text = text.replaceAll(tdRegEx, ' ');
+				    args.content = text;
+				  }
+				
+			}
+			
+		},
 
 		onRender : function() {
 
@@ -153,6 +172,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				          inline: true,
 				          branding: false,
 				          paste_as_text: this.pasteAsText,
+				          paste_preprocess: this.onPrePaste,
 				          removed_menuitems: 'newdocument',
 						  plugins: [
 						    'advlist autolink lists  print preview  textcolor',
@@ -176,6 +196,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					          inline: true,
 					          branding: false,
 					          paste_as_text: this.pasteAsText,
+					          paste_preprocess: this.onPrePaste,
 					          removed_menuitems: 'newdocument',
 							  plugins: [
 							    'advlist autolink lists  print preview  textcolor',
@@ -201,6 +222,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					          branding: false,
 					          resize: false,
 					          paste_as_text: this.pasteAsText,
+					          paste_preprocess: this.onPrePaste,
 					          removed_menuitems: 'newdocument',
 							  plugins: [
 							    'advlist autolink lists    print preview  textcolor',
@@ -224,6 +246,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					          branding: false,
 					          resize: false,
 					          paste_as_text: this.pasteAsText,
+					          paste_preprocess: this.onPrePaste,
 					          removed_menuitems: 'newdocument',
 							  plugins: [
 							    'advlist autolink lists    print preview  textcolor',
@@ -251,6 +274,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				          inline: false,
 				          branding: false,
 				          paste_as_text: this.pasteAsText,
+				          paste_preprocess: this.onPrePaste,
 						  plugins: [
 							  'paste'
 						  ],
