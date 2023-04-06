@@ -24,7 +24,7 @@ import java.io.InputStream;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
-import org.eclipse.rap.rwt.client.service.JavaScriptLoader;
+import org.eclipse.rap.rwt.client.service.ClientFileLoader;
 import org.eclipse.rap.rwt.remote.AbstractOperationHandler;
 import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.OperationHandler;
@@ -46,7 +46,7 @@ public class EJRWTHtmlView extends Composite
     private static final String    RESOURCES_PATH   = "resources/";
     private static final String    REGISTER_PATH    = "ejhtmlview/";
 
-    private static final String[]  RESOURCE_FILES   = { "HtmlViewHandler.js", };
+    private static final String[]  RESOURCE_FILES   = { "HtmlViewHandler.js", "HtmlView.css"};
     private static final String    REMOTE_TYPE      = "entirej.HtmlView";
 
     private String                 text             = "";
@@ -121,9 +121,11 @@ public class EJRWTHtmlView extends Composite
 
     private void loadJavaScript()
     {
-        JavaScriptLoader jsLoader = RWT.getClient().getService(JavaScriptLoader.class);
+
+        ClientFileLoader jsLoader = RWT.getClient().getService(ClientFileLoader.class);
         ResourceManager resourceManager = RWT.getResourceManager();
-        jsLoader.require(resourceManager.getLocation(REGISTER_PATH + "HtmlViewHandler.js"));
+        jsLoader.requireCss(resourceManager.getLocation(REGISTER_PATH + "HtmlView.css"));
+        jsLoader.requireJs(resourceManager.getLocation(REGISTER_PATH + "HtmlViewHandler.js"));
     }
 
     private void register(ResourceManager resourceManager, String fileName) throws IOException

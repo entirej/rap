@@ -1,0 +1,25 @@
+div::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+div {
+	scrollbar-width: auto;
+}
+
+
+
+/* Track */
+div::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+div::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+div::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
