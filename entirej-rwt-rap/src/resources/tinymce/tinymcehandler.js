@@ -172,6 +172,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				          inline: true,
 				          branding: false,
 				          paste_as_text: this.pasteAsText,
+				          paste_retain_style_properties: 'color font-size',
 				          paste_preprocess: this.onPrePaste,
 				          removed_menuitems: 'newdocument',
 						  plugins: [
@@ -196,6 +197,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					          inline: true,
 					          branding: false,
 					          paste_as_text: this.pasteAsText,
+					          paste_retain_style_properties: 'color font-size',
 					          paste_preprocess: this.onPrePaste,
 					          removed_menuitems: 'newdocument',
 							  plugins: [
@@ -222,6 +224,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					          branding: false,
 					          resize: false,
 					          paste_as_text: this.pasteAsText,
+					          paste_retain_style_properties: 'color font-size',
 					          paste_preprocess: this.onPrePaste,
 					          removed_menuitems: 'newdocument',
 							  plugins: [
@@ -246,6 +249,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 					          branding: false,
 					          resize: false,
 					          paste_as_text: this.pasteAsText,
+					          paste_retain_style_properties: 'color font-size',
 					          paste_preprocess: this.onPrePaste,
 					          removed_menuitems: 'newdocument',
 							  plugins: [
@@ -274,6 +278,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
 				          inline: false,
 				          branding: false,
 				          paste_as_text: this.pasteAsText,
+				          paste_retain_style_properties: 'color font-size',
 				          paste_preprocess: this.onPrePaste,
 						  plugins: [
 							  'paste'
