@@ -1377,7 +1377,9 @@ public class EJRWTMultiRecordBlockRenderer implements EJRWTAppBlockRenderer, Key
                         TableColumn column = table.getColumn(i);
                         if (column != null && column.getData("ITEM") instanceof EJScreenItemController)
                         {
+                            dispaly.asyncExec(()->{
                             ((EJScreenItemController) column.getData("ITEM")).executeActionCommand();
+                            });
                         }
                     }
                 }
