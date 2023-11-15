@@ -19,11 +19,14 @@ package org.entirej.applicationframework.rwt.renderers.form;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
@@ -2655,6 +2658,13 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     public abstract class MessageTray extends EJRWTDialogTray
     {
 
+     // Pattern for recognizing a URL, based off RFC 3986
+        private  final Pattern urlPattern = Pattern.compile(
+                "(?:^|[\\W])((ht|f)tp(s?):\\/\\/|www\\.)"
+                        + "(([\\w\\-]+\\.){1,}?([\\w\\-.~]+\\/?)*"
+                        + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};']*)",
+                Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+        
         private Composite       parent;
         EJRWTEntireJGridPane    composite;
         ScrolledComposite       scrollComposite;
@@ -2695,6 +2705,44 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
         abstract void close();
+        
+          String matchUrl(String input)
+        {
+            Matcher matcher = urlPattern.matcher(input);
+            String out = input;
+            Map<String, String> urls = new HashMap<>();
+            while (matcher.find()) {
+                int matchStart = matcher.start(1);
+                int matchEnd = matcher.end();
+                String url = input.substring(matchStart,matchEnd);
+                String baseUrl = url;
+                String linkText = url;
+                if(matchStart>0 && input.charAt(matchStart-1)=='[' && matchEnd<input.length() && input.charAt(matchEnd)=='|') {
+                    url = "["+url+"|";
+                    int index=matchEnd;
+                    linkText = "";
+                    while (index < input.length())
+                    {
+                        index++;
+                        if(input.charAt(index)==']') {
+                            url=url + "]";
+                            break;
+                        }
+                        url=url + input.charAt(index);
+                        linkText=linkText+input.charAt(index);
+                    }
+                }
+               
+                urls.put(url, String.format("<a href='%s' target='_blank'>%s</a>", baseUrl,linkText));
+            }
+            Set<Entry<String,String>> entrySet = urls.entrySet();
+            for (Entry<String, String> entry : entrySet)
+            {
+                out = out.replace(entry.getKey(), entry.getValue());
+            }
+            
+            return out;
+        }
 
         void setMessages(Collection<EJMessage> msgs)
 
@@ -2818,6 +2866,12 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
                                 String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
+                                
+                                String labelUrl = matchUrl(msg.getMessage());
+                                if(!msg.getMessage().equals(labelUrl)) {
+                                    label = labelUrl;
+                                }
+                                
                                 text.setText(label);
                                 text.setData(EJ_RWT.CUSTOM_VARIANT,"ejmessage");
                                 text.setLayoutData(data);
@@ -2837,6 +2891,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
                                 String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
+                                String labelUrl = matchUrl(msg.getMessage());
+                                if(!msg.getMessage().equals(labelUrl)) {
+                                    label = labelUrl;
+                                }
                                 text.setText( label);
                                 text.setLayoutData(data);
                             }
