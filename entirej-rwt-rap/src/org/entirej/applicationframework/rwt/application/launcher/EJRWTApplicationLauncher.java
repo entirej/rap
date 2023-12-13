@@ -74,6 +74,7 @@ import org.entirej.applicationframework.rwt.file.EJRWTFileDownload;
 import org.entirej.applicationframework.rwt.file.EJRWTFileUpload;
 import org.entirej.applicationframework.rwt.file.EJRWTFileUpload.FileSelectionCallBack;
 import org.entirej.applicationframework.rwt.renderers.html.EJRWTHtmlTableBlockRenderer.VACSSServiceHandler;
+import org.entirej.applicationframework.rwt.renderers.html.HtmlProxyServiceHandler;
 import org.entirej.framework.core.EJActionProcessorException;
 import org.entirej.framework.core.EJConnectionHelper;
 import org.entirej.framework.core.EJConnectionHelper.EJFrameworkManagerProvider;
@@ -449,6 +450,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                 {
                     RWT.getServiceManager().registerServiceHandler(VACSSServiceHandler.SERVICE_HANDLER, new VACSSServiceHandler());
                     RWT.getServiceManager().registerServiceHandler(EJRWTFileDownload.SERVICE_HANDLER, EJRWTFileDownload.newServiceHandler());
+                    RWT.getServiceManager().registerServiceHandler(HtmlProxyServiceHandler.SERVICE_HANDLER, new HtmlProxyServiceHandler());
                     registerServiceHandlers();
                 }
                 catch (java.lang.IllegalArgumentException e)
@@ -705,6 +707,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                     {
                                         RWT.getServiceManager().registerServiceHandler(VACSSServiceHandler.SERVICE_HANDLER, new VACSSServiceHandler());
                                         RWT.getServiceManager().registerServiceHandler(EJRWTFileDownload.SERVICE_HANDLER, EJRWTFileDownload.newServiceHandler());
+                                        RWT.getServiceManager().registerServiceHandler(HtmlProxyServiceHandler.SERVICE_HANDLER, new HtmlProxyServiceHandler());
+
                                         registerServiceHandlers();
                                     }
                                     catch (java.lang.IllegalArgumentException e)
