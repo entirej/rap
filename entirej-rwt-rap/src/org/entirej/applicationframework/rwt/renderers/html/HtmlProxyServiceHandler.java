@@ -19,6 +19,10 @@ public class HtmlProxyServiceHandler implements ServiceHandler
     public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
         String req_id = request.getParameter("req_id");
+        String action = request.getParameter("action");
+        if(action!=null){
+            HtmlProxy.INSTANCE.regs.get(req_id).action(action);
+        }
         // Get the file content
         byte[] download = HtmlProxy.INSTANCE.regs.get(req_id).html().getBytes("UTF-8");
         // Send the file in the response
@@ -26,6 +30,7 @@ public class HtmlProxyServiceHandler implements ServiceHandler
         response.setContentLength(download.length);
         response.setHeader("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
         response.setHeader("X-Frame-Options", "SAMEORIGIN");
+        response.setHeader("Content-Security-Policy", "frame-ancestors 'self' *;");
         response.getOutputStream().write(download);
     }
 
@@ -52,5 +57,6 @@ public class HtmlProxyServiceHandler implements ServiceHandler
     public static interface HtmlGet
     {
         String html();
+        void action(String action);
     }
 }

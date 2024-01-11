@@ -45,6 +45,7 @@ import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJMessage;
+import org.entirej.framework.core.data.controllers.EJBlockController;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
@@ -54,7 +55,6 @@ import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
 public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusListener, Serializable
 {
 
-
     protected EJFrameworkExtensionProperties  _rendererProps;
     protected EJScreenItemController          _item;
     protected EJScreenItemProperties          _screenItemProperties;
@@ -62,7 +62,7 @@ public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, Focus
     protected String                          _registeredItemName;
     protected Browser                         _textField;
     protected Label                           _label;
-    protected boolean                         _isValid          = true;
+    protected boolean                         _isValid = true;
     protected boolean                         _mandatory;
 
     protected EJCoreVisualAttributeProperties _visualAttributeProperties;
@@ -72,6 +72,7 @@ public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, Focus
     private EJRWTItemRendererVisualContext    _visualContext;
 
     protected Object                          _baseValue;
+    protected Object                          _baseValueWithURl;
     protected String                          _baseValueKey;
     private EJMessage                         message;
 
@@ -224,6 +225,7 @@ public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, Focus
     public void clearValue()
     {
         _baseValue = null;
+        _baseValueWithURl = null;
 
         try
         {
@@ -342,39 +344,58 @@ public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, Focus
     @Override
     public void setValue(Object value)
     {
-        if(value==null) {
+        if (value == null)
+        {
             value = "";
         }
-        _baseValue = value;
+        _baseValue = _baseValueWithURl = value;
         try
         {
-            if(_baseValueKey!=null) {
+            if (_baseValueKey != null)
+            {
                 HtmlProxyServiceHandler.HtmlProxy.INSTANCE.unregister(_baseValueKey);
             }
-            if (value!=null){
+            if (value != null)
+            {
                 _baseValueKey = HtmlProxyServiceHandler.HtmlProxy.INSTANCE.register(new HtmlGet()
                 {
-                    
+
                     public String html()
                     {
-                        return (String) _baseValue;
+                        return (String) _baseValueWithURl;
+                    }
+                    
+                    public void action(String action)
+                    {
+                        try
+                        {
+                            EJBlockController blockController = _item.getBlock().getBlockController();
+                            blockController.executeActionCommand(action, _item.getScreenType());
+
+                        }
+                        catch (Exception e)
+                        {
+                            _item.getBlock().getBlockController().getFormController().getFrameworkManager().handleException(e);
+                        }
                     }
                 });
             }
-
             {
                 if (controlState(_textField))
                 {
-                    if(_baseValueKey!=null) {
+                    if (_baseValueKey != null)
+                    {
                         StringBuffer url = new StringBuffer();
                         url.append(RWT.getServiceManager().getServiceHandlerUrl(HtmlProxyServiceHandler.SERVICE_HANDLER));
                         url.append("&req_id=");
                         url.append(_baseValueKey);
                         String encodedURL = RWT.getResponse().encodeURL(url.toString());
                         _textField.setUrl(encodedURL);
-                    } 
-                    
-                   
+                        _baseValueWithURl = _baseValue;
+                        if(_baseValueWithURl!=null)
+                            _baseValueWithURl = ((String)_baseValueWithURl).replaceAll("%RAP_URL_PATH%", encodedURL);
+                    }
+
                     setMandatoryBorder(_mandatory);
                 }
             }
@@ -384,10 +405,6 @@ public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, Focus
 
         }
     }
-
-
-
-
 
     @Override
     public void setVisible(boolean visible)
@@ -623,7 +640,7 @@ public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, Focus
             _textField.setData(EJ_RWT.CUSTOM_VARIANT, "html");
             _textField.setData(EJ_RWT.CUSTOM_VARIANT, getCSSKey());
             String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
-           
+
             if (customCSSKey != null && customCSSKey.trim().length() > 0)
             {
                 _textField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
