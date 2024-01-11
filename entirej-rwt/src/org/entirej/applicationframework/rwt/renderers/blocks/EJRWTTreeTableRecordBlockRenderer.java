@@ -1521,7 +1521,10 @@ public class EJRWTTreeTableRecordBlockRenderer implements EJRWTAppBlockRenderer,
                         TreeColumn column = table.getColumn(i);
                         if (column != null && column.getData("ITEM") instanceof EJScreenItemController)
                         {
-                            ((EJScreenItemController) column.getData("ITEM")).executeActionCommand();
+                            dispaly.asyncExec(()->{
+
+                                ((EJScreenItemController) column.getData("ITEM")).executeActionCommand();
+                            });
                         }
                     }
                 }

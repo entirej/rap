@@ -27,6 +27,7 @@ public class EJRWTAsync
 
     public static void runUISafe(Display display, Runnable run)
     {
+        if(!display.isDisposed())
         try
         {
             if ((boolean) method.invoke(display))

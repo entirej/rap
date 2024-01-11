@@ -543,6 +543,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
     @Override
     public void gainFocus()
     {
+        EJRWTAsync.runUISafe(dispaly,() -> {
         logger.trace("START gainFocus");
         if (_firstNavigationalItem != null)
         {
@@ -555,6 +556,7 @@ public class EJRWTSingleRecordBlockRenderer implements EJRWTAppBlockRenderer, Ke
         }
         setHasFocus(true);
         logger.trace("END gainFocus");
+        });
 
     }
 
