@@ -5,9 +5,11 @@ import org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityAuthentic
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
+@Configuration
 @EnableWebSecurity
 public class EJSpringSecurityConfig 
 {
