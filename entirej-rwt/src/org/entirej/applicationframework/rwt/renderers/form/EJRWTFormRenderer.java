@@ -24,6 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -876,6 +877,20 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     scrollComposite.setExpandVertical(true);
                     scrollComposite.setContent(pagePane);
                     stackedPane.layout();
+                    //
+                    ArrayList<UICallCache> uiactions = new ArrayList<>(_uicallCache);
+                    uiactions.forEach(UICallCache::call);
+
+                    _messageCache.entrySet().forEach(e -> {
+
+                        CanvasHandler canvasHandler = _canvases.get(e.getKey());
+                        if (canvasHandler != null)
+                        {
+                            canvasHandler.setCanvasMessages(e.getValue());
+                        }
+                    });
+
+                    _uicallCache.removeAll(uiactions);
                     return control;
                 }
             });
@@ -2662,7 +2677,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         private  final Pattern urlPattern = Pattern.compile(
                 "(?:^|[\\W])((ht|f)tp(s?):\\/\\/|www\\.)"
                         + "(([\\w\\-]+\\.){1,}?([\\w\\-.~]+\\/?)*"
-                        + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};']*)",
+                        + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};]*)",
                 Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
         
         private Composite       parent;
@@ -2736,7 +2751,15 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 urls.put(url, String.format("<a href='%s' target='_blank'>%s</a>", baseUrl,linkText));
             }
             Set<Entry<String,String>> entrySet = urls.entrySet();
+            Map<String,String> tempIndx = new HashMap<>();
             for (Entry<String, String> entry : entrySet)
+            {
+                String tempVal = UUID.randomUUID().toString();
+                out = out.replace(entry.getKey(), tempVal);
+                tempIndx.put(tempVal, entry.getValue());
+            }
+            out = EJ_RWT.escapeHtmlWithXhtml(out);
+            for (Entry<String, String> entry : tempIndx.entrySet())
             {
                 out = out.replace(entry.getKey(), entry.getValue());
             }
@@ -2872,7 +2895,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                     label = labelUrl;
                                 }
                                 
-                                text.setText(label);
+                                try {
+                                    text.setText( label);
+                                   }catch (Exception e) {
+                                       text.setText( EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()));
+                                   }
                                 text.setData(EJ_RWT.CUSTOM_VARIANT,"ejmessage");
                                 text.setLayoutData(data);
                                 
@@ -2895,7 +2922,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 if(!msg.getMessage().equals(labelUrl)) {
                                     label = labelUrl;
                                 }
-                                text.setText( label);
+                                try {
+                                 text.setText( label);
+                                }catch (Exception e) {
+                                    text.setText( EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()));
+                                }
                                 text.setLayoutData(data);
                             }
                            
