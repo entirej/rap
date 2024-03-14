@@ -467,6 +467,8 @@ public abstract class EJRWTTrayDialog extends Dialog
             nonTrayFocusControl = focusControl;
         }
         
+       
+        
         switch (location)
         {
             case BOTTOM:
@@ -484,6 +486,17 @@ public abstract class EJRWTTrayDialog extends Dialog
 
         
         trayControl = tray.createContents(shell);
+        if(size==0) {//auto expand
+            switch (location)
+            {
+                case BOTTOM:
+                case TOP:
+                    
+                    size = tray.getExpandSize()+80;
+                    break;
+
+            }
+        }
         final GridData data;
         switch (location)
         {

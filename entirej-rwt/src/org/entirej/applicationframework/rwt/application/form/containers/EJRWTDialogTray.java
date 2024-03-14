@@ -1,5 +1,6 @@
 package org.entirej.applicationframework.rwt.application.form.containers;
 
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -27,4 +28,6 @@ public abstract class EJRWTDialogTray {
 	 * @return the contents of the tray, as a <code>Control</code>
 	 */
 	protected abstract Control createContents(Composite parent);
+	
+	public abstract int getExpandSize();
 }

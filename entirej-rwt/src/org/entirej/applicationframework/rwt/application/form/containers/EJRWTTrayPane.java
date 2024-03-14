@@ -120,10 +120,13 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane implements ITrayPane
     @Override
     public void openTray(final TrayLocation location, EJRWTDialogTray tray, int size) throws IllegalStateException, UnsupportedOperationException
     {
-        if(sizeCache>0)
+        if(size!=0 && sizeCache>0)
         {
             size = sizeCache;
         }
+        
+        
+        
         if (tray == null)
         {
             throw new NullPointerException("Tray was null"); //$NON-NLS-1$
@@ -136,6 +139,8 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane implements ITrayPane
         {
             throw new UnsupportedOperationException("Trays not supported with custom layouts"); //$NON-NLS-1$
         }
+        
+       
         this.location = location;
 
         switch (location)
@@ -154,6 +159,15 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane implements ITrayPane
         }
 
         trayControl = tray.createContents(this);
+        if(size==0) {//auto expand
+            switch (location)
+            {
+                case BOTTOM:
+                case TOP:
+                    
+                    size = tray.getExpandSize()+80;
+            }
+        }
         final GridData data;
         switch (location)
         {
