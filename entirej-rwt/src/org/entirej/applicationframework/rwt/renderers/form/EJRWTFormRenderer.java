@@ -716,6 +716,17 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         CanvasHandler canvasHandler = new CanvasHandler()
         {
 
+            @Override
+            public void setCanvasSize(int width, int height)
+            {
+               if(!stackedPane.isDisposed()) {
+                   GridData layoutData = (GridData) stackedPane.getLayoutData();
+                   layoutData.widthHint =width;
+                   layoutData.heightHint = height;
+                   stackedPane.getParent().layout(true);
+               }
+                
+            }
             private Collection<EJMessage> msgs;
 
             @Override
@@ -930,6 +941,17 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         CanvasHandler canvasHandler = new CanvasHandler()
         {
 
+            @Override
+            public void setCanvasSize(int width, int height)
+            {
+               if(!stackedPane.isDisposed()) {
+                   GridData layoutData = (GridData) stackedPane.getLayoutData();
+                   layoutData.widthHint =width;
+                   layoutData.heightHint = height;
+                   stackedPane.getParent().layout(true);
+               }
+                
+            }
             private Collection<EJMessage> msgs;
 
             @Override
@@ -1116,6 +1138,17 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         CanvasHandler canvasHandler = new CanvasHandler()
         {
 
+            @Override
+            public void setCanvasSize(int width, int height)
+            {
+               if(!trayPane.isDisposed()) {
+                   GridData layoutData = (GridData) trayPane.getLayoutData();
+                   layoutData.widthHint =width;
+                   layoutData.heightHint = height;
+                   trayPane.getParent().layout(true);
+               }
+                
+            }
             private Collection<EJMessage> msgs;
 
             @Override
@@ -1294,6 +1327,18 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         CanvasHandler canvasHandler = new CanvasHandler()
         {
+            
+            @Override
+            public void setCanvasSize(int width, int height)
+            {
+               if(!trayPane.isDisposed()) {
+                   GridData layoutData = (GridData) trayPane.getLayoutData();
+                   layoutData.widthHint =width;
+                   layoutData.heightHint = height;
+                   trayPane.getParent().layout(true);
+               }
+                
+            }
 
             private Collection<EJMessage> msgs;
 
@@ -1504,6 +1549,17 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         CanvasHandler canvasHandler = new CanvasHandler()
         {
 
+            @Override
+            public void setCanvasSize(int width, int height)
+            {
+               if(!trayPane.isDisposed()) {
+                   GridData layoutData = (GridData) trayPane.getLayoutData();
+                   layoutData.widthHint =width;
+                   layoutData.heightHint = height;
+                   trayPane.getParent().layout(true);
+               }
+                
+            }
             private Collection<EJMessage> msgs;
 
             @Override
@@ -1673,6 +1729,17 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         CanvasHandler canvasHandler = new CanvasHandler()
         {
 
+            @Override
+            public void setCanvasSize(int width, int height)
+            {
+               if(!trayPane.isDisposed()) {
+                   GridData layoutData = (GridData) trayPane.getLayoutData();
+                   layoutData.widthHint =width;
+                   layoutData.heightHint = height;
+                   trayPane.getParent().layout(true);
+               }
+                
+            }
             private Collection<EJMessage> msgs;
 
             @Override
@@ -2400,6 +2467,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         void clearCanvasMessages();
 
         void add(EJInternalBlock block);
+        
+        public void setCanvasSize(int width, int height);
     }
 
     @Override
@@ -2601,10 +2670,10 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     public void setCanvasSize(String canvasName, int width, int height)
     {
         CanvasHandler canvasHandler = _canvases.get(canvasName);
-        if (canvasHandler instanceof PopupCanvasHandler)
+        if (canvasHandler !=null)
         {
-            PopupCanvasHandler popupCanvasHandler = (PopupCanvasHandler) canvasHandler;
-            popupCanvasHandler.setCanvasSize(width, height);
+            //PopupCanvasHandler popupCanvasHandler = (PopupCanvasHandler) canvasHandler;
+            canvasHandler.setCanvasSize(width, height);
         }
         else
         {
