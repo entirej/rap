@@ -128,9 +128,9 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
     public final String                    SHOW_LEGEND               = "showLegend";
     public final String                    LEGEND_POSITION           = "legendPosition";
-    public final String                    SCALE_MIN                  = "scaleMin";
-    public final String                    SCALE_MAX                  = "scaleMax";
-    public final String                    SCALE_STEP                 = "scaleStep";
+    public final String                    SCALE_MIN                  = "min";
+    public final String                    SCALE_MAX                  = "max";
+    public final String                    SCALE_STEP                 = "stepSize";
 
     public final String                    LBL_VIEW_TYPE             = "lblViewType";
     public final String                    LBL_VIEW_POS              = "lblViewPos";
@@ -265,9 +265,12 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
         
         {
 
-            float scaleMin =  blockProperties.getBlockRendererProperties().getFloatProperty(SCALE_MIN, -1f);
-            float scaleMax =  blockProperties.getBlockRendererProperties().getFloatProperty(SCALE_MAX, -1f);
-            float scaleStep =  blockProperties.getBlockRendererProperties().getFloatProperty(SCALE_STEP, -1f);
+            EJFrameworkExtensionProperties propertyGroup = blockProperties.getBlockRendererProperties().getPropertyGroup("SCALE");
+            
+            if(propertyGroup!=null) {
+            float scaleMin = propertyGroup.getFloatProperty(SCALE_MIN, -1f);
+            float scaleMax =  propertyGroup.getFloatProperty(SCALE_MAX, -1f);
+            float scaleStep =  propertyGroup.getFloatProperty(SCALE_STEP, -1f);
             if(scaleMin>-1) {
                 options.setScaleMin(scaleMin); 
             }
@@ -276,6 +279,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
             }
             if(scaleStep>-1) {
                 options.setScaleStep(scaleStep); 
+            }
             }
         }
 
