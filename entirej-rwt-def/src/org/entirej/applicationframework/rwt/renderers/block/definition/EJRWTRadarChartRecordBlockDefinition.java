@@ -197,6 +197,8 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
 
         EJDevPropertyDefinitionGroup sectionGroup = new EJDevPropertyDefinitionGroup("TITLE_BAR");
         sectionGroup.setLabel("Title Bar");
+        EJDevPropertyDefinitionGroup scaleGroup = new EJDevPropertyDefinitionGroup("SCALE");
+        scaleGroup.setLabel("Scale");
 
         EJDevPropertyDefinition title = new EJDevPropertyDefinition(EJRWTSingleRecordBlockDefinitionProperties.ITEM_GROUP_TITLE_BAR_TITLE, EJPropertyDefinitionType.STRING);
         title.setLabel("Title");
@@ -247,7 +249,42 @@ public class EJRWTRadarChartRecordBlockDefinition implements EJDevBlockRendererD
 
         sectionGroup.addPropertyDefinition(showTitleBarExpanded);
         mainGroup.addSubGroup(sectionGroup);
+        
+        
+        EJDevPropertyDefinition beginAtZero = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.BEGIN_AT_ZERO, EJPropertyDefinitionType.BOOLEAN);
+        beginAtZero.setLabel("Begin At Zero");
+        beginAtZero.setDescription(" if true, scale will include 0 if it is not already included");
 
+        EJDevPropertyDefinition min = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.MIN, EJPropertyDefinitionType.FLOAT);
+        min.setLabel("Min");
+        min.setDescription("User defined minimum number for the scale, overrides minimum value from data.");
+        EJDevPropertyDefinition max = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.MAX, EJPropertyDefinitionType.FLOAT);
+        max.setLabel("Max");
+        max.setDescription(" User defined maximum number for the scale, overrides maximum value from data.");
+        EJDevPropertyDefinition maxTicksLimit = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.MAX_TICKS_LIMIT, EJPropertyDefinitionType.INTEGER);
+        maxTicksLimit.setLabel("Max Ticks Limit");
+        maxTicksLimit.setDescription("Maximum number of ticks and gridlines to show.");
+        maxTicksLimit.setDefaultValue("20");
+
+        EJDevPropertyDefinition stepSize = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.STEP_SIZE, EJPropertyDefinitionType.FLOAT);
+        stepSize.setLabel("Step Size");
+        stepSize.setDescription("User defined fixed step size for the scale.");
+        EJDevPropertyDefinition suggestedMax = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SUGGESTED_MAX, EJPropertyDefinitionType.FLOAT);
+        suggestedMax.setLabel("Suggested Max");
+        suggestedMax.setDescription("Adjustment used when calculating the maximum data value.");
+        EJDevPropertyDefinition suggestedMin = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SUGGESTED_MIN, EJPropertyDefinitionType.FLOAT);
+        suggestedMin.setLabel("Suggested Min");
+        suggestedMin.setDescription("Adjustment used when calculating the minimum data value.");
+
+       
+        //scaleGroup.addPropertyDefinition(beginAtZero);
+        scaleGroup.addPropertyDefinition(min);
+        //scaleGroup.addPropertyDefinition(suggestedMin);
+        scaleGroup.addPropertyDefinition(max);
+       // scaleGroup.addPropertyDefinition(suggestedMax);
+        scaleGroup.addPropertyDefinition(stepSize);
+        //scaleGroup.addPropertyDefinition(maxTicksLimit);
+        mainGroup.addSubGroup(scaleGroup);
         return mainGroup;
     }
 

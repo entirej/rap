@@ -128,6 +128,9 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
     public final String                    SHOW_LEGEND               = "showLegend";
     public final String                    LEGEND_POSITION           = "legendPosition";
+    public final String                    SCALE_MIN                  = "scaleMin";
+    public final String                    SCALE_MAX                  = "scaleMax";
+    public final String                    SCALE_STEP                 = "scaleStep";
 
     public final String                    LBL_VIEW_TYPE             = "lblViewType";
     public final String                    LBL_VIEW_POS              = "lblViewPos";
@@ -145,7 +148,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
     private Display                        dispaly                   = Display.getDefault();
-    private boolean fillBG;
+    private boolean                        fillBG;
 
     @Override
     public void setFilter(String filter)
@@ -260,7 +263,23 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
         options.setAnimation(blockProperties.getBlockRendererProperties().getBooleanProperty(ANIMATION, options.getAnimation()));
         options.setShowToolTips(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_TOOLTIPS, options.getShowToolTips()));
         
-         fillBG = blockProperties.getBlockRendererProperties().getBooleanProperty(FILLBG, true);
+        {
+
+            float scaleMin =  blockProperties.getBlockRendererProperties().getFloatProperty(SCALE_MIN, -1f);
+            float scaleMax =  blockProperties.getBlockRendererProperties().getFloatProperty(SCALE_MAX, -1f);
+            float scaleStep =  blockProperties.getBlockRendererProperties().getFloatProperty(SCALE_STEP, -1f);
+            if(scaleMin>-1) {
+                options.setScaleMin(scaleMin); 
+            }
+            if(scaleMax>-1) {
+                options.setScaleMax(scaleMax); 
+            }
+            if(scaleStep>-1) {
+                options.setScaleStep(scaleStep); 
+            }
+        }
+
+        fillBG = blockProperties.getBlockRendererProperties().getBooleanProperty(FILLBG, true);
 
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
@@ -525,7 +544,6 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
                     continue;
                 Object lbl = labelColumn != null ? ejDataRecord.getValue(labelColumn) : "";
                 ChartStyle colors = new ChartStyle(220, 220, 220, 0.6f);
-               
 
                 EJCoreVisualAttributeProperties attributeProperties = labelColumn != null ? ejDataRecord.getItem(labelColumn).getVisualAttribute() : null;
 
@@ -547,7 +565,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
                         colors.setStrokeColor(new RGB(color.getRed(), color.getGreen(), color.getBlue()));
 
                     }
-                   
+
                 }
                 colors.setFill(fillBG);
                 rowInfo.setChartStyle(colors);
