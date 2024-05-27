@@ -1127,8 +1127,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             @Override
             public void widgetSelected(SelectionEvent e)
             {
-                if (tabFolder.canFireEvent())
+                if (tabFolder.canFireEvent()) {
                     canvasController.tabPageChanged(name, tabFolder.getActiveKey());
+                }
 
                 EJ_RWT.setAttribute(cfolder, "ej-item-selection", tabFolder.getActiveKey());
             }
