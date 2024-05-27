@@ -1128,13 +1128,15 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             public void widgetSelected(SelectionEvent e)
             {
                 if (tabFolder.canFireEvent()) {
-                    canvasController.tabPageChanged(name, tabFolder.getActiveKey());
+                    Display.getDefault().asyncExec(()->{canvasController.tabPageChanged(name, tabFolder.getActiveKey());});
+                    
                 }
 
                 EJ_RWT.setAttribute(cfolder, "ej-item-selection", tabFolder.getActiveKey());
             }
         });
         folder = tabFolder;
+       
 
         CanvasHandler canvasHandler = new CanvasHandler()
         {
