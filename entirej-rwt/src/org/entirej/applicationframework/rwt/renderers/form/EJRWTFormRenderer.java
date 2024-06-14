@@ -727,6 +727,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                }
                 
             }
+
+            public int getCanvasWidth()
+            {
+                if (!stackedPane.isDisposed())
+                {
+                    return stackedPane.getSize().x;
+                }
+                return -1;
+            }
+
+            public int getCanvasHeight()
+            {
+                if (!stackedPane.isDisposed())
+                {
+                    return stackedPane.getSize().y;
+                }
+                return -1;
+            }
             private Collection<EJMessage> msgs;
 
             @Override
@@ -952,6 +970,27 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                }
                 
             }
+            
+
+
+            public int getCanvasWidth()
+            {
+                if (!stackedPane.isDisposed())
+                {
+                    return stackedPane.getSize().x;
+                }
+                return -1;
+            }
+
+            public int getCanvasHeight()
+            {
+                if (!stackedPane.isDisposed())
+                {
+                    return stackedPane.getSize().y;
+                }
+                return -1;
+            }
+            
             private Collection<EJMessage> msgs;
 
             @Override
@@ -1152,6 +1191,26 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                }
                 
             }
+            
+            public int getCanvasWidth()
+            {
+                if (!trayPane.isDisposed())
+                {
+                    return trayPane.getSize().x;
+                }
+                return -1;
+            }
+
+            public int getCanvasHeight()
+            {
+                if (!trayPane.isDisposed())
+                {
+                    return trayPane.getSize().y;
+                }
+                return -1;
+            }
+            
+            
             private Collection<EJMessage> msgs;
 
             @Override
@@ -1341,6 +1400,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                    trayPane.getParent().layout(true);
                }
                 
+            }
+            
+            public int getCanvasWidth()
+            {
+                if (!trayPane.isDisposed())
+                {
+                    return trayPane.getSize().x;
+                }
+                return -1;
+            }
+
+            public int getCanvasHeight()
+            {
+                if (!trayPane.isDisposed())
+                {
+                    return trayPane.getSize().y;
+                }
+                return -1;
             }
 
             private Collection<EJMessage> msgs;
@@ -1563,6 +1640,25 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                }
                 
             }
+            
+            public int getCanvasWidth()
+            {
+                if (!trayPane.isDisposed())
+                {
+                    return trayPane.getSize().x;
+                }
+                return -1;
+            }
+
+            public int getCanvasHeight()
+            {
+                if (!trayPane.isDisposed())
+                {
+                    return trayPane.getSize().y;
+                }
+                return -1;
+            }
+            
             private Collection<EJMessage> msgs;
 
             @Override
@@ -1742,6 +1838,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                    trayPane.getParent().layout(true);
                }
                 
+            }
+            
+            public int getCanvasWidth()
+            {
+                if (!trayPane.isDisposed())
+                {
+                    return trayPane.getSize().x;
+                }
+                return -1;
+            }
+
+            public int getCanvasHeight()
+            {
+                if (!trayPane.isDisposed())
+                {
+                    return trayPane.getSize().y;
+                }
+                return -1;
             }
             private Collection<EJMessage> msgs;
 
@@ -2457,6 +2571,29 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             }
 
         }
+        
+        public int getCanvasWidth()
+        {
+
+            if (_popupDialog != null && _popupDialog.getShell() != null && !_popupDialog.getShell().isDisposed())
+            {
+                return _popupDialog.getShell().getSize().x;
+            }
+            return -1;
+
+        }
+
+        public int getCanvasHeight()
+        {
+
+            if (_popupDialog != null && _popupDialog.getShell() != null && !_popupDialog.getShell().isDisposed())
+            {
+                return _popupDialog.getShell().getSize().y;
+            }
+            return -1;
+
+        }
+
     }
 
     public interface CanvasHandler
@@ -2472,6 +2609,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         void add(EJInternalBlock block);
         
         public void setCanvasSize(int width, int height);
+        
+        public int getCanvasWidth();
+        public int getCanvasHeight();
     }
 
     @Override
@@ -2683,6 +2823,25 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             _uicallCache.add(() -> setCanvasSize(canvasName, width, height));
         }
     }
+    public int getCanvasWidth(String canvasName) {
+        CanvasHandler canvasHandler = _canvases.get(canvasName);
+        if (canvasHandler !=null)
+        {
+            return canvasHandler.getCanvasWidth();
+        }
+        
+        return -1;
+    }
+    public int getCanvasHeight(String canvasName) {
+        
+        CanvasHandler canvasHandler = _canvases.get(canvasName);
+        if (canvasHandler !=null)
+        {
+            return canvasHandler.getCanvasHeight();
+        }
+        return -1;
+    }
+    
 
     @Override
     public String getButtonLabel(String canvasName, EJPopupButton button)
