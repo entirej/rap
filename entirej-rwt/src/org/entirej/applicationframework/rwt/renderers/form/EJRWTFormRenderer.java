@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -727,6 +728,30 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                }
                 
             }
+            
+            public int getPreferredCanvasWidth()
+            {
+                
+                if (stackedPane != null &&  !stackedPane.isDisposed())
+                {
+                    Point size = stackedPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    return size.x;
+                }
+                return -1;
+                
+            }
+            
+            public int getPreferredCanvasHeight()
+            {
+                
+                if (stackedPane != null &&  !stackedPane.isDisposed())
+                {
+                    Point size = stackedPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    return size.y;
+                }
+                return -1;
+                
+            }
 
             public int getCanvasWidth()
             {
@@ -971,6 +996,30 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
             }
             
+            
+            public int getPreferredCanvasWidth()
+            {
+                
+                if (stackedPane != null &&  !stackedPane.isDisposed())
+                {
+                    Point size = stackedPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    return size.x;
+                }
+                return -1;
+                
+            }
+            
+            public int getPreferredCanvasHeight()
+            {
+                
+                if (stackedPane != null &&  !stackedPane.isDisposed())
+                {
+                    Point size = stackedPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    return size.y;
+                }
+                return -1;
+                
+            }
 
 
             public int getCanvasWidth()
@@ -1210,6 +1259,30 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 return -1;
             }
             
+            public int getPreferredCanvasWidth()
+            {
+                
+                if (cfolder != null &&  !cfolder.isDisposed())
+                {
+                    Point size = cfolder.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    return size.x;
+                }
+                return -1;
+                
+            }
+            
+            public int getPreferredCanvasHeight()
+            {
+                
+                if (tabFolder != null &&  !cfolder.isDisposed())
+                {
+                    Point size = cfolder.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    return size.y;
+                }
+                return -1;
+                
+            }
+            
             
             private Collection<EJMessage> msgs;
 
@@ -1419,6 +1492,30 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 }
                 return -1;
             }
+            public int getPreferredCanvasWidth()
+            {
+                
+                if (tabFolder != null &&  !tabFolder.isDisposed())
+                {
+                    Point size = tabFolder.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    return size.x;
+                }
+                return -1;
+                
+            }
+            
+            public int getPreferredCanvasHeight()
+            {
+                
+                if (tabFolder != null &&  !tabFolder.isDisposed())
+                {
+                    Point size = tabFolder.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    return size.y;
+                }
+                return -1;
+                
+            }
+            
 
             private Collection<EJMessage> msgs;
 
@@ -1659,6 +1756,30 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 return -1;
             }
             
+            public int getPreferredCanvasWidth()
+            {
+                
+                if (groupPane != null &&  !groupPane.isDisposed())
+                {
+                    Point size = groupPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    return size.x;
+                }
+                return -1;
+                
+            }
+            
+            public int getPreferredCanvasHeight()
+            {
+                
+                if (groupPane != null &&  !groupPane.isDisposed())
+                {
+                    Point size = groupPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    return size.y;
+                }
+                return -1;
+                
+            }
+            
             private Collection<EJMessage> msgs;
 
             @Override
@@ -1837,6 +1958,30 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                    layoutData.heightHint = height;
                    trayPane.getParent().layout(true);
                }
+                
+            }
+            
+            public int getPreferredCanvasWidth()
+            {
+                
+                if (layoutBody != null &&  !layoutBody.isDisposed())
+                {
+                    Point size = layoutBody.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    return size.x;
+                }
+                return -1;
+                
+            }
+            
+            public int getPreferredCanvasHeight()
+            {
+                
+                if (layoutBody != null &&  !layoutBody.isDisposed())
+                {
+                    Point size = layoutBody.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    return size.y;
+                }
+                return -1;
                 
             }
             
@@ -2047,6 +2192,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         Collection<EJMessage>      msgs;
         private int                customWidth         = -1;
         private int                customHeight        = -1;
+        final AtomicReference<EJRWTEntireJGridPane> uiBody = new AtomicReference<EJRWTEntireJGridPane>(null);
 
         public PopupCanvasHandler(EJCanvasProperties canvasProperties, EJCanvasController canvasController)
         {
@@ -2164,7 +2310,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             final int height = customHeight != -1 ? customHeight : canvasProperties.getHeight();
             final int numCols = canvasProperties.getNumCols();
             final EJRWTApplicationManager applicationManager = (EJRWTApplicationManager) _form.getFrameworkManager().getApplicationManager();
-
+            
             if (_popupDialog == null || _popupDialog.getShell() == null || _popupDialog.getShell().isDisposed())
             {
 
@@ -2201,6 +2347,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         final ScrolledComposite scrollComposite = new EJRWTScrolledComposite(parent, SWT.V_SCROLL | SWT.H_SCROLL);
 
                         EJRWTEntireJGridPane _mainPane = new EJRWTEntireJGridPane(scrollComposite, numCols);
+                        uiBody.set(_mainPane);
                         _mainPane.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
                         _mainPane.cleanLayout();
                         EJCanvasPropertiesContainer popupCanvasContainer = canvasProperties.getPopupCanvasContainer();
@@ -2593,6 +2740,29 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             return -1;
 
         }
+        public int getPreferredCanvasWidth()
+        {
+            
+            if (uiBody.get() != null &&  !uiBody.get().isDisposed())
+            {
+                Point size = uiBody.get().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                return size.x;
+            }
+            return -1;
+            
+        }
+        
+        public int getPreferredCanvasHeight()
+        {
+            
+            if (uiBody.get() != null &&  !uiBody.get().isDisposed())
+            {
+                Point size = uiBody.get().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                return size.y;
+            }
+            return -1;
+            
+        }
 
     }
 
@@ -2612,6 +2782,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         
         public int getCanvasWidth();
         public int getCanvasHeight();
+        public int getPreferredCanvasWidth();
+        public int getPreferredCanvasHeight();
     }
 
     @Override
@@ -2838,6 +3010,24 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         if (canvasHandler !=null)
         {
             return canvasHandler.getCanvasHeight();
+        }
+        return -1;
+    }
+    public int getPreferredCanvasWidth(String canvasName) {
+        CanvasHandler canvasHandler = _canvases.get(canvasName);
+        if (canvasHandler !=null)
+        {
+            return canvasHandler.getPreferredCanvasWidth();
+        }
+        
+        return -1;
+    }
+    public int getPreferredCanvasHeight(String canvasName) {
+        
+        CanvasHandler canvasHandler = _canvases.get(canvasName);
+        if (canvasHandler !=null)
+        {
+            return canvasHandler.getPreferredCanvasHeight();
         }
         return -1;
     }
