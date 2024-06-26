@@ -390,6 +390,22 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
 
     }
+    
+    @Override
+    public void updatePageLayout(String canvasName, String pageName)
+    {
+        if (canvasName != null && pageName != null)
+        {
+            ITabFolder tabPane = _tabFolders.get(canvasName);
+            if (tabPane != null)
+            {
+                tabPane.updatePageLayout(pageName);
+            }
+            else
+                _uicallCache.add(() -> updatePageLayout(canvasName, pageName));
+        }
+        
+    }
 
     @Override
     public void setSplitPageVisible(String splitCanvasName, String splitPageCanvasName, boolean visible)
@@ -3031,6 +3047,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         }
         return -1;
     }
+    
+    
     
 
     @Override

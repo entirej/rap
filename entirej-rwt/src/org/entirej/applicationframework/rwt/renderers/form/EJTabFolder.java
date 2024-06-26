@@ -12,10 +12,12 @@ import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Display;
 import org.entirej.applicationframework.rwt.layout.EJRWTEntireJGridPane;
+import org.entirej.applicationframework.rwt.layout.EJRWTScrolledComposite;
 import org.entirej.framework.core.data.controllers.EJCanvasController;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
 import org.entirej.framework.core.properties.containers.interfaces.EJCanvasPropertiesContainer;
@@ -184,6 +186,7 @@ class EJTabFolder implements ITabFolder
         boolean                   visible = true;
         int                       index   = -1;
         EJRWTEntireJGridPane      pageCanvas;
+         ScrolledComposite scrollComposite;
         final EJTabPageProperties page;
 
         public Tab(EJTabPageProperties page)
@@ -240,10 +243,21 @@ class EJTabFolder implements ITabFolder
             tabItem.setData("TAB_KEY", page.getName());
 
             EJ_RWT.setTestId(tabItem, page.getName());
-            pageCanvas = new EJRWTEntireJGridPane(folder, page.getNumCols());
+            
+             scrollComposite = new EJRWTScrolledComposite(folder, SWT.V_SCROLL | SWT.H_SCROLL);
+
+          
+           
+            
+            pageCanvas = new EJRWTEntireJGridPane(scrollComposite, page.getNumCols());
+            pageCanvas.cleanLayout();
+            scrollComposite.setContent(pageCanvas);
+            scrollComposite.setExpandHorizontal(true);
+            scrollComposite.setExpandVertical(true);
+            scrollComposite.setMinSize(folder.getSize());
             pageCanvas.setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_FORM);
             tabItem.setText(page.getPageTitle() != null && page.getPageTitle().length() > 0 ? page.getPageTitle() : page.getName());
-            tabItem.setControl(pageCanvas);
+            tabItem.setControl(scrollComposite);
             final EJCanvasPropertiesContainer containedCanvases = page.getContainedCanvases();
 
             init.set(innerBuild || folder.getSelection() == null);
@@ -286,7 +300,7 @@ class EJTabFolder implements ITabFolder
             }
 
             item = tabItem;
-            tabItem.getControl().setEnabled(page.isEnabled());
+            pageCanvas.setEnabled(page.isEnabled());
 
             CTabFolder paranet = item.getParent();
             paranet.redraw();
@@ -334,5 +348,17 @@ class EJTabFolder implements ITabFolder
         }
 
     }
+    
+    @Override
+    public void updatePageLayout(String tabPageName)
+    {
+        Tab cTabItem = tabPages.get(tabPageName);
+        if (cTabItem != null && cTabItem.item != null)
+        {
+            cTabItem.scrollComposite.setMinSize(cTabItem.pageCanvas.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
+        }
+        
+    }
+    
 
 }

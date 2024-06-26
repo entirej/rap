@@ -32,4 +32,6 @@ public interface ITabFolder
     void put(String name, ITab tab);
 
     void setTabPageVa(String tabPageName, String visualAttributeName);
+
+    void updatePageLayout(String pageName);
 }
