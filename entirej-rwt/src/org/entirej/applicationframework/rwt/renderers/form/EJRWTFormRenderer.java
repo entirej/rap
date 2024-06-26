@@ -734,7 +734,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
                 if (stackedPane != null &&  !stackedPane.isDisposed())
                 {
-                    Point size = stackedPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    Point size = stackedPane.computeSize(SWT.MAX, SWT.MAX);;
                     return size.x;
                 }
                 return -1;
@@ -746,7 +746,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
                 if (stackedPane != null &&  !stackedPane.isDisposed())
                 {
-                    Point size = stackedPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    Point size = stackedPane.computeSize(SWT.MAX, SWT.MAX);;
                     return size.y;
                 }
                 return -1;
@@ -1002,7 +1002,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
                 if (stackedPane != null &&  !stackedPane.isDisposed())
                 {
-                    Point size = stackedPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    Point size = stackedPane.computeSize(SWT.MAX, SWT.MAX);;
                     return size.x;
                 }
                 return -1;
@@ -1014,7 +1014,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
                 if (stackedPane != null &&  !stackedPane.isDisposed())
                 {
-                    Point size = stackedPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    Point size = stackedPane.computeSize(SWT.MAX, SWT.MAX);;
                     return size.y;
                 }
                 return -1;
@@ -1264,7 +1264,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
                 if (cfolder != null &&  !cfolder.isDisposed())
                 {
-                    Point size = cfolder.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    Point size = cfolder.computeSize(SWT.MAX, SWT.MAX);
                     return size.x;
                 }
                 return -1;
@@ -1276,7 +1276,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
                 if (tabFolder != null &&  !cfolder.isDisposed())
                 {
-                    Point size = cfolder.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    Point size = cfolder.computeSize(SWT.MAX, SWT.MAX);;
                     return size.y;
                 }
                 return -1;
@@ -1497,7 +1497,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
                 if (tabFolder != null &&  !tabFolder.isDisposed())
                 {
-                    Point size = tabFolder.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    Point size = tabFolder.computeSize(SWT.MAX, SWT.MAX);;
                     return size.x;
                 }
                 return -1;
@@ -1509,7 +1509,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
                 if (tabFolder != null &&  !tabFolder.isDisposed())
                 {
-                    Point size = tabFolder.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    Point size = tabFolder.computeSize(SWT.MAX, SWT.MAX);;
                     return size.y;
                 }
                 return -1;
@@ -1761,7 +1761,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
                 if (groupPane != null &&  !groupPane.isDisposed())
                 {
-                    Point size = groupPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    Point size = groupPane.computeSize(SWT.MAX, SWT.MAX);;
                     return size.x;
                 }
                 return -1;
@@ -1773,7 +1773,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
                 if (groupPane != null &&  !groupPane.isDisposed())
                 {
-                    Point size = groupPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    Point size = groupPane.computeSize(SWT.MAX, SWT.MAX);;
                     return size.y;
                 }
                 return -1;
@@ -1966,7 +1966,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
                 if (layoutBody != null &&  !layoutBody.isDisposed())
                 {
-                    Point size = layoutBody.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    Point size = layoutBody.computeSize(SWT.MAX, SWT.MAX);;
                     return size.x;
                 }
                 return -1;
@@ -1978,7 +1978,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 
                 if (layoutBody != null &&  !layoutBody.isDisposed())
                 {
-                    Point size = layoutBody.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                    Point size = layoutBody.computeSize(SWT.MAX, SWT.MAX);;
                     return size.y;
                 }
                 return -1;
@@ -2745,7 +2745,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             
             if (uiBody.get() != null &&  !uiBody.get().isDisposed())
             {
-                Point size = uiBody.get().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                Point size = uiBody.get().computeSize(SWT.MAX, SWT.MAX);;
                 return size.x;
             }
             return -1;
@@ -2757,7 +2757,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             
             if (uiBody.get() != null &&  !uiBody.get().isDisposed())
             {
-                Point size = uiBody.get().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+                Point size = uiBody.get().computeSize(SWT.MAX, SWT.MAX);;
                 return size.y;
             }
             return -1;
