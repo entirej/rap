@@ -32,6 +32,7 @@ import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.widgets.WidgetUtil;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Layout;
@@ -52,6 +53,8 @@ public class EJRWTHtmlView extends Composite
     private String                 text             = "";
     private final RemoteObject     remoteObject;
     private int                    scrollPos;
+    private int                    scrollHeight;
+    private int                    scrollWidth;
 
     private final OperationHandler operationHandler = new AbstractOperationHandler()
                                                     {
@@ -59,10 +62,16 @@ public class EJRWTHtmlView extends Composite
 
                                                         public void handleSet(JsonObject properties)
                                                         {
+
                                                             JsonValue textValue = properties.get("scroll");
                                                             if (textValue != null)
                                                             {
                                                                 scrollPos = (int)textValue.asObject().get("vpos").asFloat();
+                                                                scrollWidth = (int)textValue.asObject().get("scrollWidth").asFloat();
+                                                                scrollHeight = (int)textValue.asObject().get("scrollHeight").asFloat();
+
+
+                                                               
                                                             }
                                                         }
 
@@ -170,6 +179,7 @@ public class EJRWTHtmlView extends Composite
         }
         this.text = text;
         remoteObject.set("text", text);
+        
     }
 
     public String getText()
@@ -197,5 +207,16 @@ public class EJRWTHtmlView extends Composite
     {
         return scrollPos;
     }
+    
+    public int getScrollWidth()
+    {
+        return scrollWidth;
+    }
+    
+    public int getScrollHeight()
+    {
+        return scrollHeight;
+    }
+    
 
 }

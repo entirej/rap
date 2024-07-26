@@ -109,7 +109,7 @@ import org.entirej.framework.core.renderers.interfaces.EJUpdateScreenRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyListener
+public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyListener, EJRWTAppBlockRenderer.CustomBlockSizeSupport
 {
     private Logger                                            LOGGER                     = LoggerFactory.getLogger(this.getClass());
 
@@ -2444,6 +2444,18 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
         return _filteredContentProvider != null ? _filteredContentProvider.getFilter() : null;
 
+    }
+    
+    @Override
+    public int getPreferredCanvasHeight()
+    {
+        return _browser.getScrollHeight();
+    }
+    
+    @Override
+    public int getPreferredCanvasWidth()
+    {
+         return _browser.getScrollWidth();
     }
 
 }

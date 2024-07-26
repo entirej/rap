@@ -19,7 +19,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
   }
 
   entirej.HtmlView = function( properties ) {
-    bindAll( this, [ "layout", "onRender","ej_action","ej_select","ej_dblclick",'ej_scroll','ej_text_select' ] );
+    bindAll( this, [ "layout", "onRender","ej_action","ej_select","ej_dblclick",'ej_scroll','ej_scroll_main','ej_text_select' ] );
     this.parent = rap.getObject( properties.parent );
     this.document = document;
     this.window = window;
@@ -205,20 +205,28 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
     ej_scroll : function() {
     	var remoteObject = rap.getRemoteObject(this);
     	
-    	var pos = this.scrolDiv.scrollTop;
-    	
-    	var arg = {}
-    	arg['vpos'] = pos;
-    	remoteObject.set('scroll',arg);
+    	var pos = this.element.scrollTop;
+        var scrollHeight = this.element.scrollHeight;
+        var scrollWidth = this.element.scrollWidth;
+        
+        var arg = {}
+        arg['vpos'] = pos;
+        arg['scrollHeight'] = scrollHeight;
+        arg['scrollWidth'] = scrollWidth;
+        remoteObject.set('scroll',arg);
         
     },
     ej_scroll_main : function() {
     	var remoteObject = rap.getRemoteObject(this);
     	
     	var pos = this.element.scrollTop;
+    	var scrollHeight = this.element.scrollHeight;
+    	var scrollWidth = this.element.scrollWidth;
     	
     	var arg = {}
     	arg['vpos'] = pos;
+    	arg['scrollHeight'] = scrollHeight;
+    	arg['scrollWidth'] = scrollWidth;
     	remoteObject.set('scroll',arg);
     	
     },
@@ -281,12 +289,15 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         
         
         var divs = this.element.getElementsByTagName("div");
+        var ej_scroll_main = this.ej_scroll_main;
         this.element.onscroll = this.ej_scroll_main;
         if(divs && divs[0])
         {
         	this.scrolDiv = divs[0];
         	this.scrolDiv.onscroll = this.ej_scroll;
         }
+        window.setTimeout ( ej_scroll_main, 100);
+        
        
     },
     
@@ -324,7 +335,6 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         		}
         	}
     	}
-    	
       
     },
     
@@ -342,6 +352,8 @@ var CKEDITOR_BASEPATH = "rwt-resources/ejhtmlview/";
         var area = this.parent.getClientArea();
         this.element.style.left = area[ 0 ] + "px";
         this.element.style.top = area[ 1 ] + "px";
+       var ej_scroll_main = this.ej_scroll_main;
+       window.setTimeout ( ej_scroll_main, 100);
     }
 
   };
