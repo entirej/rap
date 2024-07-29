@@ -109,7 +109,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     
     public String getDisplayValue()
     {
-        if(controlState(_labelField.getControl()))
+        if(_labelField!=null && controlState(_labelField.getControl()))
         {
             return _labelField.getText();
         }
@@ -126,7 +126,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
             
           
            
-            if(controlState(_labelField.getControl()) && _rendererProps!=null)
+            if(_labelField!=null && controlState(_labelField.getControl()) && _rendererProps!=null)
             {
                 String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
                 
@@ -211,7 +211,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public Control getGuiComponent()
     {
 
-        return _labelField.getControl();
+        return _labelField!=null ? _labelField.getControl() : null;
     }
 
     @Override
@@ -362,7 +362,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public void validationErrorOccurred(boolean error)
     {
-        if (_errorDecoration == null  || !controlState(_labelField.getControl()) ||  _errorDecoration.getControl().isDisposed())
+        if (_errorDecoration == null  || ! (_labelField!=null && controlState(_labelField.getControl())) ||  _errorDecoration.getControl().isDisposed())
         {
             return;
         }
@@ -381,7 +381,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public void setMessage(EJMessage message)
     {
         this.message = message;
-        if (_errorDecoration != null  && controlState(_labelField.getControl()) && !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null  && (_labelField!=null && controlState(_labelField.getControl())) && !_errorDecoration.getControl().isDisposed())
         {
             ControlDecorationSupport.handleMessage(_errorDecoration, message);
         }
@@ -392,7 +392,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     public void clearMessage()
     {
         this.message = null;
-        if (_errorDecoration != null && controlState(_labelField.getControl())  &&  !_errorDecoration.getControl().isDisposed())
+        if (_errorDecoration != null && (_labelField!=null && controlState(_labelField.getControl()))  &&  !_errorDecoration.getControl().isDisposed())
         {
             _errorDecoration.setDescriptionText("");
             {
