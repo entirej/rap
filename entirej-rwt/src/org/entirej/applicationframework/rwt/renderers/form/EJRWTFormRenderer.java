@@ -121,6 +121,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
     private Map<String, Collection<EJMessage>>      _messageCache       = new HashMap<>();
     private List<String>                            _showPopupCache     = new LinkedList<>();
     private List<UICallCache>                       _uicallCache        = new LinkedList<>();
+    private final int                               DEFAULT_HIGHT       = 1200;
 
     @Override
     public void formCleared()
@@ -766,8 +767,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (stackedPane != null && !stackedPane.isDisposed())
                 {
                     Point size = stackedPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-                    ;
-                    return size.y;
+                    return size.y== 0 ? DEFAULT_HIGHT : size.y;
                 }
                 return -1;
 
@@ -1037,8 +1037,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (stackedPane != null && !stackedPane.isDisposed())
                 {
                     Point size = trayPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-                    ;
-                    return size.y;
+                    return size.y== 0 ? DEFAULT_HIGHT : size.y;
                 }
                 return -1;
 
@@ -1302,8 +1301,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (tabFolder != null && !cfolder.isDisposed())
                 {
                     Point size = trayPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-                    ;
-                    return size.y;
+                    return size.y== 0 ? DEFAULT_HIGHT : size.y;
                 }
                 return -1;
 
@@ -1538,8 +1536,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (tabFolder != null && !tabFolder.isDisposed())
                 {
                     Point size = trayPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-                    ;
-                    return size.y;
+                    return size.y== 0 ? DEFAULT_HIGHT : size.y;
                 }
                 return -1;
 
@@ -1813,8 +1810,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (groupPane != null && !groupPane.isDisposed())
                 {
                     Point size = trayPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-                    ;
-                    return size.y;
+                    
+                    return size.y== 0 ? DEFAULT_HIGHT : size.y;
                 }
                 return -1;
 
@@ -2022,8 +2019,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (layoutBody != null && !layoutBody.isDisposed())
                 {
                     Point size = trayPane.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-                    ;
-                    return size.y;
+                    return size.y== 0 ? DEFAULT_HIGHT : size.y;
                 }
                 return -1;
 
@@ -2805,8 +2801,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             if (uiBody.get() != null && !uiBody.get().isDisposed())
             {
                 Point size = _popupDialog.getShell().computeSize(SWT.DEFAULT, SWT.DEFAULT);
-                ;
-                return size.y;
+                return size.y== 0 ? DEFAULT_HIGHT : size.y;
             }
             return -1;
 
