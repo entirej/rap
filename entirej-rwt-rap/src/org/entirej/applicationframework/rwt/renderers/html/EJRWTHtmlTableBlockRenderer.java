@@ -2455,7 +2455,7 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
     @Override
     public int getPreferredCanvasWidth()
     {
-         return _browser.getScrollWidth();
+         return 0;//use rwt default
     }
 
 }

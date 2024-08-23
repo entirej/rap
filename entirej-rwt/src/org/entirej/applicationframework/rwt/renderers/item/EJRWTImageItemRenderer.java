@@ -466,7 +466,7 @@ public class EJRWTImageItemRenderer implements EJRWTAppItemRenderer, FocusListen
     @Override
     public void validationErrorOccurred(boolean error)
     {
-        if (_errorDecoration == null)
+        if (_errorDecoration == null ||  !controlState(_labelField) || _errorDecoration.getControl().isDisposed())
         {
             return;
         }
