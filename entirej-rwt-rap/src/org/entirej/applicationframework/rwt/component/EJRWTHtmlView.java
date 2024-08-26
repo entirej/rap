@@ -31,13 +31,14 @@ import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ResourceManager;
 import org.eclipse.rap.rwt.widgets.WidgetUtil;
+import org.eclipse.rwt.EJRWTHtmlViewSupport.HtmlTextSupport;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Layout;
 
-public class EJRWTHtmlView extends Composite
+public class EJRWTHtmlView extends Composite implements HtmlTextSupport
 {
 
     /**
@@ -216,6 +217,13 @@ public class EJRWTHtmlView extends Composite
     public int getScrollHeight()
     {
         return scrollHeight;
+    }
+
+    @Override
+    public void layout(int widthHint)
+    {
+        // TODO Auto-generated method stub
+        
     }
     
 

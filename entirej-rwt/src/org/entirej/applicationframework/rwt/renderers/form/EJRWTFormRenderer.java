@@ -30,11 +30,14 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.rwt.EJRWTHtmlViewSupport;
+import org.eclipse.rwt.EJRWTHtmlViewSupport.HtmlTextSupport;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.DisposeEvent;
@@ -73,12 +76,14 @@ import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJApplicationException;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.common.utils.EJParameterChecker;
+import org.entirej.framework.core.data.EJDataRecord;
 import org.entirej.framework.core.data.controllers.EJCanvasController;
 import org.entirej.framework.core.data.controllers.EJEmbeddedFormController;
 import org.entirej.framework.core.enumerations.EJCanvasMessagePosition;
 import org.entirej.framework.core.enumerations.EJCanvasSplitOrientation;
 import org.entirej.framework.core.enumerations.EJCanvasType;
 import org.entirej.framework.core.enumerations.EJPopupButton;
+import org.entirej.framework.core.enumerations.EJScreenType;
 import org.entirej.framework.core.internal.EJInternalBlock;
 import org.entirej.framework.core.internal.EJInternalEditableBlock;
 import org.entirej.framework.core.internal.EJInternalForm;
@@ -3158,6 +3163,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         // Pattern for recognizing a URL, based off RFC 3986
         private final Pattern   urlPattern = Pattern.compile("(?:^|[\\W])((ht|f)tp(s?):\\/\\/|www\\.)" + "(([\\w\\-]+\\.){1,}?([\\w\\-.~]+\\/?)*" + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};]*)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+        private final Pattern   actionPattern = Pattern.compile("\\[action://([^|]+)\\|([^\\]]+)\\]", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
 
         private Composite       parent;
         EJRWTEntireJGridPane    composite;
@@ -3202,9 +3208,12 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         String matchUrl(String input)
         {
+             String out = input;
+             Map<String, String> urls = new HashMap<>();
+             {
             Matcher matcher = urlPattern.matcher(input);
-            String out = input;
-            Map<String, String> urls = new HashMap<>();
+           
+            
             while (matcher.find())
             {
                 int matchStart = matcher.start(1);
@@ -3232,6 +3241,30 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                 urls.put(url, String.format("<a href='%s' target='_blank'>%s</a>", baseUrl, linkText));
             }
+             }
+             {
+                 Matcher matcher = actionPattern.matcher(input);
+
+                 while (matcher.find())
+                 {
+                     int matchStart = matcher.start(1);
+                     int matchEnd = matcher.end();
+                     String url = "[action://" + input.substring(matchStart, matchEnd);
+
+                     String baseAction = matcher.group(1);
+                     String linkText = matcher.group(2);
+                     StringBuilder builder = new StringBuilder();
+                     String actionDef = String.format("em='eaction' earg='%s , %s' ", baseAction, 0);
+                     builder.append(String.format("<ejl><u %s class=\"%s, %s\"  ", "style=\"line-height: 130%;cursor: pointer; cursor: hand;\"",
+                             ( "default_link_fg" ), "default_link_fg"));
+                     builder.append(actionDef).append(">");
+                     builder.append(linkText);
+                     builder.append("</u>");
+                     builder.append("</ejl>");
+                     urls.put(url, builder.toString());
+                 }
+             }
+            
             Set<Entry<String, String>> entrySet = urls.entrySet();
             Map<String, String> tempIndx = new HashMap<>();
             for (Entry<String, String> entry : entrySet)
@@ -3272,6 +3305,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 if (composite == null || composite.isDisposed())
                 {
 
+                    
                     composite = new EJRWTEntireJGridPane(parent, 1);
 
                     scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL);
@@ -3296,8 +3330,22 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                     });
                     composite.cleanLayout();
                 }
-
+                int widthHint = parent.getClientArea().width;
                 shell = new EJRWTEntireJGridPane(scrollComposite, 2);
+                List<EJRWTHtmlViewSupport.HtmlTextSupport> htmlItems = new ArrayList<>();
+                shell.addControlListener(new ControlAdapter()
+               
+                {
+                    @Override
+                    public void controlResized(ControlEvent e)
+                    {
+                        for (HtmlTextSupport textSupport : htmlItems)
+                        {
+                            textSupport.layout(shell.getClientArea().width);
+                        }
+                        shell.layout(true);
+                    }
+                });
                 if (properties.getVa() != null)
                 {
                     EJCoreVisualAttributeProperties visualAttribute = _form.getVisualAttribute(properties.getVa());
@@ -3340,6 +3388,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                 if (msgs != null)
                 {
+                    EJRWTHtmlViewSupport htmlViewSupport = EJRWTImageRetriever.getGraphicsProvider().getHtmlViewSupport();
                     for (EJMessage msg : msgs)
                     {
                         {// img
@@ -3372,10 +3421,38 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         }
                         {// text
 
+                            
                             if (msg.getCallback() != null)
                             {
-                                Label text = new Label(shell, SWT.WRAP);
+                                Composite text = htmlViewSupport.createHtmlView(widthHint,shell, (method, parameters) -> {
+                                    if ("eaction".equals(method))
+                                    {
+                                        final Object arg1 = parameters.get("0").asString();
+                                       
+                                        if (arg1 instanceof String)
+                                        {
+                                            
+                                            Display.getDefault().asyncExec(new Runnable()
+                                            {
+                                                @Override
+                                                public void run()
+                                                {
+                                                    try
+                                                    {
+                                                        _form.getFocusedBlock().executeActionCommand(arg1.toString(), EJScreenType.MAIN);
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        _form.handleException(e);
+                                                    }
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                });
                                 GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
+                                
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
                                 String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
 
@@ -3385,16 +3462,12 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                     label = labelUrl;
                                 }
 
-                                try
-                                {
-                                    text.setText(label);
-                                }
-                                catch (Exception e)
-                                {
-                                    text.setText(EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()));
-                                }
-                                text.setData(EJ_RWT.CUSTOM_VARIANT, "ejmessage");
                                 text.setLayoutData(data);
+                                
+                                ((EJRWTHtmlViewSupport.HtmlTextSupport)text).setText("<p style=\"margin:0;font: 11px\">"+label+"</p>");
+                                htmlItems.add((EJRWTHtmlViewSupport.HtmlTextSupport)text);
+                                text.setData(EJ_RWT.CUSTOM_VARIANT, "ejmessage");
+                                
 
                                 text.addMouseListener(new MouseAdapter()
                                 {
@@ -3410,8 +3483,36 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             }
                             else
                             {
-                                Label text = new Label(shell, SWT.WRAP);
+                                Composite text = htmlViewSupport.createHtmlView(widthHint,shell, (method, parameters) -> {
+                                    
+                                    if ("eaction".equals(method))
+                                    {
+                                        final Object arg1 = parameters.get("0").asString();
+                                       
+                                        if (arg1 instanceof String)
+                                        {
+                                            
+                                            Display.getDefault().asyncExec(new Runnable()
+                                            {
+                                                @Override
+                                                public void run()
+                                                {
+                                                    try
+                                                    {
+                                                        _form.getFocusedBlock().executeActionCommand(arg1.toString(), EJScreenType.MAIN);
+                                                    }
+                                                    catch (Exception e)
+                                                    {
+                                                        _form.handleException(e);
+                                                    }
+                                                }
+                                            });
+
+                                        }
+                                    }
+                                });
                                 GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
+                                data.heightHint=25;
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
                                 String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
                                 String labelUrl = matchUrl(msg.getMessage());
@@ -3419,15 +3520,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 {
                                     label = labelUrl;
                                 }
-                                try
-                                {
-                                    text.setText(label);
-                                }
-                                catch (Exception e)
-                                {
-                                    text.setText(EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()));
-                                }
                                 text.setLayoutData(data);
+                                ((EJRWTHtmlViewSupport.HtmlTextSupport)text).setText("<p style=\"margin:0;\">"+label+"</p>");
+                                htmlItems.add((EJRWTHtmlViewSupport.HtmlTextSupport)text);
+                                
+                                
                             }
 
                         }
@@ -3439,6 +3536,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 scrollComposite.setContent(shell);
             }
         }
+        
+        
 
         private void calculateSize()
         {
@@ -3446,6 +3545,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             {
                 Point computeSize = shell.computeSize(composite.getBounds().width, SWT.DEFAULT);
                 computeSize.x = computeSize.x - 5;
+                computeSize.y = computeSize.y+16;
                 if (properties.getPosition() == EJCanvasMessagePosition.LEFT || properties.getPosition() == EJCanvasMessagePosition.RIGHT)
                     computeSize.y = Math.max(computeSize.y - 20, Math.max(computeSize.y, parent.getBounds().height - 100));
                 shell.setSize(computeSize);

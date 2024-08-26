@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.eclipse.rap.chartjs.AbstractChart;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.application.Application;
 import org.eclipse.rap.rwt.application.Application.OperationMode;
@@ -45,17 +46,27 @@ import org.eclipse.rap.rwt.client.service.BrowserNavigationListener;
 import org.eclipse.rap.rwt.client.service.ClientFileLoader;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.client.service.StartupParameters;
+import org.eclipse.rap.rwt.internal.textsize.TextSizeUtil;
 import org.eclipse.rap.rwt.service.ResourceLoader;
 import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
+import org.eclipse.rwt.EJRWTHtmlViewSupport;
 import org.eclipse.rwt.EJ_RWT;
+import org.eclipse.rwt.EJRWTHtmlViewSupport.ActionCallback;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.internal.widgets.IWidgetGraphicsAdapter;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
@@ -69,6 +80,7 @@ import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.application.EJRWTGraphicsProvider;
 import org.entirej.applicationframework.rwt.application.EJRWTImageRetriever;
 import org.entirej.applicationframework.rwt.component.EJRWTH2Canvas;
+import org.entirej.applicationframework.rwt.component.EJRWTHtmlView;
 import org.entirej.applicationframework.rwt.component.EJRWTTinymceEditor;
 import org.entirej.applicationframework.rwt.file.EJRWTFileDownload;
 import org.entirej.applicationframework.rwt.file.EJRWTFileUpload;
@@ -303,6 +315,63 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
 
         EJRWTImageRetriever.setGraphicsProvider(new EJRWTGraphicsProvider()
         {
+
+            @Override
+            public EJRWTHtmlViewSupport getHtmlViewSupport()
+            {
+
+                return new EJRWTHtmlViewSupport()
+                {
+
+                    @Override
+                    public Composite createHtmlView(int widthHint,Composite parent, ActionCallback callback)
+                    {
+                        String serviceHandlerUrl = RWT.getServiceManager().getServiceHandlerUrl(VACSSServiceHandler.SERVICE_HANDLER);
+                        EJRWTHtmlView view = new EJRWTHtmlView(parent, SWT.NONE, true)
+                        {
+
+                            String text;
+                            @Override
+                            public void action(String method, JsonObject parameters)
+                            {
+                                callback.action(method, parameters);
+                            }
+
+                            @Override
+                            public void layout(int widthHint)
+                            {
+                                Object layoutData = getLayoutData();
+                                if (layoutData instanceof GridData)
+                                {
+                                    GridData data = (GridData) layoutData;
+                                    Point textExtent = TextSizeUtil.textExtent(getFont(), text, widthHint-80 , true);
+                                    data.heightHint = textExtent.y + 8;
+                                    //data.widthHint = textExtent.x;
+                                }
+                            }
+
+                            @Override
+                            public void setText(String text)
+                            {
+                                this.text=text;
+                                StringBuilder html = new StringBuilder();
+                                html.append("<div>");
+                                html.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
+                                html.append(serviceHandlerUrl);
+                                html.append("\">");
+                                html.append(text);
+                                html.append("</div>");
+                                super.setText(html.toString());
+                                layout(widthHint);
+
+                            }
+                        };
+
+                        view.setData(EJ_RWT.CUSTOM_VARIANT, "html");
+                        return view;
+                    }
+                };
+            }
 
             @Override
             public void setReportFrameworkManager(EJReportFrameworkManager manager)
@@ -546,15 +615,18 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         Display display = Display.getDefault();
                         if (display.isDisposed())
                             display = new Display();
-                        
-                        display.addFilter(SWT.KeyDown, new Listener() {
-                            public void handleEvent(Event e) {
-                                if ((e.stateMask & SWT.SHIFT) != 0  && e.keyCode==SWT.F1) {
+
+                        display.addFilter(SWT.KeyDown, new Listener()
+                        {
+                            public void handleEvent(Event e)
+                            {
+                                if ((e.stateMask & SWT.SHIFT) != 0 && e.keyCode == SWT.F1)
+                                {
                                     EJRWTContext.getPageContext().fireScreenshotHandler();
                                 }
                             }
                         });
-                        display.setData(RWT.ACTIVE_KEYS, new String[] {"SHIFT+F1"});
+                        display.setData(RWT.ACTIVE_KEYS, new String[] { "SHIFT+F1" });
                         Shell shell = new Shell(display, SWT.NO_TRIM);
 
                         EJFrameworkExtensionProperties definedProperties = coreProperties.getApplicationDefinedProperties();
@@ -945,7 +1017,5 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
             executor.execute(browserText);
         }
     }
-
-    
 
 }
