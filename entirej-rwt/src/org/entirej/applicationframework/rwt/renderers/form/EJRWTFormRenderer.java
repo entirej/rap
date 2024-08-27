@@ -3451,6 +3451,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                         }
                                     }
                                 });
+                                text.setBackground(shell.getBackground());
                                 GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
                                 
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
@@ -3511,6 +3512,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                         }
                                     }
                                 });
+                                text.setBackground(shell.getBackground());
                                 GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
                                 data.heightHint=25;
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
