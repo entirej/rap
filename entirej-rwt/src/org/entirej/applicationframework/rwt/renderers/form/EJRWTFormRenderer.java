@@ -2612,6 +2612,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                 _popupDialog.close();
                 _popupDialog.getShell().dispose();
                 _popupDialog = null;
+                open(false);
             }
         }
 
