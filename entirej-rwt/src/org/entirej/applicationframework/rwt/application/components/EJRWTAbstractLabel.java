@@ -58,7 +58,7 @@ public abstract class EJRWTAbstractLabel extends Composite implements Serializab
 
         labelControl = createLabel(this);
 
-        GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+        GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
         labelControl.setLayoutData(gridData);
         super.setFont(labelControl.getFont());
         actionCustomControl = createCustomLabelButtonControl(this);
