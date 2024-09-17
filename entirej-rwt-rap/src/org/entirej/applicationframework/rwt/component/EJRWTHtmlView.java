@@ -65,11 +65,11 @@ public class EJRWTHtmlView extends Composite implements HtmlTextSupport
                                                         {
 
                                                             JsonValue textValue = properties.get("scroll");
-                                                            if (textValue != null)
+                                                            if (textValue != null )
                                                             {
-                                                                scrollPos = (int)textValue.asObject().get("vpos").asFloat();
-                                                                scrollWidth = (int)textValue.asObject().get("scrollWidth").asFloat();
-                                                                scrollHeight = (int)textValue.asObject().get("scrollHeight").asFloat();
+                                                                scrollPos = textValue.asObject().get("vpos")==null?0: (int)textValue.asObject().get("vpos").asFloat();
+                                                                scrollWidth =textValue.asObject().get("scrollWidth")==null?0: (int)textValue.asObject().get("scrollWidth").asFloat();
+                                                                scrollHeight = textValue.asObject().get("scrollHeight")==null?0:(int)textValue.asObject().get("scrollHeight").asFloat();
 
 
                                                                
