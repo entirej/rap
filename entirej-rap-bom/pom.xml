@@ -279,6 +279,10 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
+		<repository>
+            <id>rwt-stage</id>
+            <url>https://oss.sonatype.org/content/repositories/orgeclipserap-1097/</url>
+        </repository>
 	</repositories>
 
 	<properties>

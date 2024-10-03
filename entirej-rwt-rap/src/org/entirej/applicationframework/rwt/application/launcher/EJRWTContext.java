@@ -26,13 +26,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.SingletonUtil;
 import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
 import org.entirej.applicationframework.rwt.component.EJRWTH2Canvas;
 import org.entirej.framework.report.EJReportFrameworkManager;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 public class EJRWTContext
 {

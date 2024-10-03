@@ -29,8 +29,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.0</version>
 				<configuration>
-					<source>11</source>
-					<target>11</target>
+					<source>17</source>
+					<target>17</target>
 				</configuration>
 			</plugin>
 
@@ -164,6 +164,28 @@
                 </exclusion>
 			</exclusions>
 		</dependency>
+		 <dependency>
+            <groupId>org.eclipse.rap</groupId>
+            <artifactId>org.eclipse.rap.rwt</artifactId>
+            <version>4.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.osgi.service</groupId>
+                    <artifactId>org.osgi.service.prefs</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.rap</groupId>
+            <artifactId>org.eclipse.rap.ui.workbench</artifactId>
+            <version>4.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.osgi.service</groupId>
+                    <artifactId>org.osgi.service.prefs</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
@@ -184,12 +206,7 @@
 			<artifactId>spring-tx</artifactId>
 			<version>5.3.22</version>
 		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.1</version>
-			<scope>provided</scope>
-		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
 
@@ -208,6 +225,13 @@
         </dependency>
 
 
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
 	</dependencies>
 
 	<repositories>
@@ -219,6 +243,11 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
+		<repository>
+            <id>rwt-stage</id>
+            <url>https://oss.sonatype.org/content/repositories/orgeclipserap-1097/</url>
+        </repository>
+
 	</repositories>
 
 

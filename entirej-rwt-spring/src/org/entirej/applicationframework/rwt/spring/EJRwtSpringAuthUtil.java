@@ -4,13 +4,13 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.entirej.applicationframework.rwt.spring.ext.EJSpringWebAuthenticationDetails;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
+
+import jakarta.servlet.http.HttpSession;
 
 public class EJRwtSpringAuthUtil
 {
@@ -41,6 +41,7 @@ public class EJRwtSpringAuthUtil
     public static void logout()
     {
         StringBuffer url = new StringBuffer();
+        
         url.append(RWT.getRequest().getContextPath());
 
         String encodeURL = RWT.getResponse().encodeURL(url.toString());
