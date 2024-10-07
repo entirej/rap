@@ -712,7 +712,12 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
             };
 
             linkField.setData(EJ_RWT.MARKUP_ENABLED, _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
+            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                linkField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
             linkField.addSelectionListener(new SelectionAdapter()
             {
                 @Override
