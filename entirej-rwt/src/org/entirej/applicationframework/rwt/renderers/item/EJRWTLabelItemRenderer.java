@@ -158,6 +158,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
+        customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
         final String caseProperty = _rendererProps.getStringProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_CASE);
         if (caseProperty != null && caseProperty.trim().length() > 0)
@@ -518,8 +519,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
             };
             labelField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LABEL);
             labelField.getLabelControl().setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LABEL);
-             customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
-
+           
             if (customCSSKey != null && customCSSKey.trim().length() > 0)
             {
                 labelField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
@@ -713,8 +713,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
             };
 
             linkField.setData(EJ_RWT.MARKUP_ENABLED, _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
-            customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
-
+           
             if (customCSSKey != null && customCSSKey.trim().length() > 0)
             {
                 linkField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
