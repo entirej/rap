@@ -492,7 +492,7 @@ public abstract class EJRWTTrayDialog extends Dialog
                 case BOTTOM:
                 case TOP:
                     
-                    size = tray.getExpandSize()+80;
+                    size = tray.getExpandSize();
                     break;
 
             }

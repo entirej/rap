@@ -3308,10 +3308,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                     
                     composite = new EJRWTEntireJGridPane(parent, 1);
-
+                    GridData layoutData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL| GridData.GRAB_HORIZONTAL);
+                    composite.setLayoutData(layoutData);
                     scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL);
 
-                    GridData layoutData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL);
+                    //GridData layoutData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL| GridData.GRAB_HORIZONTAL);
                     scrollComposite.setLayoutData(layoutData);
                     composite.addControlListener(new ControlListener()
                     {
@@ -3514,7 +3515,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                     }
                                 });
                                 text.setBackground(shell.getBackground());
-                                GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
+                                GridData data = msgs.size()==1? new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL) :new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL| GridData.GRAB_VERTICAL);
                                 data.heightHint=25;
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
                                 String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();

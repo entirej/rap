@@ -165,7 +165,7 @@ public  class EJRWTTrayPane extends EJRWTEntireJGridPane implements ITrayPane
                 case BOTTOM:
                 case TOP:
                     
-                    size = tray.getExpandSize()+80;
+                    size = tray.getExpandSize();
             }
         }
         final GridData data;
