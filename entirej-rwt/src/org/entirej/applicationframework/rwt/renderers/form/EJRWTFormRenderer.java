@@ -3515,7 +3515,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                     }
                                 });
                                 text.setBackground(shell.getBackground());
-                                GridData data = msgs.size()==1? new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL) :new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL| GridData.GRAB_VERTICAL);
+                                GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL) ;
                                 data.heightHint=25;
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
                                 String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
@@ -3549,7 +3549,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             {
                 Point computeSize = shell.computeSize(composite.getBounds().width, SWT.DEFAULT);
                 computeSize.x = computeSize.x - 5;
-                computeSize.y = computeSize.y+16;
+                computeSize.y = computeSize.y;
                 if (properties.getPosition() == EJCanvasMessagePosition.LEFT || properties.getPosition() == EJCanvasMessagePosition.RIGHT)
                     computeSize.y = Math.max(computeSize.y - 20, Math.max(computeSize.y, parent.getBounds().height - 100));
                 shell.setSize(computeSize);
