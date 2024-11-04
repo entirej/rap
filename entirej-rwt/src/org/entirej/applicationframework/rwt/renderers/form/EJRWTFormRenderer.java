@@ -3454,7 +3454,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                     }
                                 });
                                 text.setBackground(shell.getBackground());
-                                GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
+                                GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL );
                                 
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
                                 String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
@@ -3515,7 +3515,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                     }
                                 });
                                 text.setBackground(shell.getBackground());
-                                GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL) ;
+                                
+                                
+                                GridData data = new GridData(GridData.FILL_BOTH| GridData.GRAB_HORIZONTAL) ;
                                 data.heightHint=25;
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
                                 String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
@@ -3538,6 +3540,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                 calculateSize();
                 scrollComposite.setContent(shell);
+                parent.layout(true);
             }
         }
         
