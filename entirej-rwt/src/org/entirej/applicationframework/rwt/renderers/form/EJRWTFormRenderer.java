@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -622,7 +623,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             CanvasHandler canvasHandler = _canvases.get(e.getKey());
             if (canvasHandler != null)
             {
-                canvasHandler.setCanvasMessages(e.getValue());
+                Display.getDefault().asyncExec(()->canvasHandler.setCanvasMessages(e.getValue()));
             }
         });
 
@@ -967,7 +968,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         CanvasHandler canvasHandler = _canvases.get(e.getKey());
                         if (canvasHandler != null)
                         {
-                            canvasHandler.setCanvasMessages(e.getValue());
+                            Display.getCurrent().asyncExec(()->
+                            canvasHandler.setCanvasMessages(e.getValue()));
                         }
                     });
 
@@ -2414,7 +2416,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             CanvasHandler canvasHandler = _canvases.get(e.getKey());
                             if (canvasHandler != null)
                             {
-                                canvasHandler.setCanvasMessages(e.getValue());
+                                Display.getDefault().asyncExec(()->canvasHandler.setCanvasMessages(e.getValue()));
                             }
                         });
 
@@ -2948,7 +2950,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         CanvasHandler canvasHandler = _canvases.get(canvasName);
         if (canvasHandler != null)
         {
-            canvasHandler.setCanvasMessages(messages);
+            Display.getDefault().asyncExec(()-> canvasHandler.setCanvasMessages(messages));
+           
         }
         else
             _messageCache.put(canvasName, messages);
@@ -3286,7 +3289,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         public int getExpandSize()
         {
 
-            return shell.computeSize(composite.getBounds().width, SWT.DEFAULT).y;
+            return shell.computeSize(parent.getBounds().width, SWT.DEFAULT).y;
         }
 
         void setMessages(Collection<EJMessage> msgs)
@@ -3550,7 +3553,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             if (shell != null && !shell.isDisposed() && !parent.isDisposed())
             {
-                Point computeSize = shell.computeSize(composite.getBounds().width, SWT.DEFAULT);
+                Point computeSize = shell.computeSize(parent.getBounds().width, SWT.DEFAULT);
                 computeSize.x = computeSize.x - 5;
                 computeSize.y = computeSize.y;
                 if (properties.getPosition() == EJCanvasMessagePosition.LEFT || properties.getPosition() == EJCanvasMessagePosition.RIGHT)
