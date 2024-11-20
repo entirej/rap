@@ -34,6 +34,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.internal.theme.CssFont;
+import org.eclipse.rap.rwt.internal.theme.SimpleSelector;
+import org.eclipse.rap.rwt.internal.theme.ThemeUtil;
 import org.eclipse.rap.rwt.service.ServiceHandler;
 import org.eclipse.rwt.EJRWTAsync;
 import org.eclipse.rwt.EJ_RWT;
@@ -1502,48 +1505,68 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
 
         StringBuilder builder = new StringBuilder();
         // builder.append("<style type=\"text/css\">");
+
+        // builder.append("*{");
+        //
+        // builder.append("}");
+        CssFont cssFont = (CssFont) ThemeUtil.getCssValue("Display", "font", SimpleSelector.DEFAULT);
+        int fontSize = cssFont.size;
+        // builder.append("<style type=\"text/css\">");
         {
-            // builder.append("*{");
-            //
-            // builder.append("}");
+
+            builder.append(".window_label {opacity: 0.0; border: solid 1px #F1F1F1; background: #fff; display: inline-block;    position: absolute; top: 0px; right: 0px; text-align: center; font-size: 12px; color: #777; border-radius: 1px; z-index: 30; }");
+            builder.append(".window_label:hover {opacity: 0.9;  }");
+
+            builder.append(".window_blockpage {opacity: 0.6; border: solid 1px #F1F1F1; background: #fff; display: inline-block;    position: absolute; top: 0px; right: 12px; text-align: center; font-size: 12px; color: #777; border-radius: 1px; z-index: 30; }");
+            builder.append(".window_blockpage:hover {opacity: 0.9;  }");
+
+            builder.append(".textexpand_label {opacity: 0.5; border: solid 1px #F1F1F1; background: #fff; display: inline-block;    position: absolute; top: 0px; right: 0px; text-align: center; font-size: 12px; color: #777; border-radius: 1px; z-index: 30; }");
+            builder.append(".textexpand_label:hover {opacity: 0.9;  }");
+
             builder.append("td{");
-            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+            builder.append("font: " + fontSize + "px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+            builder.append(" white-space: -o-pre-wrap; word-wrap: break-word;white-space: pre-wrap;white-space: -moz-pre-wrap;White-space: -pre-wrap; ");
             builder.append(" -webkit-touch-callout: text;" + "    -webkit-user-select: text;" + "     -khtml-user-select: text;" + "       -moz-user-select: text;" + "        -ms-user-select: text;" + "            user-select: text;");
+
+            builder.append("}");
+            builder.append("p{");
+            builder.append("font: " + fontSize + "px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+            builder.append("padding: 0px 0px 0px 0px;margin-top: 0px; margin-bottom: 0px;");
+            builder.append("}");
+            builder.append("div.html_view_div{");
+            builder.append("font: " + fontSize + "px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+            builder.append("padding: 0px 0px 0px 0px;margin-top: 0px; margin-bottom: 0px;");
             builder.append("}");
             builder.append("u.default {");
-            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+            builder.append("font: " + fontSize + "px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("padding: 1px 2px 1px 0px;");
-            builder.append("}");
-
-            builder.append("p{");
-            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
-            builder.append("padding: 0px 0px 0px 0px;margin-top: 0px; margin-bottom: 0px;");
             builder.append("}");
 
             builder.append("u.default_link {");
-            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+            builder.append("font: " + fontSize + "px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("padding: 1px 2px 1px 0px;");
+            builder.append("cursor: pointer; cursor: hand;");
             builder.append("text-shadow: none;");
             builder.append("}");
 
             builder.append("u.default_link:hover {");
-            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+            builder.append("font: " + fontSize + "px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("cursor: pointer; cursor: hand;");
             builder.append("}");
 
             builder.append("u.default_link_fg {");
-            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+            builder.append("font: " + fontSize + "px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("padding: 1px 2px 1px 0px;");
             builder.append("color: #416693;text-shadow: none;");
             builder.append("}");
 
             builder.append("u.default_link_fg:hover {");
-            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+            builder.append("font: " + fontSize + "px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("cursor: pointer; cursor: hand;");
             builder.append("}");
 
             builder.append(".default_all {");
-            builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+            builder.append("font: " + fontSize + "px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
             builder.append("padding: 0px 0px 0px 0px;");
             Font font = Display.getDefault().getSystemFont();
 
@@ -1581,7 +1604,8 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
                 }
                 else
                 {
-                    builder.append("font: 11px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+                    builder.append("font: " + fontSize + "px Verdana, \"Lucida Sans\", Arial, Helvetica, sans-serif;");
+
                 }
 
                 Color backgroundColor = va.getBackgroundColor();
@@ -2445,17 +2469,17 @@ public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyLi
         return _filteredContentProvider != null ? _filteredContentProvider.getFilter() : null;
 
     }
-    
+
     @Override
     public int getPreferredCanvasHeight()
     {
         return _browser.getScrollHeight();
     }
-    
+
     @Override
     public int getPreferredCanvasWidth()
     {
-         return 0;//use rwt default
+        return 0;// use rwt default
     }
 
 }

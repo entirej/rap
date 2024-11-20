@@ -331,6 +331,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                         {
 
                             String text;
+                            int widthHintLocal = widthHint;
                             @Override
                             public void action(String method, JsonObject parameters)
                             {
@@ -340,12 +341,13 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             @Override
                             public void layout(int widthHint)
                             {
+                                widthHintLocal = widthHint;
                                 Object layoutData = getLayoutData();
                                 if (layoutData instanceof GridData)
                                 {
                                     GridData data = (GridData) layoutData;
-                                    Point textExtent = TextSizeUtil.textExtent(getFont(), text, widthHint-80 , true);
-                                    data.heightHint = textExtent.y + 8;
+                                    Point textExtent = TextSizeUtil.textExtent(getFont(), text, widthHintLocal-20 , true);
+                                    data.heightHint = textExtent.y ;
                                     //data.widthHint = textExtent.x;
                                 }
                             }
@@ -362,7 +364,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                 html.append(text);
                                 html.append("</div>");
                                 super.setText(html.toString());
-                                layout(widthHint);
+                                layout(widthHintLocal);
 
                             }
                         };

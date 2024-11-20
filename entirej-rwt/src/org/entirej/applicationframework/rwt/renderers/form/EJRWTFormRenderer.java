@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -622,7 +623,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
             CanvasHandler canvasHandler = _canvases.get(e.getKey());
             if (canvasHandler != null)
             {
-                canvasHandler.setCanvasMessages(e.getValue());
+                Display.getDefault().asyncExec(()->canvasHandler.setCanvasMessages(e.getValue()));
             }
         });
 
@@ -967,7 +968,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         CanvasHandler canvasHandler = _canvases.get(e.getKey());
                         if (canvasHandler != null)
                         {
-                            canvasHandler.setCanvasMessages(e.getValue());
+                            Display.getCurrent().asyncExec(()->
+                            canvasHandler.setCanvasMessages(e.getValue()));
                         }
                     });
 
@@ -2414,7 +2416,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                             CanvasHandler canvasHandler = _canvases.get(e.getKey());
                             if (canvasHandler != null)
                             {
-                                canvasHandler.setCanvasMessages(e.getValue());
+                                Display.getDefault().asyncExec(()->canvasHandler.setCanvasMessages(e.getValue()));
                             }
                         });
 
@@ -2948,7 +2950,8 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         CanvasHandler canvasHandler = _canvases.get(canvasName);
         if (canvasHandler != null)
         {
-            canvasHandler.setCanvasMessages(messages);
+            Display.getDefault().asyncExec(()-> canvasHandler.setCanvasMessages(messages));
+           
         }
         else
             _messageCache.put(canvasName, messages);
@@ -3286,7 +3289,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         public int getExpandSize()
         {
 
-            return shell.computeSize(composite.getBounds().width, SWT.DEFAULT).y;
+            return shell.computeSize(parent.getBounds().width, SWT.DEFAULT).y;
         }
 
         void setMessages(Collection<EJMessage> msgs)
@@ -3308,10 +3311,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                     
                     composite = new EJRWTEntireJGridPane(parent, 1);
-
+                    GridData layoutData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL| GridData.GRAB_HORIZONTAL);
+                    composite.setLayoutData(layoutData);
                     scrollComposite = new EJRWTScrolledComposite(composite, SWT.V_SCROLL);
 
-                    GridData layoutData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL);
+                    //GridData layoutData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL| GridData.GRAB_HORIZONTAL);
                     scrollComposite.setLayoutData(layoutData);
                     composite.addControlListener(new ControlListener()
                     {
@@ -3453,7 +3457,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                     }
                                 });
                                 text.setBackground(shell.getBackground());
-                                GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
+                                GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL );
                                 
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
                                 String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
@@ -3514,7 +3518,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                     }
                                 });
                                 text.setBackground(shell.getBackground());
-                                GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
+                                
+                                
+                                GridData data = new GridData(GridData.FILL_BOTH| GridData.GRAB_HORIZONTAL) ;
                                 data.heightHint=25;
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
                                 String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
@@ -3537,6 +3543,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                 calculateSize();
                 scrollComposite.setContent(shell);
+                parent.layout(true);
             }
         }
         
@@ -3546,9 +3553,9 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             if (shell != null && !shell.isDisposed() && !parent.isDisposed())
             {
-                Point computeSize = shell.computeSize(composite.getBounds().width, SWT.DEFAULT);
+                Point computeSize = shell.computeSize(parent.getBounds().width, SWT.DEFAULT);
                 computeSize.x = computeSize.x - 5;
-                computeSize.y = computeSize.y+16;
+                computeSize.y = computeSize.y;
                 if (properties.getPosition() == EJCanvasMessagePosition.LEFT || properties.getPosition() == EJCanvasMessagePosition.RIGHT)
                     computeSize.y = Math.max(computeSize.y - 20, Math.max(computeSize.y, parent.getBounds().height - 100));
                 shell.setSize(computeSize);

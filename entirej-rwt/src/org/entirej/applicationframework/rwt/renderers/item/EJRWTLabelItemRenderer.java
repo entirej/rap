@@ -81,6 +81,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
     private EJMessage message;
     private boolean xhtmlFormatting;
     private boolean visible;
+    private String customCSSKey;
 
     protected boolean controlState(Control control)
     {
@@ -136,7 +137,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
                 }
                 else
                 {
-                    _labelField.getControl().setData(EJ_RWT.CUSTOM_VARIANT, EJ_RWT.CSS_CV_ITEM_LABEL);
+                    _labelField.getControl().setData(EJ_RWT.CUSTOM_VARIANT,this.customCSSKey != null && this.customCSSKey.trim().length() > 0 ? this.customCSSKey : EJ_RWT.CSS_CV_ITEM_LABEL);
                 }
             }
             
@@ -157,6 +158,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
         _itemProperties = _item.getReferencedItemProperties();
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
+        customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
 
         final String caseProperty = _rendererProps.getStringProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_CASE);
         if (caseProperty != null && caseProperty.trim().length() > 0)
@@ -517,8 +519,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
             };
             labelField.setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LABEL);
             labelField.getLabelControl().setData(EJ_RWT.CUSTOM_VARIANT,EJ_RWT.CSS_CV_ITEM_LABEL);
-            String customCSSKey = _rendererProps.getStringProperty(EJRWTButtonItemRendererDefinitionProperties.PROPERTY_CSS_KEY);
-
+           
             if (customCSSKey != null && customCSSKey.trim().length() > 0)
             {
                 labelField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
@@ -712,7 +713,11 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
             };
 
             linkField.setData(EJ_RWT.MARKUP_ENABLED, _rendererProps.getBooleanProperty(EJRWTLabelItemRendererDefinitionProperties.PROPERTY_HTML_FORMAT, false));
-
+           
+            if (customCSSKey != null && customCSSKey.trim().length() > 0)
+            {
+                linkField.setData(EJ_RWT.CUSTOM_VARIANT, customCSSKey);
+            }
             linkField.addSelectionListener(new SelectionAdapter()
             {
                 @Override
