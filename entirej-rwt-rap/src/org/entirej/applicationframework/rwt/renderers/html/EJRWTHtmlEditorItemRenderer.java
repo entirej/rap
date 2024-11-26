@@ -19,7 +19,14 @@ package org.entirej.applicationframework.rwt.renderers.html;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
@@ -65,6 +72,8 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
     public static final String                PROPERTY_CSS_PATH                  = "CSS_PATH";
     public static final String                PROPERTY_CONFIG_PATH               = "CONFIG_PATH";
     private static final String               PROPERTY_PASTE_AS_TEXT             = "PROPERTY_PASTE_AS_TEXT";
+    public static final String                PROPERTY_URL_DETECT                = "URL_DETECT";
+
     protected EJFrameworkExtensionProperties  _rendererProps;
     protected EJScreenItemController          _item;
     protected EJScreenItemProperties          _screenItemProperties;
@@ -84,6 +93,11 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
     protected Object                          _baseValue;
     private EJMessage                         message;
     private boolean                           visible;
+    private boolean                           _displayUrl;
+
+    // Pattern for recognizing a URL, based off RFC 3986
+    private final Pattern                     urlPattern                         = Pattern.compile("(?:^|[\\W])((ht|f)tp(s?):\\/\\/|www\\.)" + "(([\\w\\-]+\\.){1,}?([\\w\\-.~]+\\/?)*" + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};]*)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+    private final Pattern                     actionPattern                      = Pattern.compile("\\[action://([^|]+)\\|([^\\]]+)\\]", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
 
     protected boolean controlState(Control control)
     {
@@ -175,7 +189,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
         visible = _item.isVisible();
-        final String caseProperty = _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_CASE);
+        _displayUrl = _rendererProps.getBooleanProperty(PROPERTY_INLINE_KEY, false);
 
     }
 
@@ -370,7 +384,13 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
                 if (controlState(_textField))
                 {
 
-                    _textField.setText(value == null ? "" : (value.toString()));
+                    String text = value == null ? "" : (value.toString());
+                    if (_displayUrl && !isEditAllowed())
+                    {
+                        _textField.setText(matchUrl(text));
+                    }
+                    else
+                        _textField.setText(text);
                     setMandatoryBorder(_mandatory);
                 }
             }
@@ -379,6 +399,80 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
         {
 
         }
+    }
+
+    String matchUrl(String input)
+    {
+        String out = input;
+        Map<String, String> urls = new HashMap<>();
+        {
+            Matcher matcher = urlPattern.matcher(input);
+
+            while (matcher.find())
+            {
+                int matchStart = matcher.start(1);
+                int matchEnd = matcher.end();
+                String url = input.substring(matchStart, matchEnd);
+                String baseUrl = url;
+                String linkText = url;
+                if (matchStart > 0 && input.charAt(matchStart - 1) == '[' && matchEnd < input.length() && input.charAt(matchEnd) == '|')
+                {
+                    url = "[" + url + "|";
+                    int index = matchEnd;
+                    linkText = "";
+                    while (index < input.length())
+                    {
+                        index++;
+                        if (input.charAt(index) == ']')
+                        {
+                            url = url + "]";
+                            break;
+                        }
+                        url = url + input.charAt(index);
+                        linkText = linkText + input.charAt(index);
+                    }
+                }
+
+                urls.put(url, String.format("<a href='%s' target='_blank'>%s</a>", baseUrl, linkText));
+            }
+        }
+        {
+            Matcher matcher = actionPattern.matcher(input);
+
+            while (matcher.find())
+            {
+                int matchStart = matcher.start(1);
+                int matchEnd = matcher.end();
+                String url = "[action://" + input.substring(matchStart, matchEnd);
+
+                String baseAction = matcher.group(1);
+                String linkText = matcher.group(2);
+                StringBuilder builder = new StringBuilder();
+                String actionDef = String.format("em='eaction' earg='%s , %s' ", baseAction, 0);
+                builder.append(String.format("<ejl><u %s class=\"%s, %s\"  ", "style=\"line-height: 130%;cursor: pointer; cursor: hand;\"", ("default_link_fg"), "default_link_fg"));
+                builder.append(actionDef).append(">");
+                builder.append(linkText);
+                builder.append("</u>");
+                builder.append("</ejl>");
+                urls.put(url, builder.toString());
+            }
+        }
+
+        Set<Entry<String, String>> entrySet = urls.entrySet();
+        Map<String, String> tempIndx = new HashMap<>();
+        for (Entry<String, String> entry : entrySet)
+        {
+            String tempVal = UUID.randomUUID().toString();
+            out = out.replace(entry.getKey(), tempVal);
+            tempIndx.put(tempVal, entry.getValue());
+        }
+        out = EJ_RWT.escapeHtmlWithXhtml(out);
+        for (Entry<String, String> entry : tempIndx.entrySet())
+        {
+            out = out.replace(entry.getKey(), entry.getValue());
+        }
+
+        return out;
     }
 
     @Override
@@ -657,7 +751,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
                                         EJRWTTinymceEditor expandEditor = new EJRWTTinymceEditor(parent, SWT.NONE, _rendererProps.getBooleanProperty(PROPERTY_INLINE_KEY, false),
 
                                                 _rendererProps.getStringProperty(PROPERTY_PROFILE_KEY), _rendererProps.getBooleanProperty(PROPERTY_REMOVE_TOOLBAR_KEY, false), _rendererProps.getBooleanProperty(PROPERTY_SUPPORT_TABLE_LAYOUTS_KEY, false), _rendererProps.getStringProperty(PROPERTY_CSS_PATH),
-                                                _rendererProps.getStringProperty(PROPERTY_CONFIG_PATH),  _rendererProps.getBooleanProperty(PROPERTY_PASTE_AS_TEXT, false))
+                                                _rendererProps.getStringProperty(PROPERTY_CONFIG_PATH), _rendererProps.getBooleanProperty(PROPERTY_PASTE_AS_TEXT, false))
                                         {
                                             protected void action(String method)
                                             {
