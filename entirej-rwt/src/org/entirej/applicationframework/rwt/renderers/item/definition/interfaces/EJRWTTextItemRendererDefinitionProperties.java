@@ -1,20 +1,19 @@
 /*******************************************************************************
  * Copyright 2013 CRESOFT AG
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  * 
- *   http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  * 
- * Contributors:
- *     CRESOFT AG - initial API and implementation
+ * Contributors: CRESOFT AG - initial API and implementation
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.renderers.item.definition.interfaces;
 
@@ -22,6 +21,8 @@ public interface EJRWTTextItemRendererDefinitionProperties
 {
     public static final String PROPERTY_MAXLENGTH                 = "MAXLENGTH";
     public static final String PROPERTY_CASE                      = "CASE";
+
+    public static final String PROPERTY_URL_DETECT                = "URL_DETECT";
     public static final String PROPERTY_CASE_UPPER                = "UPPER";
     public static final String PROPERTY_CASE_LOWER                = "LOWER";
     public static final String PROPERTY_CASE_MIXED                = "MIXED";
@@ -38,7 +39,7 @@ public interface EJRWTTextItemRendererDefinitionProperties
     public static final String PROPERTY_MAXVALUE                  = "MAX_VALUE";
     public static final String PROPERTY_MINVALUE                  = "MIN_VALUE";
     public static final String PROPERTY_FORMAT                    = "FORMAT";
-    public static final String PROPERTY_MESSAGE                  = "MESSAGE";
+    public static final String PROPERTY_MESSAGE                   = "MESSAGE";
 
-    public static final String PROPERTY_LOCALE_FORMAT         = "LOCALE_FORMAT";
+    public static final String PROPERTY_LOCALE_FORMAT             = "LOCALE_FORMAT";
 }

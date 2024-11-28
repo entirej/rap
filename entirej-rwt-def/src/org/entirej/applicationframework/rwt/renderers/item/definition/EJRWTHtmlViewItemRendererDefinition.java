@@ -41,6 +41,8 @@ public class EJRWTHtmlViewItemRendererDefinition implements EJDevItemRendererDef
 
     public static final String PROPERTY_CSS_PATH           = "CSS_PATH";
 
+    public static final String  PROPERTY_URL_DETECT                = "URL_DETECT";
+
 
     public EJRWTHtmlViewItemRendererDefinition()
     {
@@ -82,7 +84,10 @@ public class EJRWTHtmlViewItemRendererDefinition implements EJDevItemRendererDef
         
         
         mainGroup.addPropertyDefinition(customCSSKey);
-
+        EJDevPropertyDefinition urlDetect = new EJDevPropertyDefinition(PROPERTY_URL_DETECT, EJPropertyDefinitionType.BOOLEAN);
+        urlDetect.setLabel("Display URL");
+        urlDetect.setDefaultValue("false");
+        mainGroup.addPropertyDefinition(urlDetect);
         
       
         return mainGroup;

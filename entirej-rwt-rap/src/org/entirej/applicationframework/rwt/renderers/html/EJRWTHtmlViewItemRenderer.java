@@ -22,11 +22,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
+import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
@@ -49,6 +57,7 @@ import org.entirej.applicationframework.rwt.table.EJRWTAbstractTableSorter;
 import org.entirej.applicationframework.rwt.utils.EJRWTItemRendererVisualContext;
 import org.entirej.applicationframework.rwt.utils.EJRWTVisualAttributeUtils;
 import org.entirej.framework.core.EJMessage;
+import org.entirej.framework.core.enumerations.EJScreenType;
 import org.entirej.framework.core.interfaces.EJScreenItemController;
 import org.entirej.framework.core.properties.EJCoreVisualAttributeProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
@@ -58,7 +67,8 @@ import org.entirej.framework.core.properties.interfaces.EJScreenItemProperties;
 public class EJRWTHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusListener, Serializable
 {
 
-    public static final String                PROPERTY_CSS_PATH = "CSS_PATH";
+    public static final String                PROPERTY_CSS_PATH   = "CSS_PATH";
+    public static final String                PROPERTY_URL_DETECT = "URL_DETECT";
 
     protected EJFrameworkExtensionProperties  _rendererProps;
     protected EJScreenItemController          _item;
@@ -67,7 +77,7 @@ public class EJRWTHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusLis
     protected String                          _registeredItemName;
     protected EJRWTHtmlView                   _textField;
     protected Label                           _label;
-    protected boolean                         _isValid          = true;
+    protected boolean                         _isValid            = true;
     protected boolean                         _mandatory;
 
     protected EJCoreVisualAttributeProperties _visualAttributeProperties;
@@ -80,8 +90,12 @@ public class EJRWTHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusLis
     private EJMessage                         message;
     private String                            serviceHandlerUrl;
     private String                            contentCssFile;
+    // Pattern for recognizing a URL, based off RFC 3986
+    private final Pattern                     urlPattern          = Pattern.compile("(?:^|[\\W])((ht|f)tp(s?):\\/\\/|www\\.)" + "(([\\w\\-]+\\.){1,}?([\\w\\-.~]+\\/?)*" + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]\\*$~@!:/{};]*)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+    private final Pattern                     actionPattern       = Pattern.compile("\\[action://([^|]+)\\|([^\\]]+)\\]", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
 
-    private boolean visible;
+    private boolean                           visible;
+    private boolean _displayUrl;
 
     protected boolean controlState(Control control)
     {
@@ -174,6 +188,7 @@ public class EJRWTHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusLis
         _rendererProps = _itemProperties.getItemRendererProperties();
         visible = _item.isVisible();
         final String caseProperty = _rendererProps.getStringProperty(EJRWTTextItemRendererDefinitionProperties.PROPERTY_CASE);
+        _displayUrl = _rendererProps.getBooleanProperty(PROPERTY_URL_DETECT, false);
 
     }
 
@@ -379,6 +394,82 @@ public class EJRWTHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusLis
         }
     }
 
+    String matchUrl(String input)
+    {
+        if(!_displayUrl)
+            return input;
+        String out = input;
+        Map<String, String> urls = new HashMap<>();
+        {
+            Matcher matcher = urlPattern.matcher(input);
+
+            while (matcher.find())
+            {
+                int matchStart = matcher.start(1);
+                int matchEnd = matcher.end();
+                String url = input.substring(matchStart, matchEnd);
+                String baseUrl = url;
+                String linkText = url;
+                if (matchStart > 0 && input.charAt(matchStart - 1) == '[' && matchEnd < input.length() && input.charAt(matchEnd) == '|')
+                {
+                    url = "[" + url + "|";
+                    int index = matchEnd;
+                    linkText = "";
+                    while (index < input.length())
+                    {
+                        index++;
+                        if (input.charAt(index) == ']')
+                        {
+                            url = url + "]";
+                            break;
+                        }
+                        url = url + input.charAt(index);
+                        linkText = linkText + input.charAt(index);
+                    }
+                }
+
+                urls.put(url, String.format("<a href='%s' target='_blank'>%s</a>", baseUrl, linkText));
+            }
+        }
+        {
+            Matcher matcher = actionPattern.matcher(input);
+
+            while (matcher.find())
+            {
+                int matchStart = matcher.start(1);
+                int matchEnd = matcher.end();
+                String url = "[action://" + input.substring(matchStart, matchEnd);
+
+                String baseAction = matcher.group(1);
+                String linkText = matcher.group(2);
+                StringBuilder builder = new StringBuilder();
+                String actionDef = String.format("em='eaction' earg='%s , %s' ", baseAction, 0);
+                builder.append(String.format("<ejl><u %s class=\"%s, %s\"  ", "style=\"line-height: 130%;cursor: pointer; cursor: hand;\"", ("default_link_fg"), "default_link_fg"));
+                builder.append(actionDef).append(">");
+                builder.append(linkText);
+                builder.append("</u>");
+                builder.append("</ejl>");
+                urls.put(url, builder.toString());
+            }
+        }
+
+        Set<Entry<String, String>> entrySet = urls.entrySet();
+        Map<String, String> tempIndx = new HashMap<>();
+        for (Entry<String, String> entry : entrySet)
+        {
+            String tempVal = UUID.randomUUID().toString();
+            out = out.replace(entry.getKey(), tempVal);
+            tempIndx.put(tempVal, entry.getValue());
+        }
+        out = EJ_RWT.escapeHtmlWithXhtml(out);
+        for (Entry<String, String> entry : tempIndx.entrySet())
+        {
+            out = out.replace(entry.getKey(), entry.getValue());
+        }
+
+        return out;
+    }
+
     @SuppressWarnings("resource")
     private static String read(String fileName)
     {
@@ -409,12 +500,12 @@ public class EJRWTHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusLis
     private String asHtml(String stub)
     {
         StringBuilder builder = new StringBuilder();
-        builder.append("<div id=\"table\" style=\"float:left;width:100%;height:100%; overflow:auto\">");
+        builder.append("<div id=\"table\" style=\"line-height: normal;float:left;width:100%;height:100%; overflow:auto;\">");
         builder.append("<style type=\"text/css\">" + read(contentCssFile == null || contentCssFile.isEmpty() ? "resources/tinymce/ej/content.ej.css" : contentCssFile) + "</style>");
         builder.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
         builder.append(serviceHandlerUrl);
         builder.append("\">");
-        builder.append(stub);
+        builder.append(matchUrl(stub));
         builder.append("</div>");
         return builder.toString();
     }
@@ -435,7 +526,7 @@ public class EJRWTHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusLis
             _label.setVisible(visible);
         }
         this.visible = visible;
-        
+
     }
 
     @Override
@@ -650,7 +741,38 @@ public class EJRWTHtmlViewItemRenderer implements EJRWTAppItemRenderer, FocusLis
         {
 
             composite.setData(EJ_RWT.CUSTOM_VARIANT, "html");
-            _textField = new EJRWTHtmlView(composite, SWT.NONE, true);
+            _textField = new EJRWTHtmlView(composite, SWT.NONE, true)
+            {
+                @Override
+                public void action(String method, JsonObject parameters)
+                {
+                    if ("eaction".equals(method))
+                    {
+                        final Object arg1 = parameters.get("0").asString();
+
+                        if (arg1 instanceof String)
+                        {
+
+                            Display.getDefault().asyncExec(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    try
+                                    {
+                                        _item.getBlock().executeActionCommand(arg1.toString(), EJScreenType.MAIN);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        _item.getBlock().getForm().handleException(e);
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+                };
+            };
 
             _textField.setData(EJ_RWT.CUSTOM_VARIANT, "html");
             _textField.setData(EJ_RWT.CUSTOM_VARIANT, getCSSKey());

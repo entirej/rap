@@ -189,7 +189,7 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
         _screenItemProperties = screenItemProperties;
         _rendererProps = _itemProperties.getItemRendererProperties();
         visible = _item.isVisible();
-        _displayUrl = _rendererProps.getBooleanProperty(PROPERTY_INLINE_KEY, false);
+        _displayUrl = _rendererProps.getBooleanProperty(PROPERTY_URL_DETECT, false);
 
     }
 
@@ -403,6 +403,8 @@ public class EJRWTHtmlEditorItemRenderer implements EJRWTAppItemRenderer, FocusL
 
     String matchUrl(String input)
     {
+        if(!_displayUrl)
+            return input;
         String out = input;
         Map<String, String> urls = new HashMap<>();
         {
