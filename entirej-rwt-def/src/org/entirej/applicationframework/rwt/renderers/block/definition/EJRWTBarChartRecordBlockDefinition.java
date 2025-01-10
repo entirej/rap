@@ -137,6 +137,9 @@ public class EJRWTBarChartRecordBlockDefinition implements EJDevBlockRendererDef
         EJDevPropertyDefinition animation = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.ANIMATION, EJPropertyDefinitionType.BOOLEAN);
         animation.setLabel("Animation");
         animation.setDefaultValue("true");
+        EJDevPropertyDefinition stacked = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.STACKED, EJPropertyDefinitionType.BOOLEAN);
+        stacked.setLabel("Stacked Bar chart");
+        stacked.setDefaultValue("false");
         
         EJDevPropertyDefinition gridLines = new EJDevPropertyDefinition("gridLines", EJPropertyDefinitionType.BOOLEAN);
         gridLines.setLabel("Grid Lines");
@@ -188,6 +191,7 @@ public class EJRWTBarChartRecordBlockDefinition implements EJDevBlockRendererDef
 
         mainGroup.addPropertyDefinition(relationItem);
         mainGroup.addPropertyDefinition(horizontalBar);
+        mainGroup.addPropertyDefinition(stacked);
         mainGroup.addPropertyDefinition(animation);
         mainGroup.addPropertyDefinition(gridLines);
 

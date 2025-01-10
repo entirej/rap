@@ -20,6 +20,7 @@ package org.entirej.applicationframework.rwt.renderers.block.definition.interfac
 public interface EJRWTChartBlockDefinitionProperties
 {
     public final String        ANIMATION                 = "animation";
+    public final String        STACKED                 = "stacked";
     public final String        SHOW_TOOLTIPS             = "showToolTips";
     public final String        SHOW_LEGEND               = "showLegend";
     public final String        LEGEND_POSITION           = "legendPosition";

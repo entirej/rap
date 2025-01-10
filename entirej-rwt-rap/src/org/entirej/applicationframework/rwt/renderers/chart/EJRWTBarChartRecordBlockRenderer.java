@@ -135,6 +135,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     private final BarChartOptions          options                   = new BarChartOptions();
 
     public final String                    ANIMATION                 = "animation";
+    public final String                    STACKED                 = "stacked";
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
     public final String                    SHOW_LEGEND               = "showLegend";
     public final String                    LEGEND_POSITION           = "legendPosition";
@@ -276,6 +277,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         _block = block;
         EJCoreBlockProperties blockProperties = _block.getProperties();
         options.setAnimation(blockProperties.getBlockRendererProperties().getBooleanProperty(ANIMATION, options.getAnimation()));
+        options.setStacked(blockProperties.getBlockRendererProperties().getBooleanProperty(STACKED, options.isStacked()));
         options.setShowToolTips(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_TOOLTIPS, options.getShowToolTips()));
 
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
@@ -301,6 +303,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         for (EJItemGroupProperties g : itemGroupProperties)
         {
             Axis axis = new Axis();
+            axis.setStacked(blockProperties.getBlockRendererProperties().getBooleanProperty(STACKED, axis.isStacked()));
 
             if (horizontalBar)
                 options.getxAxes().add(axis);
