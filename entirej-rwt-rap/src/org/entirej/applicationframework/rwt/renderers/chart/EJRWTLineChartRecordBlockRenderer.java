@@ -286,6 +286,11 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         xAxisColumn = blockProperties.getBlockRendererProperties().getStringProperty(X_AXIS_COLUMN);
 
         EJItemGroupPropertiesContainer container = blockProperties.getScreenItemGroupContainer(EJScreenType.MAIN);
+        
+        
+
+     
+        
         Collection<EJItemGroupProperties> itemGroupProperties = container.getAllItemGroupProperties();
         options.getYAxes().clear();
         for (EJItemGroupProperties g : itemGroupProperties)
