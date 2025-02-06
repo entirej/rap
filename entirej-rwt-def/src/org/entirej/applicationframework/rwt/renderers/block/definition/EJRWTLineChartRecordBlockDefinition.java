@@ -143,6 +143,9 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
         EJDevPropertyDefinition legend = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_LEGEND, EJPropertyDefinitionType.BOOLEAN);
         legend.setLabel("Show Legend");
         legend.setDefaultValue("true");
+        EJDevPropertyDefinition legendActionID = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LEGEND_ACTION, EJPropertyDefinitionType.ACTION_COMMAND);
+        legendActionID.setLabel("Legend Action Command");
+        legendActionID.setDescription("Legend Action command id for action processor.");
 
         EJDevPropertyDefinition showToolTips = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_TOOLTIPS, EJPropertyDefinitionType.BOOLEAN);
         showToolTips.setLabel("Show ToolTips");
@@ -164,6 +167,7 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
         mainGroup.addPropertyDefinition(showToolTips);
         mainGroup.addPropertyDefinition(legend);
         mainGroup.addPropertyDefinition(legendPostions);
+        mainGroup.addPropertyDefinition(legendActionID);
 
         EJDevPropertyDefinitionGroup sectionGroup = new EJDevPropertyDefinitionGroup("TITLE_BAR");
         sectionGroup.setLabel("Title Bar");

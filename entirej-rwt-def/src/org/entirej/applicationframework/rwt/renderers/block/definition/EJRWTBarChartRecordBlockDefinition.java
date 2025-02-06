@@ -152,6 +152,11 @@ public class EJRWTBarChartRecordBlockDefinition implements EJDevBlockRendererDef
         EJDevPropertyDefinition legend = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_LEGEND, EJPropertyDefinitionType.BOOLEAN);
         legend.setLabel("Show Legend");
         legend.setDefaultValue("true");
+        
+        EJDevPropertyDefinition legendActionID = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LEGEND_ACTION, EJPropertyDefinitionType.ACTION_COMMAND);
+        legendActionID.setLabel("Legend Action Command");
+        legendActionID.setDescription("Legend Action command id for action processor.");
+       
 
         EJDevPropertyDefinition showToolTips = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_TOOLTIPS, EJPropertyDefinitionType.BOOLEAN);
         showToolTips.setLabel("Show ToolTips");
@@ -202,6 +207,7 @@ public class EJRWTBarChartRecordBlockDefinition implements EJDevBlockRendererDef
         mainGroup.addPropertyDefinition(showToolTips);
         mainGroup.addPropertyDefinition(legend);
         mainGroup.addPropertyDefinition(legendPostions);
+        mainGroup.addPropertyDefinition(legendActionID);
         mainGroup.addPropertyDefinition(barPercentage);
         mainGroup.addPropertyDefinition(categoryPercentage);
         mainGroup.addPropertyDefinition(barThickness);

@@ -141,6 +141,8 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
     public final String                    SHOW_LEGEND               = "showLegend";
     public final String                    LEGEND_POSITION           = "legendPosition";
+
+    public final String                    LEGEND_ACTION             = "legendAction";
     public final String                    X_AXIS_COLUMN             = "xAxisColumn";
 
     public final String                    POINT_STYLE               = "pointStyle";
@@ -167,7 +169,8 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
     private Display                        dispaly                   = Display.getDefault();
-    private boolean _removeHidden;
+    private boolean                        _removeHidden;
+    private String legendAction;
 
     @Override
     public void setFilter(String filter)
@@ -278,7 +281,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     public void initialiseRenderer(EJEditableBlockController block)
     {
         _block = block;
-       
+
         EJCoreBlockProperties blockProperties = _block.getProperties();
         _removeHidden = blockProperties.getBlockRendererProperties().getBooleanProperty(REMOVE_HIDDEN_ITEMS, false);
         options.setAnimation(blockProperties.getBlockRendererProperties().getBooleanProperty(ANIMATION, options.getAnimation()));
@@ -287,8 +290,9 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
+        legendAction = blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_ACTION);
         options.getGridLines().setDisplay(blockProperties.getBlockRendererProperties().getBooleanProperty("gridLines", options.getGridLines().isDisplay()));
-
+        options.getLegend().setDefaultAction(legendAction==null || legendAction.isEmpty());
         options.setBarPercentage(blockProperties.getBlockRendererProperties().getFloatProperty("barPercentage", options.getBarPercentage()));
         options.setCategoryPercentage(blockProperties.getBlockRendererProperties().getFloatProperty("categoryPercentage", options.getCategoryPercentage()));
         int barThickness = blockProperties.getBlockRendererProperties().getIntProperty("barThickness", 0);
@@ -487,7 +491,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
                 EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, mainScreenItemProperties.getReferencedItemName());
 
-                if(!_removeHidden || item.isVisible())
+                if (!_removeHidden || item.isVisible())
                     list.add(item);
             }
         }
@@ -1435,7 +1439,11 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
             if (dataItem != null)
             {
 
-                dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
+                if(legendAction==null || legendAction.isEmpty())
+                    dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
+                else {
+                   _block.executeActionCommand(legendAction, dataItem.getScreenType());
+                }
             }
             return;
         }

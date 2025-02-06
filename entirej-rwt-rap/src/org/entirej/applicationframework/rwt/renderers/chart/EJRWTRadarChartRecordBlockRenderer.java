@@ -128,9 +128,11 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
     public final String                    SHOW_LEGEND               = "showLegend";
     public final String                    LEGEND_POSITION           = "legendPosition";
-    public final String                    SCALE_MIN                  = "min";
-    public final String                    SCALE_MAX                  = "max";
-    public final String                    SCALE_STEP                 = "stepSize";
+
+    public final String                    LEGEND_ACTION             = "legendAction";
+    public final String                    SCALE_MIN                 = "min";
+    public final String                    SCALE_MAX                 = "max";
+    public final String                    SCALE_STEP                = "stepSize";
 
     public final String                    LBL_VIEW_TYPE             = "lblViewType";
     public final String                    LBL_VIEW_POS              = "lblViewPos";
@@ -149,6 +151,7 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
     public static final String             PROPERTY_FORMAT           = "FORMAT";
     private Display                        dispaly                   = Display.getDefault();
     private boolean                        fillBG;
+    private String legendAction;
 
     @Override
     public void setFilter(String filter)
@@ -262,24 +265,29 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
         EJCoreBlockProperties blockProperties = _block.getProperties();
         options.setAnimation(blockProperties.getBlockRendererProperties().getBooleanProperty(ANIMATION, options.getAnimation()));
         options.setShowToolTips(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_TOOLTIPS, options.getShowToolTips()));
-        
+        legendAction = blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_ACTION);
+        options.getLegend().setDefaultAction(legendAction==null || legendAction.isEmpty());
         {
 
             EJFrameworkExtensionProperties propertyGroup = blockProperties.getBlockRendererProperties().getPropertyGroup("SCALE");
-            
-            if(propertyGroup!=null) {
-            float scaleMin = propertyGroup.getFloatProperty(SCALE_MIN, -1f);
-            float scaleMax =  propertyGroup.getFloatProperty(SCALE_MAX, -1f);
-            float scaleStep =  propertyGroup.getFloatProperty(SCALE_STEP, -1f);
-            if(scaleMin>-1) {
-                options.setScaleMin(scaleMin); 
-            }
-            if(scaleMax>-1) {
-                options.setScaleMax(scaleMax); 
-            }
-            if(scaleStep>-1) {
-                options.setScaleStep(scaleStep); 
-            }
+
+            if (propertyGroup != null)
+            {
+                float scaleMin = propertyGroup.getFloatProperty(SCALE_MIN, -1f);
+                float scaleMax = propertyGroup.getFloatProperty(SCALE_MAX, -1f);
+                float scaleStep = propertyGroup.getFloatProperty(SCALE_STEP, -1f);
+                if (scaleMin > -1)
+                {
+                    options.setScaleMin(scaleMin);
+                }
+                if (scaleMax > -1)
+                {
+                    options.setScaleMax(scaleMax);
+                }
+                if (scaleStep > -1)
+                {
+                    options.setScaleStep(scaleStep);
+                }
             }
         }
 
@@ -1125,7 +1133,11 @@ public class EJRWTRadarChartRecordBlockRenderer implements EJRWTAppBlockRenderer
             if (dataItem != null)
             {
 
-                dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
+                if(legendAction==null || legendAction.isEmpty())
+                    dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
+                else {
+                   _block.executeActionCommand(legendAction, dataItem.getScreenType());
+                }
             }
             return;
         }
