@@ -3424,7 +3424,68 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                     break;
                             }
                         }
-                        {// text
+                        if(false){// text
+
+                            if (msg.getCallback() != null)
+                            {
+                                Label text = new Label(shell, SWT.WRAP);
+                                GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
+                                text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
+                                String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
+
+                                String labelUrl = matchUrl(msg.getMessage());
+                                if (!msg.getMessage().equals(labelUrl))
+                                {
+                                    label = labelUrl;
+                                }
+
+                                try
+                                {
+                                    text.setText(label);
+                                }
+                                catch (Exception e)
+                                {
+                                    text.setText(EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()));
+                                }
+                                text.setData(EJ_RWT.CUSTOM_VARIANT, "ejmessage");
+                                text.setLayoutData(data);
+
+                                text.addMouseListener(new MouseAdapter()
+                                {
+                                    private static final long serialVersionUID = 1L;
+
+                                    @Override
+                                    public void mouseUp(MouseEvent e)
+                                    {
+                                        if (msg.getCallback() != null)
+                                            msg.getCallback().run();
+                                    }
+                                });
+                            }
+                            else
+                            {
+                                Label text = new Label(shell, SWT.WRAP);
+                                GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
+                                text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
+                                String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
+                                String labelUrl = matchUrl(msg.getMessage());
+                                if (!msg.getMessage().equals(labelUrl))
+                                {
+                                    label = labelUrl;
+                                }
+                                try
+                                {
+                                    text.setText(label);
+                                }
+                                catch (Exception e)
+                                {
+                                    text.setText(EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()));
+                                }
+                                text.setLayoutData(data);
+                            }
+
+                        }
+                        else {// text
 
                             
                             if (msg.getCallback() != null)
@@ -3553,10 +3614,11 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
         {
             if (shell != null && !shell.isDisposed() && !parent.isDisposed())
             {
-                Point computeSize = shell.computeSize(parent.getBounds().width, SWT.DEFAULT);
+                boolean sidePanel = properties.getPosition() == EJCanvasMessagePosition.LEFT || properties.getPosition() == EJCanvasMessagePosition.RIGHT;
+                Point computeSize = shell.computeSize(sidePanel?scrollComposite.getBounds().width :parent.getBounds().width, SWT.DEFAULT);
                 computeSize.x = computeSize.x - 5;
                 computeSize.y = computeSize.y;
-                if (properties.getPosition() == EJCanvasMessagePosition.LEFT || properties.getPosition() == EJCanvasMessagePosition.RIGHT)
+                if (sidePanel)
                     computeSize.y = Math.max(computeSize.y - 20, Math.max(computeSize.y, parent.getBounds().height - 100));
                 shell.setSize(computeSize);
 

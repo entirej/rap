@@ -137,6 +137,12 @@ public class EJRWTBarChartRecordBlockDefinition implements EJDevBlockRendererDef
         EJDevPropertyDefinition animation = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.ANIMATION, EJPropertyDefinitionType.BOOLEAN);
         animation.setLabel("Animation");
         animation.setDefaultValue("true");
+        EJDevPropertyDefinition stacked = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.STACKED, EJPropertyDefinitionType.BOOLEAN);
+        stacked.setLabel("Stacked Bar chart");
+        stacked.setDefaultValue("false");
+        EJDevPropertyDefinition removeHidden = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.REMOVE_HIDDEN_ITEMS, EJPropertyDefinitionType.BOOLEAN);
+        removeHidden.setLabel("Remove Hidden items");
+        removeHidden.setDefaultValue("false");
         
         EJDevPropertyDefinition gridLines = new EJDevPropertyDefinition("gridLines", EJPropertyDefinitionType.BOOLEAN);
         gridLines.setLabel("Grid Lines");
@@ -146,6 +152,11 @@ public class EJRWTBarChartRecordBlockDefinition implements EJDevBlockRendererDef
         EJDevPropertyDefinition legend = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_LEGEND, EJPropertyDefinitionType.BOOLEAN);
         legend.setLabel("Show Legend");
         legend.setDefaultValue("true");
+        
+        EJDevPropertyDefinition legendActionID = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.LEGEND_ACTION, EJPropertyDefinitionType.ACTION_COMMAND);
+        legendActionID.setLabel("Legend Action Command");
+        legendActionID.setDescription("Legend Action command id for action processor.");
+       
 
         EJDevPropertyDefinition showToolTips = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.SHOW_TOOLTIPS, EJPropertyDefinitionType.BOOLEAN);
         showToolTips.setLabel("Show ToolTips");
@@ -188,12 +199,15 @@ public class EJRWTBarChartRecordBlockDefinition implements EJDevBlockRendererDef
 
         mainGroup.addPropertyDefinition(relationItem);
         mainGroup.addPropertyDefinition(horizontalBar);
+        mainGroup.addPropertyDefinition(removeHidden);
+        mainGroup.addPropertyDefinition(stacked);
         mainGroup.addPropertyDefinition(animation);
         mainGroup.addPropertyDefinition(gridLines);
 
         mainGroup.addPropertyDefinition(showToolTips);
         mainGroup.addPropertyDefinition(legend);
         mainGroup.addPropertyDefinition(legendPostions);
+        mainGroup.addPropertyDefinition(legendActionID);
         mainGroup.addPropertyDefinition(barPercentage);
         mainGroup.addPropertyDefinition(categoryPercentage);
         mainGroup.addPropertyDefinition(barThickness);

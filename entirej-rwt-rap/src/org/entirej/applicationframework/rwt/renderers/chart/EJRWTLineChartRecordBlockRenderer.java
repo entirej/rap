@@ -139,6 +139,8 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
     public final String                    SHOW_LEGEND               = "showLegend";
     public final String                    LEGEND_POSITION           = "legendPosition";
+
+    public final String                    LEGEND_ACTION             = "legendAction";
     public final String                    X_AXIS_COLUMN             = "xAxisColumn";
 
     public final String                    POINT_STYLE               = "pointStyle";
@@ -165,6 +167,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public static final String             PROPERTY_FORMAT           = "FORMAT";
 
     private Display                        dispaly                   = Display.getDefault();
+    private String legendAction;
 
     @Override
     public void setFilter(String filter)
@@ -278,7 +281,8 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         EJCoreBlockProperties blockProperties = _block.getProperties();
         options.setAnimation(blockProperties.getBlockRendererProperties().getBooleanProperty(ANIMATION, options.getAnimation()));
         options.setShowToolTips(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_TOOLTIPS, options.getShowToolTips()));
-
+        legendAction = blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_ACTION);
+        options.getLegend().setDefaultAction(legendAction==null || legendAction.isEmpty());
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
         options.getGridLines().setDisplay(blockProperties.getBlockRendererProperties().getBooleanProperty("gridLines", options.getGridLines().isDisplay()));
@@ -286,6 +290,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         xAxisColumn = blockProperties.getBlockRendererProperties().getStringProperty(X_AXIS_COLUMN);
 
         EJItemGroupPropertiesContainer container = blockProperties.getScreenItemGroupContainer(EJScreenType.MAIN);
+
         Collection<EJItemGroupProperties> itemGroupProperties = container.getAllItemGroupProperties();
         options.getYAxes().clear();
         for (EJItemGroupProperties g : itemGroupProperties)
@@ -323,7 +328,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     public void blockCleared()
     {
 
-        EJRWTAsync.runUISafe(dispaly,() -> {
+        EJRWTAsync.runUISafe(dispaly, () -> {
             if (_chartView != null && !_chartView.isDisposed())
             {
                 _chartView.clear();
@@ -448,7 +453,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     public void refresh()
     {
-        EJRWTAsync.runUISafe(dispaly,() -> {
+        EJRWTAsync.runUISafe(dispaly, () -> {
 
             refresh(new Object());
 
@@ -519,7 +524,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                             Object yvalue = ejDataRecord.getValue(sItem.getName());
                             if (yvalue instanceof String)
                             {
-                                yvalue = new BigDecimal((String)yvalue);
+                                yvalue = new BigDecimal((String) yvalue);
 
                             }
                             Float val = null;
@@ -653,7 +658,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 info.setLineWidth(mainScreenItemProperties.getBlockRendererRequiredProperties().getIntProperty(LINE_WIDTH, info.getLineWidth()));
                 info.setLineTension(mainScreenItemProperties.getBlockRendererRequiredProperties().getFloatProperty(LINE_TENSION, (float) info.getLineTension()));
                 info.setSteppedLine(mainScreenItemProperties.getBlockRendererRequiredProperties().getStringProperty(STEPPED_LINE));
-                chartRowData.addRow(info, floatArray,floatTooltipArray, styleArray);
+                chartRowData.addRow(info, floatArray, floatTooltipArray, styleArray);
                 // chartRowData.addRow(floatArray, colors);
             }
 
@@ -690,6 +695,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         }
         return xvalue;
     }
+
     private String getToolTipValue(Object object)
     {
         String xvalue;
@@ -699,12 +705,12 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
         }
         else if (object instanceof Number)
         {
-            
+
             xvalue = (createDecimalFormat(object, null).format(object));
         }
         else if (object instanceof Date)
         {
-            
+
             xvalue = (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
         }
         else
@@ -1395,7 +1401,8 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
     protected void processAction(String method, JsonObject parameters)
     {
-        if("legend_action".equals(method)) {
+        if ("legend_action".equals(method))
+        {
             EJScreenItemController dataItem = null;
             List<EJScreenItemController> screenItems = getScreenItems();
             for (EJScreenItemController sItem : screenItems)
@@ -1414,8 +1421,12 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
             }
             if (dataItem != null)
             {
-                
-                dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
+
+                if(legendAction==null || legendAction.isEmpty())
+                    dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
+                else {
+                   _block.executeActionCommand(legendAction, dataItem.getScreenType());
+                }
             }
             return;
         }

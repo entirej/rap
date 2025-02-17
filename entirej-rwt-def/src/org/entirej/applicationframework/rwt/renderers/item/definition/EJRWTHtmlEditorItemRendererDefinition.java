@@ -45,6 +45,7 @@ public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererD
     public static final String  PROPERTY_PROFILE_FULL              = "Full";
     public static final String  PROPERTY_CSS_PATH                  = "CSS_PATH";
     public static final String  PROPERTY_CONFIG_PATH               = "CONFIG_PATH";
+    public static final String  PROPERTY_URL_DETECT                = "URL_DETECT";
 
     public static final String  PROPERTY_REMOVE_TOOLBAR_KEY        = "REMOVE_TOOLBAR";
 
@@ -113,6 +114,10 @@ public class EJRWTHtmlEditorItemRendererDefinition implements EJDevItemRendererD
         pasteAsText.setLabel("Paste as text");
         pasteAsText.setDefaultValue("false");
         mainGroup.addPropertyDefinition(pasteAsText);
+        EJDevPropertyDefinition urlDetect = new EJDevPropertyDefinition(PROPERTY_URL_DETECT, EJPropertyDefinitionType.BOOLEAN);
+        urlDetect.setLabel("Display URL");
+        urlDetect.setDefaultValue("false");
+        mainGroup.addPropertyDefinition(urlDetect);
 
         // EJDevPropertyDefinition profile = new
         // EJDevPropertyDefinition(PROPERTY_PROFILE_KEY,

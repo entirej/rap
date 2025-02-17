@@ -20,6 +20,8 @@ package org.entirej.applicationframework.rwt.renderers.block.definition.interfac
 public interface EJRWTChartBlockDefinitionProperties
 {
     public final String        ANIMATION                 = "animation";
+    public final String        STACKED                   = "stacked";
+    public final String        REMOVE_HIDDEN_ITEMS       = "removeHidden";
     public final String        SHOW_TOOLTIPS             = "showToolTips";
     public final String        SHOW_LEGEND               = "showLegend";
     public final String        LEGEND_POSITION           = "legendPosition";
@@ -40,6 +42,7 @@ public interface EJRWTChartBlockDefinitionProperties
     public final String        SHOW_LINE                 = "showLine";
     public final String        POINT_DOT_RADIUS          = "pointDotRadius";
     public final String        LINE_WIDTH                = "lineWidth";
+    public final String        LEGEND_ACTION             = "legendAction";
     public final String        ACTION                    = "action";
 
     public final String        BEGIN_AT_ZERO             = "beginAtZero";

@@ -135,9 +135,14 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     private final BarChartOptions          options                   = new BarChartOptions();
 
     public final String                    ANIMATION                 = "animation";
+    public final String                    STACKED                   = "stacked";
+    public final String                    REMOVE_HIDDEN_ITEMS       = "removeHidden";
+
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
     public final String                    SHOW_LEGEND               = "showLegend";
     public final String                    LEGEND_POSITION           = "legendPosition";
+
+    public final String                    LEGEND_ACTION             = "legendAction";
     public final String                    X_AXIS_COLUMN             = "xAxisColumn";
 
     public final String                    POINT_STYLE               = "pointStyle";
@@ -164,6 +169,8 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
     private Display                        dispaly                   = Display.getDefault();
+    private boolean                        _removeHidden;
+    private String legendAction;
 
     @Override
     public void setFilter(String filter)
@@ -274,14 +281,18 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     public void initialiseRenderer(EJEditableBlockController block)
     {
         _block = block;
+
         EJCoreBlockProperties blockProperties = _block.getProperties();
+        _removeHidden = blockProperties.getBlockRendererProperties().getBooleanProperty(REMOVE_HIDDEN_ITEMS, false);
         options.setAnimation(blockProperties.getBlockRendererProperties().getBooleanProperty(ANIMATION, options.getAnimation()));
+        options.setStacked(blockProperties.getBlockRendererProperties().getBooleanProperty(STACKED, options.isStacked()));
         options.setShowToolTips(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_TOOLTIPS, options.getShowToolTips()));
 
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
+        legendAction = blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_ACTION);
         options.getGridLines().setDisplay(blockProperties.getBlockRendererProperties().getBooleanProperty("gridLines", options.getGridLines().isDisplay()));
-
+        options.getLegend().setDefaultAction(legendAction==null || legendAction.isEmpty());
         options.setBarPercentage(blockProperties.getBlockRendererProperties().getFloatProperty("barPercentage", options.getBarPercentage()));
         options.setCategoryPercentage(blockProperties.getBlockRendererProperties().getFloatProperty("categoryPercentage", options.getCategoryPercentage()));
         int barThickness = blockProperties.getBlockRendererProperties().getIntProperty("barThickness", 0);
@@ -301,6 +312,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         for (EJItemGroupProperties g : itemGroupProperties)
         {
             Axis axis = new Axis();
+            axis.setStacked(blockProperties.getBlockRendererProperties().getBooleanProperty(STACKED, axis.isStacked()));
 
             if (horizontalBar)
                 options.getxAxes().add(axis);
@@ -335,7 +347,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     @Override
     public void blockCleared()
     {
-        EJRWTAsync.runUISafe(dispaly,() -> {
+        EJRWTAsync.runUISafe(dispaly, () -> {
 
             if (_chartView != null && !_chartView.isDisposed())
             {
@@ -453,12 +465,12 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     @Override
     public void recordDeleted(int dataBlockRecordNumber)
     {
-       refresh();
+        refresh();
     }
 
     public void refresh()
     {
-        EJRWTAsync.runUISafe(dispaly,() -> {
+        EJRWTAsync.runUISafe(dispaly, () -> {
 
             refresh(new Object());
         });
@@ -479,13 +491,14 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
                 EJScreenItemController item = _block.getScreenItem(EJScreenType.MAIN, mainScreenItemProperties.getReferencedItemName());
 
-                list.add(item);
+                if (!_removeHidden || item.isVisible())
+                    list.add(item);
             }
         }
 
         return list;
     }
-    
+
     private String getToolTipValue(Object object)
     {
         String xvalue;
@@ -495,12 +508,12 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         }
         else if (object instanceof Number)
         {
-            
+
             xvalue = (createDecimalFormat(object, null).format(object));
         }
         else if (object instanceof Date)
         {
-            
+
             xvalue = (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
         }
         else
@@ -554,7 +567,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                             Float val = null;
                             if (yvalue instanceof String)
                             {
-                                yvalue = new BigDecimal((String)yvalue);
+                                yvalue = new BigDecimal((String) yvalue);
 
                             }
                             if (yvalue instanceof Number)
@@ -683,7 +696,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 info.setAction(action);
                 info.setChartStyle(colors);
                 info.setHidden(!sItem.isVisible());
-                chartRowData.addRow(info, floatArray,floatArrayTips, styleArray);
+                chartRowData.addRow(info, floatArray, floatArrayTips, styleArray);
                 // chartRowData.addRow(floatArray, colors);
             }
 
@@ -1405,7 +1418,8 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
     protected void processAction(String method, JsonObject parameters)
     {
-        if("legend_action".equals(method)) {
+        if ("legend_action".equals(method))
+        {
             EJScreenItemController dataItem = null;
             List<EJScreenItemController> screenItems = getScreenItems();
             for (EJScreenItemController sItem : screenItems)
@@ -1424,12 +1438,16 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
             }
             if (dataItem != null)
             {
-                
-                dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
+
+                if(legendAction==null || legendAction.isEmpty())
+                    dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
+                else {
+                   _block.executeActionCommand(legendAction, dataItem.getScreenType());
+                }
             }
             return;
         }
-        
+
         if (parameters.names().contains("data_label") && parameters.names().contains("value"))
         {
             currentRec = null;

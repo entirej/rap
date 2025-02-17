@@ -132,6 +132,8 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     public final String                    SHOW_LEGEND               = "showLegend";
     public final String                    LEGEND_POSITION           = "legendPosition";
 
+    public final String                    LEGEND_ACTION             = "legendAction";
+
     public final String                    LBL_VIEW_TYPE             = "lblViewType";
     public final String                    LBL_VIEW_POS              = "lblViewPos";
     public final String                    LBL_VIEW_ARC              = "lblViewArc";
@@ -149,6 +151,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
     private Display                        dispaly                   = Display.getDefault();
+    private String legendAction;
 
     @Override
     public void setFilter(String filter)
@@ -264,35 +267,35 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         multi = (blockProperties.getBlockRendererProperties().getBooleanProperty(MULTI, false));
         options.setViewType(blockProperties.getBlockRendererProperties().getStringProperty(VIEW_TYPE));
         options.setShowToolTips(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_TOOLTIPS, options.getShowToolTips()));
-
+        legendAction = blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_ACTION);
+        options.getLegend().setDefaultAction(legendAction==null || legendAction.isEmpty());
         options.getLegend().setEnabled(blockProperties.getBlockRendererProperties().getBooleanProperty(SHOW_LEGEND, options.getLegend().isEnabled()));
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
-        
+
         EJFrameworkExtensionProperties propertyGroup = blockProperties.getBlockRendererProperties().getPropertyGroup("LBL_CONFIG");
-        
+
         options.getPlugins().getLabels().setArc(propertyGroup.getBooleanProperty(LBL_VIEW_ARC, options.getPlugins().getLabels().isArc()));
         options.getPlugins().getLabels().setRender(propertyGroup.getStringProperty(LBL_VIEW_TYPE));
         options.getPlugins().getLabels().setPosition(propertyGroup.getStringProperty(LBL_VIEW_POS));
         options.getPlugins().getLabels().setShowZero(false);
         String va = propertyGroup.getStringProperty(LBL_VIEW_VA);
-        
-        if(va!=null && !va.isEmpty())
+
+        if (va != null && !va.isEmpty())
         {
             EJCoreVisualAttributeProperties visualAttributeProperties = _block.getForm().getVisualAttribute(va);
-            if(visualAttributeProperties!=null) {
+            if (visualAttributeProperties != null)
+            {
                 if (visualAttributeProperties.getForegroundColor() != null)
                 {
                     Color color = visualAttributeProperties.getForegroundColor();
-                    options.getPlugins().getLabels().setFontColor(EJRWTHtmlTableBlockRenderer.toHex(color.getRed(), color.getGreen(), color.getBlue() ));
+                    options.getPlugins().getLabels().setFontColor(EJRWTHtmlTableBlockRenderer.toHex(color.getRed(), color.getGreen(), color.getBlue()));
                 }
-                
-                
-                
+
                 Font vaFont = EJRWTVisualAttributeUtils.INSTANCE.getFont(visualAttributeProperties, null);
                 if (vaFont != null && vaFont.getFontData().length > 0)
                 {
                     FontData fontData = vaFont.getFontData()[0];
-                   
+
                     if ((fontData.getStyle() & SWT.BOLD) != 0)
                     {
                         options.getPlugins().getLabels().setFontStyle("bold");
@@ -305,14 +308,12 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                     options.getPlugins().getLabels().setFontSize(fontData.getHeight());
                     options.getPlugins().getLabels().setFontFamily(fontData.getName());
 
-
                 }
             }
-            
-            
+
         }
-        
-        //TODO:VA settings 
+
+        // TODO:VA settings
 
         labelColumn = blockProperties.getBlockRendererProperties().getStringProperty(LABLE_COLUMN);
 
@@ -479,8 +480,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
         return list;
     }
-    
-    
+
     private String getToolTipValue(Object object)
     {
         String xvalue;
@@ -490,12 +490,12 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         }
         else if (object instanceof Number)
         {
-            
+
             xvalue = (createDecimalFormat(object, null).format(object));
         }
         else if (object instanceof Date)
         {
-            
+
             xvalue = (DateFormat.getDateInstance(DateFormat.SHORT, _block.getForm().getFrameworkManager().getCurrentLocale()).format((Date) object));
         }
         else
@@ -599,7 +599,7 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 rowInfo.setHidden(hidden);
 
                 rowInfo.setAction("_pie_select");
-                chartRowData.addRow(rowInfo, data,dataToolTips);
+                chartRowData.addRow(rowInfo, data, dataToolTips);
 
             }
 
@@ -1101,7 +1101,8 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
     protected void processAction(String method, JsonObject parameters)
     {
-        if("legend_action".equals(method)) {
+        if ("legend_action".equals(method))
+        {
             EJScreenItemController dataItem = null;
             List<EJScreenItemController> screenItems = getScreenItems();
             for (EJScreenItemController sItem : screenItems)
@@ -1120,12 +1121,16 @@ public class EJRWTPieChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
             }
             if (dataItem != null)
             {
-                
-                dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
+
+                if(legendAction==null || legendAction.isEmpty())
+                    dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
+                else {
+                   _block.executeActionCommand(legendAction, dataItem.getScreenType());
+                }
             }
             return;
         }
-        
+
         if (method.equals("_pie_select"))
         {
             if (parameters.names().contains("label") && parameters.names().contains("value"))
