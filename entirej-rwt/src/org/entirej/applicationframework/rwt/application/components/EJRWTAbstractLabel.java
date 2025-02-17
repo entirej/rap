@@ -30,6 +30,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 public abstract class EJRWTAbstractLabel extends Composite implements Serializable
@@ -54,7 +55,7 @@ public abstract class EJRWTAbstractLabel extends Composite implements Serializab
         if(empty)
             GridLayoutFactory.swtDefaults().margins(0, 0).extendedMargins(0, 0, 0, 0).spacing(0, 0).numColumns(1).applyTo(this);
         else
-            GridLayoutFactory.swtDefaults().margins(0, 0).extendedMargins(2, 2, 3, 2).spacing(0, 2).numColumns(numColumns).applyTo(this);
+            GridLayoutFactory.swtDefaults().margins(0, 0).extendedMargins(0, 0, 3, 2).spacing(0, 2).numColumns(numColumns).applyTo(this);
 
         labelControl = createLabel(this);
 

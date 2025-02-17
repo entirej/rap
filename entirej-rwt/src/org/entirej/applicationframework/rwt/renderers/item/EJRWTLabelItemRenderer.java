@@ -494,7 +494,7 @@ public class EJRWTLabelItemRenderer implements EJRWTAppItemRenderer, FocusListen
         if (!_displayAsHyperlink)
         {
             final int labelStyle=  style;
-            final EJRWTAbstractLabel labelField = new EJRWTAbstractLabel(composite,true)
+            final EJRWTAbstractLabel labelField = new EJRWTAbstractLabel(composite,false)
             {
                 
                 @Override
