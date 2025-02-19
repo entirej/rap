@@ -4,9 +4,9 @@ import org.entirej.applicationframework.rwt.spring.ext.EJDefaultSpringSecurityAu
 import org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityAuthenticationProvider;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 @EnableWebSecurity
 public class EJSpringSecurityConfig 
@@ -68,11 +68,9 @@ public class EJSpringSecurityConfig
         }
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception
-    {
-
-        provider.configureGlobal(auth);
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return provider.configureGlobal();
     }
 
 }

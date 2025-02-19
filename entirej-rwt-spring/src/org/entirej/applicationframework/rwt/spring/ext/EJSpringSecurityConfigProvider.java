@@ -1,12 +1,13 @@
 package org.entirej.applicationframework.rwt.spring.ext;
 
+import org.entirej.applicationframework.rwt.spring.EJSecurityConfig;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.SecurityFilterChain;
 
 public interface EJSpringSecurityConfigProvider
 {
 
-    Class<? extends WebSecurityConfigurerAdapter>[] getOtherSecurityConfigurer();
+    Class<? extends EJSecurityConfig>[] getOtherSecurityConfigurer();
 
-    void configure(HttpSecurity http, EJSpringSecurityContext context) throws Exception;;
+    SecurityFilterChain configure(HttpSecurity http, EJSpringSecurityContext context) throws Exception;;
 }

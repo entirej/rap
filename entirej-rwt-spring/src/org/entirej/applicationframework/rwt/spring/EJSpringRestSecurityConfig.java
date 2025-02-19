@@ -9,39 +9,45 @@ import org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityContext;
 import org.entirej.framework.core.EJFrameworkInitialiser;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.session.web.http.HeaderHttpSessionIdResolver;
-import org.springframework.session.web.http.HttpSessionIdResolver;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 @Order(1)
-public class EJSpringRestSecurityConfig extends WebSecurityConfigurerAdapter
+public class EJSpringRestSecurityConfig
 {
 
     public static final String             SPRING_SECURITY      = "SPRING_SECURITY";
     public static final String             SPRING_SECURITY_AUTH = "SPRING_SECURITY_CONFIG";
     private EJSpringSecurityConfigProvider provider;
 
+    @Autowired
+    private UserDetailsService             userDetailsService;
+
     public EJSpringRestSecurityConfig()
     {
         provider = getProvider();
     }
+
     public EJSpringRestSecurityConfig(boolean init)
     {
-        if(init)
+        if (init)
             EJFrameworkInitialiser.initialiseFramework("application.ejprop");
         provider = getProvider();
     }
 
-    private static EJSpringSecurityConfigProvider  getProvider()
+    private static EJSpringSecurityConfigProvider getProvider()
     {
         EJCoreProperties instance = EJCoreProperties.getInstance();
         EJFrameworkExtensionProperties definedProperties = instance.getApplicationDefinedProperties();
@@ -89,53 +95,67 @@ public class EJSpringRestSecurityConfig extends WebSecurityConfigurerAdapter
             }
         }
         return new EJDefaultSpringSecurityConfigProvider();
-        
+
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
     {
-        provider.configure(http, new EJSpringSecurityContext()
+       // provider.configure(http, null);
+
+        return provider.configure(http, new EJSpringSecurityContext()
         {
 
             @Override
             public UserDetailsService userDetailsServiceBean() throws Exception
             {
 
-                return EJSpringRestSecurityConfig.this.userDetailsServiceBean();
+                return EJSpringRestSecurityConfig.this.userDetailsService();
             }
 
             @Override
-            public AuthenticationManager authenticationManagerBean() throws Exception
+            public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authConfig) throws Exception
             {
 
-                return EJSpringRestSecurityConfig.this.authenticationManagerBean();
+                return EJSpringRestSecurityConfig.this.authenticationManager(authConfig);
             }
         });
 
     }
 
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception
+    {
+        return authConfig.getAuthenticationManager();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService()
+    {
+        return userDetailsService;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder()
+    {
+        return new BCryptPasswordEncoder();
+    }
+
     public Class<?>[] getConfigClasses()
     {
-        
-        
+
         List<Class<?>> configs = new ArrayList<Class<?>>();
         configs.add(this.getClass());
         System.out.println("EJSpringRestSecurityConfig.getConfigClasses()");
-        
-        Class<? extends WebSecurityConfigurerAdapter>[] otherSecurityConfigurer = provider.getOtherSecurityConfigurer();
-        for (Class<? extends WebSecurityConfigurerAdapter> class1 : otherSecurityConfigurer)
+
+        Class<? extends EJSecurityConfig>[] otherSecurityConfigurer = provider.getOtherSecurityConfigurer();
+        for (Class<? extends EJSecurityConfig> class1 : otherSecurityConfigurer)
         {
-           
+
             configs.add(class1);
         }
         configs.add(EJSpringSecurityConfig.class);
         return configs.toArray(new Class<?>[configs.size()]);
-    }
-    
-    @Bean
-    public HttpSessionIdResolver httpSessionStrategy() {
-        return HeaderHttpSessionIdResolver.xAuthToken();
     }
 
 }
