@@ -34,6 +34,8 @@ public class EJSpringRestSecurityConfig
 
     @Autowired
     private UserDetailsService             userDetailsService;
+    @Autowired
+    private AuthenticationManager             authenticationManager;
 
     public EJSpringRestSecurityConfig()
     {
@@ -114,19 +116,19 @@ public class EJSpringRestSecurityConfig
             }
 
             @Override
-            public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authConfig) throws Exception
+            public AuthenticationManager authenticationManagerBean() throws Exception
             {
 
-                return EJSpringRestSecurityConfig.this.authenticationManager(authConfig);
+                return EJSpringRestSecurityConfig.this.authenticationManager();
             }
         });
 
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception
+   
+    public AuthenticationManager authenticationManager() throws Exception
     {
-        return authConfig.getAuthenticationManager();
+        return authenticationManager;
     }
 
     @Bean

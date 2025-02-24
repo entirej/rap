@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface EJSpringSecurityContext
 {
-    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authConfig) throws Exception;
+    public AuthenticationManager authenticationManagerBean() throws Exception;
 
     public UserDetailsService userDetailsServiceBean() throws Exception;
 }
