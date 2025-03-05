@@ -3348,7 +3348,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                         {
                             textSupport.layout(shell.getClientArea().width);
                         }
-                        shell.layout(true);
+                        shell.layout(true,true);
                     }
                 });
                 if (properties.getVa() != null)
@@ -3581,7 +3581,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
                                 text.setBackground(shell.getBackground());
                                 
                                 
-                                GridData data = new GridData(GridData.FILL_BOTH| GridData.GRAB_HORIZONTAL) ;
+                                GridData data = new GridData(GridData.FILL_HORIZONTAL| GridData.GRAB_HORIZONTAL) ;
                                 data.heightHint=25;
                                 text.setData(EJ_RWT.MARKUP_ENABLED, properties.getCustomFormatting());
                                 String label = properties.getCustomFormatting() ? EJ_RWT.escapeHtmlWithXhtml(msg.getMessage()) : msg.getMessage();
@@ -3599,7 +3599,12 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                         }
                     }
-                    composite.layout(true);
+                    GridData data = new GridData(GridData.FILL_VERTICAL| GridData.GRAB_VERTICAL) ;
+                    Label empty = new Label(shell, SWT.NONE);
+                    Label empty2 = new Label(shell, SWT.NONE);
+                    empty.setLayoutData(data);
+                    empty2.setLayoutData(data);
+                    composite.layout(true,true);
                 }
 
                 calculateSize();
