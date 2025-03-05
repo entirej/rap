@@ -346,8 +346,8 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                 if (layoutData instanceof GridData)
                                 {
                                     GridData data = (GridData) layoutData;
-                                    Point textExtent = TextSizeUtil.textExtent(getFont(), text, Math.max(widthHintLocal-22, 85), true);
-                                    data.heightHint = textExtent.y+2 ;
+                                    Point textExtent = TextSizeUtil.textExtent(getFont(), text, Math.max(widthHintLocal-31, 5), true);
+                                    data.heightHint = textExtent.y ;
                                     //data.widthHint = textExtent.x;
                                 }
                             }
