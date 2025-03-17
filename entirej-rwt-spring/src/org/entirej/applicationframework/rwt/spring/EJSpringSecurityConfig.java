@@ -7,6 +7,8 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkE
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @EnableWebSecurity
-public class EJSpringSecurityConfig
+public class EJSpringSecurityConfig extends GlobalAuthenticationConfigurerAdapter
 {
     public static final String                     SPRING_SECURITY           = "SPRING_SECURITY";
     public static final String                     SPRING_SECURITY_CONFIG    = "SPRING_SECURITY_AUTH";
@@ -86,14 +88,8 @@ public class EJSpringSecurityConfig
         
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception
-    {
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        provider.configureGlobal(authenticationManagerBuilder);
-        AuthenticationManager manager = authenticationManagerBuilder.build();
-        return manager;
-    }
+   
+    
 
     @Bean
     public UserDetailsService userDetailsService()

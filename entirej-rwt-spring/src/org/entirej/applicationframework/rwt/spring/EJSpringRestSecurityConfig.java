@@ -2,6 +2,7 @@ package org.entirej.applicationframework.rwt.spring;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.entirej.applicationframework.rwt.spring.ext.EJDefaultSpringSecurityConfigProvider;
 import org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityConfigProvider;
@@ -17,6 +18,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,8 +37,6 @@ public class EJSpringRestSecurityConfig
 
     @Autowired
     private UserDetailsService             userDetailsService;
-    @Autowired
-    private AuthenticationManager             authenticationManager;
 
     public EJSpringRestSecurityConfig()
     {
@@ -119,17 +120,22 @@ public class EJSpringRestSecurityConfig
             public AuthenticationManager authenticationManagerBean() throws Exception
             {
 
-                return EJSpringRestSecurityConfig.this.authenticationManager();
+                return new AuthenticationManager()
+                {
+                    
+                    @Override
+                    public Authentication authenticate(Authentication authentication) throws AuthenticationException
+                    {
+                        return http.getSharedObject(AuthenticationManager.class).authenticate(authentication);
+                    }
+                };
             }
         });
 
     }
 
    
-    public AuthenticationManager authenticationManager() throws Exception
-    {
-        return authenticationManager;
-    }
+    
 
     @Bean
     public UserDetailsService userDetailsService()
