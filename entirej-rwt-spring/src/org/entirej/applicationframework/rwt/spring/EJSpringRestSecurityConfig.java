@@ -20,7 +20,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -35,8 +37,7 @@ public class EJSpringRestSecurityConfig
     public static final String             SPRING_SECURITY_AUTH = "SPRING_SECURITY_CONFIG";
     private EJSpringSecurityConfigProvider provider;
 
-    @Autowired
-    private UserDetailsService             userDetailsService;
+
 
     public EJSpringRestSecurityConfig()
     {
@@ -113,7 +114,15 @@ public class EJSpringRestSecurityConfig
             public UserDetailsService userDetailsServiceBean() throws Exception
             {
 
-                return EJSpringRestSecurityConfig.this.userDetailsService();
+                return new UserDetailsService()
+                {
+                    
+                    @Override
+                    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
+                    {
+                        return http.getSharedObject(UserDetailsService.class).loadUserByUsername(username);
+                    }
+                };
             }
 
             @Override
@@ -137,12 +146,7 @@ public class EJSpringRestSecurityConfig
    
     
 
-    @Bean
-    public UserDetailsService userDetailsService()
-    {
-        return userDetailsService;
-    }
-
+   
     @Bean
     public PasswordEncoder passwordEncoder()
     {

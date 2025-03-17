@@ -21,17 +21,6 @@ public class EJSpringSecurityConfig extends GlobalAuthenticationConfigurerAdapte
     public static final String                     SPRING_SECURITY           = "SPRING_SECURITY";
     public static final String                     SPRING_SECURITY_CONFIG    = "SPRING_SECURITY_AUTH";
     private EJSpringSecurityAuthenticationProvider provider;
-    private UserDetailsService                     defaultUserDetailsService = null;
-    private UserDetailsService                     userDetailsServiceProxy   = new UserDetailsService()
-                                                                             {
-
-                                                                                 @Override
-                                                                                 public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
-                                                                                 {
-
-                                                                                     return (defaultUserDetailsService != null) ? defaultUserDetailsService.loadUserByUsername(username) : null;
-                                                                                 }
-                                                                             };
 
     public EJSpringSecurityConfig()
     {
@@ -84,17 +73,9 @@ public class EJSpringSecurityConfig extends GlobalAuthenticationConfigurerAdapte
         {
             provider = new EJDefaultSpringSecurityAuthenticationProvider();
         }
-        defaultUserDetailsService = provider.customUserDetailsService();
         
     }
 
    
-    
-
-    @Bean
-    public UserDetailsService userDetailsService()
-    {
-        return userDetailsServiceProxy;
-    }
 
 }
