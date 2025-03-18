@@ -33,6 +33,46 @@ import org.springframework.security.web.SecurityFilterChain;
 public class EJSpringRestSecurityConfig
 {
 
+    public static class EJSpringSecurityContextProxy implements EJSpringSecurityContext
+    {
+        private final HttpSecurity http;
+
+        public EJSpringSecurityContextProxy(HttpSecurity http)
+        {
+            this.http = http;
+        }
+
+        @Override
+        public UserDetailsService userDetailsServiceBean() throws Exception
+        {
+
+            return new UserDetailsService()
+            {
+                
+                @Override
+                public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
+                {
+                    return http.getSharedObject(UserDetailsService.class).loadUserByUsername(username);
+                }
+            };
+        }
+
+        @Override
+        public AuthenticationManager authenticationManagerBean() throws Exception
+        {
+
+            return new AuthenticationManager()
+            {
+                
+                @Override
+                public Authentication authenticate(Authentication authentication) throws AuthenticationException
+                {
+                    return http.getSharedObject(AuthenticationManager.class).authenticate(authentication);
+                }
+            };
+        }
+    }
+
     public static final String             SPRING_SECURITY      = "SPRING_SECURITY";
     public static final String             SPRING_SECURITY_AUTH = "SPRING_SECURITY_CONFIG";
     private EJSpringSecurityConfigProvider provider;
@@ -107,39 +147,7 @@ public class EJSpringRestSecurityConfig
     {
        // provider.configure(http, null);
 
-        return provider.configure(http, new EJSpringSecurityContext()
-        {
-
-            @Override
-            public UserDetailsService userDetailsServiceBean() throws Exception
-            {
-
-                return new UserDetailsService()
-                {
-                    
-                    @Override
-                    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
-                    {
-                        return http.getSharedObject(UserDetailsService.class).loadUserByUsername(username);
-                    }
-                };
-            }
-
-            @Override
-            public AuthenticationManager authenticationManagerBean() throws Exception
-            {
-
-                return new AuthenticationManager()
-                {
-                    
-                    @Override
-                    public Authentication authenticate(Authentication authentication) throws AuthenticationException
-                    {
-                        return http.getSharedObject(AuthenticationManager.class).authenticate(authentication);
-                    }
-                };
-            }
-        });
+        return provider.configure(http, new EJSpringSecurityContextProxy(http));
 
     }
 
