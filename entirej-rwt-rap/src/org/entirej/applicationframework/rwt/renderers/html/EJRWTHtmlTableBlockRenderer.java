@@ -31,11 +31,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.rwt.RWT;
@@ -111,6 +106,11 @@ import org.entirej.framework.core.renderers.interfaces.EJQueryScreenRenderer;
 import org.entirej.framework.core.renderers.interfaces.EJUpdateScreenRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class EJRWTHtmlTableBlockRenderer implements EJRWTAppBlockRenderer, KeyListener, EJRWTAppBlockRenderer.CustomBlockSizeSupport
 {

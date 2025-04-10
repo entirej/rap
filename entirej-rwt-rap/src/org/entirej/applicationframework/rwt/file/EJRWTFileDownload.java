@@ -26,23 +26,19 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
-import org.eclipse.rap.rwt.internal.engine.RWTClusterSupport;
 import org.eclipse.rap.rwt.service.ServiceHandler;
-import org.entirej.applicationframework.rwt.application.EJRWTApplicationManager;
-import org.entirej.applicationframework.rwt.application.launcher.EJRWTContext;
 import org.entirej.framework.core.EJApplicationException;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class EJRWTFileDownload
 {

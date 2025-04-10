@@ -4,15 +4,22 @@ import org.entirej.applicationframework.rwt.spring.ext.EJDefaultSpringSecurityAu
 import org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityAuthenticationProvider;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @EnableWebSecurity
-public class EJSpringSecurityConfig 
+public class EJSpringSecurityConfig extends GlobalAuthenticationConfigurerAdapter
 {
-    public static final String SPRING_SECURITY = "SPRING_SECURITY";
-    public static final String SPRING_SECURITY_CONFIG = "SPRING_SECURITY_AUTH";
+    public static final String                     SPRING_SECURITY           = "SPRING_SECURITY";
+    public static final String                     SPRING_SECURITY_CONFIG    = "SPRING_SECURITY_AUTH";
     private EJSpringSecurityAuthenticationProvider provider;
 
     public EJSpringSecurityConfig()
@@ -22,23 +29,23 @@ public class EJSpringSecurityConfig
         if (definedProperties != null)
         {
             EJFrameworkExtensionProperties settings = definedProperties.getPropertyGroup(SPRING_SECURITY);
-            if(settings!=null)
+            if (settings != null)
             {
                 String configClass = settings.getStringProperty(SPRING_SECURITY_CONFIG);
-                if(configClass!=null && !configClass.isEmpty())
+                if (configClass != null && !configClass.isEmpty())
                 {
                     Class<?> factoryClass;
                     try
                     {
                         factoryClass = Class.forName(configClass);
                         Object obj = factoryClass.newInstance();
-                        
+
                         if (obj instanceof EJSpringSecurityAuthenticationProvider)
                         {
                             provider = (EJSpringSecurityAuthenticationProvider) obj;
                         }
                         else
-                        
+
                         {
                             System.err.println("invalid EJSpringSecurityAuthenticationProvider switch to default");
                         }
@@ -58,7 +65,7 @@ public class EJSpringSecurityConfig
                         System.err.println("invalid EJSpringSecurityAuthenticationProvider switch to default");
                         e.printStackTrace();
                     }
-                    
+
                 }
             }
         }
@@ -66,13 +73,9 @@ public class EJSpringSecurityConfig
         {
             provider = new EJDefaultSpringSecurityAuthenticationProvider();
         }
+        
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception
-    {
-
-        provider.configureGlobal(auth);
-    }
+   
 
 }

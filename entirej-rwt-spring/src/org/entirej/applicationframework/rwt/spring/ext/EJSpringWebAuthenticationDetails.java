@@ -1,6 +1,6 @@
 package org.entirej.applicationframework.rwt.spring.ext;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
