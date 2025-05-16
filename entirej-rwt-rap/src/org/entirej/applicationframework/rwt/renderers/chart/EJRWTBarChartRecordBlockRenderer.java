@@ -56,7 +56,6 @@ import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -78,6 +77,8 @@ import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfac
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeTableBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
+import org.entirej.framework.core.EJActionProcessorException;
+import org.entirej.framework.core.EJBlock;
 import org.entirej.framework.core.EJForm;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.data.EJDataRecord;
@@ -135,6 +136,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     private final BarChartOptions          options                   = new BarChartOptions();
 
     public final String                    ANIMATION                 = "animation";
+    public final String                    CHART_PROCESSOR           = "chartProcessor";
     public final String                    STACKED                   = "stacked";
     public final String                    REMOVE_HIDDEN_ITEMS       = "removeHidden";
 
@@ -170,7 +172,8 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
     public static final String             PROPERTY_FORMAT           = "FORMAT";
     private Display                        dispaly                   = Display.getDefault();
     private boolean                        _removeHidden;
-    private String legendAction;
+    private String                         legendAction;
+    private EJRWTChartProcessor            chartProcessor;
 
     @Override
     public void setFilter(String filter)
@@ -292,7 +295,7 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
         options.getLegend().setPosition(blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_POSITION));
         legendAction = blockProperties.getBlockRendererProperties().getStringProperty(LEGEND_ACTION);
         options.getGridLines().setDisplay(blockProperties.getBlockRendererProperties().getBooleanProperty("gridLines", options.getGridLines().isDisplay()));
-        options.getLegend().setDefaultAction(legendAction==null || legendAction.isEmpty());
+        options.getLegend().setDefaultAction(legendAction == null || legendAction.isEmpty());
         options.setBarPercentage(blockProperties.getBlockRendererProperties().getFloatProperty("barPercentage", options.getBarPercentage()));
         options.setCategoryPercentage(blockProperties.getBlockRendererProperties().getFloatProperty("categoryPercentage", options.getCategoryPercentage()));
         int barThickness = blockProperties.getBlockRendererProperties().getIntProperty("barThickness", 0);
@@ -340,6 +343,46 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
 
             ticks.setMaxTicksLimit((g.getRendererProperties().getIntProperty(MAX_TICKS_LIMIT, ticks.getMaxTicksLimit())));
 
+        }
+
+        if (blockProperties.getBlockRendererProperties().getStringProperty(CHART_PROCESSOR) != null)
+        {
+            String configClass = blockProperties.getBlockRendererProperties().getStringProperty(CHART_PROCESSOR);
+            if (configClass != null && !configClass.isEmpty())
+            {
+                Class<?> factoryClass;
+                try
+                {
+                    factoryClass = Class.forName(configClass);
+                    Object obj = factoryClass.newInstance();
+
+                    if (obj instanceof EJRWTChartProcessor)
+                    {
+                        chartProcessor = (EJRWTChartProcessor) obj;
+                    }
+                    else
+
+                    {
+                        System.err.println("invalid EJRWTChartProcessor " + configClass);
+                    }
+                }
+                catch (ClassNotFoundException e)
+                {
+                    System.err.println("invalid EJRWTChartProcessor " + configClass);
+                    e.printStackTrace();
+                }
+                catch (InstantiationException e)
+                {
+                    System.err.println("invalid EJRWTChartProcessor " + configClass);
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e)
+                {
+                    System.err.println("invalid EJRWTChartProcessor " + configClass);
+                    e.printStackTrace();
+                }
+
+            }
         }
 
     }
@@ -698,6 +741,18 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
                 info.setHidden(!sItem.isVisible());
                 chartRowData.addRow(info, floatArray, floatArrayTips, styleArray);
                 // chartRowData.addRow(floatArray, colors);
+            }
+
+            if (chartProcessor != null)
+            {
+                try
+                {
+                    chartProcessor.preRefresh(new EJForm(_block.getForm()), new EJBlock(getBlock()), options);
+                }
+                catch (EJActionProcessorException e)
+                {
+                    _block.getForm().handleException(e);
+                }
             }
 
             if (horizontalBar)
@@ -1439,10 +1494,11 @@ public class EJRWTBarChartRecordBlockRenderer implements EJRWTAppBlockRenderer, 
             if (dataItem != null)
             {
 
-                if(legendAction==null || legendAction.isEmpty())
+                if (legendAction == null || legendAction.isEmpty())
                     dataItem.getManagedItemRenderer().setVisible(!dataItem.getManagedItemRenderer().isVisible());
-                else {
-                   _block.executeActionCommand(legendAction, dataItem.getScreenType());
+                else
+                {
+                    _block.executeActionCommand(legendAction, dataItem.getScreenType());
                 }
             }
             return;

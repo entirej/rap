@@ -130,7 +130,7 @@
 							<file>${project.basedir}/extlibs/org.eclipse.rap.chartjs.jar</file>
 							<groupId>org.eclipse.rap.incubator</groupId>
 							<artifactId>org.eclipse.rap.chartjs</artifactId>
-							<version>4.0.07</version>
+							<version>4.0.08</version>
 							<packaging>jar</packaging>
 						</configuration>
 					</execution>
@@ -272,7 +272,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap.incubator</groupId>
 			<artifactId>org.eclipse.rap.chartjs</artifactId>
-			<version>4.0.07</version>
+			<version>4.0.08</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>

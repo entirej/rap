@@ -126,6 +126,9 @@ public class EJRWTBarChartRecordBlockDefinition implements EJDevBlockRendererDef
     public EJPropertyDefinitionGroup getBlockPropertyDefinitionGroup()
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("LineChart-Record Block");
+        EJDevPropertyDefinition type = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.CHART_PROCESSOR, EJPropertyDefinitionType.PROJECT_CLASS_FILE);
+        type.setLabel("Chart Processor");
+        type.setClassParent("org.entirej.applicationframework.rwt.renderers.chart.EJRWTChartProcessor");
 
         EJDevPropertyDefinition horizontalBar = new EJDevPropertyDefinition("horizontalBar", EJPropertyDefinitionType.BOOLEAN);
         horizontalBar.setLabel("Horizontal Bar Chart");
@@ -197,6 +200,7 @@ public class EJRWTBarChartRecordBlockDefinition implements EJDevBlockRendererDef
         legendPostions.addValidValue("left", "Left");
         legendPostions.addValidValue("right", "Right");
 
+        mainGroup.addPropertyDefinition(type);
         mainGroup.addPropertyDefinition(relationItem);
         mainGroup.addPropertyDefinition(horizontalBar);
         mainGroup.addPropertyDefinition(removeHidden);

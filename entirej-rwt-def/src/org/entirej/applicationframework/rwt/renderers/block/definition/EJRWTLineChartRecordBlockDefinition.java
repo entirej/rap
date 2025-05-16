@@ -128,6 +128,11 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
     {
         EJDevPropertyDefinitionGroup mainGroup = new EJDevPropertyDefinitionGroup("LineChart-Record Block");
 
+        EJDevPropertyDefinition type = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.CHART_PROCESSOR, EJPropertyDefinitionType.PROJECT_CLASS_FILE);
+        type.setLabel("Chart Processor");
+        type.setClassParent("org.entirej.applicationframework.rwt.renderers.chart.EJRWTChartProcessor");
+
+        
         EJDevPropertyDefinition relationItem = new EJDevPropertyDefinition(EJRWTChartBlockDefinitionProperties.X_AXIS_COLUMN, EJPropertyDefinitionType.BLOCK_ITEM);
         relationItem.setLabel("X Axis");
         relationItem.setMandatory(true);
@@ -160,6 +165,7 @@ public class EJRWTLineChartRecordBlockDefinition implements EJDevBlockRendererDe
         legendPostions.addValidValue("left", "Left");
         legendPostions.addValidValue("right", "Right");
 
+        mainGroup.addPropertyDefinition(type);
         mainGroup.addPropertyDefinition(relationItem);
         mainGroup.addPropertyDefinition(animation);
         mainGroup.addPropertyDefinition(gridLines);

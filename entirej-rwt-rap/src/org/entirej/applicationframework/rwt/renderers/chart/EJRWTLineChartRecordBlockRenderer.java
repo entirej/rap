@@ -78,6 +78,8 @@ import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfac
 import org.entirej.applicationframework.rwt.renderers.blocks.definition.interfaces.EJRWTTreeTableBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil;
 import org.entirej.applicationframework.rwt.utils.EJRWTKeysUtil.KeyInfo;
+import org.entirej.framework.core.EJActionProcessorException;
+import org.entirej.framework.core.EJBlock;
 import org.entirej.framework.core.EJForm;
 import org.entirej.framework.core.EJMessage;
 import org.entirej.framework.core.EJRecord;
@@ -136,6 +138,8 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     private final LineChartOptions         options                   = new LineChartOptions();
 
     public final String                    ANIMATION                 = "animation";
+
+    public final String                    CHART_PROCESSOR           = "chartProcessor";
     public final String                    SHOW_TOOLTIPS             = "showToolTips";
     public final String                    SHOW_LEGEND               = "showLegend";
     public final String                    LEGEND_POSITION           = "legendPosition";
@@ -169,6 +173,7 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
     private Display                        dispaly                   = Display.getDefault();
     private String legendAction;
 
+    private EJRWTChartProcessor            chartProcessor;
     @Override
     public void setFilter(String filter)
     {
@@ -320,6 +325,45 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
 
             ticks.setMaxTicksLimit((g.getRendererProperties().getIntProperty(MAX_TICKS_LIMIT, ticks.getMaxTicksLimit())));
 
+        }
+        if (blockProperties.getBlockRendererProperties().getStringProperty(CHART_PROCESSOR) != null)
+        {
+            String configClass = blockProperties.getBlockRendererProperties().getStringProperty(CHART_PROCESSOR);
+            if (configClass != null && !configClass.isEmpty())
+            {
+                Class<?> factoryClass;
+                try
+                {
+                    factoryClass = Class.forName(configClass);
+                    Object obj = factoryClass.newInstance();
+
+                    if (obj instanceof EJRWTChartProcessor)
+                    {
+                        chartProcessor = (EJRWTChartProcessor) obj;
+                    }
+                    else
+
+                    {
+                        System.err.println("invalid EJRWTChartProcessor " + configClass);
+                    }
+                }
+                catch (ClassNotFoundException e)
+                {
+                    System.err.println("invalid EJRWTChartProcessor " + configClass);
+                    e.printStackTrace();
+                }
+                catch (InstantiationException e)
+                {
+                    System.err.println("invalid EJRWTChartProcessor " + configClass);
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e)
+                {
+                    System.err.println("invalid EJRWTChartProcessor " + configClass);
+                    e.printStackTrace();
+                }
+
+            }
         }
 
     }
@@ -662,6 +706,19 @@ public class EJRWTLineChartRecordBlockRenderer implements EJRWTAppBlockRenderer,
                 // chartRowData.addRow(floatArray, colors);
             }
 
+            
+            if (chartProcessor != null)
+            {
+                try
+                {
+                    chartProcessor.preRefresh(new EJForm(_block.getForm()), new EJBlock(getBlock()), options);
+                }
+                catch (EJActionProcessorException e)
+                {
+                    _block.getForm().handleException(e);
+                }
+            }
+            
             _chartView.load(chartRowData, options);
 
         }

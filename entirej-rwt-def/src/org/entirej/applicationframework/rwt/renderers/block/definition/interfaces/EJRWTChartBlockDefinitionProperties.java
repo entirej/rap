@@ -32,6 +32,7 @@ public interface EJRWTChartBlockDefinitionProperties
     public final String        LBL_VIEW_ARC              = "lblViewArc";
     public final String        LBL_VIEW_VA               = "lblViewVA";
     public final String        X_AXIS_COLUMN             = "xAxisColumn";
+    public final String        CHART_PROCESSOR           = "chartProcessor";
     public final String        MULTI                     = "multi";
     public final String        FILLBG                    = "fillbg";
 
