@@ -3288,8 +3288,13 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
         public int getExpandSize()
         {
-
-            return shell.computeSize(parent.getBounds().width, SWT.DEFAULT).y;
+            int calculatedHight =(shell.computeSize(parent.getBounds().width, SWT.DEFAULT).y);
+            int baseH =parent.getBounds().height;
+            
+            if(baseH==0)
+                return calculatedHight;
+            
+            return calculatedHight>(baseH/2)?baseH/2:calculatedHight;
         }
 
         void setMessages(Collection<EJMessage> msgs)
