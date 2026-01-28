@@ -221,7 +221,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.jface</artifactId>
-			<version>4.3.0</version>
+			<version>4.5.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -233,7 +233,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.forms</artifactId>
-			<version>4.3.0</version>
+			<version>4.5.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -244,7 +244,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui</artifactId>
-			<version>4.3.0</version>
+			<version>4.5.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -255,7 +255,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.ui.workbench</artifactId>
-			<version>4.3.0</version>
+			<version>4.5.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -283,7 +283,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.fileupload</artifactId>
-			<version>4.3.0</version>
+			<version>4.5.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -299,7 +299,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.filedialog</artifactId>
-			<version>4.3.0</version>
+			<version>4.5.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -310,7 +310,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt</artifactId>
-			<version>4.3.0</version>
+			<version>4.5.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
@@ -321,7 +321,7 @@
 		<dependency>
 			<groupId>org.eclipse.rap</groupId>
 			<artifactId>org.eclipse.rap.rwt.osgi</artifactId>
-			<version>4.0.0</version>
+			<version>4.5.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.osgi.service</groupId>
