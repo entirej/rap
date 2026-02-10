@@ -52,7 +52,7 @@ import org.entirej.applicationframework.rwt.renderers.form.EJRWTFormRenderer;
 import org.entirej.framework.core.EJForm;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
 import org.entirej.framework.core.internal.EJInternalForm;
-import org.entirej.framework.core.properties.EJCoreFormProperties;
+import org.entirej.framework.core.properties.interfaces.EJFormProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
 import org.entirej.framework.core.renderers.interfaces.EJFormRenderer;
 
@@ -204,7 +204,7 @@ public class EJRWTTabPaneFormContainer implements EJRWTFormContainer, EJRWTAppCo
         EJ_RWT.setTestId(tabItem, EJ_RWT.toFormID(form));
 
         
-        final EJCoreFormProperties coreFormProperties = form.getProperties();
+        final EJFormProperties coreFormProperties = form.getProperties();
         tabItem.setText(coreFormProperties.getTitle() == null ? coreFormProperties.getName() : coreFormProperties.getTitle());
        
         _folder.setSelection(tabItem);

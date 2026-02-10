@@ -61,7 +61,7 @@ import org.entirej.framework.core.EJManagedFrameworkConnection;
 import org.entirej.framework.core.actionprocessor.interfaces.EJApplicationActionProcessor;
 import org.entirej.framework.core.data.controllers.EJPopupFormController;
 import org.entirej.framework.core.internal.EJInternalForm;
-import org.entirej.framework.core.properties.EJCoreFormProperties;
+import org.entirej.framework.core.properties.interfaces.EJFormProperties;
 import org.entirej.framework.core.properties.EJCoreLayoutContainer;
 import org.entirej.framework.core.properties.EJCoreLayoutItem;
 import org.entirej.framework.core.properties.EJCoreLayoutItem.LayoutComponent;
@@ -320,7 +320,7 @@ public class EJRWTApplicationContainer implements Serializable, EJRWTFormOpenedL
 
                     };
                     _popupDialog.create();
-                    final EJCoreFormProperties coreFormProperties = form.getProperties();
+                    final EJFormProperties coreFormProperties = form.getProperties();
                     _popupDialog.getShell().setData("POPUP - " + coreFormProperties.getName());
                     _popupDialog.getShell().setText(coreFormProperties.getTitle() == null ? coreFormProperties.getName() : coreFormProperties.getTitle());
                     // add dialog border offsets

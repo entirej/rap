@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.entirej.framework.core.enumerations.EJCanvasType;
-import org.entirej.framework.core.properties.EJCoreFormProperties;
+import org.entirej.framework.core.properties.interfaces.EJFormProperties;
 import org.entirej.framework.core.properties.containers.interfaces.EJCanvasPropertiesContainer;
 import org.entirej.framework.core.properties.interfaces.EJCanvasProperties;
 import org.entirej.framework.core.properties.interfaces.EJDrawerPageProperties;
@@ -32,7 +32,7 @@ import org.entirej.framework.core.properties.interfaces.EJTabPageProperties;
 public class EJRWTCanvasRetriever
 {
 
-    public static Collection<EJCanvasProperties> retriveAllFormCanvases(EJCoreFormProperties formProperties)
+    public static Collection<EJCanvasProperties> retriveAllFormCanvases(EJFormProperties formProperties)
     {
         ArrayList<EJCanvasProperties> formCanvasProperties = new ArrayList<EJCanvasProperties>();
 
@@ -47,7 +47,7 @@ public class EJRWTCanvasRetriever
         return formCanvasProperties;
     }
 
-    public static Collection<EJCanvasProperties> retriveAllCanvases(EJCoreFormProperties formProperties)
+    public static Collection<EJCanvasProperties> retriveAllCanvases(EJFormProperties formProperties)
     {
         ArrayList<EJCanvasProperties> canvasList = new ArrayList<EJCanvasProperties>();
 
@@ -66,7 +66,7 @@ public class EJRWTCanvasRetriever
      * @return <code>true</code> if the canvas exists, otherwise
      *         <code>false</code>
      */
-    public static boolean canvasExists(EJCoreFormProperties formProperties, String name)
+    public static boolean canvasExists(EJFormProperties formProperties, String name)
     {
         ArrayList<EJCanvasProperties> canvasList = new ArrayList<EJCanvasProperties>();
         addCanvasesFromContainer(formProperties, formProperties.getCanvasContainer(), canvasList);
@@ -80,7 +80,7 @@ public class EJRWTCanvasRetriever
         }
         return false;
     }
-    public static EJCanvasProperties getCanvas(EJCoreFormProperties formProperties, String name)
+    public static EJCanvasProperties getCanvas(EJFormProperties formProperties, String name)
     {
         ArrayList<EJCanvasProperties> canvasList = new ArrayList<EJCanvasProperties>();
         addCanvasesFromContainer(formProperties, formProperties.getCanvasContainer(), canvasList);
@@ -95,7 +95,7 @@ public class EJRWTCanvasRetriever
         return null;
     }
 
-    private static void addCanvasesFromContainer(EJCoreFormProperties formProperties, EJCanvasPropertiesContainer container, ArrayList<EJCanvasProperties> canvasList)
+    private static void addCanvasesFromContainer(EJFormProperties formProperties, EJCanvasPropertiesContainer container, ArrayList<EJCanvasProperties> canvasList)
     {
         Iterator<EJCanvasProperties> allCanvases = container.getAllCanvasProperties().iterator();
         while (allCanvases.hasNext())
