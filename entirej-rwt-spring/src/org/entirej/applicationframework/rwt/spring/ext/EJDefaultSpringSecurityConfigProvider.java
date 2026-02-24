@@ -10,7 +10,7 @@ public class EJDefaultSpringSecurityConfigProvider implements EJSpringSecurityCo
     
     public SecurityFilterChain configure(HttpSecurity http,EJSpringSecurityContext context) throws Exception
     {
-        http.csrf().disable();
+        http.csrf(csrf -> csrf.disable());
        
        return http.build();
 

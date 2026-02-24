@@ -14,7 +14,7 @@
 
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.7</version>
+                <version>3.1.2</version>
                 <configuration>
                     <altDeploymentRepository>
                         internal.repo::default::file://${built.repo.dir}</altDeploymentRepository>
@@ -25,7 +25,7 @@
             <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
-                <version>0.10</version>
+                <version>0.12</version>
                 <configuration>
                     <message>Maven artifacts for
                         ${project.groupId}:${project.artifactId}:${project.version}
