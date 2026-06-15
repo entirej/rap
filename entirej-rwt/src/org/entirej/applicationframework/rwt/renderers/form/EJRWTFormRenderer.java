@@ -3536,7 +3536,7 @@ public class EJRWTFormRenderer implements EJRWTAppFormRenderer
 
                                 text.setLayoutData(data);
                                 
-                                ((EJRWTHtmlViewSupport.HtmlTextSupport)text).setText("<p style=\"margin:0;font: 11px\">"+label+"</p>");
+                                ((EJRWTHtmlViewSupport.HtmlTextSupport)text).setText("<p style=\"margin:0;font:11px;cursor:pointer;\" onmouseover=\"this.style.textDecoration='underline';\" onmouseout=\"this.style.textDecoration='none';\">"+label+"</p>");
                                 htmlItems.add((EJRWTHtmlViewSupport.HtmlTextSupport)text);
                                 text.setData(EJ_RWT.CUSTOM_VARIANT, "ejmessage");
                                 
