@@ -31,11 +31,15 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDe
 import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionGroup;
 import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayProperties;
+import org.entirej.applicationframework.rwt.renderers.definition.EJRWTPreviewDescriptors;
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewDescriptor;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewKind;
+import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemPreviewProvider;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendererDefinition;
 
 
-public class EJRWTDateTimeItemRendererDefinition implements EJDevItemRendererDefinition
+public class EJRWTDateTimeItemRendererDefinition implements EJDevItemRendererDefinition, EJDevItemPreviewProvider
 {
     public static final String PROPERTY_TYPE                  = "TYPE";
     public static final String PROPERTY_TYPE_DATE             = "DATE";
@@ -132,6 +136,11 @@ public class EJRWTDateTimeItemRendererDefinition implements EJDevItemRendererDef
         
 
         return mainGroup;
+    }
+    @Override
+    public EJDevPreviewDescriptor getItemPreviewDescriptor(EJDevScreenItemDisplayProperties screenDisplayProperties)
+    {
+        return EJRWTPreviewDescriptors.descriptor(EJDevPreviewKind.DATE_TIME_FIELD);
     }
 
     @Override

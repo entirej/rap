@@ -25,10 +25,21 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDe
 import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDefinitionListener;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionGroup;
+import org.entirej.applicationframework.rwt.renderers.definition.EJRWTPreviewDescriptors;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewDescriptor;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewKind;
+import org.entirej.framework.dev.renderer.definition.interfaces.EJDevAppComponentPreviewProvider;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevAppComponentRendererDefinition;
 
-public class EJRWTMenuTreeRendererDefinition implements EJDevAppComponentRendererDefinition
+public class EJRWTMenuTreeRendererDefinition implements EJDevAppComponentRendererDefinition, EJDevAppComponentPreviewProvider
 {
+
+    @Override
+    public EJDevPreviewDescriptor getAppComponentPreviewDescriptor(String rendererName, EJFrameworkExtensionProperties rendererProperties)
+    {
+        return EJRWTPreviewDescriptors.descriptor(EJDevPreviewKind.MENU_TREE);
+    }
+
 
     public static final String MENU_GROUP = "MENU_GROUP";
 

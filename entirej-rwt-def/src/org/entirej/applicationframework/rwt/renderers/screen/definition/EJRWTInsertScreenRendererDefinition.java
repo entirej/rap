@@ -26,17 +26,22 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.interfaces.EJRWTScreenRendererDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.definition.EJRWTPreviewDescriptors;
 import org.entirej.framework.core.properties.definitions.EJPropertyDefinitionType;
 import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDefinitionGroup;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.interfaces.EJDevBlockDisplayProperties;
 import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayProperties;
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewDescriptor;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewKind;
 import org.entirej.framework.dev.renderer.definition.EJDevScreenRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.interfaces.EJDevInsertScreenPreviewProvider;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevInsertScreenRendererDefinition;
 
 
-public class EJRWTInsertScreenRendererDefinition extends EJRWTScreenRendererDefinition implements EJDevInsertScreenRendererDefinition
+public class EJRWTInsertScreenRendererDefinition extends EJRWTScreenRendererDefinition implements EJDevInsertScreenRendererDefinition,
+        EJDevInsertScreenPreviewProvider
 {
     public String getRendererClassName()
     {
@@ -63,6 +68,13 @@ public class EJRWTInsertScreenRendererDefinition extends EJRWTScreenRendererDefi
     public EJPropertyDefinitionGroup getItemPropertyDefinitionGroup()
     {
         return getItemPropertyDefinitions();
+    }
+
+    @Override
+    public EJDevPreviewDescriptor getInsertScreenPreviewDescriptor(EJDevBlockDisplayProperties blockDisplayProperties)
+    {
+        return EJRWTPreviewDescriptors.screen(EJDevPreviewKind.INSERT_SCREEN, "Insert Screen", blockDisplayProperties == null ? null
+                : blockDisplayProperties.getInsertScreenRendererProperties());
     }
 
     @Override

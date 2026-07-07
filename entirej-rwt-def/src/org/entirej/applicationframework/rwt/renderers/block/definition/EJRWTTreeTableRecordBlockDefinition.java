@@ -60,14 +60,18 @@ import org.entirej.framework.dev.properties.interfaces.EJDevBlockDisplayProperti
 import org.entirej.framework.dev.properties.interfaces.EJDevItemGroupDisplayProperties;
 import org.entirej.framework.dev.properties.interfaces.EJDevMainScreenItemDisplayProperties;
 import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayProperties;
+import org.entirej.applicationframework.rwt.renderers.definition.EJRWTPreviewDescriptors;
 import org.entirej.framework.dev.renderer.definition.EJDevBlockRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewDescriptor;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewKind;
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.interfaces.EJDevBlockPreviewProvider;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevBlockRendererDefinition;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevInsertScreenRendererDefinition;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevQueryScreenRendererDefinition;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevUpdateScreenRendererDefinition;
 
-public class EJRWTTreeTableRecordBlockDefinition implements EJDevBlockRendererDefinition
+public class EJRWTTreeTableRecordBlockDefinition implements EJDevBlockRendererDefinition, EJDevBlockPreviewProvider
 {
     public EJRWTTreeTableRecordBlockDefinition()
     {
@@ -350,7 +354,12 @@ public class EJRWTTreeTableRecordBlockDefinition implements EJDevBlockRendererDe
         // No spacers are available for a multi record block
         return null;
     }
-
+    @Override
+    public EJDevPreviewDescriptor getBlockPreviewDescriptor(EJMainScreenProperties mainScreenProperties,
+            EJDevBlockDisplayProperties blockDisplayProperties)
+    {
+        return EJRWTPreviewDescriptors.block(EJDevPreviewKind.TREE, mainScreenProperties);
+    }
     @Override
     public EJDevBlockRendererDefinitionControl addBlockControlToCanvas(EJMainScreenProperties mainScreenProperties,
             EJDevBlockDisplayProperties blockDisplayProperties, Composite parent, FormToolkit toolkit)

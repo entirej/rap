@@ -33,10 +33,14 @@ import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionGroup;
 import org.entirej.framework.dev.properties.interfaces.EJDevBlockItemDisplayProperties;
 import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayProperties;
+import org.entirej.applicationframework.rwt.renderers.definition.EJRWTPreviewDescriptors;
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewDescriptor;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewKind;
+import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemPreviewProvider;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendererDefinition;
 
-public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefinition
+public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefinition, EJDevItemPreviewProvider
 {
     public static final String PROPERTY_CASE                 = "CASE";
     public static final String PROPERTY_CASE_UPPER           = "UPPER";
@@ -130,6 +134,11 @@ public class EJRWTLabelItemRendererDefinition implements EJDevItemRendererDefini
         mainGroup.addPropertyDefinition(customCSSKey);
 
         return mainGroup;
+    }
+    @Override
+    public EJDevPreviewDescriptor getItemPreviewDescriptor(EJDevScreenItemDisplayProperties screenDisplayProperties)
+    {
+        return EJRWTPreviewDescriptors.descriptor(EJDevPreviewKind.LABEL);
     }
 
     @Override
