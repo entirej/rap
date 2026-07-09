@@ -154,6 +154,17 @@ public class EJRWTMessenger implements EJMessenger
         {
 
             @Override
+            protected void handleShellCloseEvent()
+            {
+                // Window.handleShellCloseEvent() sets the return code to CANCEL (1) before calling
+                // close(), and MessageDialog only resets it to SWT.DEFAULT afterwards. As close()
+                // reads the return code as a button index, closing the shell (X / ESC) would
+                // otherwise be reported as the second button being pressed.
+                setReturnCode(SWT.DEFAULT);
+                close();
+            }
+
+            @Override
             public boolean close()
             {
                 boolean close = super.close();
@@ -162,12 +173,12 @@ public class EJRWTMessenger implements EJMessenger
 
                 try
                 {
-                    
-                    if (answer > -1)
+
+                    if (answer > -1 && answer < optionsButtons.length)
                     {
                         question.setAnswer(optionsButtons[answer]);
                         question.getActionProcessor().questionAnswered(question);
-                        
+
                     }
                     question.getForm().internalQuestionAnswered(question);
                 }
@@ -205,6 +216,17 @@ public class EJRWTMessenger implements EJMessenger
         {
 
             @Override
+            protected void handleShellCloseEvent()
+            {
+                // Window.handleShellCloseEvent() sets the return code to CANCEL (1) before calling
+                // close(), and MessageDialog only resets it to SWT.DEFAULT afterwards. As close()
+                // reads the return code as a button index, closing the shell (X / ESC) would
+                // otherwise be reported as the second button being pressed.
+                setReturnCode(SWT.DEFAULT);
+                close();
+            }
+
+            @Override
             public boolean close()
             {
                 boolean close = super.close();
@@ -213,14 +235,14 @@ public class EJRWTMessenger implements EJMessenger
 
                 try
                 {
-                    
-                    if (answer > -1)
+
+                    if (answer > -1 && answer < optionsButtons.length)
                     {
                         question.setAnswer(optionsButtons[answer]);
                         question.getActionProcessor().questionAnswered(question);
-                        
+
                     }
-                    
+
                 }
                 catch (EJApplicationException e)
                 {
