@@ -36,10 +36,14 @@ import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionGroup;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionList;
 import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayProperties;
+import org.entirej.applicationframework.rwt.renderers.definition.EJRWTPreviewDescriptors;
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewDescriptor;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewKind;
+import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemPreviewProvider;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendererDefinition;
 
-public class EJRWTListBoxRendererDefinition implements EJDevItemRendererDefinition
+public class EJRWTListBoxRendererDefinition implements EJDevItemRendererDefinition, EJDevItemPreviewProvider
 {
     public static final String LOV_DEFINITION_NAME = "LOVDEFINITION";
     public static final String DISPLAY_COLUMNS     = "DISPLAY_COLUMNS";
@@ -167,6 +171,11 @@ public class EJRWTListBoxRendererDefinition implements EJDevItemRendererDefiniti
         mainGroup.addPropertyDefinitionList(list);
 
         return mainGroup;
+    }
+    @Override
+    public EJDevPreviewDescriptor getItemPreviewDescriptor(EJDevScreenItemDisplayProperties screenDisplayProperties)
+    {
+        return EJRWTPreviewDescriptors.descriptor(EJDevPreviewKind.LIST);
     }
 
     @Override

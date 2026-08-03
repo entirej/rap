@@ -41,11 +41,15 @@ import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionGroup;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionList;
 import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayProperties;
+import org.entirej.applicationframework.rwt.renderers.definition.EJRWTPreviewDescriptors;
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewDescriptor;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewKind;
+import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemPreviewProvider;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendererDefinition;
 
 
-public class EJRWTRadioGroupItemRendererDefinition implements EJDevItemRendererDefinition
+public class EJRWTRadioGroupItemRendererDefinition implements EJDevItemRendererDefinition, EJDevItemPreviewProvider
 {
     public static final String SHOW_BORDER            = "SHOW_BORDER";
     public static final String DEFAULT_BUTTON         = "DEFAULT_BUTTON";
@@ -65,6 +69,11 @@ public class EJRWTRadioGroupItemRendererDefinition implements EJDevItemRendererD
     public String getRendererClassName()
     {
         return "org.entirej.applicationframework.rwt.renderers.item.EJRWTRadioGroupItemRenderer";
+    }
+    @Override
+    public EJDevPreviewDescriptor getItemPreviewDescriptor(EJDevScreenItemDisplayProperties screenDisplayProperties)
+    {
+        return EJRWTPreviewDescriptors.descriptor(EJDevPreviewKind.RADIO_GROUP);
     }
 
     @Override

@@ -31,10 +31,14 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDe
 import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.EJDevPropertyDefinitionGroup;
 import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayProperties;
+import org.entirej.applicationframework.rwt.renderers.definition.EJRWTPreviewDescriptors;
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewDescriptor;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewKind;
+import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemPreviewProvider;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevItemRendererDefinition;
 
-public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinition
+public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinition, EJDevItemPreviewProvider
 {
     public static final String PROPERTY_FORMAT                = "FORMAT";
     public static final String PROPERTY_LOCALE_FORMAT         = "LOCALE_FORMAT";
@@ -131,6 +135,11 @@ public class EJRWTDateItemRendererDefinition implements EJDevItemRendererDefinit
         mainGroup.addPropertyDefinition(customCSSKey);
 
         return mainGroup;
+    }
+    @Override
+    public EJDevPreviewDescriptor getItemPreviewDescriptor(EJDevScreenItemDisplayProperties screenDisplayProperties)
+    {
+        return EJRWTPreviewDescriptors.descriptor(EJDevPreviewKind.DATE_FIELD);
     }
 
     @Override

@@ -25,6 +25,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.entirej.applicationframework.rwt.renderers.definition.EJRWTPreviewDescriptors;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.interfaces.EJRWTScreenRendererDefinitionProperties;
 import org.entirej.framework.core.properties.definitions.EJPropertyDefinitionType;
 import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDefinitionGroup;
@@ -32,11 +33,15 @@ import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.interfaces.EJDevBlockDisplayProperties;
 import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayProperties;
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewDescriptor;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewKind;
 import org.entirej.framework.dev.renderer.definition.EJDevScreenRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.interfaces.EJDevUpdateScreenPreviewProvider;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevUpdateScreenRendererDefinition;
 
 
-public class EJRWTUpdateScreenRendererDefinition extends EJRWTScreenRendererDefinition implements EJDevUpdateScreenRendererDefinition
+public class EJRWTUpdateScreenRendererDefinition extends EJRWTScreenRendererDefinition implements EJDevUpdateScreenRendererDefinition,
+        EJDevUpdateScreenPreviewProvider
 {
     public String getRendererClassName()
     {
@@ -63,6 +68,13 @@ public class EJRWTUpdateScreenRendererDefinition extends EJRWTScreenRendererDefi
     public EJPropertyDefinitionGroup getItemPropertyDefinitionGroup()
     {
         return getItemPropertyDefinitions();
+    }
+
+    @Override
+    public EJDevPreviewDescriptor getUpdateScreenPreviewDescriptor(EJDevBlockDisplayProperties blockDisplayProperties)
+    {
+        return EJRWTPreviewDescriptors.screen(EJDevPreviewKind.UPDATE_SCREEN, "Update Screen", blockDisplayProperties == null ? null
+                : blockDisplayProperties.getUpdateScreenRendererProperties());
     }
 
     public EJDevScreenRendererDefinitionControl addUpdateScreenControl(EJDevBlockDisplayProperties blockDisplayProperties, Composite parent,

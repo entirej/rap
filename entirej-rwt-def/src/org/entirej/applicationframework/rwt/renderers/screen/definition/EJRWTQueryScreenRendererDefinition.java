@@ -28,6 +28,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.entirej.applicationframework.rwt.renderers.definition.EJRWTPreviewDescriptors;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.interfaces.EJRWTScreenRendererDefinitionProperties;
 import org.entirej.framework.core.properties.definitions.EJPropertyDefinitionType;
 import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDefinitionGroup;
@@ -35,11 +36,15 @@ import org.entirej.framework.dev.properties.EJDevPropertyDefinition;
 import org.entirej.framework.dev.properties.interfaces.EJDevBlockDisplayProperties;
 import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayProperties;
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewDescriptor;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewKind;
 import org.entirej.framework.dev.renderer.definition.EJDevScreenRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.interfaces.EJDevQueryScreenPreviewProvider;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevQueryScreenRendererDefinition;
 
 
-public class EJRWTQueryScreenRendererDefinition extends EJRWTScreenRendererDefinition implements EJDevQueryScreenRendererDefinition
+public class EJRWTQueryScreenRendererDefinition extends EJRWTScreenRendererDefinition implements EJDevQueryScreenRendererDefinition,
+        EJDevQueryScreenPreviewProvider
 {
 
     @Override
@@ -65,6 +70,13 @@ public class EJRWTQueryScreenRendererDefinition extends EJRWTScreenRendererDefin
     public EJPropertyDefinitionGroup getItemPropertyDefinitionGroup()
     {
         return getItemPropertyDefinitions();
+    }
+
+    @Override
+    public EJDevPreviewDescriptor getQueryScreenPreviewDescriptor(EJDevBlockDisplayProperties blockDisplayProperties)
+    {
+        return EJRWTPreviewDescriptors.screen(EJDevPreviewKind.QUERY_SCREEN, "Query Screen", blockDisplayProperties == null ? null
+                : blockDisplayProperties.getQueryScreenRendererProperties());
     }
 
     /*

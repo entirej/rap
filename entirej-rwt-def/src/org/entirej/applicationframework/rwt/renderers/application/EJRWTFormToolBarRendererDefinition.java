@@ -22,10 +22,21 @@ import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkE
 import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDefinition;
 import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDefinitionGroup;
 import org.entirej.framework.core.properties.definitions.interfaces.EJPropertyDefinitionListener;
+import org.entirej.applicationframework.rwt.renderers.definition.EJRWTPreviewDescriptors;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewDescriptor;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewKind;
+import org.entirej.framework.dev.renderer.definition.interfaces.EJDevAppComponentPreviewProvider;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevAppComponentRendererDefinition;
 
-public class EJRWTFormToolBarRendererDefinition implements EJDevAppComponentRendererDefinition
+public class EJRWTFormToolBarRendererDefinition implements EJDevAppComponentRendererDefinition, EJDevAppComponentPreviewProvider
 {
+
+    @Override
+    public EJDevPreviewDescriptor getAppComponentPreviewDescriptor(String rendererName, EJFrameworkExtensionProperties rendererProperties)
+    {
+        return EJRWTPreviewDescriptors.descriptor(EJDevPreviewKind.TOOLBAR);
+    }
+
 
     @Override
     public EJPropertyDefinitionGroup getComponentPropertyDefinitionGroup()

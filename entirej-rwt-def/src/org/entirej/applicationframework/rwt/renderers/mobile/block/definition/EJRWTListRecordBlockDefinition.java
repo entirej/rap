@@ -38,6 +38,7 @@ import org.entirej.applicationframework.rwt.renderers.block.definition.EJRWTTabl
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTListRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTSingleRecordBlockDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.block.definition.interfaces.EJRWTTreeBlockDefinitionProperties;
+import org.entirej.applicationframework.rwt.renderers.definition.EJRWTPreviewDescriptors;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTInsertScreenRendererDefinition;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTQueryScreenRendererDefinition;
 import org.entirej.applicationframework.rwt.renderers.screen.definition.EJRWTUpdateScreenRendererDefinition;
@@ -54,12 +55,15 @@ import org.entirej.framework.dev.properties.interfaces.EJDevBlockDisplayProperti
 import org.entirej.framework.dev.properties.interfaces.EJDevItemGroupDisplayProperties;
 import org.entirej.framework.dev.properties.interfaces.EJDevScreenItemDisplayProperties;
 import org.entirej.framework.dev.renderer.definition.EJDevItemRendererDefinitionControl;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewDescriptor;
+import org.entirej.framework.dev.renderer.definition.EJDevPreviewKind;
+import org.entirej.framework.dev.renderer.definition.interfaces.EJDevBlockPreviewProvider;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevBlockRendererDefinition;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevInsertScreenRendererDefinition;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevQueryScreenRendererDefinition;
 import org.entirej.framework.dev.renderer.definition.interfaces.EJDevUpdateScreenRendererDefinition;
 
-public class EJRWTListRecordBlockDefinition implements EJDevBlockRendererDefinition
+public class EJRWTListRecordBlockDefinition implements EJDevBlockRendererDefinition, EJDevBlockPreviewProvider
 {
     public EJRWTListRecordBlockDefinition()
     {
@@ -265,7 +269,12 @@ public class EJRWTListRecordBlockDefinition implements EJDevBlockRendererDefinit
         // No spacers are available for a multi record block
         return null;
     }
-
+    @Override
+    public EJDevPreviewDescriptor getBlockPreviewDescriptor(EJMainScreenProperties mainScreenProperties,
+            EJDevBlockDisplayProperties blockDisplayProperties)
+    {
+        return EJRWTPreviewDescriptors.block(EJDevPreviewKind.LIST, mainScreenProperties);
+    }
     @Override
     public EJRWTTableRendererDefinitionControl addBlockControlToCanvas(EJMainScreenProperties mainScreenProperties,
             EJDevBlockDisplayProperties blockDisplayProperties, Composite parent, FormToolkit toolkit)
