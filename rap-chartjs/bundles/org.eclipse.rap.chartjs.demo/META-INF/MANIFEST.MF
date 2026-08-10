@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Chartjs-Demo
+Bundle-SymbolicName: org.eclipse.rap.chartjs.demo
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.rap.rwt,
+ org.eclipse.rap.chartjs;bundle-version="1.0.0"

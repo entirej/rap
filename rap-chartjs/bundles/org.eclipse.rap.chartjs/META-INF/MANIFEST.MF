@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RAP Chart.js Widget
+Bundle-SymbolicName: org.eclipse.rap.chartjs
+Bundle-Version: 4.0.8
+Bundle-Vendor: EntireJ
+Bundle-RequiredExecutionEnvironment: JavaSE-21
+Require-Bundle: org.eclipse.rap.rwt;bundle-version="[4.7.0,5.0.0)"
+Export-Package: org.eclipse.rap.chartjs,
+ org.eclipse.rap.chartjs.bar,
+ org.eclipse.rap.chartjs.line,
+ org.eclipse.rap.chartjs.pie,
+ org.eclipse.rap.chartjs.radar
