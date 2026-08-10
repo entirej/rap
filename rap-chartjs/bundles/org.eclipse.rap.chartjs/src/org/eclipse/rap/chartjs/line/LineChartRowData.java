@@ -104,12 +104,17 @@ public class LineChartRowData
             }
             
             rowsAction.add(rowInfo.action);
-            rowsJson.add(new JsonObject().add("label", (rowInfo.label)).
+            JsonObject dataset = new JsonObject().add("label", (rowInfo.label)).
                     add("pointStyle", (rowInfo.pointStyle)).
                     add("hidden", (rowInfo.hidden))
-                    .add("showLine", (rowInfo.showLine)).add("fill", rowInfo.fill).add("borderWidth", rowInfo.lineWidth).add("lineTension", rowInfo.lineTension).add("steppedLine", rowInfo.steppedLine)
+                    .add("showLine", (rowInfo.showLine)).add("fill", rowInfo.fill).add("borderWidth", rowInfo.lineWidth).add("tension", rowInfo.lineTension)
                     .add("backgroundColor", bg).add("borderColor", bg).add("pointBackgroundColor", pc)
-                    .add("pointBorderColor", pc).add("pointBorderWidth", rowInfo.lineWidth).add("data", asJson(rows.get(i))).add("dataTooltips", asJson(rowsToolTips.get(i))));
+                    .add("pointBorderColor", pc).add("pointBorderWidth", rowInfo.lineWidth).add("data", asJson(rows.get(i))).add("dataTooltips", asJson(rowsToolTips.get(i)));
+            if ("false".equals(rowInfo.steppedLine))
+                dataset.add("stepped", false);
+            else if (rowInfo.steppedLine != null)
+                dataset.add("stepped", rowInfo.steppedLine);
+            rowsJson.add(dataset);
         }
         result.add("datasets", rowsJson);
         result.add("actions", rowsAction);

@@ -30,11 +30,10 @@ function handleEvent( event ) {
       event.gc.canvas.width = widget.getClientArea().width;
       var handleClick =  function( evt)
       {
-    	  var activeElement = chart.getElementAtEvent(evt);
-    	  if(activeElement!=null && activeElement[0]!=null && activeElement[0]._model!=null)
-		  {
-    		  var action = activeElement[0]._model.actionId;
-		  }
+      var activeElements = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, false);
+      if(activeElements && activeElements.length > 0 && data.actions) {
+        var action = data.actions[activeElements[0].datasetIndex];
+      }
       }
       options.onClick = handleClick;
       chart = new Chart( event.gc ,{type:type, data:data, options:options});

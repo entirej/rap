@@ -2,7 +2,6 @@ package org.entirej.applicationframework.rwt.spring;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.entirej.applicationframework.rwt.spring.ext.EJDefaultSpringSecurityConfigProvider;
 import org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityConfigProvider;
@@ -10,12 +9,10 @@ import org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityContext;
 import org.entirej.framework.core.EJFrameworkInitialiser;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -103,43 +100,29 @@ public class EJSpringRestSecurityConfig
                 String configClass = settings.getStringProperty(SPRING_SECURITY_AUTH);
                 if (configClass != null && !configClass.isEmpty())
                 {
-                    Class<?> factoryClass;
-                    try
-                    {
-                        factoryClass = Class.forName(configClass);
-                        Object obj = factoryClass.newInstance();
-
-                        if (obj instanceof EJSpringSecurityConfigProvider)
-                        {
-                            return (EJSpringSecurityConfigProvider) obj;
-                        }
-                        else
-
-                        {
-                            System.err.println("invalid EJSpringSecurityConfigProvider switch to default");
-                        }
-                    }
-                    catch (ClassNotFoundException e)
-                    {
-                        System.err.println("invalid EJSpringSecurityConfigProvider switch to default");
-                        e.printStackTrace();
-                    }
-                    catch (InstantiationException e)
-                    {
-                        System.err.println("invalid EJSpringSecurityConfigProvider switch to default");
-                        e.printStackTrace();
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        System.err.println("invalid EJSpringSecurityConfigProvider switch to default");
-                        e.printStackTrace();
-                    }
-
+                    return instantiateProvider(configClass);
                 }
             }
         }
         return new EJDefaultSpringSecurityConfigProvider();
 
+    }
+
+    static EJSpringSecurityConfigProvider instantiateProvider(String configClass)
+    {
+        try
+        {
+            Object candidate = Class.forName(configClass).getDeclaredConstructor().newInstance();
+            if (candidate instanceof EJSpringSecurityConfigProvider configProvider)
+            {
+                return configProvider;
+            }
+            throw new IllegalStateException(configClass + " does not implement " + EJSpringSecurityConfigProvider.class.getName());
+        }
+        catch (ReflectiveOperationException | LinkageError e)
+        {
+            throw new IllegalStateException("Unable to create configured Spring security provider " + configClass, e);
+        }
     }
 
     @Bean
@@ -166,7 +149,6 @@ public class EJSpringRestSecurityConfig
 
         List<Class<?>> configs = new ArrayList<Class<?>>();
         configs.add(this.getClass());
-        System.out.println("EJSpringRestSecurityConfig.getConfigClasses()");
 
         Class<? extends EJSecurityConfig>[] otherSecurityConfigurer = provider.getOtherSecurityConfigurer();
         for (Class<? extends EJSecurityConfig> class1 : otherSecurityConfigurer)

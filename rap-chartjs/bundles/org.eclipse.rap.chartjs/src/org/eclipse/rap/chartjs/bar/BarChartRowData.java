@@ -63,6 +63,11 @@ public class BarChartRowData
 
     JsonObject toJson()
     {
+        return toJson(null);
+    }
+
+    JsonObject toJson(BarChartOptions options)
+    {
         JsonObject result = new JsonObject();
         result.add("labels", asJson(labels));
         JsonArray rowsJson = new JsonArray();
@@ -95,15 +100,16 @@ public class BarChartRowData
                  pc = JsonValue.valueOf(asCss(rowInfo.chartStyle.getPointColor()));
             }
             
-            rowsJson.add(new JsonObject().add("label", (rowInfo.label)).
-                  
+            JsonObject dataset = new JsonObject().add("label", (rowInfo.label)).
                     add("hidden", (rowInfo.hidden))
                     .add("backgroundColor", bg).
                     add("borderColor", bc)
                     .add("pointBorderColor", pc)
                     .add("data", asJson(rows.get(i)))
-                    .add("dataTooltips", asJson(rowsToolTips.get(i)))
-                    );
+                    .add("dataTooltips", asJson(rowsToolTips.get(i)));
+            if (options != null)
+                options.applyTo(dataset);
+            rowsJson.add(dataset);
         }
         result.add("datasets", rowsJson);
 

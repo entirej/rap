@@ -62,8 +62,10 @@ public abstract class AbstractChart extends Canvas
                 @Override
                 public void run()
                 {
-                    
-                    action(method, parameters);
+                    if (!isDisposed())
+                    {
+                        action(method, parameters);
+                    }
 
                 }
 
@@ -91,8 +93,8 @@ public abstract class AbstractChart extends Canvas
 
     public void clear()
     {
-        setData(CHART_TYPE, JsonObject.NULL); // "null" won't be synchronized
-        redraw();
+        checkWidget();
+        remoteObject.set("context", JsonObject.NULL);
     }
 
     protected void drawChart(String type, JsonObject options, JsonValue data)
@@ -112,8 +114,17 @@ public abstract class AbstractChart extends Canvas
     
     protected void action(String method, JsonObject parameters)
     {
-        System.out.println(method+"-"+parameters.toString());
-        
+    }
+
+    @Override
+    public void dispose()
+    {
+        if (remoteObject != null)
+        {
+            remoteObject.destroy();
+            remoteObject = null;
+        }
+        super.dispose();
     }
     
     private void addPaintListener()

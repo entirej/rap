@@ -22,6 +22,7 @@ var CKEDITOR_BASEPATH = "rwt-resources/html2canvas/";
     bindAll( this, [ "ej_action" ] );
     this.document = document;
     this.window = window;
+    this.destroyed = false;
    
   };
 
@@ -40,8 +41,11 @@ var CKEDITOR_BASEPATH = "rwt-resources/html2canvas/";
     	var remoteObject = rap.getRemoteObject(this);
     	if(data=='snap') {
     		
-	    	var canvas	= await html2canvas( document.body);	
-	    	var img = canvas.toDataURL("image/png");
+		var canvas = await html2canvas(document.body);
+		if(this.destroyed) {
+			return;
+		}
+		var img = canvas.toDataURL("image/png");
 	    	var args = {};
         	args['0']=img;
 			remoteObject.call('data',args);
@@ -56,9 +60,9 @@ var CKEDITOR_BASEPATH = "rwt-resources/html2canvas/";
     
 
     destroy : function() {
-    	
-    	
-      
+	    this.destroyed = true;
+	    this.document = null;
+	    this.window = null;
     }
 
   };

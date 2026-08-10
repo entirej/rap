@@ -97,20 +97,10 @@ public class Ticks
     public JsonObject toJson()
     {
         JsonObject result = new JsonObject();
-        if (beginAtZero != null)
-            result.add("beginAtZero", beginAtZero);
-        if (min != null)
-            result.add("min", min);
-        if (max != null)
-            result.add("max", max);
         if (maxTicksLimit != null)
             result.add("maxTicksLimit", maxTicksLimit);
         if (stepSize != null)
             result.add("stepSize", stepSize);
-        if (suggestedMax != null)
-            result.add("suggestedMax", suggestedMax);
-        if (suggestedMin != null)
-            result.add("suggestedMin", suggestedMin);
         result.add("display", display);
         return result;
     }

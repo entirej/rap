@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eclipse.rap.chartjs.AbstarctChartOptions;
 import org.eclipse.rap.chartjs.Axis;
-import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 
 public class LineChartOptions extends AbstarctChartOptions
@@ -42,7 +41,8 @@ public class LineChartOptions extends AbstarctChartOptions
         for (Axis yaxis : yAxes)
         {
             JsonObject object = new JsonObject();
-            object.add("gridLines", gridLines.toJson());
+            object.add("grid", gridLines.toJson());
+            object.add("border", gridLines.toBorderJson());
             axis.add("y",object.add("ticks", yaxis.getTicks().toJson()));
             yaxis.getTicks().toJson(object);
         }
@@ -77,9 +77,12 @@ public class LineChartOptions extends AbstarctChartOptions
         {
             JsonObject jsonObject = new JsonObject();
             jsonObject.add("display", display);
-            jsonObject.add("drawBorder", drawBorder);
-            
             return jsonObject;
+        }
+
+        JsonObject toBorderJson()
+        {
+            return new JsonObject().add("display", drawBorder);
         }
         
     }

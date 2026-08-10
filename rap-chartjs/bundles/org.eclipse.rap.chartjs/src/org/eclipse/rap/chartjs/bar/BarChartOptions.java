@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.eclipse.rap.chartjs.AbstarctChartOptions;
 import org.eclipse.rap.chartjs.Axis;
-import org.eclipse.rap.json.JsonArray;
 import org.eclipse.rap.json.JsonObject;
 
 public class BarChartOptions extends AbstarctChartOptions
@@ -112,50 +111,56 @@ public class BarChartOptions extends AbstarctChartOptions
         jsonObject.add("indexAxis", indexAxis);
         for (Axis yaxis : yAxes)
         {
-            JsonObject object = new JsonObject();
-            object.add("gridLines", gridLines.toJson());
-            object.add("display", yaxis.isDisplay());
-            object.add("stacked", yaxis.isStacked());
-            axis.add("y",object.add("ticks", yaxis.getTicks().toJson()));
+            JsonObject object = scaleOptions(yaxis);
+            axis.add("y", object);
             yaxis.getTicks().toJson(object);
         }
         
-        for (Axis yaxis : xAxes)
+        for (Axis xaxis : xAxes)
         {
-            JsonObject object = new JsonObject();
-            object.add("gridLines", gridLines.toJson());
-            object.add("display", yaxis.isDisplay());
-            object.add("stacked", yaxis.isStacked());
-            axis.add("x",object.add("ticks", yaxis.getTicks().toJson()));
-            yaxis.getTicks().toJson(object);
+            JsonObject object = scaleOptions(xaxis);
+            axis.add("x", object);
+            xaxis.getTicks().toJson(object);
         }
         
         if(xAxes.isEmpty())
         {
-            JsonObject axisObj = new JsonObject();
-            if (barThickness != null)
-                axisObj.add("barThickness", barThickness);
-            if (maxBarThickness != null)
-                axisObj.add("maxBarThickness", maxBarThickness);
-            axisObj.add("categoryPercentage", categoryPercentage);
-            axisObj.add("barPercentage", barPercentage);
-            axisObj.add("stacked", stacked);
-            axis.add("x",axisObj);
+            axis.add("x", defaultScaleOptions());
         }
         if(yAxes.isEmpty())
         {
-            JsonObject axisObj = new JsonObject();
-            if (barThickness != null)
-                axisObj.add("barThickness", barThickness);
-            if (maxBarThickness != null)
-                axisObj.add("maxBarThickness", maxBarThickness);
-            axisObj.add("categoryPercentage", categoryPercentage);
-            axisObj.add("barPercentage", barPercentage);
-            axisObj.add("stacked", stacked);
-            axis.add("y",axisObj);
+            axis.add("y", defaultScaleOptions());
         }
 
         return jsonObject;
+    }
+
+    void applyTo(JsonObject dataset)
+    {
+        dataset.add("barPercentage", barPercentage);
+        dataset.add("categoryPercentage", categoryPercentage);
+        if (barThickness != null)
+            dataset.add("barThickness", barThickness);
+        if (maxBarThickness != null)
+            dataset.add("maxBarThickness", maxBarThickness);
+    }
+
+    private JsonObject scaleOptions(Axis axis)
+    {
+        return new JsonObject()
+                .add("grid", gridLines.toJson())
+                .add("border", gridLines.toBorderJson())
+                .add("display", axis.isDisplay())
+                .add("stacked", stacked || axis.isStacked())
+                .add("ticks", axis.getTicks().toJson());
+    }
+
+    private JsonObject defaultScaleOptions()
+    {
+        return new JsonObject()
+                .add("grid", gridLines.toJson())
+                .add("border", gridLines.toBorderJson())
+                .add("stacked", stacked);
     }
     
     public static class GridLines{
@@ -185,9 +190,12 @@ public class BarChartOptions extends AbstarctChartOptions
         {
             JsonObject jsonObject = new JsonObject();
             jsonObject.add("display", display);
-            jsonObject.add("drawBorder", drawBorder);
-            
             return jsonObject;
+        }
+
+        JsonObject toBorderJson()
+        {
+            return new JsonObject().add("display", drawBorder);
         }
         
     }

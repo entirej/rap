@@ -2,9 +2,9 @@ package org.entirej.applicationframework.rwt.application.launcher;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.Stack;
 import java.util.WeakHashMap;
 import java.util.logging.Logger;
 
@@ -13,7 +13,6 @@ import org.eclipse.rap.rwt.SingletonUtil;
 import org.eclipse.rap.rwt.internal.service.ContextProvider;
 import org.eclipse.rap.rwt.service.UISessionEvent;
 import org.eclipse.rap.rwt.service.UISessionListener;
-import org.entirej.applicationframework.rwt.application.form.containers.EJRWTAbstractDialog;
 
 public class EJRWTSessionCleanup
 {
@@ -71,13 +70,13 @@ public class EJRWTSessionCleanup
         LOG.info("EJRWTSessionCleanup cleanup for session for :" + RWT.getUISession().getId() + ", size:"+getCloseables().size());
         
         WeakHashMap<Closeable, Closeable> closeables = getCloseables();
-        Collection<Closeable> collection = closeables.values();
+        Collection<Closeable> collection = new ArrayList<>(closeables.values());
         closeables.clear();
-        for (Closeable cloneable : collection)
+        for (Closeable closeable : collection)
         {
             try
             {
-                    cloneable.close();
+                closeable.close();
             }
             catch (IOException e)
             {

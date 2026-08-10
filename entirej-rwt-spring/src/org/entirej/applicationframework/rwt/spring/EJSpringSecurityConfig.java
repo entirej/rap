@@ -4,16 +4,9 @@ import org.entirej.applicationframework.rwt.spring.ext.EJDefaultSpringSecurityAu
 import org.entirej.applicationframework.rwt.spring.ext.EJSpringSecurityAuthenticationProvider;
 import org.entirej.framework.core.properties.EJCoreProperties;
 import org.entirej.framework.core.properties.definitions.interfaces.EJFrameworkExtensionProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.authentication.configuration.GlobalAuthenticationConfigurerAdapter;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @EnableWebSecurity
 public class EJSpringSecurityConfig extends GlobalAuthenticationConfigurerAdapter
@@ -34,38 +27,7 @@ public class EJSpringSecurityConfig extends GlobalAuthenticationConfigurerAdapte
                 String configClass = settings.getStringProperty(SPRING_SECURITY_CONFIG);
                 if (configClass != null && !configClass.isEmpty())
                 {
-                    Class<?> factoryClass;
-                    try
-                    {
-                        factoryClass = Class.forName(configClass);
-                        Object obj = factoryClass.newInstance();
-
-                        if (obj instanceof EJSpringSecurityAuthenticationProvider)
-                        {
-                            provider = (EJSpringSecurityAuthenticationProvider) obj;
-                        }
-                        else
-
-                        {
-                            System.err.println("invalid EJSpringSecurityAuthenticationProvider switch to default");
-                        }
-                    }
-                    catch (ClassNotFoundException e)
-                    {
-                        System.err.println("invalid EJSpringSecurityAuthenticationProvider switch to default");
-                        e.printStackTrace();
-                    }
-                    catch (InstantiationException e)
-                    {
-                        System.err.println("invalid EJSpringSecurityAuthenticationProvider switch to default");
-                        e.printStackTrace();
-                    }
-                    catch (IllegalAccessException e)
-                    {
-                        System.err.println("invalid EJSpringSecurityAuthenticationProvider switch to default");
-                        e.printStackTrace();
-                    }
-
+                    provider = instantiateProvider(configClass);
                 }
             }
         }
@@ -73,9 +35,29 @@ public class EJSpringSecurityConfig extends GlobalAuthenticationConfigurerAdapte
         {
             provider = new EJDefaultSpringSecurityAuthenticationProvider();
         }
-        
     }
 
-   
+    static EJSpringSecurityAuthenticationProvider instantiateProvider(String configClass)
+    {
+        try
+        {
+            Object candidate = Class.forName(configClass).getDeclaredConstructor().newInstance();
+            if (candidate instanceof EJSpringSecurityAuthenticationProvider authenticationProvider)
+            {
+                return authenticationProvider;
+            }
+            throw new IllegalStateException(configClass + " does not implement " + EJSpringSecurityAuthenticationProvider.class.getName());
+        }
+        catch (ReflectiveOperationException | LinkageError e)
+        {
+            throw new IllegalStateException("Unable to create configured Spring authentication provider " + configClass, e);
+        }
+    }
+
+    @Override
+    public void init(AuthenticationManagerBuilder authentication) throws Exception
+    {
+        provider.configure(authentication);
+    }
 
 }

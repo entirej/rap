@@ -74,12 +74,11 @@ public class AbstarctChartOptions {
             annotationPlugin.add("annotations", annotations.toJson());
             pluginsConfig.add("annotation", annotationPlugin);
         }
-        
-        result.add("plugins", pluginsConfig);
 
         Tooltips tooltips = new Tooltips();
         tooltips.enabled = showToolTips;
-        result.add("tooltips", tooltips.toJson());
+        pluginsConfig.add("tooltip", tooltips.toJson());
+        result.add("plugins", pluginsConfig);
 
         return result;
     }

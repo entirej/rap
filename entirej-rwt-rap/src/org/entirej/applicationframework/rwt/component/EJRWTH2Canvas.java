@@ -8,6 +8,7 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.component;
 
+import java.io.Closeable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,10 +22,10 @@ import org.eclipse.rap.rwt.remote.Connection;
 import org.eclipse.rap.rwt.remote.OperationHandler;
 import org.eclipse.rap.rwt.remote.RemoteObject;
 import org.eclipse.rap.rwt.service.ResourceManager;
-import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.swt.widgets.Display;
+import org.entirej.applicationframework.rwt.application.launcher.EJRWTSessionCleanup;
 
-public class EJRWTH2Canvas
+public class EJRWTH2Canvas implements Closeable
 {
 
     /**
@@ -46,7 +47,7 @@ public class EJRWTH2Canvas
                                                         {
 
                                                             if (callback != null)
-                                                                callback.accept(properties.get("data").asString());
+                                                                complete(properties.get("data").asString());
                                                         }
 
                                                         @Override
@@ -70,7 +71,7 @@ public class EJRWTH2Canvas
     protected void action(String method, JsonObject parameters)
     {
         if (callback != null)
-            callback.accept(parameters.get("0").asString());
+            complete(parameters.get("0").asString());
 
     }
 
@@ -81,6 +82,7 @@ public class EJRWTH2Canvas
         Connection connection = RWT.getUISession().getConnection();
         remoteObject = connection.createRemoteObject(REMOTE_TYPE);
         remoteObject.setHandler(operationHandler);
+        EJRWTSessionCleanup.getSession().ifPresent(cleanup -> cleanup.addCloseable(this));
     }
 
     public static void initResources()
@@ -146,9 +148,50 @@ public class EJRWTH2Canvas
 
     public void screenshot(Consumer<String> callback)
     {
+        if (remoteObject == null)
+            throw new IllegalStateException("Screenshot canvas is closed");
+        if (this.callback != null)
+            throw new IllegalStateException("A screenshot is already in progress");
+        if (callback == null)
+            throw new IllegalArgumentException("Callback must not be null");
+
         this.callback = callback;
-        remoteObject.set("data", "snap");
-       
+        try
+        {
+            remoteObject.set("data", "snap");
+        }
+        catch (RuntimeException e)
+        {
+            close();
+            throw e;
+        }
+    }
+
+    private void complete(String data)
+    {
+        Consumer<String> completedCallback = callback;
+        callback = null;
+        try
+        {
+            if (completedCallback != null)
+                completedCallback.accept(data);
+        }
+        finally
+        {
+            close();
+        }
+    }
+
+    @Override
+    public void close()
+    {
+        callback = null;
+        if (remoteObject != null)
+        {
+            remoteObject.destroy();
+            remoteObject = null;
+        }
+        EJRWTSessionCleanup.getSession().ifPresent(cleanup -> cleanup.removeCloseable(this));
     }
 
 }

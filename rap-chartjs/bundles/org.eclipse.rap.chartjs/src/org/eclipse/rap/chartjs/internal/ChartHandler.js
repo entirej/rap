@@ -32,6 +32,7 @@
 		this.element.style.right = '0px';
 		this.context = properties.context;
 		this.chart =  null;
+		this.resizeTimer = null;
 
 		this.defaultLegendClickHandle = null;
 		
@@ -74,14 +75,23 @@
 		},
 
 		setContext : function(_context) {
+			if (this.resizeTimer) {
+				window.clearTimeout(this.resizeTimer);
+				this.resizeTimer = null;
+			}
 			this.context = _context;
 			if(this.context&&  this.context.options)
 			{
-				this.context.options.onClick = this.chart_action;
+				var options = this.context.options;
+				options.plugins = options.plugins || {};
+				options.plugins.legend = options.plugins.legend || {};
+				options.plugins.tooltip = options.plugins.tooltip || {};
+				options.plugins.tooltip.callbacks = options.plugins.tooltip.callbacks || {};
+				options.onClick = this.chart_action;
 				this.defaultLegendClickHandler = (this.context.type == 'pie' || this.context.type == 'doughnut') ?
                 Chart.controllers.doughnut.overrides.plugins.legend.onClick :  Chart.defaults.plugins.legend.onClick;
-				this.context.options.plugins.legend.onClick = this.chart_legend_action;
-				this.context.options.tooltips.callbacks.label = this.chart_tooltip;
+				options.plugins.legend.onClick = this.chart_legend_action;
+				options.plugins.tooltip.callbacks.label = this.chart_tooltip;
 				
 				
 				if(this.context.options.scales) {
@@ -91,7 +101,7 @@
 					        return isNaN(label) ? label :Number(label).toLocaleString();
 					    };
 					    
-				    if(this.context.options.scales.x && this.context.options.scales.ticks)
+				    if(this.context.options.scales.x && this.context.options.scales.x.ticks)
 						this.context.options.scales.x.ticks.callback= function(label, index, labels) {
 					        return isNaN(label) ? label :Number(label).toLocaleString();
 					    };
@@ -122,11 +132,8 @@
                     gc.canvas.width = area[2];
                 	
                 	this.chart = new Chart( gc ,this.context);
-                	this.context.options.animation = false; // no animation on refresh
-                    let rChart  = this.chart;
-                    window.setTimeout(function() {
-                                rChart.resize();
-                            }, 100);
+					this.context.options.animation = false; // no animation on refresh
+					this.scheduleResize();
                 }
 				
 			} 
@@ -135,26 +142,46 @@
 	
 	
 
-		destroy : function() {
-			if (this.parentNode.parentNode) {
-				rap.off("send", this.onSend);
-				if( this.chart )
-				{
-					this.chart.stop();
-					this.chart.destroy();
-					this.chart = null;
-				}
-				this.element.parentNode.removeChild(this.element);
-				
-                
+		scheduleResize : function() {
+			if (this.resizeTimer) {
+				window.clearTimeout(this.resizeTimer);
 			}
+			var chart = this.chart;
+			this.resizeTimer = window.setTimeout(function() {
+				if (chart && chart.canvas) {
+					chart.resize();
+				}
+			}, 100);
+		},
+
+		destroy : function() {
+			rap.off("render", this.onRender);
+			rap.off("send", this.onSend);
+			if (this.parent) {
+				this.parent.removeListener("Resize", this.layout);
+			}
+			if (this.resizeTimer) {
+				window.clearTimeout(this.resizeTimer);
+				this.resizeTimer = null;
+			}
+			if (this.chart) {
+				this.chart.stop();
+				this.chart.destroy();
+				this.chart = null;
+			}
+			if (this.element.parentNode) {
+				this.element.parentNode.removeChild(this.element);
+			}
+			this.context = null;
+			this.parentNode = null;
+			this.parent = null;
 		},
 
 		layout : function() {
 			if (this.ready) {
 				
 					
-				if(this.context)
+				if(this.context && this.chart)
                 {
                 	var gc = this.parentNode.getContext("2d");
                 	var area = this.parent.getClientArea();
@@ -163,10 +190,7 @@
                     gc.canvas.height =area[3];
                     gc.canvas.width = area[2];
                 	
-                    let rChart  = this.chart;
-                     window.setTimeout(function() {
-                     rChart.resize();
-                                                }, 100);
+					this.scheduleResize();
                 	
                 }
 				
@@ -174,52 +198,43 @@
 			}
 		},
 		chart_action : function(evt) {
-	    	
-			 var activeElement = this.chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, false) 
-	    	 if(activeElement!=null && activeElement[0]!=null && activeElement[0]._model!=null)
-			 {
-	    		 if(this.context.data.actions)
-	    	     {
-	    		    var action = this.context.data.actions[activeElement[0]._datasetIndex];
-	    		    if(action)
-	    		    {
-			    		  var remoteObject = rap.getRemoteObject(this);
-			    		  var dataset = activeElement[0]._chart.data.datasets[activeElement[0]._datasetIndex];
-			    		  
-				          var args = {data_label: dataset.label,label: activeElement[0]._chart.data.labels[activeElement[0]._index],value: dataset.data[activeElement[0]._index]};
-				        
-				        	
-				        	  remoteObject.call(action,args);
-	    	        }
-			     }
-			 }
-	        
-	        
-	        
-	    },
-	    
-	    chart_legend_action : function(e, legendItem,i) {
-	        
-	    	
-            if(this.context.options.plugins.legend.defaultAction)
-	    	  // Do the original logic
-	           this.defaultLegendClickHandler(e, legendItem,i);
-	        
-	        var remoteObject = rap.getRemoteObject(this);
-	        var args = {index: legendItem.datasetIndex,label:legendItem.text};
-      	    remoteObject.call('legend_action',args);
-	    	
-	    	
-	    },
-	    chart_tooltip : function(tooltipItem, data) {
-	    	
-			if(data.datasets[tooltipItem.datasetIndex].dataTooltips) 
-				return data.datasets[tooltipItem.datasetIndex].dataTooltips[tooltipItem.index];
-	    	
-	    	return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-	        
-	        
-	    },
+			if (!this.chart || !this.context) {
+				return;
+			}
+			var activeElements = this.chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, false);
+			if(activeElements && activeElements.length > 0) {
+				var activeElement = activeElements[0];
+				if(this.context.data.actions) {
+					var action = this.context.data.actions[activeElement.datasetIndex];
+					if(action) {
+						var remoteObject = rap.getRemoteObject(this);
+						var dataset = this.chart.data.datasets[activeElement.datasetIndex];
+						var args = {data_label: dataset.label,label: this.chart.data.labels[activeElement.index],value: dataset.data[activeElement.index]};
+						remoteObject.call(action,args);
+					}
+				}
+			}
+		},
+
+		chart_legend_action : function(e, legendItem, legend) {
+			if(this.context.options.plugins.legend.defaultAction) {
+				this.defaultLegendClickHandler(e, legendItem, legend);
+			}
+
+			var remoteObject = rap.getRemoteObject(this);
+			var index = legendItem.datasetIndex == null ? legendItem.index : legendItem.datasetIndex;
+			var args = {index: index,label:legendItem.text};
+			remoteObject.call('legend_action',args);
+		},
+
+		chart_tooltip : function(context) {
+			var dataset = context.dataset;
+			var index = context.dataIndex;
+			if(dataset.dataTooltips && dataset.dataTooltips[index] != null)
+				return dataset.dataTooltips[index];
+
+			return dataset.data[index];
+		},
 
 	};
 
