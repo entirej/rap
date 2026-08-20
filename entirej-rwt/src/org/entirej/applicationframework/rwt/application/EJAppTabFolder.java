@@ -7,7 +7,6 @@ import org.eclipse.rap.rwt.RWT;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 
@@ -178,7 +177,11 @@ class EJAppTabFolder
         CTabItem cTabItem = tabPages.get(tabPageName);
         if (cTabItem != null)
         {
-            ((ScrolledComposite)cTabItem.getControl()).getContent().setEnabled(enable);
+            Control control = cTabItem.getControl();
+            if (control != null && !control.isDisposed())
+            {
+                control.setEnabled(enable);
+            }
         }
         
     }
