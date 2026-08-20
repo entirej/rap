@@ -1,11 +1,11 @@
 package org.entirej.applicationframework.rwt.application.launcher;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.WeakHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.rap.rwt.RWT;
@@ -16,60 +16,62 @@ import org.eclipse.rap.rwt.service.UISessionListener;
 
 public class EJRWTSessionCleanup
 {
-    Logger                                    LOG        = Logger.getLogger(EJRWTSessionCleanup.class.getName());
+    private static final String                     CLOSEABLES_ATTRIBUTE = "EJRWTSessionCleanup.closeables";
+    private static final Logger                     LOG                  = Logger.getLogger(EJRWTSessionCleanup.class.getName());
+    private final String                            sessionId;
+    private final WeakHashMap<Closeable, Closeable> closeables;
 
-
+    @SuppressWarnings("unchecked")
     public EJRWTSessionCleanup()
     {
-        LOG.info("EJRWTSessionCleanup session for :" + RWT.getUISession().getId());
+        sessionId = RWT.getUISession().getId();
+        WeakHashMap<Closeable, Closeable> sessionCloseables = (WeakHashMap<Closeable, Closeable>) RWT.getUISession().getAttribute(CLOSEABLES_ATTRIBUTE);
+        if (sessionCloseables == null)
+        {
+            sessionCloseables = new WeakHashMap<>();
+            RWT.getUISession().setAttribute(CLOSEABLES_ATTRIBUTE, sessionCloseables);
+        }
+        closeables = sessionCloseables;
+
+        LOG.info("EJRWTSessionCleanup session for :" + sessionId);
         try
         {
             RWT.getUISession().addUISessionListener(new UISessionListener()
             {
-
                 private static final long serialVersionUID = 1L;
 
                 @Override
-                public void beforeDestroy(UISessionEvent arg0)
+                public void beforeDestroy(UISessionEvent event)
                 {
                     cleanup();
-
                 }
             });
         }
-        catch (Throwable e)
+        catch (RuntimeException e)
         {
-            // fallback
-
+            LOG.log(Level.WARNING, "Unable to register session cleanup listener for " + sessionId, e);
         }
     }
-    
+
     public WeakHashMap<Closeable, Closeable> getCloseables()
     {
-        
-        WeakHashMap<Closeable, Closeable> closeables = null;
-        closeables  = (WeakHashMap<Closeable, Closeable>) RWT.getUISession().getAttribute("EJRWTSessionCleanup.closeables");
-        if(closeables==null) {
-            closeables  = new WeakHashMap<>();
-            RWT.getUISession().setAttribute("EJRWTSessionCleanup.closeables",closeables);
-        }
         return closeables;
     }
 
-    public void addCloseable(Closeable closeable)
+    public synchronized void addCloseable(Closeable closeable)
     {
-        getCloseables().put(closeable, closeable);
-    }
-    public void removeCloseable(Closeable closeable)
-    {
-        getCloseables().remove(closeable);
+        closeables.put(closeable, closeable);
     }
 
-    public void cleanup()
+    public synchronized void removeCloseable(Closeable closeable)
     {
-        LOG.info("EJRWTSessionCleanup cleanup for session for :" + RWT.getUISession().getId() + ", size:"+getCloseables().size());
-        
-        WeakHashMap<Closeable, Closeable> closeables = getCloseables();
+        closeables.remove(closeable);
+    }
+
+    public synchronized void cleanup()
+    {
+        LOG.info("EJRWTSessionCleanup cleanup for session for :" + sessionId + ", size:" + closeables.size());
+
         Collection<Closeable> collection = new ArrayList<>(closeables.values());
         closeables.clear();
         for (Closeable closeable : collection)
@@ -78,22 +80,19 @@ public class EJRWTSessionCleanup
             {
                 closeable.close();
             }
-            catch (IOException e)
+            catch (Exception e)
             {
-                e.printStackTrace();
+                LOG.log(Level.WARNING, "Unable to close session resource " + closeable.getClass().getName(), e);
             }
-
         }
-
     }
 
     public static Optional<EJRWTSessionCleanup> getSession()
     {
         if (ContextProvider.hasContext() && RWT.getUISession() != null)
+        {
             return Optional.of(SingletonUtil.getSessionInstance(EJRWTSessionCleanup.class));
-        else
-            return Optional.empty();
-
+        }
+        return Optional.empty();
     }
-
 }

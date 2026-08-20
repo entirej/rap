@@ -17,12 +17,15 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.application;
 
+import java.io.Closeable;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -71,7 +74,7 @@ import org.entirej.framework.report.interfaces.EJReportRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class EJRWTApplicationManager implements EJApplicationManager, Serializable
+public class EJRWTApplicationManager implements EJApplicationManager, Serializable, Closeable
 {
     private static final String          REPORT_DATASOURCE_ID_PARAM = "REPORT_DATASOURCE_ID";
     private EJFrameworkManager           _frameworkManager;
@@ -88,7 +91,8 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
     private boolean                      helpSupported              = false;
     private boolean                      helpActive                 = false;
-    private ExecutorService              reportExecutorService      = Executors.newSingleThreadExecutor();
+    private final ExecutorService        reportExecutorService      = Executors.newSingleThreadExecutor();
+    private final Set<ServerPushSession> reportPushSessions         = ConcurrentHashMap.newKeySet();
 
     public EJRWTApplicationManager()
     {
@@ -528,70 +532,30 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
     public void runReport(String reportName, EJParameterList parameterList)
     {
-        EJReportFrameworkManager reportManager = newReportManager();
-        EJReportManagedFrameworkConnection connection = reportManager.getConnection();
+        EJReportManagedFrameworkConnection connection = null;
+        Throwable failure = null;
         try
         {
-            EJReport report;
-            if (parameterList == null)
-            {
-                report = reportManager.createReport(reportName);
-            }
-            else
-            {
-
-                EJReportParameterList list = new EJReportParameterList();
-
-                Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
-                for (EJFormParameter parameter : allParameters)
-                {
-                    EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
-                    reportParameter.setValue(parameter.getValue());
-
-                    list.addParameter(reportParameter);
-                }
-                report = reportManager.createReport(reportName, list);
-            }
-
+            EJReportFrameworkManager reportManager = newReportManager();
+            connection = reportManager.getConnection();
+            EJReport report = createReport(reportManager, reportName, parameterList);
             EJReportRunner reportRunner = reportManager.createReportRunner();
             String output = reportRunner.runReport(report);
-
-            String name = report.getName();
-
-            EJReportParameter reportParameter = null;
-            if (report.hasReportParameter("REPORT_NAME"))
-            {
-                reportParameter = report.getReportParameter("REPORT_NAME");
-            }
-
-            if (reportParameter != null && reportParameter.getValue() != null && !((String) reportParameter.getValue()).isEmpty())
-            {
-                name = (String) reportParameter.getValue();
-            }
-            else
-            {
-                if (report.getOutputName() != null && !report.getOutputName().isEmpty())
-                {
-                    name = report.getOutputName();
-                }
-            }
-
-            String ext = report.getProperties().getExportType().toString().toLowerCase();
-            report.getProperties().getExportType();
-            if (report.getProperties().getExportType() == EJReportExportType.XLSX_LARGE)
-            {
-
-                ext = EJReportExportType.XLSX.toString().toLowerCase();
-            }
-            EJRWTImageRetriever.getGraphicsProvider().open(output, String.format("%s.%s", name, ext));
+            EJRWTImageRetriever.getGraphicsProvider().open(output, getReportOutputName(report));
+        }
+        catch (RuntimeException | Error e)
+        {
+            failure = e;
+            throw e;
         }
         finally
         {
-            connection.close();
-
-            EJRWTImageRetriever.getGraphicsProvider().setReportFrameworkManager(null);
+            Throwable cleanupFailure = closeReportContext(connection, failure);
+            if (failure == null && cleanupFailure != null)
+            {
+                throwUnchecked(cleanupFailure);
+            }
         }
-
     }
 
     @Override
@@ -618,106 +582,73 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
     @Override
     public void runReportAsync(final String reportName, final EJParameterList parameterList, final EJMessage completedMessage)
     {
-        EJReportFrameworkManager reportManager = newReportManager();
-
         final Display display = Display.getDefault();
-
         final ServerPushSession pushSession = new ServerPushSession();
         Runnable job = new Runnable()
         {
-
             @Override
             public void run()
             {
-                EJReportManagedFrameworkConnection connection = reportManager.getConnection();
+                EJReportManagedFrameworkConnection connection = null;
+                EJReport report = null;
+                String output = null;
+                Throwable failure = null;
                 try
                 {
-                    final EJReport report;
-                    if (parameterList == null)
-                    {
-                        report = reportManager.createReport(reportName);
-                    }
-                    else
-                    {
-
-                        EJReportParameterList list = new EJReportParameterList();
-
-                        Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
-                        for (EJFormParameter parameter : allParameters)
-                        {
-                            EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
-                            reportParameter.setValue(parameter.getValue());
-
-                            list.addParameter(reportParameter);
-                        }
-                        report = reportManager.createReport(reportName, list);
-                    }
-
+                    EJReportFrameworkManager reportManager = newReportManager();
+                    connection = reportManager.getConnection();
+                    report = createReport(reportManager, reportName, parameterList);
                     EJReportRunner reportRunner = reportManager.createReportRunner();
-                    final String output = reportRunner.runReport(report);
+                    output = reportRunner.runReport(report);
+                }
+                catch (Throwable t)
+                {
+                    failure = t;
+                }
+                finally
+                {
+                    failure = closeReportContext(connection, failure);
+                }
 
+                final EJReport completedReport = report;
+                final String completedOutput = output;
+                final Throwable completedFailure = failure;
+                try
+                {
                     if (!display.isDisposed())
                     {
                         display.asyncExec(new Runnable()
                         {
+                            @Override
                             public void run()
                             {
-                                String name = report.getName();
-
-                                EJReportParameter reportParameter = null;
-                                if (report.hasReportParameter("REPORT_NAME"))
+                                if (completedFailure != null)
                                 {
-                                    reportParameter = report.getReportParameter("REPORT_NAME");
-                                }
-
-                                if (reportParameter != null && reportParameter.getValue() != null && !((String) reportParameter.getValue()).isEmpty())
-                                {
-                                    name = (String) reportParameter.getValue();
+                                    handleException(asException(completedFailure));
                                 }
                                 else
                                 {
-                                    if (report.getOutputName() != null && !report.getOutputName().isEmpty())
+                                    if (completedMessage != null)
                                     {
-                                        name = report.getOutputName();
+                                        handleMessage(completedMessage);
                                     }
+                                    EJRWTImageRetriever.getGraphicsProvider().open(completedOutput, getReportOutputName(completedReport));
                                 }
-
-                                if (completedMessage != null)
-                                {
-                                    handleMessage(completedMessage);
-                                }
-                                String ext = report.getProperties().getExportType().toString().toLowerCase();
-                                report.getProperties().getExportType();
-                                if (report.getProperties().getExportType() == EJReportExportType.XLSX_LARGE)
-                                {
-
-                                    ext = EJReportExportType.XLSX.toString().toLowerCase();
-                                }
-                                EJRWTImageRetriever.getGraphicsProvider().open(output, String.format("%s.%s", name, ext));
-
                             }
                         });
+                    }
+                    else if (completedFailure != null)
+                    {
+                        logger.warn("Unable to deliver asynchronous report failure because the display is disposed", completedFailure);
                     }
                 }
                 finally
                 {
-                    connection.close();
-
-                    EJRWTImageRetriever.getGraphicsProvider().setReportFrameworkManager(null);
-                    display.asyncExec(new Runnable()
-                    {
-                        public void run()
-                        {
-                            pushSession.stop();
-                        }
-                    });
+                    stopReportPushSession(pushSession);
                 }
-
             }
         };
-        pushSession.start();
-        reportExecutorService.submit(job);
-
+        executeReportJob(pushSession, job);
     }
 
     private EJReportFrameworkManager newReportManager()
@@ -729,102 +660,72 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
     public void generateReportAsync(String reportName, EJParameterList parameterList, EJAsyncCallback<String> callback)
     {
-
+        if (callback == null)
+        {
+            throw new IllegalArgumentException("The report callback cannot be null");
+        }
         final Display display = Display.getDefault();
-
         final ServerPushSession pushSession = new ServerPushSession();
         Runnable job = new Runnable()
         {
-
             @Override
             public void run()
             {
-                EJReportFrameworkManager reportManager = newReportManager();
-
-                if (parameterList != null && parameterList.getAllParameterNames().contains(REPORT_DATASOURCE_ID_PARAM) && reportManager.applicationLevelParameterExists(REPORT_DATASOURCE_ID_PARAM))
-                {
-                    reportManager.getApplicationLevelParameter(REPORT_DATASOURCE_ID_PARAM).setValue(parameterList.getParameter(REPORT_DATASOURCE_ID_PARAM).getValue());
-                }
-
-                EJReportManagedFrameworkConnection connection = reportManager.getConnection();
+                EJReportManagedFrameworkConnection connection = null;
+                String output = null;
+                Throwable failure = null;
                 try
                 {
-                    final EJReport report;
-                    if (parameterList == null)
-                    {
-                        report = reportManager.createReport(reportName);
-                    }
-                    else
-                    {
-
-                        EJReportParameterList list = new EJReportParameterList();
-
-                        Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
-                        for (EJFormParameter parameter : allParameters)
-                        {
-                            EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
-                            reportParameter.setValue(parameter.getValue());
-
-                            list.addParameter(reportParameter);
-                        }
-                        report = reportManager.createReport(reportName, list);
-                    }
-
+                    EJReportFrameworkManager reportManager = newReportManager();
+                    applyReportDatasource(reportManager, parameterList);
+                    connection = reportManager.getConnection();
+                    EJReport report = createReport(reportManager, reportName, parameterList);
                     EJReportRunner reportRunner = reportManager.createReportRunner();
-                    try
-                    {
-                        final String output = reportRunner.runReport(report);
-
-                        if (!display.isDisposed())
-                        {
-                            display.asyncExec(new Runnable()
-                            {
-                                public void run()
-                                {
-                                    callback.completed(_frameworkManager, output);
-
-                                }
-                            });
-                        }
-                    }
-                    catch (Throwable t)
-                    {
-                        if (!display.isDisposed())
-                        {
-                            display.asyncExec(new Runnable()
-                            {
-                                public void run()
-                                {
-                                    callback.completedWithError(_frameworkManager, t instanceof Exception ? (Exception) t : new Exception(t));
-
-                                }
-                            });
-                        }
-                    }
-
+                    output = reportRunner.runReport(report);
+                }
+                catch (Throwable t)
+                {
+                    failure = t;
                 }
                 finally
                 {
-                    connection.close();
+                    failure = closeReportContext(connection, failure);
+                }
 
-                    EJRWTImageRetriever.getGraphicsProvider().setReportFrameworkManager(null);
+                final String completedOutput = output;
+                final Throwable completedFailure = failure;
+                try
+                {
                     if (!display.isDisposed())
                     {
                         display.asyncExec(new Runnable()
                         {
+                            @Override
                             public void run()
                             {
-                                pushSession.stop();
+                                if (completedFailure == null)
+                                {
+                                    callback.completed(_frameworkManager, completedOutput);
+                                }
+                                else
+                                {
+                                    callback.completedWithError(_frameworkManager, asException(completedFailure));
+                                }
                             }
                         });
                     }
+                    else if (completedFailure != null)
+                    {
+                        logger.warn("Unable to deliver asynchronous report failure because the display is disposed", completedFailure);
+                    }
                 }
-
+                finally
+                {
+                    stopReportPushSession(pushSession);
+                }
             }
         };
-        pushSession.start();
-        reportExecutorService.execute(job);
-
+        executeReportJob(pushSession, job);
     }
 
     public String generateReport(String reportName)
@@ -835,45 +736,163 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
 
     public String generateReport(String reportName, EJParameterList parameterList)
     {
-        EJReportFrameworkManager reportManager = newReportManager();
-        if (parameterList != null && parameterList.getAllParameterNames().contains(REPORT_DATASOURCE_ID_PARAM) && reportManager.applicationLevelParameterExists(REPORT_DATASOURCE_ID_PARAM))
-        {
-            reportManager.getApplicationLevelParameter(REPORT_DATASOURCE_ID_PARAM).setValue(parameterList.getParameter(REPORT_DATASOURCE_ID_PARAM).getValue());
-        }
-        EJReportManagedFrameworkConnection connection = reportManager.getConnection();
+        EJReportManagedFrameworkConnection connection = null;
+        Throwable failure = null;
         try
         {
-            EJReport report;
-            if (parameterList == null)
-            {
-                report = reportManager.createReport(reportName);
-            }
-            else
-            {
-
-                EJReportParameterList list = new EJReportParameterList();
-
-                Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
-                for (EJFormParameter parameter : allParameters)
-                {
-                    EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
-                    reportParameter.setValue(parameter.getValue());
-
-                    list.addParameter(reportParameter);
-                }
-                report = reportManager.createReport(reportName, list);
-            }
-
+            EJReportFrameworkManager reportManager = newReportManager();
+            applyReportDatasource(reportManager, parameterList);
+            connection = reportManager.getConnection();
+            EJReport report = createReport(reportManager, reportName, parameterList);
             EJReportRunner reportRunner = reportManager.createReportRunner();
-            String output = reportRunner.runReport(report);
-
-            return output;
+            return reportRunner.runReport(report);
+        }
+        catch (RuntimeException | Error e)
+        {
+            failure = e;
+            throw e;
         }
         finally
         {
-            connection.close();
+            Throwable cleanupFailure = closeReportContext(connection, failure);
+            if (failure == null && cleanupFailure != null)
+            {
+                throwUnchecked(cleanupFailure);
+            }
+        }
+    }
+
+    private EJReport createReport(EJReportFrameworkManager reportManager, String reportName, EJParameterList parameterList)
+    {
+        if (parameterList == null)
+        {
+            return reportManager.createReport(reportName);
+        }
+
+        EJReportParameterList reportParameters = new EJReportParameterList();
+        Collection<EJFormParameter> allParameters = parameterList.getAllParameters();
+        for (EJFormParameter parameter : allParameters)
+        {
+            EJReportParameter reportParameter = new EJReportParameter(parameter.getName(), parameter.getDataType());
+            reportParameter.setValue(parameter.getValue());
+            reportParameters.addParameter(reportParameter);
+        }
+        return reportManager.createReport(reportName, reportParameters);
+    }
+
+    private void applyReportDatasource(EJReportFrameworkManager reportManager, EJParameterList parameterList)
+    {
+        if (parameterList != null && parameterList.getAllParameterNames().contains(REPORT_DATASOURCE_ID_PARAM)
+                && reportManager.applicationLevelParameterExists(REPORT_DATASOURCE_ID_PARAM))
+        {
+            reportManager.getApplicationLevelParameter(REPORT_DATASOURCE_ID_PARAM)
+                    .setValue(parameterList.getParameter(REPORT_DATASOURCE_ID_PARAM).getValue());
+        }
+    }
+
+    private String getReportOutputName(EJReport report)
+    {
+        String name = report.getName();
+        EJReportParameter reportParameter = report.hasReportParameter("REPORT_NAME") ? report.getReportParameter("REPORT_NAME") : null;
+        if (reportParameter != null && reportParameter.getValue() instanceof String reportName && !reportName.isEmpty())
+        {
+            name = reportName;
+        }
+        else if (report.getOutputName() != null && !report.getOutputName().isEmpty())
+        {
+            name = report.getOutputName();
+        }
+
+        EJReportExportType exportType = report.getProperties().getExportType();
+        if (exportType == EJReportExportType.XLSX_LARGE)
+        {
+            exportType = EJReportExportType.XLSX;
+        }
+        return String.format("%s.%s", name, exportType.toString().toLowerCase(Locale.ROOT));
+    }
+
+    private Throwable closeReportContext(EJReportManagedFrameworkConnection connection, Throwable failure)
+    {
+        if (connection != null)
+        {
+            try
+            {
+                connection.close();
+            }
+            catch (Throwable closeFailure)
+            {
+                failure = mergeFailure(failure, closeFailure);
+            }
+        }
+
+        try
+        {
             EJRWTImageRetriever.getGraphicsProvider().setReportFrameworkManager(null);
         }
+        catch (Throwable clearFailure)
+        {
+            failure = mergeFailure(failure, clearFailure);
+        }
+        return failure;
+    }
+
+    private static Throwable mergeFailure(Throwable failure, Throwable additionalFailure)
+    {
+        if (failure == null)
+        {
+            return additionalFailure;
+        }
+        if (failure != additionalFailure)
+        {
+            failure.addSuppressed(additionalFailure);
+        }
+        return failure;
+    }
+
+    private static Exception asException(Throwable failure)
+    {
+        return failure instanceof Exception ? (Exception) failure : new Exception(failure);
+    }
+
+    private static void throwUnchecked(Throwable failure)
+    {
+        if (failure instanceof RuntimeException)
+        {
+            throw (RuntimeException) failure;
+        }
+        if (failure instanceof Error)
+        {
+            throw (Error) failure;
+        }
+        throw new EJApplicationException("Unable to clean up report resources", failure);
+    }
+
+    private void executeReportJob(ServerPushSession pushSession, Runnable job)
+    {
+        reportPushSessions.add(pushSession);
+        try
+        {
+            pushSession.start();
+            reportExecutorService.execute(job);
+        }
+        catch (RuntimeException | Error failure)
+        {
+            try
+            {
+                stopReportPushSession(pushSession);
+            }
+            catch (RuntimeException | Error stopFailure)
+            {
+                failure.addSuppressed(stopFailure);
+            }
+            throw failure;
+        }
+    }
+
+    private void stopReportPushSession(ServerPushSession pushSession)
+    {
+        pushSession.stop();
+        reportPushSessions.remove(pushSession);
     }
 
     @Override
@@ -953,6 +972,23 @@ public class EJRWTApplicationManager implements EJApplicationManager, Serializab
             finally
             {
                 connection.close();
+            }
+        }
+    }
+
+    @Override
+    public void close()
+    {
+        reportExecutorService.shutdownNow();
+        for (ServerPushSession pushSession : reportPushSessions.toArray(ServerPushSession[]::new))
+        {
+            try
+            {
+                stopReportPushSession(pushSession);
+            }
+            catch (RuntimeException e)
+            {
+                logger.warn("Unable to stop report server push session", e);
             }
         }
     }

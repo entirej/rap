@@ -599,6 +599,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                             throw new RuntimeException("application.ejprop not found");
                         }
 
+                        EJRWTSessionCleanup.getSession().ifPresent(cleanup -> cleanup.addCloseable(applicationManager));
                         EJRWTContext.getPageContext().setManager(applicationManager);
 
                         getContext().getUISession().setAttribute("ej.applicationManager", applicationManager);
@@ -840,6 +841,7 @@ public abstract class EJRWTApplicationLauncher implements ApplicationConfigurati
                                                 throw new RuntimeException("application.ejprop not found");
                                             }
 
+                                            EJRWTSessionCleanup.getSession().ifPresent(cleanup -> cleanup.addCloseable(applicationManager));
                                             EJRWTContext.getPageContext().setManager(applicationManager);
 
                                             getContext().getUISession().setAttribute("ej.applicationManager", applicationManager);

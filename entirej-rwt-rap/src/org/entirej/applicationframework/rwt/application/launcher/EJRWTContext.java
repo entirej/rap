@@ -38,7 +38,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class EJRWTContext
 {
 
-    private static volatile ThreadLocal<EJReportFrameworkManager> reportLocal = new ThreadLocal<>();
+    private static final ThreadLocal<EJReportFrameworkManager> reportLocal = new ThreadLocal<>();
     private Consumer<String> screenshotHandler;
 
     void setState(String state)
@@ -63,7 +63,14 @@ public class EJRWTContext
 
     public static void setReportManager(EJReportFrameworkManager manager)
     {
-        reportLocal.set(manager);
+        if (manager == null)
+        {
+            reportLocal.remove();
+        }
+        else
+        {
+            reportLocal.set(manager);
+        }
     }
 
     public static EJReportFrameworkManager getReportManager()

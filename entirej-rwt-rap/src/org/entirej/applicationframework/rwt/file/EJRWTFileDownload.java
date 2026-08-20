@@ -18,22 +18,23 @@
 
 package org.entirej.applicationframework.rwt.file;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.Closeable;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
+import java.io.InputStream;
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
+import org.eclipse.rap.json.JsonValue;
 import org.eclipse.rap.rwt.RWT;
 import org.eclipse.rap.rwt.client.service.JavaScriptExecutor;
 import org.eclipse.rap.rwt.service.ServiceHandler;
+import org.entirej.applicationframework.rwt.application.launcher.EJRWTSessionCleanup;
 import org.entirej.framework.core.EJApplicationException;
 
 import jakarta.servlet.ServletException;
@@ -42,92 +43,46 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class EJRWTFileDownload
 {
+    public static final String SERVICE_HANDLER = "EJFileDownloadServiceHandler";
 
-    private static Map<String, String> keys = new HashMap<String, String>();
+    private static final String TOKEN_PARAMETER = "token";
+    private static final long REGISTRATION_TTL_MILLIS = 15 * 60 * 1000L;
+    private static final int MAX_REGISTRATIONS = 1024;
+    private static final ConcurrentMap<String, DownloadRegistration> REGISTRATIONS = new ConcurrentHashMap<>();
 
     public static void download(String sourcePath, String outputName)
     {
-
-        File file = new File(sourcePath);
-
-        if (!file.exists())
+        if (sourcePath == null)
         {
-            throw new EJApplicationException(String.format("File not found :%s", file.getName()));
-
+            throw new EJApplicationException("The download source path cannot be null");
         }
+
+        Path source = Path.of(sourcePath).toAbsolutePath().normalize();
+        if (!Files.isRegularFile(source))
+        {
+            throw new EJApplicationException(String.format("File not found :%s", source.getFileName()));
+        }
+
+        DownloadRegistration registration = register(source, outputName, RWT.getUISession().getId());
         try
         {
-            UUID randomUUID = UUID.randomUUID();
-            String fileKey = randomUUID.toString();
-            keys.put(fileKey, sourcePath);
-            StringBuffer url = new StringBuffer();
-            url.append(RWT.getServiceManager().getServiceHandlerUrl(SERVICE_HANDLER));
-            url.append("&filename=");
+            StringBuilder url = new StringBuilder(RWT.getServiceManager().getServiceHandlerUrl(SERVICE_HANDLER));
+            url.append('&').append(TOKEN_PARAMETER).append('=');
+            url.append(URLEncoder.encode(registration.token, StandardCharsets.UTF_8));
 
-            url.append(URLEncoder.encode(fileKey, "UTF-8"));
-
-            url.append("&output=");
-            url.append(URLEncoder.encode(outputName, "UTF-8"));
-            String encodedURL = RWT.getResponse().encodeURL(url.toString());
-            // UrlLauncher urlLauncher =
-            // RWT.getClient().getService(UrlLauncher.class);
-            // urlLauncher.openURL(encodedURL);
+            String encodedUrl = RWT.getResponse().encodeURL(url.toString());
             JavaScriptExecutor javaScriptExecutor = RWT.getClient().getService(JavaScriptExecutor.class);
-            javaScriptExecutor.execute(String.format("window.location = '%s'", encodedURL));
+            if (javaScriptExecutor == null)
+            {
+                throw new EJApplicationException("The client does not support file downloads");
+            }
+            javaScriptExecutor.execute("window.location = " + JsonValue.valueOf(encodedUrl).toString() + ";");
         }
-        catch (UnsupportedEncodingException e)
+        catch (RuntimeException | Error failure)
         {
-            e.printStackTrace();
+            registration.close();
+            throw failure;
         }
-
-    }
-
-    public final static String SERVICE_HANDLER = "EJFileDownloadServiceHandler";
-
-    public static byte[] getData(String name)
-    {
-        File file = new File(name);
-        if (file.exists())
-        {
-            RandomAccessFile f = null;
-            try
-            {
-                f = new RandomAccessFile(file, "r");
-            }
-            catch (FileNotFoundException e)
-            {
-                e.printStackTrace();
-            }
-            try
-            {
-                // Get and check length
-                long longlength = f.length();
-                int length = (int) longlength;
-
-                // Read file and return data
-                byte[] data = new byte[length];
-                f.readFully(data);
-                return data;
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-            finally
-            {
-                if (f != null)
-                    try
-                    {
-                        f.close();
-                    }
-                    catch (IOException e)
-                    {
-                        e.printStackTrace();
-                    }
-            }
-        }
-
-        return new byte[0];
     }
 
     public static ServiceHandler newServiceHandler()
@@ -135,41 +90,198 @@ public class EJRWTFileDownload
         return new FileDownloadServiceHandler();
     }
 
+    private static synchronized DownloadRegistration register(Path source, String outputName, String sessionId)
+    {
+        long now = System.currentTimeMillis();
+        purgeExpired(now);
+        while (REGISTRATIONS.size() >= MAX_REGISTRATIONS)
+        {
+            DownloadRegistration oldest = REGISTRATIONS.values().stream()
+                    .min(Comparator.comparingLong(registration -> registration.expiresAt))
+                    .orElse(null);
+            if (oldest == null)
+            {
+                break;
+            }
+            oldest.close();
+        }
+
+        String token;
+        do
+        {
+            token = UUID.randomUUID().toString();
+        }
+        while (REGISTRATIONS.containsKey(token));
+
+        EJRWTSessionCleanup cleanup = EJRWTSessionCleanup.getSession().orElse(null);
+        DownloadRegistration registration = new DownloadRegistration(
+                token,
+                source,
+                sanitizeOutputName(outputName, source),
+                sessionId,
+                now + REGISTRATION_TTL_MILLIS,
+                cleanup);
+        REGISTRATIONS.put(token, registration);
+        if (cleanup != null)
+        {
+            try
+            {
+                cleanup.addCloseable(registration);
+            }
+            catch (RuntimeException | Error failure)
+            {
+                registration.close();
+                throw failure;
+            }
+        }
+        return registration;
+    }
+
+    private static void purgeExpired(long now)
+    {
+        for (DownloadRegistration registration : REGISTRATIONS.values())
+        {
+            if (registration.isExpired(now))
+            {
+                registration.close();
+            }
+        }
+    }
+
+    static String sanitizeOutputName(String outputName, Path source)
+    {
+        String candidate = outputName == null || outputName.isBlank() ? source.getFileName().toString() : outputName;
+        StringBuilder sanitized = new StringBuilder(Math.min(candidate.length(), 255));
+        candidate.codePoints().forEach(codePoint -> {
+            if (sanitized.length() >= 255)
+            {
+                return;
+            }
+            if (codePoint < 32 || codePoint == 127)
+            {
+                return;
+            }
+            if (codePoint == '/' || codePoint == '\\')
+            {
+                sanitized.append('_');
+            }
+            else
+            {
+                sanitized.appendCodePoint(codePoint);
+            }
+        });
+        return sanitized.toString().isBlank() ? "download" : sanitized.toString();
+    }
+
+    static String createContentDisposition(String outputName)
+    {
+        StringBuilder fallback = new StringBuilder(outputName.length());
+        outputName.codePoints().forEach(codePoint -> {
+            if (codePoint >= 32 && codePoint < 127 && (Character.isLetterOrDigit(codePoint)
+                    || codePoint == ' ' || codePoint == '.' || codePoint == '-' || codePoint == '_'))
+            {
+                fallback.appendCodePoint(codePoint);
+            }
+            else
+            {
+                fallback.append('_');
+            }
+        });
+        String encoded = URLEncoder.encode(outputName, StandardCharsets.UTF_8).replace("+", "%20");
+        return "attachment; filename=\"" + fallback + "\"; filename*=UTF-8''" + encoded;
+    }
+
     private static class FileDownloadServiceHandler implements ServiceHandler
     {
-
         @Override
         public void service(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
         {
-            String fileName = request.getParameter("filename");
-           // fileName = URLDecoder.decode(fileName, "UTF-8");
+            long now = System.currentTimeMillis();
+            purgeExpired(now);
 
-            String output = request.getParameter("output");
-            //output = URLDecoder.decode(output, "UTF-8");
-            // Get the file content
-
-            File file = new File(keys.get(fileName));
-
-            BufferedInputStream fileToDownload = new BufferedInputStream(new FileInputStream(file));
-
-            // Send the file in the response
-            response.setContentType("application/octet-stream");
-
-            String contentDisposition = "attachment; filename=\"" + output + "\"";
-            response.setHeader("Content-Disposition", contentDisposition);
-            response.setHeader("Pragma", "public");
-            response.setContentLength(fileToDownload.available());
-            PrintWriter out = response.getWriter();
-            int c;
-            while ((c = fileToDownload.read()) != -1)
+            String token = request.getParameter(TOKEN_PARAMETER);
+            DownloadRegistration registration = token == null ? null : REGISTRATIONS.get(token);
+            if (registration == null
+                    || registration.isExpired(now)
+                    || !registration.sessionId.equals(RWT.getUISession().getId())
+                    || !registration.claim())
             {
-                out.write(c);
+                if (registration != null && registration.isExpired(now))
+                {
+                    registration.close();
+                }
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
             }
-            out.flush();
-            out.close();
-            fileToDownload.close();
-            keys.remove(fileName);
+
+            if (!Files.isRegularFile(registration.source))
+            {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", createContentDisposition(registration.outputName));
+            response.setHeader("Cache-Control", "no-store");
+            response.setHeader("X-Content-Type-Options", "nosniff");
+            response.setContentLengthLong(Files.size(registration.source));
+
+            try (InputStream input = Files.newInputStream(registration.source))
+            {
+                var output = response.getOutputStream();
+                input.transferTo(output);
+                output.flush();
+            }
         }
     }
-    
+
+    private static final class DownloadRegistration implements Closeable
+    {
+        private final String token;
+        private final Path source;
+        private final String outputName;
+        private final String sessionId;
+        private final long expiresAt;
+        private final EJRWTSessionCleanup cleanup;
+
+        private DownloadRegistration(String token, Path source, String outputName, String sessionId, long expiresAt, EJRWTSessionCleanup cleanup)
+        {
+            this.token = token;
+            this.source = source;
+            this.outputName = outputName;
+            this.sessionId = sessionId;
+            this.expiresAt = expiresAt;
+            this.cleanup = cleanup;
+        }
+
+        private boolean isExpired(long now)
+        {
+            return now >= expiresAt;
+        }
+
+        private boolean claim()
+        {
+            boolean claimed = REGISTRATIONS.remove(token, this);
+            if (claimed)
+            {
+                removeFromSessionCleanup();
+            }
+            return claimed;
+        }
+
+        @Override
+        public void close()
+        {
+            REGISTRATIONS.remove(token, this);
+            removeFromSessionCleanup();
+        }
+
+        private void removeFromSessionCleanup()
+        {
+            if (cleanup != null)
+            {
+                cleanup.removeCloseable(this);
+            }
+        }
+    }
 }
