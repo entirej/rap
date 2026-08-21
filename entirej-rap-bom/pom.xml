@@ -8,6 +8,18 @@
     <packaging>pom</packaging>
     <name>Entirej Rap/Rwt BOM</name>
 
+    <properties>
+        <WAR.NAME>entirej-temos</WAR.NAME>
+        <VERSION.CORE>DEVELOPMENT-SNAPSHOT</VERSION.CORE>
+        <VERSION.REPORT>DEVELOPMENT-SNAPSHOT</VERSION.REPORT>
+        <VERSION.RAP>DEVELOPMENT-SNAPSHOT</VERSION.RAP>
+        <jackson.version>2.18.9</jackson.version>
+        <logback.version>1.5.38</logback.version>
+        <slf4j.version>2.0.18</slf4j.version>
+        <MAVEN.REPO.PATH>development</MAVEN.REPO.PATH>
+        <built.repo.dir>${project.build.directory}/repo</built.repo.dir>
+    </properties>
+
     <build>
 
         <plugins>
@@ -58,6 +70,18 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>jakarta.servlet</groupId>
                 <artifactId>jakarta.servlet-api</artifactId>
                 <version>6.1.0</version>
@@ -67,6 +91,11 @@
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>2.22.0</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-fileupload</groupId>
+                <artifactId>commons-fileupload</artifactId>
+                <version>1.6.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -271,7 +300,12 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.6</version>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.rap.incubator</groupId>
@@ -302,15 +336,5 @@
                 https://oss.sonatype.org/content/repositories/orgeclipserap-1097/</url>
         </repository>
     </repositories>
-
-    <properties>
-        <WAR.NAME>entirej-temos</WAR.NAME>
-        <VERSION.CORE>DEVELOPMENT-SNAPSHOT</VERSION.CORE>
-        <VERSION.REPORT>DEVELOPMENT-SNAPSHOT</VERSION.REPORT>
-        <VERSION.RAP>DEVELOPMENT-SNAPSHOT</VERSION.RAP>
-        <MAVEN.REPO.PATH>development</MAVEN.REPO.PATH>
-        <built.repo.dir>${project.build.directory}/repo</built.repo.dir>
-    </properties>
-
 
 </project>
