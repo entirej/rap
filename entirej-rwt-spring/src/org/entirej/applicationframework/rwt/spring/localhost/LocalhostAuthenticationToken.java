@@ -1,6 +1,7 @@
 package org.entirej.applicationframework.rwt.spring.localhost;
 
 import java.util.Collection;
+import java.util.Collections;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,7 +35,7 @@ public class LocalhostAuthenticationToken extends AbstractAuthenticationToken
      */
     public LocalhostAuthenticationToken(Object principal)
     {
-        super(null);
+        super(Collections.emptyList());
         this.principal = principal;
         setAuthenticated(false);
     }

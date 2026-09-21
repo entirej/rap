@@ -55,9 +55,20 @@ public class EJSpringSecurityConfig extends GlobalAuthenticationConfigurerAdapte
     }
 
     @Override
-    public void init(AuthenticationManagerBuilder authentication) throws Exception
+    public void init(AuthenticationManagerBuilder authentication)
     {
-        provider.configure(authentication);
+        try
+        {
+            provider.configure(authentication);
+        }
+        catch (RuntimeException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            throw new IllegalStateException("Unable to configure Spring authentication provider " + provider.getClass().getName(), e);
+        }
     }
 
 }

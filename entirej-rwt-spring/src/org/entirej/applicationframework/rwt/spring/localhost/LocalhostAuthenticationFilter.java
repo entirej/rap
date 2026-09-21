@@ -15,9 +15,18 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.util.Assert;
 import org.springframework.web.filter.GenericFilterBean;
 
 /**
@@ -38,6 +47,10 @@ public class LocalhostAuthenticationFilter extends GenericFilterBean
     private AuthenticationManager                              authenticationManager;
     private AuthenticationSuccessHandler                       successHandler;
     private AuthenticationDetailsSource<HttpServletRequest, ?> authenticationDetailsSource = new WebAuthenticationDetailsSource();
+    private SecurityContextHolderStrategy                       securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
+    private SecurityContextRepository                           securityContextRepository = new DelegatingSecurityContextRepository(
+            new RequestAttributeSecurityContextRepository(), new HttpSessionSecurityContextRepository());
+    private SessionAuthenticationStrategy                      sessionStrategy = new NullAuthenticatedSessionStrategy();
 
     /**
      * <p>
@@ -74,6 +87,24 @@ public class LocalhostAuthenticationFilter extends GenericFilterBean
         this.successHandler = successHandler;
     }
 
+    public void setSecurityContextHolderStrategy(SecurityContextHolderStrategy securityContextHolderStrategy)
+    {
+        Assert.notNull(securityContextHolderStrategy, "securityContextHolderStrategy cannot be null");
+        this.securityContextHolderStrategy = securityContextHolderStrategy;
+    }
+
+    public void setSecurityContextRepository(SecurityContextRepository securityContextRepository)
+    {
+        Assert.notNull(securityContextRepository, "securityContextRepository cannot be null");
+        this.securityContextRepository = securityContextRepository;
+    }
+
+    public void setSessionAuthenticationStrategy(SessionAuthenticationStrategy sessionStrategy)
+    {
+        Assert.notNull(sessionStrategy, "sessionStrategy cannot be null");
+        this.sessionStrategy = sessionStrategy;
+    }
+
     /*
      * (non-Javadoc)
      * 
@@ -107,7 +138,11 @@ public class LocalhostAuthenticationFilter extends GenericFilterBean
                 LocalhostAuthenticationToken authRequest = new LocalhostAuthenticationToken(username);
                 authRequest.setDetails(authenticationDetailsSource.buildDetails(request));
                 Authentication authResult = authenticationManager.authenticate(authRequest);
-                SecurityContextHolder.getContext().setAuthentication(authResult);
+                sessionStrategy.onAuthentication(authResult, request, response);
+                SecurityContext context = securityContextHolderStrategy.createEmptyContext();
+                context.setAuthentication(authResult);
+                securityContextHolderStrategy.setContext(context);
+                securityContextRepository.saveContext(context, request, response);
                 if (null != successHandler)
                 {
                     successHandler.onAuthenticationSuccess(request, response, authResult);
@@ -128,7 +163,7 @@ public class LocalhostAuthenticationFilter extends GenericFilterBean
     private boolean authenticationIsRequired(String username)
     {
 
-        Authentication existingAuth = SecurityContextHolder.getContext().getAuthentication();
+        Authentication existingAuth = securityContextHolderStrategy.getContext().getAuthentication();
         if (existingAuth == null || !existingAuth.isAuthenticated())
         {
             return true;

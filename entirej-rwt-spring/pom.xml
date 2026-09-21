@@ -231,9 +231,12 @@
 
 
         <dependency>
-            <groupId>org.springframework.security.kerberos</groupId>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-kerberos-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-kerberos-web</artifactId>
-            <version>${spring-security-kerberos.version}</version>
         </dependency>
 
         <dependency>
@@ -282,9 +285,8 @@
         <VERSION>DEVELOPMENT</VERSION>
         <VERSION.CORE>DEVELOPMENT-SNAPSHOT</VERSION.CORE>
         <VERSION.RAP>DEVELOPMENT-SNAPSHOT</VERSION.RAP>
-        <spring-framework.version>6.2.19</spring-framework.version>
-        <spring-security.version>6.5.11</spring-security.version>
-        <spring-security-kerberos.version>2.2.0</spring-security-kerberos.version>
+        <spring-framework.version>7.0.9</spring-framework.version>
+        <spring-security.version>7.0.7</spring-security.version>
         <MAVEN.REPO.PATH>development</MAVEN.REPO.PATH>
         <GITHUB.OAUTH></GITHUB.OAUTH>
         <built.repo.dir>${project.build.directory}/repo</built.repo.dir>
