@@ -15,7 +15,7 @@ Build and install the widget from this directory:
 
 The Maven artifact is
 `org.eclipse.rap.incubator:org.eclipse.rap.chartjs:4.0.08` and targets Java 21
-and Eclipse RAP 4.7.0.
+and Eclipse RAP 4.8.0.
 
 The Java widget is published under the Eclipse Public License 1.0 (see
 `LICENSE`). The bundled Chart.js library is available under the MIT license
