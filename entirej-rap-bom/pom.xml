@@ -14,6 +14,7 @@
         <VERSION.REPORT>DEVELOPMENT-SNAPSHOT</VERSION.REPORT>
         <VERSION.RAP>DEVELOPMENT-SNAPSHOT</VERSION.RAP>
         <jackson.version>2.18.11</jackson.version>
+        <guava.version>33.7.2-jre</guava.version>
         <spring-framework.version>7.0.9</spring-framework.version>
         <spring-security.version>7.0.7</spring-security.version>
         <logback.version>1.5.38</logback.version>
@@ -71,6 +72,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
