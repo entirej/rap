@@ -127,6 +127,12 @@
 	</build>
 	<dependencies>
 		<dependency>
+			<groupId>org.eclipse.rap</groupId>
+			<artifactId>org.eclipse.rap.rwt.testfixture</artifactId>
+			<version>4.8.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.13.1</version>

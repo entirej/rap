@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.entirej.applicationframework.rwt.file;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 import org.eclipse.rap.rwt.widgets.DialogCallback;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -46,7 +49,7 @@ public class EJRWTFileUpload
             public void dialogClosed(int returnCode)
             {
                 String fileName = fileDialog.getFileName();
-                callBack.select(fileName != null && fileName.isEmpty() ? null : new String [] {fileName});
+                callBack.select(selectedFiles(returnCode, fileName));
 
             }
         });
@@ -58,6 +61,7 @@ public class EJRWTFileUpload
 
         final FileDialog fileDialog = new FileDialog(Display.getDefault().getActiveShell(), SWT.SHELL_TRIM | SWT.APPLICATION_MODAL | SWT.MULTI);
         fileDialog.setText(title);
+        fileDialog.setFilterExtensions(ext);
         if(fileSizeLimit>0)
             fileDialog.setUploadSizeLimit(fileSizeLimit);
         if(uploadTimeLimit>0)
@@ -70,10 +74,23 @@ public class EJRWTFileUpload
             {
 
                 String[] fileNames = fileDialog.getFileNames();
-                callBack.select(fileNames != null && fileNames.length == 0 ? null : fileNames);
+                callBack.select(selectedFiles(returnCode, fileNames));
             }
         });
 
+    }
+
+    static String[] selectedFiles(int returnCode, String... fileNames)
+    {
+        if (returnCode != SWT.OK || fileNames == null)
+        {
+            return null;
+        }
+        String[] selected = Arrays.stream(fileNames)
+                .filter(Objects::nonNull)
+                .filter(file -> !file.isEmpty())
+                .toArray(String[]::new);
+        return selected.length == 0 ? null : selected;
     }
 
     public static interface FileSelectionCallBack

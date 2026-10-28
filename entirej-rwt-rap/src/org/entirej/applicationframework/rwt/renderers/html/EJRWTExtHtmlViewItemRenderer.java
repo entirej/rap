@@ -25,8 +25,10 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.service.ServerPushSession;
 import org.eclipse.rwt.EJ_RWT;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.SWTException;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -38,6 +40,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.entirej.applicationframework.rwt.renderer.interfaces.EJRWTAppItemRenderer;
 import org.entirej.applicationframework.rwt.renderers.html.HtmlProxyServiceHandler.HtmlGet;
+import org.entirej.applicationframework.rwt.renderers.html.HtmlProxyServiceHandler.Registration;
 import org.entirej.applicationframework.rwt.renderers.item.ControlDecorationSupport;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTButtonItemRendererDefinitionProperties;
 import org.entirej.applicationframework.rwt.renderers.item.definition.interfaces.EJRWTTextItemRendererDefinitionProperties;
@@ -74,6 +77,10 @@ public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, Focus
     protected Object                          _baseValue;
     protected Object                          _baseValueWithURl;
     protected String                          _baseValueKey;
+    private transient volatile Registration   _htmlRegistration;
+    private transient volatile Object         _htmlValueGeneration;
+    private transient volatile String         _publishedHtml;
+    private transient ServerPushSession       _htmlPushSession;
     private EJMessage                         message;
 
     private boolean                           visible;
@@ -224,6 +231,7 @@ public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, Focus
     @Override
     public void clearValue()
     {
+        releaseHtmlRegistration();
         _baseValue = null;
         _baseValueWithURl = null;
 
@@ -232,7 +240,7 @@ public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, Focus
 
             if (controlState(_textField))
             {
-                _textField.setText("");
+                _textField.setUrl("about:blank");
             }
         }
         finally
@@ -348,37 +356,92 @@ public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, Focus
         {
             value = "";
         }
+        releaseHtmlRegistration();
         _baseValue = _baseValueWithURl = value;
+        if (!controlState(_textField))
+        {
+            return;
+        }
+        if ("".equals(value))
+        {
+            // setText("") makes RAP fetch a generated HTML resource. That response
+            // does not have the proxy's frame policy and may be blocked by DENY.
+            _textField.setUrl("about:blank");
+            setMandatoryBorder(_mandatory);
+            return;
+        }
         try
         {
-            if (_baseValueKey != null)
-            {
-                HtmlProxyServiceHandler.HtmlProxy.INSTANCE.unregister(_baseValueKey);
-            }
+            final Browser browser = _textField;
+            final Display display = browser.getDisplay();
+            final Object generation = new Object();
+            // Actions may arrive while the RAP UI is idle. Keep a scoped push
+            // connection so UI dispatch does not depend on a later click/scroll.
+            _htmlPushSession = new ServerPushSession();
+            _htmlPushSession.start();
             if (value != null)
             {
-                _baseValueKey = HtmlProxyServiceHandler.HtmlProxy.INSTANCE.register(new HtmlGet()
+                _htmlRegistration = HtmlProxyServiceHandler.HtmlProxy.INSTANCE.registerResource(new HtmlGet()
                 {
 
                     public String html()
                     {
-                        return (String) _baseValueWithURl;
+                        Registration registration = _htmlRegistration;
+                        if (_htmlValueGeneration != generation || registration == null || !registration.isActive())
+                        {
+                            return null;
+                        }
+                        return _publishedHtml;
                     }
                     
                     public void action(String action)
                     {
+                        executeHtmlAction(action);
+                    }
+
+                    @Override
+                    public String render(String action)
+                    {
+                        // Ordinary iframe loads only need the published snapshot.
+                        // syncExec here would stall the first load until the next UI request.
+                        if (action == null)
+                        {
+                            return html();
+                        }
+                        if (display.isDisposed())
+                        {
+                            return null;
+                        }
+                        String[] content = new String[1];
                         try
                         {
-                            EJBlockController blockController = _item.getBlock().getBlockController();
-                            blockController.executeActionCommand(action, _item.getScreenType());
-
+                            // Service requests do not run on the SWT UI thread.
+                            display.syncExec(() -> {
+                                if (controlState(browser) && _htmlValueGeneration == generation
+                                        && _htmlRegistration != null && _htmlRegistration.isActive())
+                                {
+                                    if (action != null)
+                                    {
+                                        action(action);
+                                    }
+                                    if (controlState(browser))
+                                    {
+                                        content[0] = (String) _baseValueWithURl;
+                                    }
+                                }
+                            });
                         }
-                        catch (Exception e)
+                        catch (SWTException failure)
                         {
-                            _item.getBlock().getBlockController().getFormController().getFrameworkManager().handleException(e);
+                            if (failure.code != SWT.ERROR_DEVICE_DISPOSED)
+                            {
+                                throw failure;
+                            }
                         }
+                        return content[0];
                     }
                 });
+                _baseValueKey = _htmlRegistration.getKey();
             }
             {
                 if (controlState(_textField))
@@ -390,20 +453,67 @@ public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, Focus
                         url.append("&req_id=");
                         url.append(_baseValueKey);
                         String encodedURL = RWT.getResponse().encodeURL(url.toString());
-                        _textField.setUrl(encodedURL);
                         _baseValueWithURl = _baseValue;
                         if(_baseValueWithURl!=null)
-                            _baseValueWithURl = ((String)_baseValueWithURl).replaceAll("%RAP_URL_PATH%", encodedURL);
+                            _baseValueWithURl = ((String)_baseValueWithURl).replace("%RAP_URL_PATH%", encodedURL);
+                        _publishedHtml = (String) _baseValueWithURl;
+                        _htmlValueGeneration = generation;
+                        _textField.setUrl(encodedURL);
                     }
 
                     setMandatoryBorder(_mandatory);
                 }
             }
         }
-        finally
+        catch (RuntimeException | Error failure)
         {
-
+            releaseHtmlRegistration();
+            throw failure;
         }
+    }
+
+    private void releaseHtmlRegistration()
+    {
+        _htmlValueGeneration = null;
+        _publishedHtml = null;
+        _baseValueKey = null;
+        if (_htmlRegistration != null)
+        {
+            _htmlRegistration.close();
+            _htmlRegistration = null;
+        }
+        if (_htmlPushSession != null)
+        {
+            _htmlPushSession.stop();
+            _htmlPushSession = null;
+        }
+    }
+
+    protected void executeHtmlAction(String action)
+    {
+        try
+        {
+            EJBlockController blockController = _item.getBlock().getBlockController();
+            blockController.executeActionCommand(action, _item.getScreenType());
+        }
+        catch (Exception failure)
+        {
+            _item.getBlock().getBlockController().getFormController().getFrameworkManager().handleException(failure);
+        }
+    }
+
+    protected Browser createBrowser(Composite parent)
+    {
+        Browser browser = new Browser(parent, SWT.NONE);
+        browser.addDisposeListener(event -> {
+            if (_textField == browser)
+            {
+                releaseHtmlRegistration();
+                _baseValue = null;
+                _baseValueWithURl = null;
+            }
+        });
+        return browser;
     }
 
     @Override
@@ -635,7 +745,7 @@ public class EJRWTExtHtmlViewItemRenderer implements EJRWTAppItemRenderer, Focus
         {
 
             composite.setData(EJ_RWT.CUSTOM_VARIANT, "html");
-            _textField = new Browser(composite, SWT.NONE);
+            _textField = createBrowser(composite);
 
             _textField.setData(EJ_RWT.CUSTOM_VARIANT, "html");
             _textField.setData(EJ_RWT.CUSTOM_VARIANT, getCSSKey());
