@@ -118,10 +118,23 @@ test('legacy font size configuration is translated and modern spelling takes pre
 
 test('RAP popup layering is installed once across multiple editor instances', () => {
   const f = fixture(); f.createWidget();
-  assert.equal(f.head.children.length, 1);
+  assert.equal(f.head.children.length, 2);
   assert.equal(f.head.children[0].id, 'ej-tinymce-rap-overlay-style');
   assert.match(f.head.children[0].textContent, /\.tox\.tox-tinymce-inline\s*\{ z-index: 1000000;/);
   assert.match(f.head.children[0].textContent, /\.tox\.tox-tinymce-aux\s*\{ z-index: 1000001;/);
   assert.equal(f.widget.elementReadonly.style.zIndex, '2147483647');
   assert.equal(f.widget.element.style.zIndex, undefined, 'do not raise the entire RAP editor');
+});
+
+test('RAP chrome CSS is loaded once from the registered base without changing document CSS', () => {
+  const contentCss = 'body { font-size: 13px; line-height: 1.5; }';
+  const f = fixture({ basePath: '/temos/rwt-resources/tinymceeditor/', contentCss });
+  f.render(); f.createWidget();
+  const links = f.head.children.filter(n=>n.rel === 'stylesheet');
+  assert.equal(links.length, 1);
+  assert.equal(links[0].href, '/temos/rwt-resources/tinymceeditor/ej/rap-ui.css');
+  assert.equal(f.editors[0].options.content_style, contentCss);
+  assert.equal(f.editors[1].options.content_style, contentCss);
+  assert.equal(f.editors[0].options.toolbar_mode, 'wrap');
+  assert.equal(f.editors[0].options.content_css, '/temos/rwt-resources/tinymceeditor/ej/rap-content.css');
 });

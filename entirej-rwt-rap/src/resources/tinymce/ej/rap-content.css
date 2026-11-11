@@ -1,0 +1,15 @@
+/* Keep vendor defaults in a lower cascade layer so low-specificity application
+   rules (for example td { padding: 4px }) still win as they did in TinyMCE 4. */
+@import url("../skins/content/default/content.min.css") layer(entirej-tinymce-default);
+
+/* Legacy browser spacing. Never override application or inline HTML styles. */
+body {
+    margin: 8px;
+}
+table {
+    border-collapse: separate;
+    border-spacing: 2px;
+}
+:where(table:not([cellpadding])) :where(th, td) {
+    padding: 1px;
+}

@@ -1,0 +1,162 @@
+/* EntireJ RAP editor chrome. Document/iframe typography stays in contentCss. */
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) {
+    font-family: Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    color: #4a4a4a;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) :is(.tox-tbtn, .tox-mbtn,
+    .tox-tbtn__select-label, .tox-collection__item, .tox-collection__item-label,
+    .tox-dialog__title, .tox-label, .tox-textfield, .tox-textarea,
+    .tox-listbox, .tox-button, .tox-statusbar, .tox-selectfield select, .tox-listbox--select) {
+    font-family: Verdana, "Lucida Sans", Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+.tox.tox-tinymce {
+    border: 1px solid #aaaaaa;
+    border-radius: 2px;
+    box-shadow: none;
+}
+.tox.tox-tinymce:focus-within {
+    border-color: #4f7cb1;
+}
+.tox.tox-tinymce:not(.tox-tinymce-inline) .tox-editor-header {
+    padding: 0;
+    border-bottom: 1px solid #d9d9d9;
+    box-shadow: none;
+}
+.tox.tox-tinymce .tox-editor-header .tox-menubar {
+    padding: 0 3px;
+    min-height: 28px;
+    background-image: none;
+}
+.tox.tox-tinymce .tox-editor-header .tox-toolbar,
+.tox.tox-tinymce .tox-toolbar__primary,
+.tox.tox-tinymce-aux .tox-toolbar {
+    padding: 0 2px;
+    background-image: none;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) .tox-toolbar__group {
+    padding: 0 3px;
+    border-right: 1px solid #d9d9d9;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) .tox-toolbar__group:last-child {
+    border-right: 0;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) :is(.tox-tbtn, .tox-mbtn) {
+    height: 26px;
+    margin: 1px;
+    border-radius: 2px;
+    color: #4a4a4a;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) .tox-tbtn {
+    width: 26px;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) .tox-tbtn--select {
+    width: auto;
+    padding: 0 4px;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) .tox-tbtn.tox-tbtn--select .tox-tbtn__select-label {
+    width: auto;
+    min-width: 32px;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) .tox-tbtn__icon-wrap svg {
+    width: 20px;
+    height: 20px;
+    fill: #4a4a4a;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) .tox-split-button {
+    height: 26px;
+    margin: 1px;
+    border-radius: 2px;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) .tox-split-button .tox-tbtn {
+    margin: 0;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) .tox-split-button__chevron {
+    width: 16px;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) :is(.tox-tbtn, .tox-mbtn):hover:not(:disabled) {
+    background: #ecf2fb;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) :is(.tox-tbtn, .tox-mbtn):focus::after {
+    box-shadow: 0 0 0 1px #4f7cb1;
+    border-radius: 2px;
+}
+:is(.tox.tox-tinymce, .tox.tox-tinymce-aux) :is(.tox-tbtn--enabled, .tox-mbtn--active) {
+    background: #ecf2fb;
+}
+.tox.tox-tinymce .tox-edit-area::before {
+    border: 1px solid #4f7cb1;
+    border-radius: 0;
+}
+.tox.tox-tinymce .tox-statusbar {
+    height: 20px;
+    padding: 0 5px;
+    border-top: 1px solid #d9d9d9;
+    color: #4a4a4a;
+}
+.tox.tox-tinymce.tox-tinymce-inline .tox-editor-header {
+    border: 1px solid #aaaaaa;
+    border-radius: 2px;
+    box-shadow: none;
+}
+.tox.tox-tinymce-aux .tox-menu {
+    border: 1px solid #a0b3ca;
+    border-radius: 2px;
+    box-shadow: 0 0 4px #ababab;
+}
+.tox.tox-tinymce-aux .tox-collection--list .tox-collection__item {
+    padding: 4px 8px;
+}
+.tox.tox-tinymce-aux .tox-collection--list .tox-collection__item--active:not(.tox-collection__item--state-disabled) {
+    color: #ffffff;
+    background: linear-gradient(#5882b5, #416693);
+}
+.tox.tox-tinymce-aux .tox-dialog {
+    border: 1px solid #bdbdbd;
+    border-radius: 2px;
+    box-shadow: 0 0 4px #ababab;
+}
+.tox.tox-tinymce-aux .tox-dialog__header {
+    padding: 8px 12px;
+    border-bottom: 1px solid #d9d9d9;
+    background-color: #f7f7f7;
+    color: #4a4a4a;
+}
+.tox.tox-tinymce-aux .tox-dialog__title {
+    font-weight: bold;
+}
+.tox.tox-tinymce-aux .tox-dialog__footer {
+    padding: 8px 12px;
+    border-top: 1px solid #d9d9d9;
+}
+.tox.tox-tinymce-aux :is(.tox-textfield, .tox-textarea, .tox-selectfield select, .tox-listboxfield .tox-listbox--select) {
+    border: 1px solid #aaaaaa;
+    border-radius: 0;
+    color: #4a4a4a;
+}
+.tox.tox-tinymce-aux :is(.tox-textfield, .tox-textarea, .tox-selectfield select, .tox-listboxfield .tox-listbox--select):focus {
+    border-color: #4f7cb1;
+    box-shadow: none;
+}
+.tox.tox-tinymce-aux .tox-dialog__footer .tox-button {
+    padding: 4px 10px;
+    border: 1px solid #416693;
+    border-radius: 2px;
+    background-color: #416693;
+    color: #ffffff;
+}
+.tox.tox-tinymce-aux .tox-dialog__footer .tox-button--secondary {
+    border-color: #aaaaaa;
+    background-color: #ffffff;
+    color: #4a4a4a;
+}
+/* Keep touch controls usable, even though the desktop RAP theme is compact. */
+@media (pointer: coarse) {
+    :is(.tox.tox-tinymce, .tox.tox-tinymce-aux) :is(.tox-tbtn, .tox-mbtn, .tox-split-button) {
+        min-height: 36px;
+    }
+    :is(.tox.tox-tinymce, .tox.tox-tinymce-aux) .tox-tbtn:not(.tox-tbtn--select) {
+        min-width: 36px;
+    }
+}

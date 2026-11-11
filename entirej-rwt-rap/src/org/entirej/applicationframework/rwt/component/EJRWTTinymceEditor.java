@@ -47,7 +47,7 @@ public class EJRWTTinymceEditor extends Composite
             "plugins/preview/plugin.min.js", "plugins/searchreplace/plugin.min.js", "plugins/visualblocks/plugin.min.js",
             "plugins/insertdatetime/plugin.min.js", "plugins/wordcount/plugin.min.js", "plugins/table/plugin.min.js",
             "skins/ui/oxide/skin.min.css", "skins/ui/oxide/content.min.css", "skins/ui/oxide/content.inline.min.css",
-            "skins/content/default/content.min.css" };
+            "skins/content/default/content.min.css", "ej/rap-content.css", "ej/rap-ui.css" };
 
     private static final String    REMOTE_TYPE        = "eclipsesource.TinymceEditor";
 

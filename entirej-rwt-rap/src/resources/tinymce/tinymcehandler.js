@@ -20,6 +20,7 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
         this.supportTable = properties.supportTable;
         this.pasteAsText = properties.pasteAsText;
         this.basePath = properties.basePath || TINYMCEEDITOR_BASEPATH;
+        ensureUiStyle(this.basePath);
         this.ready = false;
         this.viewReady = false;
         this.destroyed = false;
@@ -93,8 +94,9 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
                 target: target, menubar: !view, inline: view ? false : !!this.inline,
                 license_key: 'gpl', base_url: base, suffix: '.min',
                 model: 'dom', theme: 'silver', icons: 'default', icons_url: base + '/icons/default/icons.min.js',
-                branding: false, promotion: false, resize: false, skin: 'oxide',
-                skin_url: base + '/skins/ui/oxide', content_css: base + '/skins/content/default/content.min.css',
+                branding: false, promotion: false, resize: false, skin: 'oxide', toolbar_mode: 'wrap',
+                skin_url: base + '/skins/ui/oxide',
+                content_css: base + '/ej/rap-content.css',
                 min_height: 0, min_width: 0, height: Math.max(1, this.parent.getClientArea()[3]),
                 paste_as_text: this.pasteAsText,
                 paste_preprocess: this.onPrePaste, removed_menuitems: 'newdocument',
@@ -218,6 +220,15 @@ var TINYMCEEDITOR_BASEPATH = "rwt-resources/tinymceeditor/";
         style.textContent = '.tox.tox-tinymce-inline { z-index: 1000000; }' +
             '.tox.tox-tinymce-aux { z-index: 1000001; }';
         document.head.appendChild(style);
+    }
+    function ensureUiStyle(basePath) {
+        var id = 'ej-tinymce-rap-ui-style';
+        if (document.getElementById(id)) { return; }
+        var link = document.createElement('link');
+        link.id = id;
+        link.rel = 'stylesheet';
+        link.href = basePath.replace(/\/$/, '') + '/ej/rap-ui.css';
+        document.head.appendChild(link);
     }
     function createElement() {
         var el = document.createElement('div');
