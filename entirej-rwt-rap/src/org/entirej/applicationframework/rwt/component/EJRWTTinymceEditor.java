@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 
 import org.eclipse.rap.json.JsonObject;
 import org.eclipse.rap.json.JsonValue;
@@ -41,10 +42,12 @@ public class EJRWTTinymceEditor extends Composite
     private static final String    REGISTER_PATH      = "tinymceeditor/";
 
     private static final String[]  RESOURCE_FILES     = { "tinymce.min.js", "tinymcehandler.js" };
-    private static final String[]  RESOURCE_FILES_SUB = { "plugins/fullscreen/plugin.min.js", "plugins/visualblocks/css/visualblocks.css", "skins/lightgray/content.inline.min.css", "skins/lightgray/content.min.css", "skins/lightgray/content.mobile.min.css", "skins/lightgray/skin.min.css",
-            "skins/lightgray/skin.mobile.min.css", "skins/lightgray/fonts/tinymce-mobile.woff", "skins/lightgray/fonts/tinymce-small.eot", "skins/lightgray/fonts/tinymce-small.svg", "skins/lightgray/fonts/tinymce-small.ttf", "skins/lightgray/fonts/tinymce-small.woff", "skins/lightgray/fonts/tinymce.eot",
-            "skins/lightgray/fonts/tinymce.svg", "skins/lightgray/fonts/tinymce.ttf", "skins/lightgray/fonts/tinymce.woff", "skins/lightgray/img/anchor.gif", "skins/lightgray/img/loader.gif", "skins/lightgray/img/object.gif", "skins/lightgray/img/trans.gif", "themes/inlite/theme.min.js", "themes/mobile/theme.min.js",
-            "themes/modern/theme.min.js", };
+    private static final String[]  RESOURCE_FILES_SUB = { "models/dom/model.min.js", "themes/silver/theme.min.js", "icons/default/icons.min.js",
+            "plugins/advlist/plugin.min.js", "plugins/autolink/plugin.min.js", "plugins/link/plugin.min.js", "plugins/lists/plugin.min.js",
+            "plugins/preview/plugin.min.js", "plugins/searchreplace/plugin.min.js", "plugins/visualblocks/plugin.min.js",
+            "plugins/insertdatetime/plugin.min.js", "plugins/wordcount/plugin.min.js", "plugins/table/plugin.min.js",
+            "skins/ui/oxide/skin.min.css", "skins/ui/oxide/content.min.css", "skins/ui/oxide/content.inline.min.css",
+            "skins/content/default/content.min.css" };
 
     private static final String    REMOTE_TYPE        = "eclipsesource.TinymceEditor";
 
@@ -96,6 +99,12 @@ public class EJRWTTinymceEditor extends Composite
         remoteObject.set("removeToolbar", removeToolbar);
         remoteObject.set("supportTable", supportTable);
         remoteObject.set("profile", profile == null ? "Standard" : profile);
+        ResourceManager resourceManager = RWT.getResourceManager();
+        if (resourceManager.isRegistered(REGISTER_PATH + RESOURCE_FILES[0]))
+        {
+            String location = resourceManager.getLocation(REGISTER_PATH + RESOURCE_FILES[0]);
+            remoteObject.set("basePath", location.substring(0, location.lastIndexOf('/') + 1));
+        }
         // remoteObject.set("font", getCssFont());
         remoteObject.set("contentCss", read(contentCssFile == null || contentCssFile.isEmpty() ? hasFile("/resources/tinymce/ej/custom.ej.css") ? "/resources/tinymce/ej/custom.ej.css" : "resources/tinymce/ej/content.ej.css" : contentCssFile));
         remoteObject.set("configObj", readAsJson(configJsonFile == null || configJsonFile.isEmpty() ? "resources/tinymce/ej/config.ej.json" : configJsonFile));
@@ -134,29 +143,23 @@ public class EJRWTTinymceEditor extends Composite
         return super.forceFocus();
     }
 
-    private static void registerResources()
+    static void registerResources()
     {
         ResourceManager resourceManager = RWT.getResourceManager();
-        boolean isRegistered = resourceManager.isRegistered(REGISTER_PATH + RESOURCE_FILES[0]);
-        if (!isRegistered)
+        try
         {
-            try
+            for (String fileName : RESOURCE_FILES)
             {
-                for (String fileName : RESOURCE_FILES)
-                {
-                    register(resourceManager, fileName);
-                }
-
-                for (String fileName : RESOURCE_FILES_SUB)
-                {
-                    register(resourceManager, fileName);
-                }
-
+                register(resourceManager, fileName);
             }
-            catch (IOException ioe)
+            for (String fileName : RESOURCE_FILES_SUB)
             {
-                throw new IllegalArgumentException("Failed to load resources", ioe);
+                register(resourceManager, fileName);
             }
+        }
+        catch (IOException ioe)
+        {
+            throw new IllegalArgumentException("Failed to load resources", ioe);
         }
     }
 
@@ -166,9 +169,8 @@ public class EJRWTTinymceEditor extends Composite
         ResourceManager resourceManager = RWT.getResourceManager();
         // jsLoader.requireJs(resourceManager.getLocation(REGISTER_PATH +
         // "jquery-3.3.1.min.js"));
-        jsLoader.requireJs(resourceManager.getLocation(REGISTER_PATH + "tinymcehandler.js"));
-
         jsLoader.requireJs(resourceManager.getLocation(REGISTER_PATH + "tinymce.min.js"));
+        jsLoader.requireJs(resourceManager.getLocation(REGISTER_PATH + "tinymcehandler.js"));
         // jsLoader.requireJs(resourceManager.getLocation(REGISTER_PATH +
         // "jquery.tinymce.min.js"));
 
@@ -176,6 +178,10 @@ public class EJRWTTinymceEditor extends Composite
 
     private static void register(ResourceManager resourceManager, String fileName) throws IOException
     {
+        if (resourceManager.isRegistered(REGISTER_PATH + fileName))
+        {
+            return;
+        }
         ClassLoader classLoader = EJRWTTinymceEditor.class.getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(RESOURCES_PATH + fileName);
         if (inputStream == null)
@@ -195,13 +201,12 @@ public class EJRWTTinymceEditor extends Composite
     @SuppressWarnings("resource")
     private static String read(String fileName)
     {
-        ClassLoader classLoader = EJRWTTinymceEditor.class.getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+        InputStream inputStream = openResource(fileName);
         if (inputStream == null)
         {
             return "";
         }
-        try (java.util.Scanner s = new java.util.Scanner(inputStream).useDelimiter("\\A");)
+        try (java.util.Scanner s = new java.util.Scanner(inputStream, StandardCharsets.UTF_8).useDelimiter("\\A");)
         {
 
             return s.hasNext() ? s.next().replaceAll("\\R+", " ") : "";
@@ -221,8 +226,7 @@ public class EJRWTTinymceEditor extends Composite
 
     private static boolean hasFile(String fileName)
     {
-        ClassLoader classLoader = EJRWTTinymceEditor.class.getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+        InputStream inputStream = openResource(fileName);
         if (inputStream == null)
         {
             return false;
@@ -247,13 +251,12 @@ public class EJRWTTinymceEditor extends Composite
 
     private static JsonObject readAsJson(String fileName)
     {
-        ClassLoader classLoader = EJRWTTinymceEditor.class.getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+        InputStream inputStream = openResource(fileName);
         if (inputStream == null)
         {
             return new JsonObject();
         }
-        try (Reader reader = new InputStreamReader(inputStream);)
+        try (Reader reader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);)
         {
 
             return JsonObject.readFrom(reader);
@@ -278,6 +281,12 @@ public class EJRWTTinymceEditor extends Composite
     }
 
     // //////////////////
+    static InputStream openResource(String fileName)
+    {
+        String name = fileName.startsWith("/") ? fileName.substring(1) : fileName;
+        return EJRWTTinymceEditor.class.getClassLoader().getResourceAsStream(name);
+    }
+
     // overwrite methods
 
     @Override
